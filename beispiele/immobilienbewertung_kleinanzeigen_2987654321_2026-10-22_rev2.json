@@ -1,0 +1,1219 @@
+{
+  "schema_version": "1.0",
+  "metadaten": {
+    "bericht_id": "IB-kleinanzeigen-2987654321-2026-10-22-rev2",
+    "pruefdatum": "2026-10-22",
+    "exportdatum": "2026-10-22",
+    "zeitzone": "Europe/Berlin",
+    "waehrung": "EUR",
+    "prueftiefe": "online_vorpruefung",
+    "analysestatus": "vorlaeufig",
+    "nutzungsfokus": "kapitalanlage",
+    "nutzungsfokus_grundlage": "Objekt ist laut Inserat vermietet; wirtschaftliche Prüfung vorrangig als Kapitalanlage, keine persönliche Zielvorgabe.",
+    "einschraenkungen": [
+      "Fiktiver Beispieldatensatz zur Demonstration des Viewers – kein reales Objekt.",
+      "Revision 2: Wohnflächenberechnung vom Nutzer bereitgestellt; WEG-Protokolle und Mietvertrag weiterhin nicht zugänglich."
+    ]
+  },
+  "angebot": {
+    "url": "https://www.example.org/kleinanzeigen/s-anzeige/2987654321",
+    "plattform": "kleinanzeigen",
+    "plattform_id": "2987654321",
+    "anbieter_objektnummer": "GO-1187-W4",
+    "einheit": "WE 4",
+    "titel": "Vermietete 2-Zimmer-Altbauwohnung mit Balkon in Leipzig-Gohlis",
+    "angebotsart": "kauf",
+    "objektart": "Eigentumswohnung",
+    "zugriffsstatus": "vollstaendig",
+    "verfuegbarkeit": "angeboten",
+    "verfuegbarkeit_stand": "2026-10-22"
+  },
+  "standort": {
+    "land": "Deutschland",
+    "bundesland": "Sachsen",
+    "ort": "Leipzig",
+    "stadtteil": "Gohlis-Süd",
+    "postleitzahl": "04155",
+    "strasse": null,
+    "hausnummer": null,
+    "adressgenauigkeit": "stadtteil",
+    "lageeinschaetzung": "Gefragte gründerzeitliche Wohnlage mit Straßenbahnanbindung und Nahversorgung im Stadtteil; hausgenaue Aussagen zu Lärm, Wegezeiten und Gefahren sind ohne Adresse nicht möglich."
+  },
+  "objekt": {
+    "kaufpreis_eur": 189000,
+    "verpflichtende_zusatzkaeufe_eur": null,
+    "wohnflaeche_m2": 54.3,
+    "zimmer": 2,
+    "etage": "2",
+    "baujahr": 1912,
+    "aufzug": false,
+    "balkon_oder_terrasse": true,
+    "vermietungsstatus": "vermietet",
+    "innenfotos_geprueft": true,
+    "grundriss_geprueft": true,
+    "zustandseinschaetzung": "Gepflegter Eindruck laut Innenfotos (Dielen, Wannenbad, Ausstattung ca. 2010er); Zustand des Gemeinschaftseigentums ohne Unterlagen nicht beurteilbar."
+  },
+  "energie": {
+    "ausweisart": "verbrauch",
+    "ausgestellt_am": "2017-03-14",
+    "gueltig_bis": "2027-03-13",
+    "verbrauchszeitraum_von": "2013-01-01",
+    "verbrauchszeitraum_bis": "2015-12-31",
+    "kennwert_kwh_m2_a": 142.5,
+    "effizienzklasse": "E",
+    "energietraeger": "Erdgas",
+    "heizungsjahr": 1998
+  },
+  "weg": {
+    "anzahl_einheiten": 10,
+    "ruecklage_gesamt_eur": 48500,
+    "ruecklage_gesamt_stichtag": "2025-12-31",
+    "ruecklage_zuordnung_wohnung_eur": null,
+    "ruecklage_zuordnung_stichtag": null,
+    "ruecklagenzufuehrung_wohnung_monat_eur": 45,
+    "sonderumlage_beschlossen_wohnung_eur": null,
+    "sanierungsplanung": "Inserat erwähnt „Dachsanierung in Planung“; kein Beschluss und kein Kostenrahmen zugänglich."
+  },
+  "ist_kosten_und_ertraege": {
+    "nettokaltmiete_monat_eur": 520,
+    "nettokaltmiete_jahr_eur": 6240,
+    "betriebskostenvorauszahlung_monat_eur": 140,
+    "hausgeld_monat_eur": 260,
+    "hausgeld_umlagefaehig_monat_eur": null,
+    "hausgeld_nicht_umlagefaehig_ohne_ruecklage_monat_eur": null,
+    "kaeuferprovision_prozent": 3.57,
+    "grunderwerbsteuer_prozent": 5.5,
+    "notar_grundbuch_eur": null,
+    "anfaengliche_massnahmen_eur": null
+  },
+  "kennzahlen": {
+    "kaufpreis_pro_m2_eur": 3480.66,
+    "nettokaltmiete_pro_m2_eur": 9.58,
+    "bruttomietrendite_prozent": 3.3,
+    "kaufpreisfaktor_jahre": 30.29,
+    "gesamtinvestition_eur": null,
+    "bruttorendite_auf_gesamtinvestition_prozent": null,
+    "wirtschaftliche_nettorendite_vor_finanzierung_steuern_prozent": null
+  },
+  "preisbewertung": {
+    "aussagebasis": "angebotsvergleich",
+    "marktwertspanne_eur": null,
+    "angebotsvergleichsspanne_eur": {
+      "min": 172000,
+      "max": 192000
+    },
+    "einschaetzung": "Angebotspreis liegt innerhalb der Spanne vergleichbarer Angebote, eher im oberen Drittel. Angebotspreise sind keine beurkundeten Kaufpreise; daher keine Marktwertspanne."
+  },
+  "annahmen": [
+    {
+      "id": "A1",
+      "parameter": "notar_grundbuch_prozent",
+      "wert": 2.0,
+      "einheit": "Prozent",
+      "begruendung": "Pauschale Schätzung vom Kaufpreis; tatsächliche Kosten hängen von Kaufpreis und Grundschuld ab.",
+      "quellen_ids": []
+    },
+    {
+      "id": "A2",
+      "parameter": "sollzins_prozent",
+      "wert": 3.8,
+      "einheit": "Prozent",
+      "begruendung": "Marktorientierung 10 Jahre Zinsbindung, Stand Oktober 2026; kein Kreditangebot.",
+      "quellen_ids": [
+        "Q5"
+      ]
+    },
+    {
+      "id": "A3",
+      "parameter": "tilgung_prozent",
+      "wert": 2.0,
+      "einheit": "Prozent",
+      "begruendung": "Anfänglicher Tilgungssatz des Modellkredits.",
+      "quellen_ids": []
+    },
+    {
+      "id": "A4",
+      "parameter": "eigentuemeraufwand_monat_eur",
+      "wert": 110,
+      "einheit": "EUR/Monat",
+      "begruendung": "Sensitivitätsannahme für nicht umlagefähige Kosten inkl. Instandhaltung, da Hausgeldaufteilung fehlt; enthält Rücklagenzuführung von 45 €/Monat.",
+      "quellen_ids": []
+    },
+    {
+      "id": "A5",
+      "parameter": "mietausfallwagnis_prozent",
+      "wert": 2.0,
+      "einheit": "Prozent",
+      "begruendung": "Anteil der Jahreskaltmiete; Modellannahme für Bestandsmiete.",
+      "quellen_ids": []
+    },
+    {
+      "id": "A6",
+      "parameter": "anschluss_sollzins_prozent",
+      "wert": 6.0,
+      "einheit": "Prozent",
+      "begruendung": "Hypothetischer Belastungswert nach Ende der Zinsbindung.",
+      "quellen_ids": []
+    },
+    {
+      "id": "A7",
+      "parameter": "darlehensanteil_kaufpreis_prozent",
+      "wert": 90.0,
+      "einheit": "Prozent",
+      "begruendung": "Darlehen über 90 % des Kaufpreises; Eigenmittel decken 10 % des Kaufpreises und die Erwerbsnebenkosten. Modellannahme ohne persönliche Angaben.",
+      "quellen_ids": []
+    },
+    {
+      "id": "A8",
+      "parameter": "hausgeldsteigerung_prozent",
+      "wert": 30.0,
+      "einheit": "Prozent",
+      "begruendung": "Hypothetischer Belastungswert.",
+      "quellen_ids": []
+    }
+  ],
+  "szenarien": [
+    {
+      "id": "S1",
+      "bezeichnung": "Basis: Finanzierung 90 % des Kaufpreises, Ist-Miete",
+      "typ": "basis",
+      "annahme_ids": [
+        "A1",
+        "A2",
+        "A3",
+        "A4",
+        "A5",
+        "A7"
+      ],
+      "rechnung": [
+        {
+          "kennzahl": "notar_grundbuch_eur",
+          "wert": 3780.0,
+          "einheit": "EUR",
+          "rolle": "ergebnis",
+          "formel": "kaufpreis_eur × 2,0 %",
+          "eingabe_pfade": [
+            "/objekt/kaufpreis_eur"
+          ],
+          "annahme_ids": [
+            "A1"
+          ],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "erwerbsnebenkosten_eur",
+          "wert": 20922.3,
+          "einheit": "EUR",
+          "rolle": "ergebnis",
+          "formel": "kaufpreis_eur × (3,57 % + 5,5 %) + notar_grundbuch_eur",
+          "eingabe_pfade": [
+            "/objekt/kaufpreis_eur",
+            "/ist_kosten_und_ertraege/kaeuferprovision_prozent",
+            "/ist_kosten_und_ertraege/grunderwerbsteuer_prozent",
+            "/szenarien/0/rechnung/0/wert"
+          ],
+          "annahme_ids": [
+            "A1"
+          ],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "gesamtinvestition_eur",
+          "wert": 209922.3,
+          "einheit": "EUR",
+          "rolle": "ergebnis",
+          "formel": "kaufpreis_eur + erwerbsnebenkosten_eur",
+          "eingabe_pfade": [
+            "/objekt/kaufpreis_eur",
+            "/szenarien/0/rechnung/1/wert"
+          ],
+          "annahme_ids": [],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "eigenkapital_eur",
+          "wert": 39822.3,
+          "einheit": "EUR",
+          "rolle": "eingabe",
+          "formel": "erwerbsnebenkosten_eur + 10 % kaufpreis_eur",
+          "eingabe_pfade": [
+            "/szenarien/0/rechnung/1/wert",
+            "/objekt/kaufpreis_eur"
+          ],
+          "annahme_ids": [
+            "A7"
+          ],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "darlehen_eur",
+          "wert": 170100.0,
+          "einheit": "EUR",
+          "rolle": "ergebnis",
+          "formel": "kaufpreis_eur − 10 % kaufpreis_eur",
+          "eingabe_pfade": [
+            "/objekt/kaufpreis_eur"
+          ],
+          "annahme_ids": [
+            "A7"
+          ],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "sollzins_prozent",
+          "wert": 3.8,
+          "einheit": "Prozent",
+          "rolle": "eingabe",
+          "formel": null,
+          "eingabe_pfade": [],
+          "annahme_ids": [
+            "A2"
+          ],
+          "quellen_ids": [
+            "Q5"
+          ]
+        },
+        {
+          "kennzahl": "tilgung_prozent",
+          "wert": 2.0,
+          "einheit": "Prozent",
+          "rolle": "eingabe",
+          "formel": null,
+          "eingabe_pfade": [],
+          "annahme_ids": [
+            "A3"
+          ],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "zinsbindung_jahre",
+          "wert": 10,
+          "einheit": "Jahre",
+          "rolle": "eingabe",
+          "formel": null,
+          "eingabe_pfade": [],
+          "annahme_ids": [
+            "A2"
+          ],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "monatsrate_eur",
+          "wert": 822.15,
+          "einheit": "EUR/Monat",
+          "rolle": "ergebnis",
+          "formel": "darlehen_eur × (sollzins + tilgung) / 12",
+          "eingabe_pfade": [
+            "/szenarien/0/rechnung/4/wert",
+            "/szenarien/0/rechnung/5/wert",
+            "/szenarien/0/rechnung/6/wert"
+          ],
+          "annahme_ids": [],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "eigentuemeraufwand_monat_eur",
+          "wert": 110,
+          "einheit": "EUR/Monat",
+          "rolle": "eingabe",
+          "formel": null,
+          "eingabe_pfade": [],
+          "annahme_ids": [
+            "A4"
+          ],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "cashflow_monat_vor_steuern_eur",
+          "wert": -422.15,
+          "einheit": "EUR/Monat",
+          "rolle": "ergebnis",
+          "formel": "Kaltmiete + BK-Vorauszahlung − Hausgeld gesamt − Monatsrate",
+          "eingabe_pfade": [
+            "/ist_kosten_und_ertraege/nettokaltmiete_monat_eur",
+            "/ist_kosten_und_ertraege/betriebskostenvorauszahlung_monat_eur",
+            "/ist_kosten_und_ertraege/hausgeld_monat_eur",
+            "/szenarien/0/rechnung/8/wert"
+          ],
+          "annahme_ids": [],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "zusaetzlicher_finanzierungsbedarf_monat_eur",
+          "wert": 422.15,
+          "einheit": "EUR/Monat",
+          "rolle": "ergebnis",
+          "formel": "max(0, −cashflow)",
+          "eingabe_pfade": [
+            "/szenarien/0/rechnung/10/wert"
+          ],
+          "annahme_ids": [],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "bruttorendite_auf_gesamtinvestition_prozent",
+          "wert": 2.97,
+          "einheit": "Prozent",
+          "rolle": "ergebnis",
+          "formel": "nettokaltmiete_jahr_eur / gesamtinvestition_eur × 100",
+          "eingabe_pfade": [
+            "/ist_kosten_und_ertraege/nettokaltmiete_jahr_eur",
+            "/szenarien/0/rechnung/2/wert"
+          ],
+          "annahme_ids": [],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "wirtschaftliche_nettorendite_vor_finanzierung_steuern_prozent",
+          "wert": 2.28,
+          "einheit": "Prozent",
+          "rolle": "ergebnis",
+          "formel": "(Jahreskaltmiete × (1 − 2 % Mietausfall) − 12 × Eigentümeraufwand) / gesamtinvestition_eur × 100",
+          "eingabe_pfade": [
+            "/ist_kosten_und_ertraege/nettokaltmiete_jahr_eur",
+            "/szenarien/0/rechnung/9/wert",
+            "/szenarien/0/rechnung/2/wert"
+          ],
+          "annahme_ids": [
+            "A4",
+            "A5"
+          ],
+          "quellen_ids": []
+        }
+      ],
+      "einordnung": "Negative Liquidität vor Steuern; der Tilgungsanteil ist Vermögensaufbau und kein wirtschaftlicher Verlust in gleicher Höhe."
+    },
+    {
+      "id": "S2",
+      "bezeichnung": "Belastung: Hausgeld +30 % und Anschlusszins 6,0 % nach 10 Jahren",
+      "typ": "belastung",
+      "annahme_ids": [
+        "A6",
+        "A8"
+      ],
+      "rechnung": [
+        {
+          "kennzahl": "hausgeld_monat_eur",
+          "wert": 338.0,
+          "einheit": "EUR/Monat",
+          "rolle": "eingabe",
+          "formel": "hausgeld_monat_eur × 1,3",
+          "eingabe_pfade": [
+            "/ist_kosten_und_ertraege/hausgeld_monat_eur"
+          ],
+          "annahme_ids": [
+            "A8"
+          ],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "restschuld_ende_zinsbindung_eur",
+          "wert": 128791.94,
+          "einheit": "EUR",
+          "rolle": "ergebnis",
+          "formel": "Annuitätenrechnung 120 Monate",
+          "eingabe_pfade": [
+            "/szenarien/0/rechnung/4/wert",
+            "/szenarien/0/rechnung/5/wert",
+            "/szenarien/0/rechnung/8/wert"
+          ],
+          "annahme_ids": [],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "sollzins_prozent",
+          "wert": 6.0,
+          "einheit": "Prozent",
+          "rolle": "eingabe",
+          "formel": null,
+          "eingabe_pfade": [],
+          "annahme_ids": [
+            "A6"
+          ],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "monatsrate_eur",
+          "wert": 858.61,
+          "einheit": "EUR/Monat",
+          "rolle": "ergebnis",
+          "formel": "restschuld × (6,0 % + 2,0 %) / 12",
+          "eingabe_pfade": [
+            "/szenarien/1/rechnung/1/wert",
+            "/szenarien/1/rechnung/2/wert",
+            "/szenarien/0/rechnung/6/wert"
+          ],
+          "annahme_ids": [],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "cashflow_monat_vor_steuern_eur",
+          "wert": -536.61,
+          "einheit": "EUR/Monat",
+          "rolle": "ergebnis",
+          "formel": "Kaltmiete + BK-Vorauszahlung − Hausgeld (Stress) − Monatsrate (Anschluss)",
+          "eingabe_pfade": [
+            "/ist_kosten_und_ertraege/nettokaltmiete_monat_eur",
+            "/ist_kosten_und_ertraege/betriebskostenvorauszahlung_monat_eur",
+            "/szenarien/1/rechnung/0/wert",
+            "/szenarien/1/rechnung/3/wert"
+          ],
+          "annahme_ids": [],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "zusaetzlicher_finanzierungsbedarf_monat_eur",
+          "wert": 536.61,
+          "einheit": "EUR/Monat",
+          "rolle": "ergebnis",
+          "formel": "max(0, −cashflow)",
+          "eingabe_pfade": [
+            "/szenarien/1/rechnung/4/wert"
+          ],
+          "annahme_ids": [],
+          "quellen_ids": []
+        }
+      ],
+      "einordnung": "Hypothetischer Belastungsfall ohne Mietsteigerung; keine Eintrittswahrscheinlichkeit behauptet."
+    }
+  ],
+  "vergleichsobjekte": [
+    {
+      "id": "V1",
+      "url": "https://www.example.org/portal/vergleich-gohlis-1",
+      "preisart": "angebotspreis",
+      "preis_eur": 205000,
+      "wohnflaeche_m2": 58.0,
+      "preis_pro_m2_eur": 3534.48,
+      "eignung": "gut",
+      "gleicher_gebaeudekomplex": false,
+      "unterschiede_und_begruendung": "Gohlis-Süd, Altbau, 3. OG ohne Aufzug, vermietet; Balkon, vergleichbarer Zustand.",
+      "quellen_ids": [
+        "Q6"
+      ]
+    },
+    {
+      "id": "V2",
+      "url": "https://www.example.org/portal/vergleich-gohlis-2",
+      "preisart": "angebotspreis",
+      "preis_eur": 199000,
+      "wohnflaeche_m2": 61.0,
+      "preis_pro_m2_eur": 3262.3,
+      "eignung": "gut",
+      "gleicher_gebaeudekomplex": false,
+      "unterschiede_und_begruendung": "Gohlis-Nord, Altbau, bezugsfrei, kein Balkon.",
+      "quellen_ids": [
+        "Q7"
+      ]
+    },
+    {
+      "id": "V3",
+      "url": "https://www.example.org/portal/vergleich-eutritzsch",
+      "preisart": "angebotspreis",
+      "preis_eur": 165000,
+      "wohnflaeche_m2": 52.0,
+      "preis_pro_m2_eur": 3173.08,
+      "eignung": "eingeschraenkt",
+      "gleicher_gebaeudekomplex": false,
+      "unterschiede_und_begruendung": "Eutritzsch, einfachere Mikrolage, EG, renovierungsbedürftig.",
+      "quellen_ids": [
+        "Q8"
+      ]
+    },
+    {
+      "id": "V4",
+      "url": "https://www.example.org/portal/betreutes-wohnen",
+      "preisart": "angebotspreis",
+      "preis_eur": 179000,
+      "wohnflaeche_m2": 45.0,
+      "preis_pro_m2_eur": 3977.78,
+      "eignung": "ausgeschlossen",
+      "gleicher_gebaeudekomplex": false,
+      "unterschiede_und_begruendung": "Betreutes Wohnen mit Servicevertrag – abweichendes Nutzungsmodell, nicht in Spanne eingerechnet.",
+      "quellen_ids": [
+        "Q9"
+      ]
+    }
+  ],
+  "widersprueche": [
+    {
+      "id": "W1",
+      "feldpfad": "/objekt/wohnflaeche_m2",
+      "varianten": [
+        {
+          "wert": 56.0,
+          "einheit": "m2",
+          "datenstand": "2026-10-20",
+          "quellen_ids": [
+            "Q1"
+          ],
+          "hinweis": "Inseratsangabe"
+        },
+        {
+          "wert": 54.3,
+          "einheit": "m2",
+          "datenstand": null,
+          "quellen_ids": [
+            "Q2"
+          ],
+          "hinweis": "Exposé S. 2; Exposé ohne Datum"
+        },
+        {
+          "wert": 54.3,
+          "einheit": "m2",
+          "datenstand": "2026-10-18",
+          "quellen_ids": [
+            "Q10"
+          ],
+          "hinweis": "Wohnflächenberechnung nach WoFlV"
+        }
+      ],
+      "auswirkung": "Kaufpreis pro m² 3.375,00 bzw. 3.480,66 €; beeinflusst Preiseinordnung und Mietspiegelvergleich.",
+      "klaerungsbedarf": "Wohnflächenberechnung nach WoFlV oder Aufteilungsplan anfordern.",
+      "status": "aufgeloest",
+      "aufloesung": "Wohnflächenberechnung nach WoFlV (Q10) bestätigt 54,3 m²; Inseratsangabe 56,0 m² vermutlich inkl. Balkon zu 100 %."
+    },
+    {
+      "id": "W2",
+      "feldpfad": "/ist_kosten_und_ertraege/kaeuferprovision_prozent",
+      "varianten": [
+        {
+          "wert": "3,0 % zzgl. USt",
+          "einheit": null,
+          "datenstand": null,
+          "quellen_ids": [
+            "Q2"
+          ],
+          "hinweis": "Exposé"
+        },
+        {
+          "wert": 3.57,
+          "einheit": "Prozent",
+          "datenstand": "2026-10-20",
+          "quellen_ids": [
+            "Q1"
+          ],
+          "hinweis": "Inserat, inkl. USt"
+        }
+      ],
+      "auswirkung": "Keine – Angaben identisch nach Umsatzsteuer.",
+      "klaerungsbedarf": "Keiner.",
+      "status": "aufgeloest",
+      "aufloesung": "3,0 % zzgl. 19 % USt = 3,57 % inkl. USt."
+    }
+  ],
+  "risiken": [
+    {
+      "id": "R1",
+      "bereich": "weg",
+      "befundstatus": "ungeklaert",
+      "schwere": "hoch",
+      "beschreibung": "Geplante Dachsanierung ohne Beschluss, Kostenrahmen und Finanzierungsweg; Rücklage von 48.500 € für 10 Einheiten ohne Maßnahmenplan nicht einordenbar.",
+      "moegliche_auswirkung": "Mögliche Sonderumlage oder Hausgelderhöhung.",
+      "kostenband_eur": null,
+      "quellen_ids": [
+        "Q1"
+      ]
+    },
+    {
+      "id": "R3",
+      "bereich": "vermietung",
+      "befundstatus": "ungeklaert",
+      "schwere": "mittel",
+      "beschreibung": "Mietvertrag, Zahlungsstand und Kaution nicht eingesehen; Miete nur als Inseratsangabe.",
+      "moegliche_auswirkung": "Abweichende Ist-Miete verändert Rendite und Liquidität.",
+      "kostenband_eur": null,
+      "quellen_ids": [
+        "Q1"
+      ]
+    },
+    {
+      "id": "R4",
+      "bereich": "energie",
+      "befundstatus": "hinweis",
+      "schwere": "mittel",
+      "beschreibung": "Verbrauchsausweis mit Verbrauchsdaten 2013–2015; Gas-Zentralheizung von 1998.",
+      "moegliche_auswirkung": "Energetischer Zustand und Heizungstausch-Zeitpunkt offen; keine pauschale Kostenableitung.",
+      "kostenband_eur": null,
+      "quellen_ids": [
+        "Q1"
+      ]
+    },
+    {
+      "id": "R5",
+      "bereich": "finanzierung",
+      "befundstatus": "hinweis",
+      "schwere": "mittel",
+      "beschreibung": "Im Basismodell negative Liquidität vor Steuern von rund 422 € pro Monat.",
+      "moegliche_auswirkung": "Laufender Zuschussbedarf aus Einkommen.",
+      "kostenband_eur": null,
+      "quellen_ids": []
+    }
+  ],
+  "fehlende_unterlagen": [
+    {
+      "id": "D1",
+      "bezeichnung": "Protokolle der letzten 3 Eigentümerversammlungen, Wirtschaftsplan, Jahresabrechnung",
+      "prioritaet": 1,
+      "anzufordern_bei": "Makler / WEG-Verwaltung",
+      "entscheidungsrelevanz": "Dachsanierung, Rücklagenverwendung, Sonderumlagen."
+    },
+    {
+      "id": "D2",
+      "bezeichnung": "Mietvertrag inkl. Nachträgen und Zahlungsnachweise",
+      "prioritaet": 1,
+      "anzufordern_bei": "Makler / Verkäufer",
+      "entscheidungsrelevanz": "Tatsächliche Miete und Mieterhöhungsspielraum."
+    },
+    {
+      "id": "D4",
+      "bezeichnung": "Vollständiger Energieausweis",
+      "prioritaet": 3,
+      "anzufordern_bei": "Makler",
+      "entscheidungsrelevanz": "Gebäudebezug und Bezugsfläche prüfen."
+    }
+  ],
+  "naechste_schritte": [
+    {
+      "id": "N1",
+      "prioritaet": 1,
+      "aufgabe": "WEG-Unterlagen zur Dachsanierung anfordern und prüfen",
+      "zustaendig": "Käufer über Makler",
+      "benoetigter_nachweis": "Protokolle, Wirtschaftsplan, Beschlusssammlung",
+      "risiko_ids": [
+        "R1"
+      ],
+      "unterlagen_ids": [
+        "D1"
+      ]
+    },
+    {
+      "id": "N2",
+      "prioritaet": 1,
+      "aufgabe": "Mietvertrag und Zahlungshistorie einsehen",
+      "zustaendig": "Käufer über Makler",
+      "benoetigter_nachweis": "Mietvertrag, Kontoauszüge",
+      "risiko_ids": [
+        "R3"
+      ],
+      "unterlagen_ids": [
+        "D2"
+      ]
+    },
+    {
+      "id": "N4",
+      "prioritaet": 3,
+      "aufgabe": "Besichtigung mit Fokus Dach, Heizung, Feuchtigkeit Keller",
+      "zustaendig": "Käufer, ggf. Sachverständige",
+      "benoetigter_nachweis": "Besichtigungsprotokoll",
+      "risiko_ids": [
+        "R1",
+        "R4"
+      ],
+      "unterlagen_ids": []
+    }
+  ],
+  "bewertung": {
+    "gesamturteil": "nur_zu_anderen_konditionen_interessant",
+    "begruendung": "Wohnfläche geklärt (54,3 m²). Mit 3.480,66 €/m² liegt der Preis am oberen Rand der Angebotsvergleiche; bei niedriger Bruttorendite und offener Dachsanierung erst nach deutlicher Preisanpassung interessant.",
+    "belegsicherheit": "mittel",
+    "objektqualitaet": {
+      "urteil": "Ordentliche Wohnung, Gemeinschaftseigentum unklar",
+      "begruendung": "Innenfotos zeigen gepflegten Zustand; Dach, Heizung und Rücklagenverwendung sind nicht belegt.",
+      "belegsicherheit": "mittel"
+    },
+    "preisangemessenheit": {
+      "urteil": "Am oberen Rand der Angebotsvergleiche",
+      "begruendung": "3.480,66 €/m² gegenüber 3.173–3.534 €/m² bei geeigneten Vergleichen.",
+      "belegsicherheit": "mittel"
+    },
+    "wirtschaftlichkeit": {
+      "urteil": "Niedrige Bruttorendite, negativer Cashflow",
+      "begruendung": "Bruttomietrendite 3,30 %; im Basismodell rund −422 € Liquidität pro Monat vor Steuern.",
+      "belegsicherheit": "mittel"
+    },
+    "persoenliche_eignung": {
+      "urteil": null,
+      "begruendung": "Kein persönliches Nutzungsziel und keine Finanzdaten angegeben.",
+      "belegsicherheit": "nicht_bewertbar"
+    },
+    "entscheidende_offene_punkte": [
+      "Umfang und Finanzierung der geplanten Dachsanierung",
+      "Mietvertrag und tatsächliche Mietzahlungen",
+      "Verhandlungsspielraum beim Kaufpreis"
+    ]
+  },
+  "datenbelege": [
+    {
+      "feldpfad": "/objekt/kaufpreis_eur",
+      "status": "inseratsangabe",
+      "quellen_ids": [
+        "Q1",
+        "Q3"
+      ],
+      "annahme_ids": [],
+      "datenstand": "2026-10-22",
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/objekt/wohnflaeche_m2",
+      "status": "dokumentiert",
+      "quellen_ids": [
+        "Q10"
+      ],
+      "annahme_ids": [],
+      "datenstand": "2026-10-22",
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": "Wohnflächenberechnung nach WoFlV liegt vor."
+    },
+    {
+      "feldpfad": "/objekt/zimmer",
+      "status": "inseratsangabe",
+      "quellen_ids": [
+        "Q1"
+      ],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/objekt/etage",
+      "status": "inseratsangabe",
+      "quellen_ids": [
+        "Q1"
+      ],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/objekt/baujahr",
+      "status": "inseratsangabe",
+      "quellen_ids": [
+        "Q1",
+        "Q2"
+      ],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/ist_kosten_und_ertraege/nettokaltmiete_monat_eur",
+      "status": "inseratsangabe",
+      "quellen_ids": [
+        "Q1"
+      ],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": "Mietvertrag nicht eingesehen."
+    },
+    {
+      "feldpfad": "/ist_kosten_und_ertraege/nettokaltmiete_jahr_eur",
+      "status": "berechnet",
+      "quellen_ids": [],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": "12 × nettokaltmiete_monat_eur",
+      "eingabe_pfade": [
+        "/ist_kosten_und_ertraege/nettokaltmiete_monat_eur"
+      ],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/ist_kosten_und_ertraege/betriebskostenvorauszahlung_monat_eur",
+      "status": "inseratsangabe",
+      "quellen_ids": [
+        "Q1"
+      ],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/ist_kosten_und_ertraege/hausgeld_monat_eur",
+      "status": "inseratsangabe",
+      "quellen_ids": [
+        "Q1"
+      ],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": "Aufteilung umlagefähig/nicht umlagefähig unbekannt."
+    },
+    {
+      "feldpfad": "/ist_kosten_und_ertraege/hausgeld_umlagefaehig_monat_eur",
+      "status": "unbekannt",
+      "quellen_ids": [],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/ist_kosten_und_ertraege/kaeuferprovision_prozent",
+      "status": "inseratsangabe",
+      "quellen_ids": [
+        "Q1",
+        "Q2"
+      ],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/ist_kosten_und_ertraege/grunderwerbsteuer_prozent",
+      "status": "unabhaengig_bestaetigt",
+      "quellen_ids": [
+        "Q4"
+      ],
+      "annahme_ids": [],
+      "datenstand": "2026-01-01",
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/ist_kosten_und_ertraege/notar_grundbuch_eur",
+      "status": "unbekannt",
+      "quellen_ids": [],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": "Nur als Annahme A1 in Szenario S1."
+    },
+    {
+      "feldpfad": "/kennzahlen/bruttomietrendite_prozent",
+      "status": "berechnet",
+      "quellen_ids": [],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": "nettokaltmiete_jahr_eur / kaufpreis_eur × 100",
+      "eingabe_pfade": [
+        "/ist_kosten_und_ertraege/nettokaltmiete_jahr_eur",
+        "/objekt/kaufpreis_eur"
+      ],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/kennzahlen/kaufpreisfaktor_jahre",
+      "status": "berechnet",
+      "quellen_ids": [],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": "kaufpreis_eur / nettokaltmiete_jahr_eur",
+      "eingabe_pfade": [
+        "/objekt/kaufpreis_eur",
+        "/ist_kosten_und_ertraege/nettokaltmiete_jahr_eur"
+      ],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/energie/kennwert_kwh_m2_a",
+      "status": "inseratsangabe",
+      "quellen_ids": [
+        "Q1"
+      ],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": "Energieausweis selbst nicht eingesehen."
+    },
+    {
+      "feldpfad": "/energie/effizienzklasse",
+      "status": "inseratsangabe",
+      "quellen_ids": [
+        "Q1"
+      ],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/energie/heizungsjahr",
+      "status": "inseratsangabe",
+      "quellen_ids": [
+        "Q2"
+      ],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/weg/ruecklage_gesamt_eur",
+      "status": "inseratsangabe",
+      "quellen_ids": [
+        "Q2"
+      ],
+      "annahme_ids": [],
+      "datenstand": "2025-12-31",
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": "Bestand der gesamten WEG laut Exposé."
+    },
+    {
+      "feldpfad": "/weg/ruecklagenzufuehrung_wohnung_monat_eur",
+      "status": "inseratsangabe",
+      "quellen_ids": [
+        "Q2"
+      ],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/preisbewertung/angebotsvergleichsspanne_eur",
+      "status": "berechnet",
+      "quellen_ids": [
+        "Q6",
+        "Q7",
+        "Q8"
+      ],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": "Spanne der €/m²-Werte geeigneter Vergleiche × Wohnfläche(n), gerundet",
+      "eingabe_pfade": [
+        "/vergleichsobjekte/0/preis_pro_m2_eur",
+        "/vergleichsobjekte/1/preis_pro_m2_eur",
+        "/vergleichsobjekte/2/preis_pro_m2_eur"
+      ],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/szenarien/0/rechnung/5/wert",
+      "status": "annahme",
+      "quellen_ids": [
+        "Q5"
+      ],
+      "annahme_ids": [
+        "A2"
+      ],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/szenarien/0/rechnung/10/wert",
+      "status": "berechnet",
+      "quellen_ids": [],
+      "annahme_ids": [
+        "A2",
+        "A3",
+        "A7"
+      ],
+      "datenstand": null,
+      "formel": "Kaltmiete + BK − Hausgeld − Rate",
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/szenarien/0/rechnung/13/wert",
+      "status": "berechnet",
+      "quellen_ids": [],
+      "annahme_ids": [
+        "A1",
+        "A4",
+        "A5"
+      ],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/szenarien/1/rechnung/4/wert",
+      "status": "berechnet",
+      "quellen_ids": [],
+      "annahme_ids": [
+        "A6",
+        "A8"
+      ],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/kennzahlen/kaufpreis_pro_m2_eur",
+      "status": "berechnet",
+      "quellen_ids": [],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": "kaufpreis_eur / wohnflaeche_m2",
+      "eingabe_pfade": [
+        "/objekt/kaufpreis_eur",
+        "/objekt/wohnflaeche_m2"
+      ],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/kennzahlen/nettokaltmiete_pro_m2_eur",
+      "status": "berechnet",
+      "quellen_ids": [],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": "nettokaltmiete_monat_eur / wohnflaeche_m2",
+      "eingabe_pfade": [
+        "/ist_kosten_und_ertraege/nettokaltmiete_monat_eur",
+        "/objekt/wohnflaeche_m2"
+      ],
+      "hinweis": null
+    }
+  ],
+  "quellen": [
+    {
+      "id": "Q1",
+      "titel": "Inserat Kleinanzeigen 2987654321 (fiktiv)",
+      "url": "https://www.example.org/kleinanzeigen/s-anzeige/2987654321",
+      "typ": "inserat",
+      "veroeffentlicht_am": "2026-10-12",
+      "datenstand": null,
+      "abgerufen_am": "2026-10-20",
+      "zugriff": "vollstaendig",
+      "fundstelle": null,
+      "hinweis": null
+    },
+    {
+      "id": "Q2",
+      "titel": "Exposé des Anbieters (PDF, fiktiv)",
+      "url": "https://www.example.org/makler/expose-go-1187.pdf",
+      "typ": "originaldokument",
+      "veroeffentlicht_am": null,
+      "datenstand": null,
+      "abgerufen_am": "2026-10-20",
+      "zugriff": "vollstaendig",
+      "fundstelle": "S. 2–3",
+      "hinweis": "Exposé ohne Datum."
+    },
+    {
+      "id": "Q3",
+      "titel": "Parallelangebot desselben Maklers (fiktiv)",
+      "url": "https://www.example.org/makler/objekt/go-1187-w4",
+      "typ": "parallelangebot",
+      "veroeffentlicht_am": null,
+      "datenstand": null,
+      "abgerufen_am": "2026-10-20",
+      "zugriff": "vollstaendig",
+      "fundstelle": null,
+      "hinweis": "Kein unabhängiger Beleg; identischer Anbietertext."
+    },
+    {
+      "id": "Q4",
+      "titel": "Grunderwerbsteuersatz Sachsen (Beispielquelle)",
+      "url": "https://www.example.org/amtlich/grunderwerbsteuer-sachsen",
+      "typ": "amtliche_quelle",
+      "veroeffentlicht_am": null,
+      "datenstand": "2026-01-01",
+      "abgerufen_am": "2026-10-20",
+      "zugriff": "vollstaendig",
+      "fundstelle": null,
+      "hinweis": null
+    },
+    {
+      "id": "Q5",
+      "titel": "Bauzins-Orientierung Oktober 2026 (Beispielportal)",
+      "url": "https://www.example.org/zinsen/oktober-2026",
+      "typ": "portal",
+      "veroeffentlicht_am": null,
+      "datenstand": "2026-10-15",
+      "abgerufen_am": "2026-10-20",
+      "zugriff": "vollstaendig",
+      "fundstelle": null,
+      "hinweis": "Portalwert, kein Kreditangebot."
+    },
+    {
+      "id": "Q6",
+      "titel": "Vergleichsangebot V1 (fiktiv)",
+      "url": "https://www.example.org/portal/vergleich-gohlis-1",
+      "typ": "portal",
+      "veroeffentlicht_am": null,
+      "datenstand": null,
+      "abgerufen_am": "2026-10-20",
+      "zugriff": "vollstaendig",
+      "fundstelle": null,
+      "hinweis": null
+    },
+    {
+      "id": "Q7",
+      "titel": "Vergleichsangebot V2 (fiktiv)",
+      "url": "https://www.example.org/portal/vergleich-gohlis-2",
+      "typ": "portal",
+      "veroeffentlicht_am": null,
+      "datenstand": null,
+      "abgerufen_am": "2026-10-20",
+      "zugriff": "vollstaendig",
+      "fundstelle": null,
+      "hinweis": null
+    },
+    {
+      "id": "Q8",
+      "titel": "Vergleichsangebot V3 (fiktiv)",
+      "url": "https://www.example.org/portal/vergleich-eutritzsch",
+      "typ": "portal",
+      "veroeffentlicht_am": null,
+      "datenstand": null,
+      "abgerufen_am": "2026-10-20",
+      "zugriff": "teilweise",
+      "fundstelle": null,
+      "hinweis": null
+    },
+    {
+      "id": "Q9",
+      "titel": "Vergleichsangebot V4 (fiktiv)",
+      "url": "https://www.example.org/portal/betreutes-wohnen",
+      "typ": "portal",
+      "veroeffentlicht_am": null,
+      "datenstand": null,
+      "abgerufen_am": "2026-10-20",
+      "zugriff": "vollstaendig",
+      "fundstelle": null,
+      "hinweis": null
+    },
+    {
+      "id": "Q10",
+      "titel": "Wohnflächenberechnung nach WoFlV (vom Nutzer hochgeladen)",
+      "url": null,
+      "typ": "nutzerangabe",
+      "veroeffentlicht_am": null,
+      "datenstand": "2026-10-18",
+      "abgerufen_am": "2026-10-22",
+      "zugriff": "im_chat_vorhanden",
+      "fundstelle": "Upload im Chat, S. 1",
+      "hinweis": null
+    }
+  ],
+  "exportpruefung": {
+    "json_syntax_geprueft": true,
+    "schema_geprueft": false,
+    "referenzen_geprueft": true,
+    "berichtskonsistenz_geprueft": true,
+    "hinweise": [
+      "Kein JSON-Schema-Validator verfügbar; Prüfung gegen den im Prompt beschriebenen Datenvertrag."
+    ]
+  }
+}

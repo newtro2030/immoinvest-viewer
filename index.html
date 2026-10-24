@@ -1,0 +1,2328 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Immobilienbewertung Viewer</title>
+<meta name="description" content="Lokaler Viewer für JSON-Exporte nach Schema 1.0 (Immobilien-Linkanalyse Master-Prompt V3.1): Einzelansicht, Vergleich und Exportprüfung.">
+<style>
+:root {
+  color-scheme: light;
+  --page: #f4f3ef;
+  --surface: #fcfcfb;
+  --surface-2: #f0efec;
+  --surface-3: #e6e5df;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --muted: #898781;
+  --line: #e1e0d9;
+  --line-2: #c3c2b7;
+  --accent: #2a78d6;
+  --accent-ink: #1c5cab;
+  --accent-wash: rgba(42, 120, 214, .10);
+  --s-good: #0ca30c;
+  --s-warn: #fab219;
+  --s-serious: #ec835a;
+  --s-crit: #d03b3b;
+  --crit-ink: #b02a2a;
+  --good-ink: #006300;
+  --warn-ink: #7a5000;
+  --c-blue: #2a78d6;
+  --c-orange: #eb6834;
+  --c-yellow: #eda100;
+  --c-green: #008300;
+  --c-violet: #6250d6;
+  --pos: #2a78d6;
+  --neg: #e34948;
+  --range: #86b6ef;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .04), 0 2px 10px rgba(0, 0, 0, .035);
+  --radius: 12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page: #0d0d0d;
+    --surface: #1a1a19;
+    --surface-2: #232321;
+    --surface-3: #2e2e2b;
+    --ink: #f0efec;
+    --ink-2: #c3c2b7;
+    --muted: #898781;
+    --line: #2c2c2a;
+    --line-2: #44443f;
+    --accent: #3987e5;
+    --accent-ink: #86b6ef;
+    --accent-wash: rgba(57, 135, 229, .16);
+    --crit-ink: #f08a8a;
+    --good-ink: #4cc44c;
+    --warn-ink: #f5c04a;
+    --c-blue: #3987e5;
+    --c-orange: #d95926;
+    --c-yellow: #c98500;
+    --c-green: #008300;
+    --c-violet: #9085e9;
+    --pos: #3987e5;
+    --neg: #e66767;
+    --range: #1c5cab;
+    --shadow: none;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d;
+  --surface: #1a1a19;
+  --surface-2: #232321;
+  --surface-3: #2e2e2b;
+  --ink: #f0efec;
+  --ink-2: #c3c2b7;
+  --muted: #898781;
+  --line: #2c2c2a;
+  --line-2: #44443f;
+  --accent: #3987e5;
+  --accent-ink: #86b6ef;
+  --accent-wash: rgba(57, 135, 229, .16);
+  --crit-ink: #f08a8a;
+  --good-ink: #4cc44c;
+  --warn-ink: #f5c04a;
+  --c-blue: #3987e5;
+  --c-orange: #d95926;
+  --c-yellow: #c98500;
+  --c-green: #008300;
+  --c-violet: #9085e9;
+  --pos: #3987e5;
+  --neg: #e66767;
+  --range: #1c5cab;
+  --shadow: none;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--page);
+  color: var(--ink);
+  font: 14.5px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+button, input, select, textarea { font: inherit; color: inherit; }
+a { color: var(--accent-ink); text-underline-offset: 2px; }
+code { font: 12px/1.4 ui-monospace, "SF Mono", Menlo, Consolas, monospace; background: var(--surface-2); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+h1, h2, h3 { letter-spacing: -.01em; }
+.muted { color: var(--ink-2); }
+.small { font-size: 12.5px; }
+
+/* ---------- Grundlayout ---------- */
+.topbar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  height: 52px; padding: 0 16px;
+  background: var(--surface); border-bottom: 1px solid var(--line);
+}
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 600; white-space: nowrap; }
+.brand svg { width: 22px; height: 22px; color: var(--accent); flex: none; }
+.brand .light { font-weight: 500; color: var(--ink-2); }
+.layout { display: grid; grid-template-columns: 300px minmax(0, 1fr); min-height: calc(100vh - 52px); }
+.sidebar {
+  position: sticky; top: calc(52px + env(safe-area-inset-top, 0px)); height: calc(100vh - 52px - env(safe-area-inset-top, 0px)); overflow: auto;
+  display: flex; flex-direction: column; gap: 12px; padding: 14px;
+  background: var(--surface); border-right: 1px solid var(--line);
+}
+.main { padding: 24px clamp(16px, 3vw, 36px) 72px; min-width: 0; }
+.main > * { max-width: 1240px; }
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  height: 32px; padding: 0 12px; border-radius: 8px;
+  border: 1px solid var(--line-2); background: var(--surface);
+  font-size: 13.5px; font-weight: 500; white-space: nowrap; cursor: pointer;
+}
+.btn:hover { background: var(--surface-2); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn.primary:hover { filter: brightness(1.07); }
+.btn.ghost { background: transparent; border-color: transparent; }
+.btn.ghost:hover { background: var(--surface-2); }
+.btn.sm { height: 28px; padding: 0 10px; font-size: 12.5px; }
+.linkbtn { border: 0; background: none; padding: 0; color: var(--accent-ink); cursor: pointer; font-size: 13px; }
+.linkbtn:hover { text-decoration: underline; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 40; background: var(--surface); }
+body.hosted .needs-print, body.hosted .needs-theme, body.no-downloads .needs-download { display: none !important; }
+
+/* ---------- Sidebar ---------- */
+.side-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+.side-actions .btn { padding: 0 6px; }
+.side-label { font-size: 11.5px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin: 6px 4px 0; }
+.doclist { display: flex; flex-direction: column; gap: 2px; }
+.navitem, .docitem {
+  display: flex; align-items: flex-start; gap: 10px; width: 100%;
+  padding: 8px 10px; border-radius: 8px; border: 0; background: transparent;
+  text-align: left; cursor: pointer;
+}
+.navitem { align-items: center; font-weight: 600; }
+.navitem .count { margin-left: auto; font-size: 12px; font-weight: 500; color: var(--ink-2); background: var(--surface-3); border-radius: 999px; padding: 0 8px; }
+.navitem:hover, .docitem:hover { background: var(--surface-2); }
+.navitem.active, .docitem.active { background: var(--accent-wash); }
+.docitem .vdot { flex: none; width: 10px; height: 10px; border-radius: 50%; margin-top: 5px; background: var(--vc); }
+.docitem.old { opacity: .62; }
+.di-main { min-width: 0; flex: 1; }
+.di-title { font-weight: 500; font-size: 13.5px; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.di-sub { font-size: 12px; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.di-badges { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px; }
+.icon-btn { flex: none; width: 24px; height: 24px; border-radius: 6px; border: 0; background: transparent; color: var(--muted); cursor: pointer; font-size: 16px; line-height: 1; }
+.icon-btn:hover { background: var(--surface-3); color: var(--ink); }
+.side-foot { margin-top: auto; padding-top: 10px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 8px; font-size: 12.5px; color: var(--ink-2); }
+.check { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px; }
+.notice { font-size: 12px; color: var(--crit-ink); }
+
+/* ---------- Chips, Tags, Badges ---------- */
+.tag {
+  display: inline-flex; align-items: center; gap: 4px; height: 20px; padding: 0 7px;
+  border-radius: 999px; border: 1px solid var(--line); background: var(--surface-2);
+  font-size: 11.5px; color: var(--ink-2); white-space: nowrap;
+}
+button.tag { cursor: pointer; }
+.tag-crit { border-color: color-mix(in srgb, var(--s-crit) 45%, transparent); color: var(--crit-ink); background: color-mix(in srgb, var(--s-crit) 9%, var(--surface)); }
+.tag-warn { border-color: color-mix(in srgb, var(--s-warn) 60%, transparent); color: var(--warn-ink); background: color-mix(in srgb, var(--s-warn) 12%, var(--surface)); }
+.tag-good { border-color: color-mix(in srgb, var(--s-good) 45%, transparent); color: var(--good-ink); background: color-mix(in srgb, var(--s-good) 9%, var(--surface)); }
+.st {
+  display: inline-flex; align-items: center; gap: 5px; height: 20px; padding: 0 7px;
+  border-radius: 999px; border: 1px solid var(--line); background: var(--surface-2);
+  font-size: 11.5px; color: var(--ink-2); cursor: pointer; white-space: nowrap; vertical-align: 1px;
+}
+.st:hover { border-color: var(--line-2); color: var(--ink); }
+.st i { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--st); }
+.st.compact { width: 18px; padding: 0; justify-content: center; border-color: transparent; background: transparent; }
+.st.compact:hover { background: var(--surface-3); }
+.st-inseratsangabe { --st: var(--c-yellow); }
+.st-dokumentiert { --st: var(--c-blue); }
+.st-unabhaengig_bestaetigt { --st: var(--c-green); }
+.st-berechnet { --st: var(--c-violet); }
+.st-annahme { --st: var(--c-orange); }
+.st-widerspruechlich { --st: var(--s-crit); }
+.st-nicht_anwendbar { --st: var(--line-2); }
+.st-unbekannt i { background: transparent; box-shadow: inset 0 0 0 1.5px var(--muted); }
+.ref {
+  display: inline-flex; align-items: center; height: 18px; padding: 0 5px; border-radius: 4px;
+  border: 1px solid var(--line); background: var(--surface); color: var(--accent-ink);
+  font: 600 11px/1 ui-monospace, "SF Mono", Menlo, monospace; cursor: pointer;
+}
+.ref:hover { border-color: var(--accent); }
+.ref.broken { color: var(--crit-ink); border-color: color-mix(in srgb, var(--s-crit) 50%, transparent); text-decoration: line-through; }
+.refs { display: inline-flex; flex-wrap: wrap; gap: 3px; vertical-align: middle; }
+.id { font: 600 12px/1 ui-monospace, "SF Mono", Menlo, monospace; color: var(--ink-2); background: var(--surface-3); padding: 3px 6px; border-radius: 5px; }
+
+.verdict { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; }
+.verdict .vi { flex: none; display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--vc); color: #fff; font-size: 12px; font-weight: 700; }
+.verdict.big { font-size: 22px; gap: 10px; line-height: 1.25; }
+.verdict.big .vi { width: 32px; height: 32px; font-size: 17px; }
+.verdict.sm { font-size: 12.5px; font-weight: 500; gap: 6px; }
+.verdict.sm .vi { width: 16px; height: 16px; font-size: 10px; }
+.v-good { --vc: var(--s-good); }
+.v-warn { --vc: var(--s-warn); }
+.v-warn .vi { color: #3a2a00; }
+.v-serious { --vc: var(--s-serious); }
+.v-crit { --vc: var(--s-crit); }
+.v-none { --vc: var(--muted); }
+.sev { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; }
+.sev i { width: 9px; height: 9px; border-radius: 2px; background: var(--vc); }
+.meter { display: inline-flex; gap: 2px; align-items: flex-end; height: 12px; vertical-align: -1px; }
+.meter i { width: 4px; border-radius: 1px; background: var(--surface-3); }
+.meter i:nth-child(1) { height: 6px; }
+.meter i:nth-child(2) { height: 9px; }
+.meter i:nth-child(3) { height: 12px; }
+.meter.m1 i:nth-child(1), .meter.m2 i:nth-child(-n+2), .meter.m3 i { background: var(--accent); }
+.conf { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--ink-2); white-space: nowrap; }
+.null { color: var(--muted); }
+.scen { font-size: 12px; color: var(--ink-2); font-style: italic; border-bottom: 1px dotted var(--line-2); cursor: help; }
+.neg { color: var(--crit-ink); }
+
+/* ---------- Karten & Sektionen ---------- */
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
+.card.flush { padding: 0; overflow: hidden; }
+.card h3 { margin: 0 0 4px; font-size: 15px; }
+.card .card-sub { margin: 0 0 14px; font-size: 12.5px; color: var(--ink-2); }
+.sec { margin-top: 32px; scroll-margin-top: 112px; }
+.sec > h2 { font-size: 18px; margin: 0 0 12px; display: flex; align-items: center; gap: 10px; }
+.letter { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 7px; background: var(--ink); color: var(--surface); font-size: 13px; font-weight: 700; }
+.stack { display: flex; flex-direction: column; gap: 14px; }
+.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 14px; }
+.page-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+.page-head h1 { margin: 0; font-size: 26px; }
+.sub { margin: 2px 0 0; color: var(--ink-2); }
+.eyebrow { font-size: 11.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: .06em; }
+.callout { margin-top: 14px; padding: 12px 16px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--line); font-size: 13.5px; }
+.callout ul { margin: 4px 0 0; padding-left: 18px; }
+.empty { padding: 16px 18px; border: 1px dashed var(--line-2); border-radius: 10px; color: var(--ink-2); font-size: 13.5px; }
+.empty b { color: var(--ink); font-weight: 600; }
+
+/* ---------- Detail-Kopf ---------- */
+.crumbs { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--ink-2); min-width: 0; }
+.crumbs .file { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: ui-monospace, Menlo, monospace; font-size: 12px; }
+.dh-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px; margin-top: 8px; }
+.dh-main { min-width: 0; flex: 1 1 520px; }
+.dh-main h1 { margin: 0; font-size: 25px; line-height: 1.25; }
+.num { color: var(--muted); font-weight: 500; }
+.dh-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.meta-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.meta { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 8px; background: var(--surface); border: 1px solid var(--line); font-size: 12.5px; }
+.meta .muted { font-size: 11.5px; }
+.revnote { margin-top: 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 10px; font-size: 13px; background: var(--accent-wash); border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); }
+.subnav {
+  position: sticky; top: calc(52px + env(safe-area-inset-top, 0px)); z-index: 20;
+  display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none;
+  margin: 18px calc(-1 * clamp(16px, 3vw, 36px)) 0; padding: 8px clamp(16px, 3vw, 36px);
+  background: color-mix(in srgb, var(--page) 92%, transparent); backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--line);
+}
+.subnav::-webkit-scrollbar { display: none; }
+.subnav button { flex: none; border: 0; background: transparent; padding: 6px 10px; border-radius: 6px; font-size: 13px; color: var(--ink-2); cursor: pointer; white-space: nowrap; }
+.subnav button:hover { background: var(--surface-3); color: var(--ink); }
+
+/* ---------- Urteil ---------- */
+.verdict-card { border-top: 4px solid var(--vc); }
+.vc-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; align-items: flex-start; }
+.vc-head .eyebrow { margin-bottom: 6px; }
+.lead { font-size: 15px; line-height: 1.55; margin: 14px 0 0; max-width: 78ch; }
+.teil-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 10px; margin-top: 18px; }
+.teil { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; background: var(--surface); display: flex; flex-direction: column; gap: 6px; }
+.teil-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.teil-title { font-size: 12px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: .05em; }
+.teil-urteil { font-weight: 600; line-height: 1.35; }
+.teil-text { margin: 0; font-size: 13px; color: var(--ink-2); }
+.open-points { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+.open-points ol { margin: 6px 0 0; padding-left: 20px; }
+.open-points li { margin: 3px 0; }
+
+/* ---------- Kennzahlen-Kacheln ---------- */
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 188px), 1fr)); gap: 10px; margin-top: 14px; }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 3px; min-height: 98px; box-shadow: var(--shadow); }
+.tile-label { font-size: 12.5px; color: var(--ink-2); }
+.tile-value { font-size: 21px; font-weight: 600; letter-spacing: -.01em; line-height: 1.25; }
+.tile-foot { margin-top: auto; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 12px; }
+.stat .tile-value { font-size: 28px; }
+
+/* ---------- Schlüssel/Wert-Listen ---------- */
+.kv { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 0 28px; margin: 0; }
+.kv-row { display: grid; grid-template-columns: minmax(110px, 44%) 1fr; gap: 12px; padding: 7px 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+.kv-row dt { color: var(--ink-2); font-size: 13px; }
+.kv-row dd { margin: 0; display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; min-width: 0; overflow-wrap: anywhere; }
+.kv-row.long { grid-column: 1 / -1; grid-template-columns: 1fr; gap: 3px; }
+.kv-row.long dd { display: block; }
+.kv-row.long dd p { margin: 0 0 4px; max-width: 90ch; }
+.kv-row.long dd ul { margin: 0; padding-left: 18px; }
+.kv-title { font-size: 13px; font-weight: 600; margin: 18px 0 2px; color: var(--ink); }
+.kv-title:first-child { margin-top: 0; }
+
+/* ---------- Tabellen ---------- */
+.table-wrap { overflow-x: auto; }
+table.t { width: 100%; border-collapse: collapse; font-size: 13px; }
+.t th, .t td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.t thead th { font-weight: 600; color: var(--ink-2); font-size: 12px; background: var(--surface-2); white-space: nowrap; }
+.t tbody tr:last-child td { border-bottom: 0; }
+.t .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.t .nowrap { white-space: nowrap; }
+.t tr.clickable { cursor: pointer; }
+.t tr.clickable:hover td { background: var(--accent-wash); }
+.t tr.excluded td { color: var(--muted); }
+.t tr.strong td { font-weight: 600; }
+.t th.sortable { cursor: pointer; user-select: none; }
+.t th.sortable:hover { color: var(--ink); }
+.t th .arrow { color: var(--accent); }
+.t td.cell-obj { min-width: 220px; }
+.t .obj-title { font-weight: 600; line-height: 1.35; }
+.t .obj-sub { font-size: 12px; color: var(--ink-2); }
+.t .scen { display: block; font-size: 11.5px; }
+.cmp-table th:first-child, .cmp-table td:first-child { width: 34px; padding-right: 0; }
+
+/* Gegenüberstellung */
+.matrix { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 13px; }
+.matrix th, .matrix td { padding: 8px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; min-width: 190px; }
+.matrix thead th { position: sticky; top: 0; background: var(--surface-2); z-index: 1; vertical-align: bottom; }
+.matrix th.rowhead { position: sticky; left: 0; background: var(--surface); z-index: 2; min-width: 170px; max-width: 220px; font-weight: 500; color: var(--ink-2); }
+.matrix thead th.rowhead { background: var(--surface-2); z-index: 3; }
+.matrix tr.group th { background: var(--surface-2); color: var(--ink); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+.matrix tr.diff th.rowhead::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--s-warn); margin-right: 6px; vertical-align: 2px; }
+.matrix td .val { font-variant-numeric: tabular-nums; }
+.mh-title { font-weight: 600; color: var(--ink); line-height: 1.3; }
+.mh-title button { text-align: left; }
+
+/* ---------- Listen: Widersprüche, Risiken, Schritte ---------- */
+.item { border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; background: var(--surface); box-shadow: var(--shadow); scroll-margin-top: 120px; }
+.item-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.item-head .title { font-weight: 600; }
+details.item > summary { cursor: pointer; list-style: none; }
+details.item > summary::-webkit-details-marker { display: none; }
+details.item > summary::before { content: "▸"; color: var(--muted); display: inline-block; width: 12px; transition: transform .15s; }
+details.item[open] > summary::before { transform: rotate(90deg); }
+details.item .kr { margin-left: auto; font-size: 12.5px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.callout.warn { background: color-mix(in srgb, var(--s-warn) 12%, var(--surface)); border-color: color-mix(in srgb, var(--s-warn) 55%, transparent); }
+.item p { margin: 8px 0 0; max-width: 95ch; }
+.item .lbl { color: var(--ink-2); font-size: 12.5px; }
+.item .t { margin-top: 10px; }
+.steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.step { display: grid; grid-template-columns: 34px 1fr; gap: 12px; }
+.step-prio { width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; background: var(--ink); color: var(--surface); font-weight: 700; }
+.step-prio.p2 { background: var(--ink-2); }
+.step-prio.p3, .step-prio.p4, .step-prio.p5 { background: var(--surface-3); color: var(--ink); }
+.step dl { display: grid; grid-template-columns: max-content 1fr; gap: 2px 10px; margin: 8px 0 0; font-size: 13px; }
+.step dt { color: var(--ink-2); }
+.step dd { margin: 0; }
+
+/* Energieskala */
+.escale { margin-top: 14px; }
+.escale-bar { display: grid; grid-template-columns: repeat(9, 1fr); gap: 2px; position: relative; }
+.escale-bar span { height: 26px; display: grid; place-items: center; font-size: 12px; font-weight: 600; color: var(--fg); background: var(--bg); border-radius: 3px; opacity: .55; }
+.escale-bar span:first-child { border-radius: 6px 3px 3px 6px; }
+.escale-bar span:last-child { border-radius: 3px 6px 6px 3px; }
+.escale-bar span.on { opacity: 1; outline: 2px solid var(--ink); outline-offset: 1px; }
+.escale-marker { position: relative; height: 26px; margin-top: 4px; font-size: 11.5px; color: var(--ink-2); }
+.escale-marker i { position: absolute; top: 0; width: 2px; height: 9px; background: var(--ink); transform: translateX(-1px); }
+.escale-marker b { position: absolute; top: 10px; transform: translateX(-50%); white-space: nowrap; font-weight: 500; }
+.escale-ticks { display: grid; grid-template-columns: repeat(9, 1fr); font-size: 10.5px; color: var(--muted); margin-top: 2px; }
+
+/* Prüfung */
+.issues { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.issue { display: grid; grid-template-columns: 20px 1fr; gap: 8px; align-items: baseline; font-size: 13px; }
+.issue .ico { font-weight: 700; text-align: center; }
+.issue.error .ico { color: var(--crit-ink); }
+.issue.warn .ico { color: var(--warn-ink); }
+.issue.info .ico { color: var(--accent-ink); }
+.issue code { margin-right: 6px; }
+.flags { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 8px; }
+.flag { display: flex; gap: 8px; align-items: center; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--line); font-size: 13px; }
+.flag b { width: 20px; text-align: center; }
+.issue-btn.error { color: var(--crit-ink); }
+.issue-btn.warn { color: var(--warn-ink); }
+.issue-btn.ok { color: var(--good-ink); }
+
+/* Rohdaten */
+details.raw summary { cursor: pointer; font-weight: 600; }
+details.raw pre { margin: 12px 0 0; padding: 14px; max-height: 560px; overflow: auto; background: var(--surface-2); border-radius: 8px; font: 12px/1.5 ui-monospace, "SF Mono", Menlo, monospace; white-space: pre; }
+
+/* Filter */
+.filters { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 18px 0 12px; }
+.filters input[type="search"], .filters select { height: 34px; border-radius: 8px; border: 1px solid var(--line-2); background: var(--surface); padding: 0 10px; font-size: 13.5px; }
+.filters input[type="search"] { flex: 1 1 260px; min-width: 0; }
+
+/* ---------- Diagramme ---------- */
+.chart { width: 100%; position: relative; }
+.chart svg { display: block; overflow: visible; }
+.chart .grid { stroke: var(--line); stroke-width: 1; }
+.chart .axis { stroke: var(--line-2); stroke-width: 1; }
+.chart .tick { fill: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.chart .axis-title { fill: var(--ink-2); font-size: 11.5px; }
+.chart .lbl { fill: var(--ink); font-size: 12px; }
+.chart .lbl2 { fill: var(--ink-2); font-size: 11.5px; }
+.chart .val { fill: var(--ink); font-size: 11.5px; font-variant-numeric: tabular-nums; }
+.chart .dot { fill: var(--c-blue); stroke: var(--surface); stroke-width: 2; }
+.chart .dot.hollow { fill: var(--surface); stroke: var(--c-blue); stroke-width: 2; }
+.chart .dot.excl { fill: var(--muted); opacity: .7; }
+.chart .subject { fill: var(--ink); stroke: var(--surface); stroke-width: 2; }
+.chart .rangeline { stroke: var(--c-blue); stroke-width: 2; stroke-linecap: round; opacity: .55; }
+.chart .rangeline.ink { stroke: var(--ink); }
+.chart .rangebox { fill: var(--accent-wash); }
+.chart .range-bar { fill: var(--range); }
+.chart .marker { stroke: var(--ink); stroke-width: 1.5; }
+.chart .refline { stroke: var(--ink); stroke-width: 1; opacity: .3; }
+.chart .dot.limit { fill: var(--c-orange); }
+.chart .bar-pos { fill: var(--pos); }
+.chart .bar-neg { fill: var(--neg); }
+.chart .hit { fill: transparent; stroke: transparent; }
+.chart-legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--ink-2); margin-top: 8px; }
+.chart-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.chart-legend svg { flex: none; }
+.chart-note { font-size: 12px; color: var(--ink-2); margin: 8px 0 0; }
+
+/* ---------- Startseite ---------- */
+.start { max-width: 920px; margin: 4vh auto 0; }
+.drop { text-align: center; padding: 44px 24px; border: 2px dashed var(--line-2); border-radius: 18px; background: var(--surface); cursor: pointer; }
+.drop:hover { border-color: var(--accent); }
+.drop svg { width: 46px; height: 46px; color: var(--accent); }
+.drop h1 { font-size: 24px; margin: 12px 0 6px; }
+.drop p { margin: 0 auto; max-width: 60ch; color: var(--ink-2); }
+.btn-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 20px 0 14px; }
+.fine { font-size: 12.5px; color: var(--ink-2); }
+.features { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 12px; margin-top: 18px; }
+.feature { padding: 16px 18px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); }
+.feature b { display: block; margin-bottom: 4px; }
+.feature p { margin: 0; font-size: 13px; color: var(--ink-2); }
+.flow { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; margin-top: 22px; font-size: 13px; color: var(--ink-2); }
+.flow span.box { padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--surface); color: var(--ink); }
+
+/* ---------- Overlays ---------- */
+.drop-overlay { position: fixed; inset: 0; z-index: 200; display: none; place-items: center; background: color-mix(in srgb, var(--accent) 12%, transparent); backdrop-filter: blur(2px); }
+body.dragging .drop-overlay { display: grid; }
+.drop-overlay div { padding: 28px 40px; border: 2px dashed var(--accent); border-radius: 16px; background: var(--surface); font-weight: 600; font-size: 18px; pointer-events: none; }
+.tooltip { position: fixed; z-index: 300; pointer-events: none; background: var(--ink); color: var(--surface); font-size: 12px; line-height: 1.45; padding: 7px 10px; border-radius: 7px; max-width: 340px; white-space: pre-line; opacity: 0; transition: opacity .08s; }
+.tooltip.show { opacity: 1; }
+.toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 300; background: var(--ink); color: var(--surface); padding: 9px 16px; border-radius: 9px; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; }
+.toast.show { opacity: 1; }
+dialog { border: 1px solid var(--line); border-radius: 14px; padding: 0; background: var(--surface); color: var(--ink); width: min(680px, calc(100vw - 32px)); max-height: min(84vh, 800px); box-shadow: 0 24px 70px rgba(0, 0, 0, .28); }
+dialog::backdrop { background: rgba(10, 10, 10, .38); }
+.dlg { padding: 20px 22px 22px; }
+.dlg-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+.dlg-head h3 { margin: 0; font-size: 17px; }
+.dlg dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; margin: 0; font-size: 13.5px; }
+.dlg dt { color: var(--ink-2); }
+.dlg dd { margin: 0; overflow-wrap: anywhere; }
+.dlg textarea { width: 100%; min-height: 260px; border-radius: 8px; border: 1px solid var(--line-2); background: var(--surface-2); padding: 10px; font: 12px/1.5 ui-monospace, Menlo, monospace; }
+.dlg .sublist { margin: 0; padding-left: 18px; }
+.flash { animation: flash 1.6s ease; }
+@keyframes flash { 0% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); }
+  .doclist { max-height: 260px; overflow: auto; }
+  .side-foot { margin-top: 0; }
+  .brand .light { display: none; }
+}
+@media (max-width: 600px) {
+  .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .tile { min-height: 84px; padding: 10px 12px; }
+  .tile-value { font-size: 17px; }
+  .stat .tile-value { font-size: 24px; }
+  .verdict.big { font-size: 19px; }
+  .dh-main h1, .page-head h1 { font-size: 21px; }
+}
+@media print {
+  .topbar, .sidebar, .subnav, .no-print, .dh-actions, details.raw { display: none !important; }
+  .layout { display: block; }
+  body { background: #fff; }
+  .main { padding: 0; }
+  .card, .item, .tile { box-shadow: none; break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-5.5h6V21"/></svg>
+    <span>Immobilienbewertung <span class="light">Viewer · Schema 1.0</span></span>
+  </div>
+  <button class="btn ghost sm needs-theme" data-action="theme" id="themeBtn" title="Farbschema wechseln">◐ <span id="themeLabel">Auto</span></button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar" aria-label="Geladene Dateien"></aside>
+  <main class="main" id="main"></main>
+</div>
+<input type="file" id="fileInput" accept=".json,application/json" multiple hidden>
+<input type="file" id="dirInput" webkitdirectory multiple hidden>
+<dialog id="dlg"><div class="dlg" id="dlgBody"></div></dialog>
+<div class="drop-overlay" aria-hidden="true"><div>JSON-Dateien hier ablegen</div></div>
+<div class="tooltip" id="tooltip" role="tooltip"></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+'use strict';
+
+/* =====================================================================
+   Datenvertrag Schema 1.0 (Master-Prompt V3.1, Abschnitt 14)
+   ===================================================================== */
+const TOP_KEYS = ['schema_version', 'metadaten', 'angebot', 'standort', 'objekt', 'energie', 'weg', 'ist_kosten_und_ertraege', 'kennzahlen', 'preisbewertung', 'annahmen', 'szenarien', 'vergleichsobjekte', 'widersprueche', 'risiken', 'fehlende_unterlagen', 'naechste_schritte', 'bewertung', 'datenbelege', 'quellen', 'exportpruefung'];
+
+const CORE = {
+  metadaten: ['bericht_id', 'pruefdatum', 'exportdatum', 'zeitzone', 'waehrung', 'prueftiefe', 'analysestatus', 'nutzungsfokus', 'nutzungsfokus_grundlage', 'einschraenkungen'],
+  angebot: ['url', 'plattform', 'plattform_id', 'anbieter_objektnummer', 'einheit', 'titel', 'angebotsart', 'objektart', 'zugriffsstatus', 'verfuegbarkeit', 'verfuegbarkeit_stand'],
+  standort: ['land', 'bundesland', 'ort', 'stadtteil', 'postleitzahl', 'strasse', 'hausnummer', 'adressgenauigkeit', 'lageeinschaetzung'],
+  objekt: ['kaufpreis_eur', 'verpflichtende_zusatzkaeufe_eur', 'wohnflaeche_m2', 'zimmer', 'etage', 'baujahr', 'aufzug', 'balkon_oder_terrasse', 'vermietungsstatus', 'innenfotos_geprueft', 'grundriss_geprueft', 'zustandseinschaetzung'],
+  energie: ['ausweisart', 'ausgestellt_am', 'gueltig_bis', 'verbrauchszeitraum_von', 'verbrauchszeitraum_bis', 'kennwert_kwh_m2_a', 'effizienzklasse', 'energietraeger', 'heizungsjahr'],
+  weg: ['anzahl_einheiten', 'ruecklage_gesamt_eur', 'ruecklage_gesamt_stichtag', 'ruecklage_zuordnung_wohnung_eur', 'ruecklage_zuordnung_stichtag', 'ruecklagenzufuehrung_wohnung_monat_eur', 'sonderumlage_beschlossen_wohnung_eur', 'sanierungsplanung'],
+  ist_kosten_und_ertraege: ['nettokaltmiete_monat_eur', 'nettokaltmiete_jahr_eur', 'betriebskostenvorauszahlung_monat_eur', 'hausgeld_monat_eur', 'hausgeld_umlagefaehig_monat_eur', 'hausgeld_nicht_umlagefaehig_ohne_ruecklage_monat_eur', 'kaeuferprovision_prozent', 'grunderwerbsteuer_prozent', 'notar_grundbuch_eur', 'anfaengliche_massnahmen_eur'],
+  kennzahlen: ['kaufpreis_pro_m2_eur', 'nettokaltmiete_pro_m2_eur', 'bruttomietrendite_prozent', 'kaufpreisfaktor_jahre', 'gesamtinvestition_eur', 'bruttorendite_auf_gesamtinvestition_prozent', 'wirtschaftliche_nettorendite_vor_finanzierung_steuern_prozent'],
+  preisbewertung: ['aussagebasis', 'marktwertspanne_eur', 'angebotsvergleichsspanne_eur', 'einschaetzung'],
+  bewertung: ['gesamturteil', 'begruendung', 'belegsicherheit', 'objektqualitaet', 'preisangemessenheit', 'wirtschaftlichkeit', 'persoenliche_eignung', 'entscheidende_offene_punkte'],
+  exportpruefung: ['json_syntax_geprueft', 'schema_geprueft', 'referenzen_geprueft', 'berichtskonsistenz_geprueft', 'hinweise'],
+};
+const TEILURTEILE = [['objektqualitaet', 'Objektqualität'], ['preisangemessenheit', 'Preisangemessenheit'], ['wirtschaftlichkeit', 'Wirtschaftlichkeit'], ['persoenliche_eignung', 'Persönliche Eignung']];
+const SICHERHEIT = ['hoch', 'mittel', 'niedrig', 'nicht_bewertbar'];
+const VERDICT_ORDER = ['weiter_pruefen', 'nur_zu_anderen_konditionen_interessant', 'bis_zur_klaerung_zurueckstellen', 'fuer_das_ziel_verwerfen', 'nicht_bewertbar'];
+
+const ENUM_PATHS = {
+  '/metadaten/analysestatus': ['vorlage', 'vorlaeufig', 'eingeschraenkt', 'kein_zugriff'],
+  '/metadaten/nutzungsfokus': ['kapitalanlage', 'eigennutzung', 'angehoerigenvermietung', 'miete', 'offen'],
+  '/angebot/angebotsart': ['kauf', 'miete', 'sonstiges', 'unbekannt'],
+  '/angebot/zugriffsstatus': ['vollstaendig', 'teilweise', 'nur_suchindex_oder_archiv', 'nicht_erreichbar', 'nicht_geprueft'],
+  '/angebot/verfuegbarkeit': ['angeboten', 'reserviert', 'verkauft', 'vermietet', 'unklar'],
+  '/standort/adressgenauigkeit': ['hausgenau', 'strasse', 'stadtteil', 'ort', 'unbekannt'],
+  '/objekt/vermietungsstatus': ['vermietet', 'leer', 'eigengenutzt', 'teilweise_vermietet', 'unbekannt'],
+  '/energie/ausweisart': ['bedarf', 'verbrauch', 'unbekannt'],
+  '/energie/effizienzklasse': ['A+', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', null],
+  '/preisbewertung/aussagebasis': ['transaktionen', 'angebotsvergleich', 'gemischt', 'unzureichend'],
+  '/bewertung/gesamturteil': VERDICT_ORDER,
+  '/bewertung/belegsicherheit': SICHERHEIT,
+};
+for (const [k] of TEILURTEILE) ENUM_PATHS[`/bewertung/${k}/belegsicherheit`] = SICHERHEIT;
+
+const ARRAYS = {
+  annahmen: { prefix: 'A', keys: ['id', 'parameter', 'wert', 'einheit', 'begruendung', 'quellen_ids'] },
+  szenarien: { prefix: 'S', keys: ['id', 'bezeichnung', 'typ', 'annahme_ids', 'rechnung', 'einordnung'], enums: { typ: ['basis', 'belastung', 'guenstig', 'zielrendite', 'alternativflaeche', 'sonstiges'] } },
+  vergleichsobjekte: { prefix: 'V', keys: ['id', 'url', 'preisart', 'preis_eur', 'wohnflaeche_m2', 'preis_pro_m2_eur', 'eignung', 'gleicher_gebaeudekomplex', 'unterschiede_und_begruendung', 'quellen_ids'], enums: { preisart: ['angebotspreis', 'transaktionspreis', 'unbekannt'], eignung: ['gut', 'eingeschraenkt', 'ausgeschlossen'] } },
+  widersprueche: { prefix: 'W', keys: ['id', 'feldpfad', 'varianten', 'auswirkung', 'klaerungsbedarf', 'status', 'aufloesung'], enums: { status: ['offen', 'aufgeloest'] } },
+  risiken: { prefix: 'R', keys: ['id', 'bereich', 'befundstatus', 'schwere', 'beschreibung', 'moegliche_auswirkung', 'kostenband_eur', 'quellen_ids'], enums: { bereich: ['lage', 'gebaeude', 'energie', 'weg', 'recht', 'vermietung', 'finanzierung', 'datenlage', 'sonstiges'], befundstatus: ['bestaetigt', 'hinweis', 'ungeklaert'], schwere: ['hoch', 'mittel', 'niedrig', 'nicht_bewertbar'] } },
+  fehlende_unterlagen: { prefix: 'D', keys: ['id', 'bezeichnung', 'prioritaet', 'anzufordern_bei', 'entscheidungsrelevanz'] },
+  naechste_schritte: { prefix: 'N', keys: ['id', 'prioritaet', 'aufgabe', 'zustaendig', 'benoetigter_nachweis', 'risiko_ids', 'unterlagen_ids'] },
+  datenbelege: { prefix: null, keys: ['feldpfad', 'status', 'quellen_ids', 'annahme_ids', 'datenstand', 'formel', 'eingabe_pfade', 'hinweis'], enums: { status: ['inseratsangabe', 'dokumentiert', 'unabhaengig_bestaetigt', 'berechnet', 'annahme', 'widerspruechlich', 'unbekannt', 'nicht_anwendbar'] } },
+  quellen: { prefix: 'Q', keys: ['id', 'titel', 'url', 'typ', 'veroeffentlicht_am', 'datenstand', 'abgerufen_am', 'zugriff', 'fundstelle', 'hinweis'], enums: { typ: ['inserat', 'parallelangebot', 'amtliche_quelle', 'originaldokument', 'wissenschaft', 'fachquelle', 'portal', 'nutzerangabe', 'sonstiges'], zugriff: ['vollstaendig', 'teilweise', 'nur_suchindex', 'archiv', 'nicht_erreichbar', 'im_chat_vorhanden'] } },
+};
+const NESTED = {
+  rechnung: { keys: ['kennzahl', 'wert', 'einheit', 'rolle', 'formel', 'eingabe_pfade', 'annahme_ids', 'quellen_ids'], enums: { rolle: ['eingabe', 'ergebnis'] } },
+  varianten: { keys: ['wert', 'einheit', 'datenstand', 'quellen_ids', 'hinweis'] },
+};
+const REF_KEYS = { quellen_ids: 'quellen', annahme_ids: 'annahmen', risiko_ids: 'risiken', unterlagen_ids: 'fehlende_unterlagen' };
+const NUM_RE = /(_eur|_m2|_prozent|_jahre|_kwh_m2_a)$/;
+const NUM_KEYS = new Set(['zimmer', 'baujahr', 'heizungsjahr', 'anzahl_einheiten']);
+const RANGE_RE = /(spanne_eur|kostenband_eur)$/;
+const DATE_RE = /^(pruefdatum|exportdatum|datenstand|verfuegbarkeit_stand|ausgestellt_am|gueltig_bis|verbrauchszeitraum_von|verbrauchszeitraum_bis|veroeffentlicht_am|abgerufen_am)$|_stichtag$/;
+const BOOL_KEYS = new Set(['aufzug', 'balkon_oder_terrasse', 'innenfotos_geprueft', 'grundriss_geprueft', 'gleicher_gebaeudekomplex', 'json_syntax_geprueft', 'schema_geprueft', 'referenzen_geprueft', 'berichtskonsistenz_geprueft']);
+const STRING_ID_KEYS = new Set(['postleitzahl', 'etage', 'plattform_id', 'hausnummer', 'anbieter_objektnummer', 'bericht_id']);
+const FACT_SECTIONS = ['objekt', 'energie', 'weg', 'ist_kosten_und_ertraege'];
+const ENERGY_CLASSES = ['A+', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+const ENERGY_BOUNDS = [0, 30, 50, 75, 100, 130, 160, 200, 250, 300];
+// Laut Prompt V3.1 unzulässige Synonyme der stabilen Kennzahl-IDs (deckungsgleich mit $defs/kennzahlSynonyme
+// im JSON-Schema); ältere Exporte werden für Vergleiche trotzdem zusammengeführt.
+const KENNZAHL_ALIASES = {
+  monatsrate_eur: ['annuitaet_monat_eur', 'annuitaet_anschluss_monat_eur', 'rate_monat_eur'],
+  tilgung_prozent: ['anfangstilgung_prozent', 'anfaengliche_tilgung_prozent'],
+  eigenkapital_eur: ['eigenmittel_eur', 'eigenmittel_inkl_nebenkosten_eur'],
+  eigentuemeraufwand_monat_eur: ['eigentuemerbelastung_monat_eur'],
+  cashflow_monat_vor_steuern_eur: ['cashflow_monat_eur', 'cashflow_vor_steuern_monat_eur'],
+  cashflow_jahr_vor_steuern_eur: ['cashflow_jahr_eur'],
+  restschuld_ende_zinsbindung_eur: ['restschuld_eur', 'restschuld_nach_zinsbindung_eur'],
+  zins_erster_monat_eur: ['zins_monat_anfang_eur'],
+  tilgung_erster_monat_eur: ['tilgung_monat_anfang_eur'],
+  mietausfall_eur: ['kaltmietausfall_eur'],
+  gesamtinvestition_eur: ['erwerbsaufwand_vor_unbekannten_massnahmen_eur'],
+};
+const ALIAS_TO_STABLE = Object.fromEntries(Object.entries(KENNZAHL_ALIASES).flatMap(([k, list]) => list.map(a => [a, k])));
+const canonKz = k => ALIAS_TO_STABLE[k] || k;
+// Ältere Namen für Annahmen-Parameter, die V3.1 vereinheitlicht.
+const PARAM_ALIASES = { darlehensanteil_am_kaufpreis_prozent: 'darlehensanteil_kaufpreis_prozent' };
+const canonParam = p => { const k = String(p ?? '').trim().toLowerCase(); return PARAM_ALIASES[k] || canonKz(k); };
+
+/* =====================================================================
+   Beschriftungen
+   ===================================================================== */
+const LABELS = {
+  schema_version: 'Schema-Version', bericht_id: 'Bericht-ID', pruefdatum: 'Prüfdatum', exportdatum: 'Exportdatum', zeitzone: 'Zeitzone', waehrung: 'Währung', prueftiefe: 'Prüftiefe', analysestatus: 'Analysestatus', nutzungsfokus: 'Nutzungsfokus', nutzungsfokus_grundlage: 'Grundlage Nutzungsfokus', einschraenkungen: 'Einschränkungen',
+  url: 'URL', plattform: 'Plattform', plattform_id: 'Plattform-ID', anbieter_objektnummer: 'Anbieter-Objektnummer', einheit: 'Einheit', titel: 'Titel', angebotsart: 'Angebotsart', objektart: 'Objektart', zugriffsstatus: 'Zugriffsstatus', verfuegbarkeit: 'Verfügbarkeit', verfuegbarkeit_stand: 'Verfügbarkeit (Stand)',
+  land: 'Land', bundesland: 'Bundesland', ort: 'Ort', stadtteil: 'Stadtteil', postleitzahl: 'PLZ', strasse: 'Straße', hausnummer: 'Hausnummer', adressgenauigkeit: 'Adressgenauigkeit', lageeinschaetzung: 'Lageeinschätzung',
+  kaufpreis_eur: 'Kaufpreis', verpflichtende_zusatzkaeufe_eur: 'Verpflichtende Zusatzkäufe', wohnflaeche_m2: 'Wohnfläche', zimmer: 'Zimmer', etage: 'Etage', baujahr: 'Baujahr', aufzug: 'Aufzug', balkon_oder_terrasse: 'Balkon / Terrasse', vermietungsstatus: 'Vermietungsstatus', innenfotos_geprueft: 'Innenfotos geprüft', grundriss_geprueft: 'Grundriss geprüft', zustandseinschaetzung: 'Zustandseinschätzung',
+  ausweisart: 'Ausweisart', ausgestellt_am: 'Ausgestellt am', gueltig_bis: 'Gültig bis', verbrauchszeitraum_von: 'Verbrauchszeitraum von', verbrauchszeitraum_bis: 'Verbrauchszeitraum bis', kennwert_kwh_m2_a: 'Energiekennwert', effizienzklasse: 'Effizienzklasse', energietraeger: 'Energieträger', heizungsjahr: 'Heizungsjahr',
+  anzahl_einheiten: 'Anzahl Einheiten', ruecklage_gesamt_eur: 'Rücklage gesamt (WEG)', ruecklage_gesamt_stichtag: 'Stichtag Gesamtrücklage', ruecklage_zuordnung_wohnung_eur: 'Rücklage rechnerisch Wohnung', ruecklage_zuordnung_stichtag: 'Stichtag Wohnungsanteil', ruecklagenzufuehrung_wohnung_monat_eur: 'Rücklagenzuführung Wohnung / Monat', sonderumlage_beschlossen_wohnung_eur: 'Beschlossene Sonderumlage (Wohnung)', sanierungsplanung: 'Sanierungsplanung',
+  nettokaltmiete_monat_eur: 'Nettokaltmiete / Monat', nettokaltmiete_jahr_eur: 'Nettokaltmiete / Jahr', betriebskostenvorauszahlung_monat_eur: 'BK-Vorauszahlung / Monat', hausgeld_monat_eur: 'Hausgeld gesamt / Monat', hausgeld_umlagefaehig_monat_eur: 'Hausgeld umlagefähig / Monat', hausgeld_nicht_umlagefaehig_ohne_ruecklage_monat_eur: 'Hausgeld nicht umlagefähig ohne Rücklage / Monat', kaeuferprovision_prozent: 'Käuferprovision', grunderwerbsteuer_prozent: 'Grunderwerbsteuer', notar_grundbuch_eur: 'Notar & Grundbuch', anfaengliche_massnahmen_eur: 'Anfängliche Maßnahmen',
+  kaufpreis_pro_m2_eur: 'Kaufpreis pro m²', nettokaltmiete_pro_m2_eur: 'Nettokaltmiete pro m²', bruttomietrendite_prozent: 'Bruttomietrendite', kaufpreisfaktor_jahre: 'Kaufpreisfaktor', gesamtinvestition_eur: 'Gesamtinvestition', bruttorendite_auf_gesamtinvestition_prozent: 'Bruttorendite auf Gesamtinvestition', wirtschaftliche_nettorendite_vor_finanzierung_steuern_prozent: 'Wirtsch. Nettorendite vor Finanzierung/Steuern',
+  aussagebasis: 'Aussagebasis', marktwertspanne_eur: 'Marktwertspanne', angebotsvergleichsspanne_eur: 'Angebotsvergleichsspanne', einschaetzung: 'Einschätzung',
+  erwerbsnebenkosten_eur: 'Erwerbsnebenkosten', liquiditaetspuffer_eur: 'Liquiditätspuffer', eigenkapital_eur: 'Eigenkapital', darlehen_eur: 'Darlehen', sollzins_prozent: 'Sollzins', tilgung_prozent: 'Anfängliche Tilgung', zinsbindung_jahre: 'Zinsbindung', monatsrate_eur: 'Monatsrate (Zins + Tilgung)', eigentuemeraufwand_monat_eur: 'Eigentümeraufwand / Monat', cashflow_monat_vor_steuern_eur: 'Cashflow / Monat vor Steuern', zusaetzlicher_finanzierungsbedarf_monat_eur: 'Zusätzl. Finanzierungsbedarf / Monat', ziel_bruttomietrendite_prozent: 'Ziel-Bruttomietrendite', zahlungsgrenze_eur: 'Zahlungsgrenze', restschuld_ende_zinsbindung_eur: 'Restschuld Ende Zinsbindung', erbbauzins_monat_eur: 'Erbbauzins / Monat',
+  cashflow_monat_eur: 'Cashflow / Monat', cashflow_jahr_eur: 'Cashflow / Jahr', cashflow_jahr_vor_steuern_eur: 'Cashflow / Jahr vor Steuern', cashflow_jahr_vor_zusaetzlichen_leerstandskosten_eur: 'Cashflow / Jahr vor zusätzl. Leerstandskosten',
+  annuitaet_monat_eur: 'Annuität / Monat', annuitaet_anschluss_monat_eur: 'Annuität nach Zinsbindung / Monat', anfangstilgung_prozent: 'Anfängliche Tilgung', eigenmittel_inkl_nebenkosten_eur: 'Eigenmittel inkl. Nebenkosten', eigentuemerbelastung_monat_eur: 'Eigentümerbelastung / Monat',
+  grunderwerbsteuer_eur: 'Grunderwerbsteuer', kaeuferprovision_eur: 'Käuferprovision', restschuld_eur: 'Restschuld', restschuld_nach_zinsbindung_eur: 'Restschuld nach Zinsbindung', mehrzins_monat_eur: 'Mehrzins / Monat', sonderumlage_eur: 'Sonderumlage', mietausfall_eur: 'Mietausfall', kaltmietausfall_eur: 'Kaltmietausfall',
+  zins_monat_anfang_eur: 'Zins im ersten Monat', zins_erster_monat_eur: 'Zins im ersten Monat', tilgung_monat_anfang_eur: 'Tilgung im ersten Monat', tilgung_erster_monat_eur: 'Tilgung im ersten Monat', mietsteigerung_monat_eur: 'Mietsteigerung / Monat',
+  erwerbsaufwand_vor_unbekannten_massnahmen_eur: 'Erwerbsaufwand vor unbekannten Maßnahmen', bruttorendite_auf_erwerbsaufwand_prozent: 'Bruttorendite auf Erwerbsaufwand', afa_erhoeht_jahr_eur: 'AfA erhöht / Jahr', afa_regulaer_jahr_eur: 'AfA regulär / Jahr', zusaetzliche_afa_jahr_eur: 'Zusätzliche AfA / Jahr',
+  notar_grundbuch_prozent: 'Notar & Grundbuch', darlehensanteil_kaufpreis_prozent: 'Darlehensanteil am Kaufpreis', anschluss_sollzins_prozent: 'Anschlusszins', mietausfall_monate: 'Mietausfall (Monate)', mietausfallwagnis_prozent: 'Mietausfallwagnis', hausgeldsteigerung_prozent: 'Hausgeldsteigerung', instandhaltung_sondereigentum_pro_m2_eur: 'Instandhaltung Sondereigentum pro m²',
+  json_syntax_geprueft: 'JSON-Syntax geprüft', schema_geprueft: 'Schema geprüft', referenzen_geprueft: 'Referenzen geprüft', berichtskonsistenz_geprueft: 'Berichtskonsistenz geprüft', hinweise: 'Hinweise',
+};
+const ENUM = {
+  weiter_pruefen: 'Weiter prüfen', nur_zu_anderen_konditionen_interessant: 'Nur zu anderen Konditionen interessant', bis_zur_klaerung_zurueckstellen: 'Bis zur Klärung zurückstellen', fuer_das_ziel_verwerfen: 'Für das Ziel verwerfen', nicht_bewertbar: 'Nicht bewertbar',
+  hoch: 'Hoch', mittel: 'Mittel', niedrig: 'Niedrig',
+  vorlage: 'Vorlage', vorlaeufig: 'Vorläufig', eingeschraenkt: 'Eingeschränkt', kein_zugriff: 'Kein Zugriff',
+  kapitalanlage: 'Kapitalanlage', eigennutzung: 'Eigennutzung', angehoerigenvermietung: 'Angehörigenvermietung', miete: 'Miete', offen: 'Offen',
+  kauf: 'Kauf', sonstiges: 'Sonstiges', unbekannt: 'Unbekannt',
+  vollstaendig: 'Vollständig', teilweise: 'Teilweise', nur_suchindex_oder_archiv: 'Nur Suchindex/Archiv', nicht_erreichbar: 'Nicht erreichbar', nicht_geprueft: 'Nicht geprüft',
+  angeboten: 'Angeboten', reserviert: 'Reserviert', verkauft: 'Verkauft', vermietet: 'Vermietet', unklar: 'Unklar',
+  hausgenau: 'Hausgenau', strasse: 'Straße', stadtteil: 'Stadtteil', ort: 'Ort',
+  leer: 'Leer', eigengenutzt: 'Eigengenutzt', teilweise_vermietet: 'Teilweise vermietet',
+  bedarf: 'Bedarfsausweis', verbrauch: 'Verbrauchsausweis',
+  transaktionen: 'Transaktionen', angebotsvergleich: 'Angebotsvergleich', gemischt: 'Gemischt', unzureichend: 'Unzureichend',
+  online_vorpruefung: 'Online-Vorprüfung',
+  basis: 'Basis', belastung: 'Belastung', guenstig: 'Günstig', zielrendite: 'Zielrendite', alternativflaeche: 'Alternativfläche',
+  eingabe: 'Eingabe', ergebnis: 'Ergebnis',
+  angebotspreis: 'Angebotspreis', transaktionspreis: 'Transaktionspreis', gut: 'Gut', ausgeschlossen: 'Ausgeschlossen', aufgeloest: 'Aufgelöst',
+  lage: 'Lage', gebaeude: 'Gebäude', energie: 'Energie', weg: 'WEG', recht: 'Recht', vermietung: 'Vermietung', finanzierung: 'Finanzierung', datenlage: 'Datenlage',
+  bestaetigt: 'Bestätigt', hinweis: 'Hinweis', ungeklaert: 'Ungeklärt',
+  inseratsangabe: 'Inseratsangabe', dokumentiert: 'Dokumentiert', unabhaengig_bestaetigt: 'Unabhängig bestätigt', berechnet: 'Berechnet', annahme: 'Annahme', widerspruechlich: 'Widersprüchlich', nicht_anwendbar: 'Nicht anwendbar',
+  inserat: 'Inserat', parallelangebot: 'Parallelangebot', amtliche_quelle: 'Amtliche Quelle', originaldokument: 'Originaldokument', wissenschaft: 'Wissenschaft', fachquelle: 'Fachquelle', portal: 'Portal', nutzerangabe: 'Nutzerangabe',
+  nur_suchindex: 'Nur Suchindex', archiv: 'Archiv', im_chat_vorhanden: 'Im Chat vorhanden',
+};
+const ENUM_KEYS = new Set(['analysestatus', 'nutzungsfokus', 'prueftiefe', 'angebotsart', 'zugriffsstatus', 'verfuegbarkeit', 'adressgenauigkeit', 'vermietungsstatus', 'ausweisart', 'aussagebasis', 'gesamturteil', 'belegsicherheit', 'typ', 'rolle', 'preisart', 'eignung', 'status', 'bereich', 'befundstatus', 'schwere', 'zugriff']);
+const PLATFORMS = { kleinanzeigen: 'Kleinanzeigen', immoscout24: 'ImmoScout24', immobilienscout24: 'ImmoScout24', immowelt: 'Immowelt', immonet: 'Immonet', zvg: 'ZVG-Portal' };
+const VERDICT = {
+  weiter_pruefen: ['✓', 'v-good'],
+  nur_zu_anderen_konditionen_interessant: ['€', 'v-warn'],
+  bis_zur_klaerung_zurueckstellen: ['‖', 'v-serious'],
+  fuer_das_ziel_verwerfen: ['✕', 'v-crit'],
+  nicht_bewertbar: ['?', 'v-none'],
+};
+const SEVERITY = { hoch: 'v-crit', mittel: 'v-serious', niedrig: 'v-warn', nicht_bewertbar: 'v-none' };
+const SEV_ORDER = { hoch: 0, mittel: 1, niedrig: 2, nicht_bewertbar: 3 };
+const UMLAUT_WORDS = { erhoeht: 'erhöht', regulaer: 'regulär', zusaetzlich: 'zusätzlich', zusaetzliche: 'zusätzliche', zusaetzlichen: 'zusätzlichen', zusaetzlicher: 'zusätzlicher', massnahmen: 'Maßnahmen', eigentuemer: 'Eigentümer', annuitaet: 'Annuität', fuer: 'für', ueber: 'über', groesse: 'Größe', flaeche: 'Fläche', wohnflaeche: 'Wohnfläche', rueckstand: 'Rückstand', ruecklage: 'Rücklage', kaeufer: 'Käufer', afa: 'AfA', m2: 'm²' };
+function humanize(k) {
+  let s = String(k), suffix = '';
+  const m = s.match(/_(monat|jahr)_eur$/);
+  if (m) { suffix = m[1] === 'monat' ? ' / Monat' : ' / Jahr'; s = s.slice(0, -m[0].length); }
+  else s = s.replace(/_(eur|prozent|jahre)$/, '');
+  const out = s.split('_').map(w => UMLAUT_WORDS[w] ?? w).join(' ');
+  return out.charAt(0).toUpperCase() + out.slice(1) + suffix;
+}
+const L = k => LABELS[k] || ENUM[k] || humanize(k);
+const platLabel = p => (p && PLATFORMS[String(p).toLowerCase()]) || p || '';
+
+/* =====================================================================
+   Hilfsfunktionen
+   ===================================================================== */
+const $ = (s, el = document) => el.querySelector(s);
+const isObj = v => v !== null && typeof v === 'object' && !Array.isArray(v);
+const isNum = v => typeof v === 'number' && Number.isFinite(v);
+const isRange = v => isObj(v) && isNum(v.min) && isNum(v.max);
+const obj = v => (isObj(v) ? v : {});
+const arr = v => (Array.isArray(v) ? v : []);
+const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ESC[c]);
+const safeUrl = u => (typeof u === 'string' && /^https?:\/\/\S+$/i.test(u.trim()) ? u.trim() : null);
+const ptrKey = k => String(k).replace(/~/g, '~0').replace(/\//g, '~1');
+const lastKey = p => String(p).split('/').pop().replace(/~1/g, '/').replace(/~0/g, '~');
+const trunc = (s, n = 40) => (String(s).length > n ? String(s).slice(0, n - 1) + '…' : String(s));
+const NB = ' ';
+const nf0 = new Intl.NumberFormat('de-DE', { maximumFractionDigits: 0 });
+const nf1 = new Intl.NumberFormat('de-DE', { maximumFractionDigits: 1 });
+const nf2 = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const nfA = new Intl.NumberFormat('de-DE', { maximumFractionDigits: 2 });
+const minus = s => s.replace(/^-/, '−');
+
+function hashStr(s) {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return (h >>> 0).toString(36) + ':' + s.length;
+}
+
+function resolvePointer(root, ptr) {
+  if (ptr === '') return { found: true, value: root };
+  if (typeof ptr !== 'string' || ptr[0] !== '/') return { found: false };
+  let cur = root;
+  for (const raw of ptr.slice(1).split('/')) {
+    const k = raw.replace(/~1/g, '/').replace(/~0/g, '~');
+    if (cur !== null && typeof cur === 'object' && Object.prototype.hasOwnProperty.call(cur, k)) cur = cur[k];
+    else return { found: false };
+  }
+  return { found: true, value: cur };
+}
+
+const DATE_VAL_RE = /^\d{4}-\d{2}-\d{2}$/;
+function isValidDate(s) {
+  if (typeof s !== 'string' || !DATE_VAL_RE.test(s)) return false;
+  const [y, m, d] = s.split('-').map(Number);
+  const dt = new Date(Date.UTC(y, m - 1, d));
+  return dt.getUTCFullYear() === y && dt.getUTCMonth() === m - 1 && dt.getUTCDate() === d;
+}
+const fmtDate = s => (DATE_VAL_RE.test(s) ? s.slice(8, 10) + '.' + s.slice(5, 7) + '.' + s.slice(0, 4) : s);
+const today = () => new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' });
+
+function unitForKey(k) {
+  if (!k) return null;
+  if (/_pro_m2_eur$/.test(k)) return 'eur_m2';
+  if (/_eur$/.test(k)) return 'eur';
+  if (/_kwh_m2_a$/.test(k)) return 'kwh';
+  if (/_m2$/.test(k)) return 'm2';
+  if (/_prozent$/.test(k)) return 'pct';
+  if (/_jahre$/.test(k)) return 'jahre';
+  return null;
+}
+function unitFromText(e) {
+  if (!e) return null;
+  const t = String(e).toLowerCase().replace(/\s/g, '');
+  if (t === '%' || t.startsWith('prozent')) return 'pct';
+  if (t.startsWith('eur') || t.startsWith('€')) {
+    if (/m2|m²/.test(t)) return 'eur_m2';
+    if (/monat|mtl/.test(t)) return 'eur_monat';
+    if (/jahr|\/a$/.test(t)) return 'eur_jahr';
+    return 'eur';
+  }
+  if (t === 'm2' || t === 'm²') return 'm2';
+  if (t.startsWith('jahr')) return 'jahre';
+  if (t.includes('kwh')) return 'kwh';
+  return 'raw:' + e;
+}
+const prettyUnit = e => (e == null ? '' : String(e).replace(/EUR/g, '€').replace(/m2\b/g, 'm²').replace(/^Prozent$/i, '%'));
+
+function fmtNum(v, unit, key) {
+  if (key && /(^|_)(baujahr|heizungsjahr)$/.test(key)) return String(v);
+  if (key === 'kaufpreisfaktor_jahre') return minus(nf2.format(v)) + '-fach';
+  const eur = x => minus((Number.isInteger(x) ? nf0 : nf2).format(x));
+  switch (unit) {
+    case 'eur': return eur(v) + NB + '€';
+    case 'eur_m2': return minus(nf2.format(v)) + NB + '€/m²';
+    case 'eur_monat': return eur(v) + NB + '€/Monat';
+    case 'eur_jahr': return eur(v) + NB + '€/Jahr';
+    case 'm2': return minus(nfA.format(v)) + NB + 'm²';
+    case 'pct': return minus(nf2.format(v)) + NB + '%';
+    case 'jahre': return minus(nfA.format(v)) + NB + (v === 1 ? 'Jahr' : 'Jahre');
+    case 'kwh': return minus(nfA.format(v)) + NB + 'kWh/(m²·a)';
+    default:
+      if (unit && unit.startsWith('raw:')) return minus(nfA.format(v)) + NB + unit.slice(4);
+      return minus(nfA.format(v));
+  }
+}
+function fmtValue(key, v, unit) {
+  if (v === null || v === undefined) return null;
+  if (typeof v === 'boolean') return v ? 'Ja' : 'Nein';
+  if (typeof v === 'number') return fmtNum(v, unit !== undefined ? unit : unitForKey(key), key);
+  if (typeof v === 'string') {
+    if (DATE_VAL_RE.test(v)) return fmtDate(v);
+    if (key === 'plattform') return platLabel(v);
+    if (ENUM_KEYS.has(key) && ENUM[v]) return ENUM[v];
+    return v;
+  }
+  if (isRange(v)) {
+    const u = unit !== undefined ? unit : unitForKey(key);
+    return fmtNum(v.min, u, key) + ' – ' + fmtNum(v.max, u, key);
+  }
+  if (Array.isArray(v)) return v.map(x => fmtValue(key, x) ?? '—').join(', ');
+  return JSON.stringify(v);
+}
+/** Formatiert eine Szenario-Rechnungszeile; die Einheit der Zeile hat Vorrang vor dem Kennzahl-Suffix. */
+function fmtRechnung(r) {
+  const k = canonKz(r.kennzahl), u = unitFromText(r.einheit);
+  const unit = u && (u.startsWith('eur') || u === 'pct' || u === 'm2' || u === 'jahre') ? u : unitForKey(k) || u;
+  return fmtNum(r.wert, unit, k);
+}
+/** Formatiert einen Wert anhand seines JSON-Pointers; Szenariowerte nutzen die Einheit der Rechnungszeile. */
+function fmtAt(data, path, v) {
+  const m = /^\/szenarien\/(\d+)\/rechnung\/(\d+)\/wert$/.exec(path);
+  if (m && isNum(v)) return fmtRechnung({ ...obj(arr(obj(arr(data.szenarien)[+m[1]]).rechnung)[+m[2]]), wert: v });
+  return fmtValue(lastKey(path), v);
+}
+const KEY_RESULTS = ['cashflow_monat_vor_steuern_eur', 'zahlungsgrenze_eur', 'kaufpreis_pro_m2_eur', 'gesamtinvestition_eur'];
+/** Wichtigstes Ergebnis eines Szenarios für Übersicht und Kartenkopf. */
+function keyResult(s) {
+  const rows = arr(s.rechnung).filter(r => isObj(r) && isNum(r.wert));
+  for (const k of KEY_RESULTS) { const r = rows.find(x => canonKz(x.kennzahl) === k); if (r) return r; }
+  return rows.filter(r => r.rolle === 'ergebnis').pop() || rows.pop() || null;
+}
+function offerTag(data) {
+  const a = obj(data.angebot).angebotsart;
+  return !a || a === 'kauf' ? '' : `<span class="tag tag-warn">${a === 'miete' ? 'Mietangebot' : 'Kein Kaufangebot'}</span>`;
+}
+function offerNotice(data) {
+  const a = obj(data.angebot);
+  if (!a.angebotsart || a.angebotsart === 'kauf') return '';
+  return `<div class="callout warn"><b>${a.angebotsart === 'miete' ? 'Mietangebot' : 'Kein reguläres Kaufangebot'}</b> – Angebotsart „${esc(L(a.angebotsart))}“${a.objektart ? `, Objektart „${esc(a.objektart)}“` : ''}. Kauf- und Renditekennzahlen sind nicht anwendbar.</div>`;
+}
+const fmtAxis = v => (Math.abs(v) >= 1e6 ? nf1.format(v / 1e6) + ' Mio.' : Math.abs(v) >= 1e4 ? nf0.format(v / 1e3) + ' Tsd.' : minus(nfA.format(v)));
+const near = (a, b, tol) => Math.abs(a - b) <= Math.max(tol, Math.abs(b) * 0.0005);
+
+/* =====================================================================
+   Zustand
+   ===================================================================== */
+const state = {
+  docs: [],
+  view: 'start',
+  current: null,
+  selected: new Set(),
+  selectionTouched: false,
+  sort: { col: 'num', dir: 1 },
+  filter: { q: '', urteil: '', showOld: false },
+  diffOnly: false,
+  persist: true,
+  saveError: null,
+};
+let uidCounter = 0;
+let numCounter = 0;
+const LS = { docs: 'immoviewer.v1.docs', persist: 'immoviewer.v1.persist', theme: 'immoviewer.v1.theme' };
+const lsGet = k => { try { return localStorage.getItem(k); } catch { return null; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, v); return true; } catch { return false; } };
+const lsDel = k => { try { localStorage.removeItem(k); } catch { /* ignorieren */ } };
+
+const immoDocs = () => state.docs.filter(d => d.isImmo);
+const getDoc = uid => state.docs.find(d => d.uid === uid);
+const urteilOf = d => obj(obj(d.data).bewertung).gesamturteil;
+
+function docTitle(d) {
+  if (!d.isImmo) return d.fileName;
+  const a = obj(d.data.angebot), s = obj(d.data.standort);
+  return a.titel || [a.objektart, s.ort].filter(Boolean).join(' in ') || d.fileName;
+}
+function docPlace(d) {
+  const s = obj(obj(d.data).standort);
+  return [s.ort, s.stadtteil].filter(Boolean).join(' – ');
+}
+function objectKey(data) {
+  const a = obj(data.angebot);
+  if (a.plattform_id != null) return `${String(a.plattform || '').toLowerCase()}|${a.plattform_id}`;
+  if (a.anbieter_objektnummer) return `obj|${a.anbieter_objektnummer}`;
+  if (a.url) return `url|${a.url}`;
+  return null;
+}
+
+/* =====================================================================
+   Laden
+   ===================================================================== */
+async function addFiles(files) {
+  const items = [];
+  for (const f of files) {
+    if (!/\.json$/i.test(f.name) && f.type !== 'application/json') continue;
+    try { items.push({ name: f.name, text: await f.text() }); }
+    catch (e) { items.push({ name: f.name, text: '', error: 'Datei konnte nicht gelesen werden: ' + e.message }); }
+  }
+  if (!items.length) { toast('Keine JSON-Dateien gefunden.'); return; }
+  addTexts(items);
+}
+
+function addTexts(items, { silent = false } = {}) {
+  const added = [];
+  for (const it of items) {
+    if (it.error) { added.push(addDoc(it.name, it.text, null, it.error)); continue; }
+    let parsed, err = null;
+    try { parsed = JSON.parse(it.text.replace(/^﻿/, '')); } catch (e) { err = 'JSON-Syntaxfehler: ' + e.message; }
+    if (!err && Array.isArray(parsed) && parsed.length && parsed.every(x => isObj(x) && ('schema_version' in x || 'metadaten' in x))) {
+      parsed.forEach((x, i) => added.push(addDoc(`${it.name} [${i + 1}]`, JSON.stringify(x, null, 2), x, null)));
+      continue;
+    }
+    added.push(addDoc(it.name, it.text, parsed, err));
+  }
+  const fresh = added.filter(Boolean);
+  computeGroups();
+  if (!silent) {
+    const immo = fresh.filter(d => d.isImmo);
+    if (fresh.length === 1) { state.view = 'detail'; state.current = fresh[0].uid; }
+    else if (immoDocs().length > 1) state.view = 'compare';
+    else if (fresh.length) { state.view = 'detail'; state.current = (immo[0] || fresh[0]).uid; }
+    const dup = items.length - fresh.length;
+    toast(`${fresh.length} Datei${fresh.length === 1 ? '' : 'en'} geladen${dup > 0 ? ` · ${dup} bereits vorhanden` : ''}`);
+    save();
+    render();
+    window.scrollTo(0, 0);
+  }
+  return fresh;
+}
+
+function addDoc(name, text, data, err) {
+  const hash = hashStr(text || name);
+  if (state.docs.some(d => d.hash === hash)) return null;
+  const doc = { uid: 'd' + (++uidCounter), fileName: name, text: text || '', hash, data: err ? null : data, parseError: err };
+  analyze(doc);
+  if (doc.isImmo) doc.num = ++numCounter;
+  state.docs.push(doc);
+  return doc;
+}
+
+function analyze(doc) {
+  doc.isImmo = false;
+  if (doc.parseError) { doc.issues = [{ lvl: 'error', path: '', msg: doc.parseError }]; return; }
+  const d = doc.data;
+  if (!isObj(d) || (!('schema_version' in d) && !('metadaten' in d) && !('angebot' in d))) {
+    doc.issues = [{ lvl: 'error', path: '', msg: 'Keine Immobilienbewertung nach Schema 1.0 (weder schema_version noch metadaten/angebot gefunden).' }];
+    return;
+  }
+  doc.isImmo = true;
+  doc.ctx = buildCtx(d);
+  doc.issues = validate(d, doc.ctx);
+  doc.key = objectKey(d) || doc.uid;
+}
+
+function computeGroups() {
+  const groups = new Map();
+  for (const d of immoDocs()) {
+    if (!groups.has(d.key)) groups.set(d.key, []);
+    groups.get(d.key).push(d);
+  }
+  const stamp = d => { const m = obj(d.data.metadaten); return `${m.exportdatum || ''}|${m.pruefdatum || ''}|${d.fileName}`; };
+  for (const list of groups.values()) {
+    list.sort((a, b) => stamp(b).localeCompare(stamp(a)));
+    list.forEach((d, i) => { d.rev = { index: list.length - i, total: list.length, latest: i === 0, group: list }; });
+  }
+  const valid = new Set(immoDocs().map(d => d.uid));
+  for (const u of [...state.selected]) if (!valid.has(u)) state.selected.delete(u);
+}
+
+function removeDoc(uid) {
+  state.docs = state.docs.filter(d => d.uid !== uid);
+  state.selected.delete(uid);
+  computeGroups();
+  if (!state.docs.length) state.view = 'start';
+  else if (state.view === 'detail' && state.current === uid) state.view = immoDocs().length > 1 ? 'compare' : 'detail', state.current = (immoDocs()[0] || state.docs[0]).uid;
+  save();
+  render();
+}
+
+function save() {
+  if (!state.persist) { lsDel(LS.docs); state.saveError = null; return; }
+  const ok = lsSet(LS.docs, JSON.stringify(state.docs.filter(d => d.text).map(d => ({ name: d.fileName, text: d.text }))));
+  state.saveError = ok ? null : 'Speichern im Browser nicht möglich (Speicher voll oder gesperrt).';
+}
+
+function restore() {
+  state.persist = lsGet(LS.persist) !== '0';
+  const raw = lsGet(LS.docs);
+  if (!raw || !state.persist) return;
+  try {
+    const items = JSON.parse(raw);
+    if (Array.isArray(items) && items.length) {
+      addTexts(items.filter(x => x && typeof x.text === 'string'), { silent: true });
+      state.view = immoDocs().length > 1 ? 'compare' : 'detail';
+      state.current = (immoDocs()[0] || state.docs[0] || {}).uid;
+      if (!state.docs.length) state.view = 'start';
+    }
+  } catch { /* defekter Speicherinhalt wird ignoriert */ }
+}
+
+async function loadFromQuery() {
+  const srcs = new URLSearchParams(location.search).getAll('src');
+  if (!srcs.length || location.protocol === 'file:') return;
+  const items = [];
+  for (const s of srcs) {
+    const name = decodeURIComponent(s.split('/').pop() || s);
+    try {
+      const r = await fetch(s);
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      items.push({ name, text: await r.text() });
+    } catch (e) { items.push({ name, text: '', error: `Laden von ${s} fehlgeschlagen: ${e.message}` }); }
+  }
+  addTexts(items);
+}
+
+const SAMPLE_FILES = [
+  'immobilienbewertung_kleinanzeigen_2987654321_2026-10-20.json',
+  'immobilienbewertung_kleinanzeigen_2987654321_2026-10-22_rev2.json',
+  'immobilienbewertung_immoscout24_158432907_2026-10-21.json',
+  'immobilienbewertung_immowelt_2bk7x4p_2026-10-19.json',
+  'testfall_fehlerhafter_export.json',
+];
+/** Lädt die fiktiven Beispiele aus beispiele/ (nur über http, nicht bei file://). */
+async function loadSamples() {
+  const items = [];
+  for (const name of SAMPLE_FILES) {
+    try {
+      const r = await fetch('beispiele/' + name);
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      items.push({ name, text: await r.text() });
+    } catch { /* fehlende Datei überspringen */ }
+  }
+  if (!items.length) { toast('Beispiele nicht erreichbar. Dateien aus dem Ordner beispiele/ hineinziehen.'); return; }
+  addTexts(items);
+}
+
+async function filesFromDataTransfer(dt) {
+  const entries = [...(dt.items || [])].map(i => (i.webkitGetAsEntry ? i.webkitGetAsEntry() : null)).filter(Boolean);
+  if (!entries.length) return [...(dt.files || [])];
+  const out = [];
+  async function walkEntry(en) {
+    if (en.isFile) out.push(await new Promise((res, rej) => en.file(res, rej)));
+    else if (en.isDirectory) {
+      const reader = en.createReader();
+      let batch;
+      do {
+        batch = await new Promise((res, rej) => reader.readEntries(res, rej));
+        for (const c of batch) await walkEntry(c);
+      } while (batch.length);
+    }
+  }
+  for (const en of entries) await walkEntry(en);
+  return out;
+}
+
+/* =====================================================================
+   Kontext & Prüfung
+   ===================================================================== */
+function buildCtx(data) {
+  const list = k => arr(data[k]).filter(isObj);
+  const byId = k => new Map(list(k).filter(x => typeof x.id === 'string').map(x => [x.id, x]));
+  const belege = new Map();
+  for (const b of list('datenbelege')) if (typeof b.feldpfad === 'string' && !belege.has(b.feldpfad)) belege.set(b.feldpfad, b);
+  const conflicts = new Map();
+  for (const w of list('widersprueche')) if (w.status !== 'aufgeloest' && typeof w.feldpfad === 'string') conflicts.set(w.feldpfad, w);
+  const scen = new Map();
+  arr(data.szenarien).forEach((s, si) => {
+    if (!isObj(s)) return;
+    arr(s.rechnung).forEach((r, ri) => {
+      if (!isObj(r) || !isNum(r.wert) || typeof r.kennzahl !== 'string') return;
+      const kz = canonKz(r.kennzahl);
+      if (!scen.has(kz)) scen.set(kz, []);
+      scen.get(kz).push({ value: r.wert, unit: r.einheit, s, path: `/szenarien/${si}/rechnung/${ri}/wert` });
+    });
+  });
+  return { list, quellen: byId('quellen'), annahmen: byId('annahmen'), risiken: byId('risiken'), unterlagen: byId('fehlende_unterlagen'), szenarien: byId('szenarien'), widersprueche: byId('widersprueche'), belege, conflicts, scen };
+}
+
+function walk(node, path, fn) {
+  if (Array.isArray(node)) node.forEach((v, i) => { const p = `${path}/${i}`; fn(null, v, p, node); walk(v, p, fn); });
+  else if (isObj(node)) for (const [k, v] of Object.entries(node)) { const p = `${path}/${ptrKey(k)}`; fn(k, v, p, node); walk(v, p, fn); }
+}
+
+function validate(data, ctx) {
+  const out = [];
+  const E = (path, msg) => out.push({ lvl: 'error', path, msg });
+  const W = (path, msg) => out.push({ lvl: 'warn', path, msg });
+  const I = (path, msg) => out.push({ lvl: 'info', path, msg });
+  const ids = { quellen: new Set(ctx.quellen.keys()), annahmen: new Set(ctx.annahmen.keys()), risiken: new Set(ctx.risiken.keys()), fehlende_unterlagen: new Set(ctx.unterlagen.keys()) };
+  let refErrors = 0;
+
+  // Struktur
+  if (data.schema_version !== '1.0') W('/schema_version', `Schema-Version ${JSON.stringify(data.schema_version ?? null)} statt "1.0".`);
+  for (const k of TOP_KEYS) if (!(k in data)) E('/' + k, 'Hauptschlüssel fehlt.');
+  for (const k of Object.keys(data)) if (!TOP_KEYS.includes(k)) I('/' + ptrKey(k), 'Zusätzlicher Schlüssel außerhalb des Datenvertrags.');
+  for (const [sec, keys] of Object.entries(CORE)) {
+    if (!(sec in data)) continue;
+    if (!isObj(data[sec])) { E('/' + sec, 'Muss ein Objekt sein.'); continue; }
+    for (const k of keys) if (!(k in data[sec])) W(`/${sec}/${k}`, 'Schlüssel der Kernstruktur fehlt.');
+  }
+  for (const [k] of TEILURTEILE) {
+    const t = obj(data.bewertung)[k];
+    if (t !== undefined && !isObj(t)) E(`/bewertung/${k}`, 'Teilurteil muss ein Objekt {urteil, begruendung, belegsicherheit} sein.');
+    else if (isObj(t)) for (const kk of ['urteil', 'begruendung', 'belegsicherheit']) if (!(kk in t)) W(`/bewertung/${k}/${kk}`, 'Schlüssel fehlt.');
+  }
+  for (const [p, allowed] of Object.entries(ENUM_PATHS)) {
+    const r = resolvePointer(data, p);
+    if (!r.found) continue;
+    if (!allowed.includes(r.value)) E(p, `Unzulässiger Wert ${JSON.stringify(r.value)}. Erlaubt: ${allowed.map(v => v === null ? 'null' : v).join(' | ')}.`);
+  }
+
+  // Arrays
+  for (const [name, spec] of Object.entries(ARRAYS)) {
+    if (!(name in data)) continue;
+    if (!Array.isArray(data[name])) { E('/' + name, 'Muss ein Array sein.'); continue; }
+    const seen = new Set();
+    data[name].forEach((it, i) => {
+      const p = `/${name}/${i}`;
+      if (!isObj(it)) { E(p, 'Eintrag muss ein Objekt sein.'); return; }
+      for (const k of spec.keys) if (!(k in it)) W(`${p}/${k}`, 'Pflichtschlüssel des Eintrags fehlt.');
+      if (spec.prefix) {
+        if (typeof it.id !== 'string' || !new RegExp(`^${spec.prefix}[0-9]+$`).test(it.id)) E(`${p}/id`, `ID ${JSON.stringify(it.id)} entspricht nicht dem Muster ${spec.prefix}1, ${spec.prefix}2 …`);
+        else if (seen.has(it.id)) E(`${p}/id`, `ID ${it.id} ist doppelt vergeben.`);
+        seen.add(it.id);
+      } else if (name === 'datenbelege' && typeof it.feldpfad === 'string') {
+        if (seen.has(it.feldpfad)) W(`${p}/feldpfad`, `Mehrere Datenbelege für ${it.feldpfad} – höchstens ein zusammengeführter Eintrag pro Feld.`);
+        seen.add(it.feldpfad);
+      }
+      for (const [k, allowed] of Object.entries(spec.enums || {})) if (k in it && !allowed.includes(it[k])) E(`${p}/${k}`, `Unzulässiger Wert ${JSON.stringify(it[k])}. Erlaubt: ${allowed.join(' | ')}.`);
+      for (const [nk, ns] of Object.entries(NESTED)) {
+        if (!(nk in it)) continue;
+        if (!Array.isArray(it[nk])) { E(`${p}/${nk}`, 'Muss ein Array sein.'); continue; }
+        it[nk].forEach((sub, j) => {
+          const sp = `${p}/${nk}/${j}`;
+          if (!isObj(sub)) { E(sp, 'Eintrag muss ein Objekt sein.'); return; }
+          for (const k of ns.keys) if (!(k in sub)) W(`${sp}/${k}`, 'Pflichtschlüssel fehlt.');
+          for (const [k, allowed] of Object.entries(ns.enums || {})) if (k in sub && !allowed.includes(sub[k])) E(`${sp}/${k}`, `Unzulässiger Wert ${JSON.stringify(sub[k])}.`);
+          if (nk === 'rechnung') {
+            if (sub.wert !== null && sub.wert !== undefined && !isNum(sub.wert)) E(`${sp}/wert`, `Zahl oder null erwartet, gefunden ${JSON.stringify(sub.wert)}.`);
+            if (sub.rolle === 'ergebnis' && !sub.formel) I(`${sp}/formel`, 'Ergebnis ohne Formel.');
+            if (typeof sub.kennzahl === 'string' && /_prozent$/.test(sub.kennzahl) && isNum(sub.wert) && sub.wert !== 0 && Math.abs(sub.wert) < 0.2) W(`${sp}/wert`, 'Prozentwert sehr klein – evtl. als Anteil (0,045) statt Prozent (4,5) gespeichert?');
+          }
+        });
+      }
+    });
+  }
+
+  // Feldweise Typ-, Datums-, Verweis- und Pfadprüfung
+  walk(data, '', (k, v, p, parent) => {
+    if (k === null) return;
+    const inArrayItem = /\/\d+\/[^/]+$/.test(p);
+    if ((NUM_RE.test(k) || NUM_KEYS.has(k)) && !RANGE_RE.test(k)) {
+      if (v !== null && !isNum(v)) {
+        const hint = typeof v === 'string' && /^(null|unbekannt|-|–|n\/a|k\.?\s?a\.?)$/i.test(v.trim()) ? ' Platzhaltertext statt null.' : typeof v === 'string' && /\d/.test(v) ? ' Formatierte Zahl als Text (ohne Währungszeichen, Tausenderpunkte, Prozentzeichen speichern).' : '';
+        E(p, `Zahl oder null erwartet, gefunden ${JSON.stringify(v)}.${hint}`);
+      } else if (/_prozent$/.test(k) && isNum(v) && v !== 0 && Math.abs(v) < 0.2) {
+        W(p, `Prozentwert ${String(v).replace('.', ',')} sehr klein – evtl. als Anteil statt Prozent gespeichert (4,5 bedeutet 4,5 %)?`);
+      }
+    }
+    if (k === 'prioritaet' && v !== null && !Number.isInteger(v)) E(p, 'Ganzzahl erwartet (1 = höchste Priorität).');
+    if (STRING_ID_KEYS.has(k) && typeof v === 'number') E(p, `Identifikator muss Zeichenkette sein, gefunden Zahl ${v}.`);
+    if (DATE_RE.test(k) && v !== null && v !== undefined && !isValidDate(v)) E(p, `Datum im Format YYYY-MM-DD oder null erwartet, gefunden ${JSON.stringify(v)}.`);
+    if (BOOL_KEYS.has(k) && v !== null && typeof v !== 'boolean') E(p, `true, false oder null erwartet, gefunden ${JSON.stringify(v)}.`);
+    if (RANGE_RE.test(k) && v !== null && v !== undefined) {
+      if (!isRange(v)) E(p, 'Spanne als Objekt {"min": Zahl, "max": Zahl} oder null erwartet.');
+      else if (v.min > v.max) E(p, `Spanne ungültig: min (${fmtNum(v.min, 'eur')}) ist größer als max (${fmtNum(v.max, 'eur')}).`);
+    }
+    if (REF_KEYS[k]) {
+      if (!Array.isArray(v)) E(p, 'Array von IDs erwartet.');
+      else v.forEach((id, i) => { if (!ids[REF_KEYS[k]].has(id)) { refErrors++; E(`${p}/${i}`, `Verweis ${JSON.stringify(id)} zeigt ins Leere (kein Eintrag in ${REF_KEYS[k]}).`); } });
+    }
+    if (k === 'feldpfad' && inArrayItem) {
+      if (typeof v !== 'string' || v[0] !== '/') E(p, 'JSON-Pointer muss mit "/" beginnen.');
+      else if (!resolvePointer(data, v).found) { refErrors++; E(p, `Feldpfad ${v} existiert im Export nicht.`); }
+    }
+    if (k === 'eingabe_pfade' && Array.isArray(v)) v.forEach((ep, i) => {
+      if (typeof ep !== 'string' || !resolvePointer(data, ep).found) { refErrors++; E(`${p}/${i}`, `Eingabepfad ${JSON.stringify(ep)} existiert im Export nicht.`); }
+    });
+    if (k === 'url' && v !== null && v !== undefined && !safeUrl(v)) E(p, `Keine gültige http(s)-URL: ${JSON.stringify(trunc(v, 60))} (z. B. Chat-interner Zitationsmarker?).`);
+  });
+
+  // Inhaltliche Regeln des Prompts
+  const m = obj(data.metadaten), o = obj(data.objekt), ist = obj(data.ist_kosten_und_ertraege), kz = obj(data.kennzahlen), pb = obj(data.preisbewertung), b = obj(data.bewertung), a = obj(data.angebot);
+  if (m.analysestatus === 'vorlage') W('/metadaten/analysestatus', 'Status „vorlage“ – leere Strukturvorlage, keine Bewertung.');
+  if (isValidDate(m.pruefdatum) && isValidDate(m.exportdatum) && m.exportdatum < m.pruefdatum) W('/metadaten/exportdatum', 'Exportdatum liegt vor dem Prüfdatum.');
+  if (arr(data.naechste_schritte).length > 5) W('/naechste_schritte', `${arr(data.naechste_schritte).length} nächste Schritte – maximal fünf vorgesehen.`);
+  if (arr(b.entscheidende_offene_punkte).length > 3) W('/bewertung/entscheidende_offene_punkte', 'Mehr als drei entscheidende offene Punkte.');
+  for (const w of ctx.list('widersprueche')) {
+    if (w.status === 'offen' && typeof w.feldpfad === 'string') {
+      const r = resolvePointer(data, w.feldpfad);
+      if (r.found && r.value !== null) W(w.feldpfad, `Offener Widerspruch ${w.id ?? ''}: Hauptwert sollte null bleiben, ist aber ${JSON.stringify(r.value)}.`);
+    }
+    if (w.status === 'aufgeloest' && !w.aufloesung) W(`/widersprueche`, `Widerspruch ${w.id ?? ''} ist aufgelöst, aber ohne Auflösungsgrund.`);
+  }
+  if (pb.marktwertspanne_eur && pb.aussagebasis === 'unzureichend') W('/preisbewertung/marktwertspanne_eur', 'Marktwertspanne angegeben, obwohl Aussagebasis „unzureichend“ ist.');
+  if (pb.marktwertspanne_eur && pb.aussagebasis === 'angebotsvergleich') I('/preisbewertung/marktwertspanne_eur', 'Marktwertspanne nur auf Angebotsvergleich gestützt – darf nicht allein auf einem unbereinigten Angebotsdurchschnitt beruhen.');
+  if (isNum(kz.wirtschaftliche_nettorendite_vor_finanzierung_steuern_prozent) && ist.hausgeld_nicht_umlagefaehig_ohne_ruecklage_monat_eur == null) W('/kennzahlen/wirtschaftliche_nettorendite_vor_finanzierung_steuern_prozent', 'Konkrete Nettorendite ohne bekannte Hausgeldaufteilung – sollte null bleiben.');
+  if (a.angebotsart === 'miete' && (isNum(kz.bruttomietrendite_prozent) || isNum(kz.kaufpreisfaktor_jahre))) W('/kennzahlen', 'Mietangebot mit Kaufkennzahlen.');
+  for (const [p, bl] of ctx.belege) {
+    const sec = p.split('/')[1];
+    if (bl.status === 'annahme' && FACT_SECTIONS.includes(sec)) W(p, 'Datenbeleg „annahme“ in einem Ist-Abschnitt – Modellannahmen gehören in annahmen/szenarien.');
+    const rechnung = /^\/szenarien\/\d+\/rechnung\/\d+\/wert$/.test(p) ? obj(resolvePointer(data, p.replace(/\/wert$/, '')).value) : {};
+    if (bl.status === 'berechnet' && !bl.formel && !rechnung.formel) I(p, 'Berechneter Wert ohne Formel im Datenbeleg.');
+    for (const qid of arr(bl.quellen_ids)) {
+      const q = ctx.quellen.get(qid);
+      if (q && q.zugriff === 'nicht_erreichbar' && ['dokumentiert', 'unabhaengig_bestaetigt'].includes(bl.status)) W(p, `Als „${L(bl.status)}“ belegt mit nicht erreichbarer Quelle ${qid}.`);
+    }
+  }
+  for (const q of ctx.list('quellen')) if (q.url == null && !q.fundstelle) W(`/quellen`, `Quelle ${q.id ?? ''} ohne URL und ohne Fundstelle.`);
+  const e = obj(data.energie);
+  if (isNum(e.kennwert_kwh_m2_a) && ENERGY_CLASSES.includes(e.effizienzklasse)) {
+    const k = klasseFromKennwert(e.kennwert_kwh_m2_a);
+    if (k !== e.effizienzklasse) I('/energie/effizienzklasse', `Klasse ${e.effizienzklasse} passt nicht zur GEG-Klassengrenze für ${fmtNum(e.kennwert_kwh_m2_a, 'kwh')} (wäre ${k}) – Bezugsgröße/Ausweisart prüfen.`);
+  }
+
+  // Nachrechnen
+  const calc = (path, actual, expectedList, tol, label) => {
+    if (!isNum(actual)) return;
+    const exp = expectedList.filter(isNum);
+    if (!exp.length || exp.some(x => near(actual, x, tol))) return;
+    W(path, `${label}: gespeichert ${minus(nfA.format(actual))}, nachgerechnet ${exp.map(x => minus(nfA.format(Math.round(x * 100) / 100))).join(' bzw. ')}.`);
+  };
+  const kp = isNum(o.kaufpreis_eur) ? o.kaufpreis_eur : null;
+  const kpList = kp == null ? [] : [kp, isNum(o.verpflichtende_zusatzkaeufe_eur) && o.verpflichtende_zusatzkaeufe_eur > 0 ? kp + o.verpflichtende_zusatzkaeufe_eur : null];
+  const fl = isNum(o.wohnflaeche_m2) && o.wohnflaeche_m2 > 0 ? o.wohnflaeche_m2 : null;
+  const mm = isNum(ist.nettokaltmiete_monat_eur) ? ist.nettokaltmiete_monat_eur : null;
+  const mj = isNum(ist.nettokaltmiete_jahr_eur) ? ist.nettokaltmiete_jahr_eur : mm != null ? mm * 12 : null;
+  if (mm != null) calc(`/ist_kosten_und_ertraege/nettokaltmiete_jahr_eur`, ist.nettokaltmiete_jahr_eur, [mm * 12], 0.011, 'Jahresnettokaltmiete');
+  if (fl) calc('/kennzahlen/kaufpreis_pro_m2_eur', kz.kaufpreis_pro_m2_eur, kpList.map(x => x == null ? null : x / fl), 0.011, 'Kaufpreis pro m²');
+  if (fl && mm != null) calc('/kennzahlen/nettokaltmiete_pro_m2_eur', kz.nettokaltmiete_pro_m2_eur, [mm / fl], 0.011, 'Nettokaltmiete pro m²');
+  if (mj) {
+    calc('/kennzahlen/bruttomietrendite_prozent', kz.bruttomietrendite_prozent, kpList.map(x => x == null ? null : mj / x * 100), 0.011, 'Bruttomietrendite');
+    calc('/kennzahlen/kaufpreisfaktor_jahre', kz.kaufpreisfaktor_jahre, kpList.map(x => x == null ? null : x / mj), 0.011, 'Kaufpreisfaktor');
+    if (isNum(kz.gesamtinvestition_eur)) calc('/kennzahlen/bruttorendite_auf_gesamtinvestition_prozent', kz.bruttorendite_auf_gesamtinvestition_prozent, [mj / kz.gesamtinvestition_eur * 100], 0.011, 'Bruttorendite auf Gesamtinvestition');
+  }
+  arr(data.vergleichsobjekte).forEach((v, i) => {
+    if (isObj(v) && isNum(v.preis_eur) && isNum(v.wohnflaeche_m2) && v.wohnflaeche_m2 > 0) calc(`/vergleichsobjekte/${i}/preis_pro_m2_eur`, v.preis_pro_m2_eur, [v.preis_eur / v.wohnflaeche_m2], 0.011, `Vergleichsobjekt ${v.id ?? i + 1}: Preis pro m²`);
+  });
+
+  // Unzulässige Synonyme einmal je Name melden (das JSON-Schema lehnt sie ab, der Viewer führt sie zusammen)
+  const aliasUse = new Map();
+  arr(data.szenarien).forEach((s, si) => arr(obj(s).rechnung).forEach((r, ri) => {
+    const k = obj(r).kennzahl;
+    if (ALIAS_TO_STABLE[k] && !aliasUse.has(k)) aliasUse.set(k, `/szenarien/${si}/rechnung/${ri}/kennzahl`);
+  }));
+  arr(data.annahmen).forEach((a, i) => {
+    const k = obj(a).parameter;
+    if (ALIAS_TO_STABLE[k] && !aliasUse.has(k)) aliasUse.set(k, `/annahmen/${i}/parameter`);
+  });
+  for (const [k, p] of aliasUse) I(p, `„${k}“ statt der stabilen ID „${ALIAS_TO_STABLE[k]}“ (Prompt V3.1) – im Viewer zusammengeführt, vom JSON-Schema abgelehnt.`);
+
+  // Selbstauskunft des Exports gegen Befunde
+  const ep = obj(data.exportpruefung);
+  if (ep.referenzen_geprueft === true && refErrors) W('/exportpruefung/referenzen_geprueft', `Export meldet „Referenzen geprüft“, der Viewer findet aber ${refErrors} Verweis-/Pfadfehler.`);
+  const typeErrors = out.filter(x => x.lvl === 'error').length - refErrors;
+  if (ep.schema_geprueft === true && typeErrors > 0) W('/exportpruefung/schema_geprueft', `Export meldet „Schema geprüft“, der Viewer findet aber ${typeErrors} Struktur-/Typfehler.`);
+
+  const order = { error: 0, warn: 1, info: 2 };
+  return out.sort((x, y) => order[x.lvl] - order[y.lvl]);
+}
+
+function klasseFromKennwert(k) {
+  for (let i = 0; i < ENERGY_CLASSES.length; i++) if (k < ENERGY_BOUNDS[i + 1] || i === ENERGY_CLASSES.length - 1) return ENERGY_CLASSES[i];
+  return 'H';
+}
+const countIssues = d => ({ error: d.issues.filter(x => x.lvl === 'error').length, warn: d.issues.filter(x => x.lvl === 'warn').length, info: d.issues.filter(x => x.lvl === 'info').length });
+
+/* =====================================================================
+   Bausteine
+   ===================================================================== */
+function verdictBadge(v, size = '') {
+  const [icon, cls] = VERDICT[v] || ['?', 'v-none'];
+  return `<span class="verdict ${cls} ${size}"><span class="vi" aria-hidden="true">${icon}</span><span>${esc(v ? L(v) : 'Kein Urteil')}</span></span>`;
+}
+const vcls = v => (VERDICT[v] || ['', 'v-none'])[1];
+function meter(level, withLabel = true) {
+  const n = { hoch: 3, mittel: 2, niedrig: 1 }[level] || 0;
+  return `<span class="conf" title="Belegsicherheit: ${esc(level ? L(level) : 'keine Angabe')} (keine Erfolgswahrscheinlichkeit)"><span class="meter m${n}" aria-hidden="true"><i></i><i></i><i></i></span>${withLabel ? esc(level ? L(level) : '—') : ''}</span>`;
+}
+function sevBadge(s) { return `<span class="sev ${SEVERITY[s] || 'v-none'}"><i></i>${esc(s ? L(s) : '—')}</span>`; }
+
+function belegChip(doc, path, compact = false) {
+  const b = doc.ctx.belege.get(path);
+  if (!b) return '';
+  const st = typeof b.status === 'string' ? b.status : 'unbekannt';
+  return `<button class="st st-${esc(st)}${compact ? ' compact' : ''}" data-action="beleg" data-uid="${doc.uid}" data-path="${esc(path)}" title="Beleg: ${esc(L(st))} – Details" aria-label="Beleg: ${esc(L(st))}"><i></i>${compact ? '' : esc(L(st))}</button>`;
+}
+function refTags(doc, ids) {
+  const list = arr(ids);
+  if (!list.length) return '';
+  return `<span class="refs">${list.map(id => {
+    const target = lookupRef(doc, id);
+    const title = target ? (target.titel || target.parameter || target.bezeichnung || target.beschreibung || target.aufgabe || id) : 'Verweis zeigt ins Leere';
+    return `<button class="ref${target ? '' : ' broken'}" data-action="ref" data-uid="${doc.uid}" data-id="${esc(id)}" title="${esc(trunc(title, 120))}">${esc(id)}</button>`;
+  }).join('')}</span>`;
+}
+function lookupRef(doc, id) {
+  const c = doc.ctx, p = String(id)[0];
+  return ({ Q: c.quellen, A: c.annahmen, R: c.risiken, D: c.unterlagen, S: c.szenarien, W: c.widersprueche }[p] || new Map()).get(id)
+    || (p === 'V' ? c.list('vergleichsobjekte').find(x => x.id === id) : p === 'N' ? c.list('naechste_schritte').find(x => x.id === id) : undefined);
+}
+
+function scenRange(doc, key) {
+  const list = doc.ctx.scen.get(key);
+  if (!list || !list.length) return null;
+  const vals = list.map(x => x.value);
+  const min = Math.min(...vals), max = Math.max(...vals);
+  const u = unitFromText(list[0].unit) === 'eur_monat' ? 'eur' : (unitForKey(key) || unitFromText(list[0].unit));
+  const f = v => fmtNum(v, u, key);
+  return { min, max, values: vals, text: min === max ? f(min) : `${f(min)} – ${f(max)}`, tip: 'Nur in Szenarien berechnet:\n' + list.map(x => `${x.s.id ?? '?'} ${x.s.bezeichnung ?? ''}: ${f(x.value)}`).join('\n') };
+}
+
+function valueCell(doc, path, { unit, chip = true, compact = false, scenario = true } = {}) {
+  const key = lastKey(path);
+  const r = resolvePointer(doc.data, path);
+  const v = r.found ? r.value : undefined;
+  let html;
+  if (v === null || v === undefined) {
+    html = `<span class="null" title="${r.found ? 'null – nicht verlässlich bestimmbar' : 'Feld fehlt im Export'}">—</span>`;
+    const w = doc.ctx.conflicts.get(path);
+    if (w) html += ` <button class="tag tag-crit" data-action="ref" data-uid="${doc.uid}" data-id="${esc(w.id)}">strittig · ${esc(w.id)}</button>`;
+    if (scenario) { const sc = scenRange(doc, key); if (sc) html += ` <span class="scen" data-tip="${esc(sc.tip)}">Szenario: ${esc(sc.text)}</span>`; }
+  } else if (Array.isArray(v) && v.every(x => typeof x === 'string')) {
+    html = v.length ? `<span class="val">${esc(v.join(' · '))}</span>` : '<span class="null">leer</span>';
+  } else {
+    const txt = fmtValue(key, v, unit);
+    html = `<span class="val${typeof v === 'number' && v < 0 ? ' neg' : ''}">${esc(txt)}</span>`;
+    if (key === 'url' && safeUrl(v)) html = `<a href="${esc(safeUrl(v))}" target="_blank" rel="noopener noreferrer">${esc(trunc(v, 48))} ↗</a>`;
+  }
+  if (chip) html += belegChip(doc, path, compact);
+  return html;
+}
+
+const LONG_KEYS = new Set(['lageeinschaetzung', 'zustandseinschaetzung', 'sanierungsplanung', 'einschaetzung', 'nutzungsfokus_grundlage', 'einschraenkungen', 'titel']);
+function kvList(doc, sec, keys, { skip = [] } = {}) {
+  const o = obj(doc.data[sec]);
+  const all = [...keys, ...Object.keys(o).filter(k => !keys.includes(k))].filter(k => !skip.includes(k));
+  return `<dl class="kv">${all.map(k => {
+    const path = `/${sec}/${ptrKey(k)}`;
+    const v = o[k];
+    const long = (LONG_KEYS.has(k) && v != null) || (typeof v === 'string' && v.length > 80) || (Array.isArray(v) && v.length > 1);
+    if (long) {
+      const body = Array.isArray(v) ? `<ul>${v.map(x => `<li>${esc(typeof x === 'string' ? x : JSON.stringify(x))}</li>`).join('')}</ul>` : `<p>${esc(v)} ${belegChip(doc, path)}</p>`;
+      return `<div class="kv-row long"><dt>${esc(L(k))}</dt><dd>${body}</dd></div>`;
+    }
+    if (isObj(v) && !isRange(v)) return `<div class="kv-row"><dt>${esc(L(k))}</dt><dd><code>${esc(trunc(JSON.stringify(v), 120))}</code></dd></div>`;
+    return `<div class="kv-row"><dt>${esc(L(k))}</dt><dd>${valueCell(doc, path)}</dd></div>`;
+  }).join('')}</dl>`;
+}
+function emptyNote(text) {
+  return `<div class="empty"><b>${esc(text)}</b><br>Ein leeres Array bedeutet nur, dass nichts erfasst wurde – nicht, dass es nichts gibt.</div>`;
+}
+function issueSummary(doc) {
+  const c = countIssues(doc);
+  if (c.error) return `<span class="issue-btn error">✕ ${c.error} Fehler</span>${c.warn ? ` · <span class="issue-btn warn">⚠ ${c.warn}</span>` : ''}`;
+  if (c.warn) return `<span class="issue-btn warn">⚠ ${c.warn} Warnung${c.warn === 1 ? '' : 'en'}</span>`;
+  return '<span class="issue-btn ok">✓ Export geprüft</span>';
+}
+function issueTags(doc) {
+  const c = countIssues(doc);
+  return (c.error ? `<span class="tag tag-crit" title="Fehler gegen den Datenvertrag">✕ ${c.error}</span>` : '') + (c.warn ? `<span class="tag tag-warn" title="Warnungen">⚠ ${c.warn}</span>` : '') + (!c.error && !c.warn ? '<span class="tag tag-good" title="Keine Fehler oder Warnungen">✓</span>' : '');
+}
+
+/* =====================================================================
+   Diagramme (inline SVG, ohne Bibliotheken)
+   ===================================================================== */
+const chartFns = new Map();
+let chartSeq = 0;
+function chartSlot(fn, label) {
+  const id = 'c' + (++chartSeq);
+  chartFns.set(id, fn);
+  return `<div class="chart" data-chart="${id}" role="img" aria-label="${esc(label)}"></div>`;
+}
+function drawCharts() {
+  for (const el of document.querySelectorAll('[data-chart]')) {
+    const fn = chartFns.get(el.dataset.chart);
+    if (fn) el.innerHTML = fn(Math.max(280, el.clientWidth));
+  }
+}
+function niceTicks(a, b, n = 5) {
+  if (!(b > a)) { const d = Math.abs(a) * 0.1 || 1; a -= d; b += d; }
+  const raw = (b - a) / n, mag = Math.pow(10, Math.floor(Math.log10(raw))), f = raw / mag;
+  const step = (f >= 7.5 ? 10 : f >= 3.5 ? 5 : f >= 1.5 ? 2 : 1) * mag;
+  const lo = Math.floor(a / step) * step, hi = Math.ceil(b / step) * step;
+  const ticks = [];
+  for (let i = 0; lo + i * step <= hi + step * 1e-6; i++) ticks.push(Math.round((lo + i * step) / step) * step);
+  return { lo, hi, step, ticks };
+}
+/** Anzahl Achsenwerte nach verfügbarer Breite, damit Beschriftungen nicht kollidieren. */
+const tickCount = (px, labelPx = 72) => Math.max(2, Math.min(6, Math.floor(px / labelPx)));
+const pad = (a, b, f = 0.08) => { const s = (b - a) || Math.abs(a) * 0.1 || 1; return [a - s * f, b + s * f]; };
+const svgOpen = (w, h) => `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">`;
+function hbarPath(x0, x1, y, h, r = 4) {
+  const len = Math.abs(x1 - x0); r = Math.min(r, len / 2, h / 2);
+  if (len < 0.5) return '';
+  if (x1 >= x0) return `M${x0},${y}H${x1 - r}Q${x1},${y} ${x1},${y + r}V${y + h - r}Q${x1},${y + h} ${x1 - r},${y + h}H${x0}Z`;
+  return `M${x0},${y}H${x1 + r}Q${x1},${y} ${x1},${y + r}V${y + h - r}Q${x1},${y + h} ${x1 + r},${y + h}H${x0}Z`;
+}
+
+/** Streudiagramm Kaufpreis/m² gegen Bruttomietrendite (Vergleich). */
+function svgScatter(w, pts) {
+  const h = 340, m = { l: 58, r: 34, t: 30, b: 46 };
+  const xs = pts.flatMap(p => p.x), ys = pts.flatMap(p => p.y);
+  const [x0, x1] = pad(Math.min(...xs), Math.max(...xs)), [y0, y1] = pad(Math.min(...ys), Math.max(...ys));
+  const iw = w - m.l - m.r, ih = h - m.t - m.b;
+  const xt = niceTicks(x0, x1, tickCount(iw, 64)), yt = niceTicks(Math.max(0, y0), y1, 5);
+  const sx = v => m.l + (v - xt.lo) / (xt.hi - xt.lo) * iw;
+  const sy = v => m.t + ih - (v - yt.lo) / (yt.hi - yt.lo) * ih;
+  let s = svgOpen(w, h);
+  s += `<text class="axis-title" x="${m.l}" y="14">Bruttomietrendite (%)</text>`;
+  for (const t of yt.ticks) s += `<line class="grid" x1="${m.l}" x2="${w - m.r}" y1="${sy(t)}" y2="${sy(t)}"/><text class="tick" x="${m.l - 8}" y="${sy(t) + 4}" text-anchor="end">${nf1.format(t)}</text>`;
+  for (const t of xt.ticks) s += `<text class="tick" x="${sx(t)}" y="${m.t + ih + 18}" text-anchor="middle">${nf0.format(t)}</text>`;
+  s += `<line class="axis" x1="${m.l}" x2="${w - m.r}" y1="${m.t + ih}" y2="${m.t + ih}"/>`;
+  s += `<text class="axis-title" x="${m.l + iw / 2}" y="${h - 6}" text-anchor="middle">Kaufpreis pro m² (€)</text>`;
+  for (const p of pts) {
+    const ax = [Math.min(...p.x), Math.max(...p.x)].map(sx), ay = [Math.min(...p.y), Math.max(...p.y)].map(sy);
+    const ranged = ax[0] !== ax[1] || ay[0] !== ay[1];
+    if (ranged && ax[0] !== ax[1] && ay[0] !== ay[1]) s += `<rect class="rangebox" x="${ax[0]}" y="${ay[1]}" width="${ax[1] - ax[0]}" height="${ay[0] - ay[1]}" rx="4"/>`;
+    else if (ranged) s += `<line class="rangeline" x1="${ax[0]}" x2="${ax[1]}" y1="${ay[0]}" y2="${ay[1]}"/>`;
+    const marks = ranged ? [[ax[0], ay[0]], [ax[1], ay[1]]] : [[ax[0], ay[0]]];
+    for (const [cx, cy] of marks) s += `<circle class="dot${p.hollow ? ' hollow' : ''}" cx="${cx}" cy="${cy}" r="5.5"/>`;
+    const lx = Math.max(...marks.map(mk => mk[0])), ly = Math.min(...marks.map(mk => mk[1]));
+    const right = lx < w - m.r - 30;
+    s += `<text class="lbl" x="${right ? lx + 9 : lx - 9}" y="${ly - 7}" text-anchor="${right ? 'start' : 'end'}">#${p.num}</text>`;
+    for (const [cx, cy] of marks) s += `<circle class="hit" cx="${cx}" cy="${cy}" r="13" data-tip="${esc(p.tip)}" data-action="open" data-uid="${p.uid}" style="cursor:pointer"/>`;
+  }
+  return s + '</svg>';
+}
+
+/** Preis-Einordnung: Kaufpreis, Wertspannen und renditeabhängige Zahlungsgrenzen auf einer EUR-Achse. */
+function svgPriceMap(w, rows, ref) {
+  const rowH = 34, m = { l: Math.min(230, w * 0.38), r: w < 520 ? 84 : 128, t: 8, b: 34 };
+  const h = m.t + rows.length * rowH + m.b;
+  const vals = rows.flatMap(r => [r.min, r.max]);
+  const [a, b] = pad(Math.min(...vals), Math.max(...vals), 0.08);
+  const iw = w - m.l - m.r;
+  const xt = niceTicks(Math.max(0, a), b, tickCount(iw, 78));
+  const sx = v => m.l + (v - xt.lo) / (xt.hi - xt.lo) * iw;
+  let s = svgOpen(w, h);
+  for (const t of xt.ticks) s += `<line class="grid" x1="${sx(t)}" x2="${sx(t)}" y1="${m.t}" y2="${h - m.b}"/><text class="tick" x="${sx(t)}" y="${h - m.b + 18}" text-anchor="middle">${fmtAxis(t)}</text>`;
+  if (ref != null) s += `<line class="refline" x1="${sx(ref)}" x2="${sx(ref)}" y1="${m.t}" y2="${h - m.b}"/>`;
+  rows.forEach((r, i) => {
+    const cy = m.t + i * rowH + rowH / 2;
+    s += `<text class="${r.style === 'subject' ? 'lbl' : 'lbl2'}" x="${m.l - 12}" y="${cy + 4}" text-anchor="end"${r.style === 'subject' ? ' font-weight="600"' : ''}>${esc(trunc(r.label, Math.max(16, Math.floor(m.l / 6.6))))}</text>`;
+    const x0 = sx(r.min), x1 = sx(r.max);
+    if (r.kind === 'range') s += `<rect class="range-bar" x="${x0}" y="${cy - 7}" width="${Math.max(4, x1 - x0)}" height="14" rx="4"/>`;
+    else if (r.style === 'subject') s += `<rect class="subject" x="${x0 - 6}" y="${cy - 6}" width="12" height="12" transform="rotate(45 ${x0} ${cy})"/>`;
+    else s += `<circle class="dot limit" cx="${x0}" cy="${cy}" r="5.5"/>`;
+    const txt = r.kind === 'range' ? `${fmtAxis(r.min)}–${fmtAxis(r.max)}` : fmtNum(r.min, 'eur');
+    s += `<text class="val" x="${x1 + 10}" y="${cy + 4}">${esc(txt)}</text>`;
+    s += `<rect class="hit" x="${x0 - 10}" y="${cy - 13}" width="${Math.max(20, x1 - x0 + 20)}" height="26" data-tip="${esc(r.tip)}"/>`;
+  });
+  return s + '</svg>';
+}
+
+/** Punktdiagramm Preis pro m²: dieses Objekt und Vergleichsobjekte. */
+function svgDots(w, rows) {
+  const rowH = 30, m = { l: Math.min(190, w * 0.36), r: 70, t: 10, b: 34 };
+  const h = m.t + rows.length * rowH + m.b;
+  const vals = rows.flatMap(r => r.values);
+  const [a, b] = pad(Math.min(...vals), Math.max(...vals), 0.1);
+  const iw = w - m.l - m.r;
+  const xt = niceTicks(a, b, tickCount(iw, 56));
+  const sx = v => m.l + (v - xt.lo) / (xt.hi - xt.lo) * iw;
+  let s = svgOpen(w, h);
+  for (const t of xt.ticks) s += `<line class="grid" x1="${sx(t)}" x2="${sx(t)}" y1="${m.t}" y2="${h - m.b}"/><text class="tick" x="${sx(t)}" y="${h - m.b + 18}" text-anchor="middle">${nf0.format(t)}</text>`;
+  rows.forEach((r, i) => {
+    const cy = m.t + i * rowH + rowH / 2;
+    s += `<text class="${r.style === 'subject' ? 'lbl' : 'lbl2'}" x="${m.l - 12}" y="${cy + 4}" text-anchor="end"${r.style === 'subject' ? ' font-weight="600"' : ''}>${esc(r.label)}</text>`;
+    const xs = r.values.map(sx);
+    if (xs.length > 1) s += `<line class="rangeline${r.style === 'subject' ? ' ink' : ''}" x1="${Math.min(...xs)}" x2="${Math.max(...xs)}" y1="${cy}" y2="${cy}"/>`;
+    for (const x of xs) {
+      if (r.style === 'subject') s += `<rect class="subject" x="${x - 6}" y="${cy - 6}" width="12" height="12" transform="rotate(45 ${x} ${cy})"/>`;
+      else if (r.style === 'ausgeschlossen') s += `<path class="marker" d="M${x - 4},${cy - 4}L${x + 4},${cy + 4}M${x + 4},${cy - 4}L${x - 4},${cy + 4}" style="stroke:var(--muted);stroke-width:2"/>`;
+      else s += `<circle class="dot${r.style === 'eingeschraenkt' ? ' hollow' : ''}" cx="${x}" cy="${cy}" r="5.5"/>`;
+    }
+    const maxX = Math.max(...xs);
+    s += `<text class="val" x="${maxX + 10}" y="${cy + 4}">${esc(r.values.length > 1 ? nf0.format(Math.min(...r.values)) + '–' + nf0.format(Math.max(...r.values)) : nf0.format(r.values[0]))}</text>`;
+    s += `<rect class="hit" x="${Math.min(...xs) - 10}" y="${cy - 12}" width="${maxX - Math.min(...xs) + 20}" height="24" data-tip="${esc(r.tip)}"/>`;
+  });
+  return s + '</svg>';
+}
+
+/** Cashflow je Szenario, divergierend um 0. */
+function svgCashflow(w, rows) {
+  const rowH = 36, bh = 16, m = { l: Math.min(240, w * 0.42), r: 74, t: 8, b: 32 };
+  const h = m.t + rows.length * rowH + m.b;
+  const vals = rows.map(r => r.value);
+  const iw = w - m.l - m.r;
+  const xt = niceTicks(Math.min(0, ...vals), Math.max(0, ...vals), tickCount(iw, 56));
+  const sx = v => m.l + (v - xt.lo) / (xt.hi - xt.lo) * iw;
+  let s = svgOpen(w, h);
+  for (const t of xt.ticks) s += `<line class="grid" x1="${sx(t)}" x2="${sx(t)}" y1="${m.t}" y2="${h - m.b}"/><text class="tick" x="${sx(t)}" y="${h - m.b + 18}" text-anchor="middle">${minus(nf0.format(t))}</text>`;
+  rows.forEach((r, i) => {
+    const y = m.t + i * rowH + (rowH - bh) / 2;
+    s += `<text class="lbl2" x="${m.l - 12}" y="${y + 12}" text-anchor="end">${esc(trunc(r.label, Math.max(18, Math.floor(m.l / 7))))}</text>`;
+    s += `<path class="${r.value < 0 ? 'bar-neg' : 'bar-pos'}" d="${hbarPath(sx(0), sx(r.value), y, bh)}"/>`;
+    const x = sx(r.value), left = r.value < 0;
+    s += `<text class="val" x="${left ? x - 8 : x + 8}" y="${y + 12}" text-anchor="${left ? 'end' : 'start'}">${esc(fmtNum(r.value, 'eur'))}</text>`;
+    s += `<rect class="hit" x="${Math.min(sx(0), x) - 4}" y="${y - 8}" width="${Math.abs(x - sx(0)) + 8}" height="${bh + 16}" data-tip="${esc(r.tip)}"/>`;
+  });
+  s += `<line class="axis" x1="${sx(0)}" x2="${sx(0)}" y1="${m.t}" y2="${h - m.b}"/>`;
+  return s + '</svg>';
+}
+const legendDot = (cls, shape = 'circle') => `<svg width="14" height="14" viewBox="0 0 14 14">${shape === 'diamond' ? '<rect x="3" y="3" width="8" height="8" transform="rotate(45 7 7)" style="fill:var(--ink)"/>' : shape === 'x' ? '<path d="M3,3L11,11M11,3L3,11" style="stroke:var(--muted);stroke-width:2"/>' : `<circle cx="7" cy="7" r="5" class="${cls}" style="${cls === 'hollow' ? 'fill:var(--surface);stroke:var(--c-blue);stroke-width:2' : 'fill:var(--c-blue)'}"/>`}</svg>`;
+
+/* =====================================================================
+   Ansichten
+   ===================================================================== */
+function render() {
+  chartFns.clear();
+  renderSidebar();
+  const main = $('#main');
+  if (!state.docs.length) state.view = 'start';
+  if (state.view === 'detail' && !getDoc(state.current)) state.view = state.docs.length ? 'compare' : 'start';
+  if (state.view === 'compare' && !immoDocs().length) { state.view = state.docs.length ? 'detail' : 'start'; state.current = state.docs[0]?.uid; }
+  main.innerHTML = state.view === 'start' ? viewStart() : state.view === 'compare' ? viewCompare() : viewDetail(getDoc(state.current));
+  drawCharts();
+}
+
+function renderSidebar() {
+  const sb = $('#sidebar');
+  const immo = immoDocs();
+  const latestCount = immo.filter(d => d.rev?.latest).length;
+  sb.innerHTML = `
+    <div class="side-actions">
+      <button class="btn primary" data-action="pick-files" title="JSON-Dateien auswählen">+ Dateien</button>
+      <button class="btn" data-action="pick-dir" title="Ordner mit JSON-Dateien wählen">Ordner</button>
+      <button class="btn" data-action="paste" title="JSON-Text einfügen">Einfügen</button>
+    </div>
+    ${state.docs.length ? `
+    <nav class="doclist">
+      ${immo.length > 1 ? `<button class="navitem${state.view === 'compare' ? ' active' : ''}" data-action="compare">Vergleich <span class="count">${latestCount}</span></button>` : ''}
+      <div class="side-label">Bewertungen</div>
+      ${state.docs.map(d => {
+        const active = state.view === 'detail' && state.current === d.uid;
+        const m = obj(obj(d.data).metadaten), a = obj(obj(d.data).angebot);
+        const sub = d.isImmo ? [docPlace(d), platLabel(a.plattform), m.pruefdatum ? fmtDate(m.pruefdatum) : null].filter(Boolean).join(' · ') : 'nicht lesbar';
+        const rev = d.isImmo && d.rev && d.rev.total > 1 ? `<span class="tag" title="${d.rev.latest ? 'Neueste Revision' : 'Ältere Revision'}">Rev. ${d.rev.index}/${d.rev.total}</span>` : '';
+        return `<div class="docitem${active ? ' active' : ''}${d.isImmo && d.rev && !d.rev.latest ? ' old' : ''}" data-action="open" data-uid="${d.uid}" role="button" tabindex="0">
+          <span class="vdot ${d.isImmo ? vcls(urteilOf(d)) : 'v-crit'}" title="${esc(d.isImmo ? L(urteilOf(d) || 'nicht_bewertbar') : 'Fehler')}"></span>
+          <div class="di-main"><div class="di-title">${d.isImmo ? `<span class="num">#${d.num}</span> ` : ''}${esc(docTitle(d))}</div><div class="di-sub" title="${esc(d.fileName)}">${esc(sub)}</div><div class="di-badges">${rev}${d.isImmo ? offerTag(d.data) : ''}${issueTags(d)}</div></div>
+          <button class="icon-btn" data-action="remove" data-uid="${d.uid}" title="Aus der Ansicht entfernen" aria-label="Entfernen">×</button>
+        </div>`;
+      }).join('')}
+    </nav>` : '<p class="fine" style="margin:4px">Noch keine Dateien geladen.</p>'}
+    <div class="side-foot">
+      <label class="check"><input type="checkbox" id="persist" ${state.persist ? 'checked' : ''}> Dateien in diesem Browser merken</label>
+      ${state.saveError ? `<span class="notice">${esc(state.saveError)}</span>` : ''}
+      ${state.docs.length ? '<button class="linkbtn" data-action="clear-all" style="align-self:flex-start">Alle entfernen</button>' : ''}
+    </div>`;
+}
+
+function viewStart() {
+  return `<div class="start">
+    <div class="drop" data-action="pick-files">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="m7 8 5-5 5 5"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></svg>
+      <h1>Bewertungs-Exporte ansehen und vergleichen</h1>
+      <p>JSON-Dateien nach Schema 1.0 (Master-Prompt V3 oder V3.1) hierher ziehen – eine Datei für die Einzelansicht, mehrere für den Vergleich. Auch ganze Ordner funktionieren.</p>
+      <div class="btn-row">
+        <button class="btn primary" data-action="pick-files">Dateien auswählen</button>
+        <button class="btn" data-action="pick-dir">Ordner wählen</button>
+        <button class="btn" data-action="paste">JSON einfügen</button>
+      </div>
+      <p class="fine">Die Dateien werden nur lokal in diesem Browser gelesen. Nichts wird hochgeladen.</p>
+    </div>
+    <div class="flow" aria-label="Arbeitsablauf"><span class="box">Inserat-Link</span>→<span class="box">KI-Prüfung mit Master-Prompt V3.1</span>→<span class="box">JSON-Export</span>→<span class="box">Dieser Viewer</span></div>
+    <div class="features">
+      <div class="feature"><b>Einzelansicht</b><p>Entscheidungsüberblick, vier getrennte Urteile, Steckbrief mit Belegstatus, Widersprüche, Szenarien, Risiken und nächste Schritte.</p></div>
+      <div class="feature"><b>Vergleich</b><p>Sortierbare Tabelle, Streudiagramm Preis/m² gegen Rendite, Gegenüberstellung mit Abgleich der Annahmen und CSV-Export.</p></div>
+      <div class="feature"><b>Exportprüfung</b><p>Prüft Datentypen, Kategorien, IDs, Verweise und JSON-Pointer und rechnet Kennzahlen nach.</p></div>
+    </div>
+    ${location.protocol === 'file:'
+      ? '<p class="fine" style="text-align:center;margin-top:18px">Fiktive Beispieldateien liegen im Ordner <code>beispiele/</code> neben dieser Datei.</p>'
+      : '<div class="btn-row"><button class="btn" data-action="load-samples">Fiktive Beispiele laden</button></div>'}
+  </div>`;
+}
+
+/* ---------- Einzelansicht ---------- */
+function viewDetail(doc) {
+  if (!doc) return '';
+  if (!doc.isImmo) return viewErrorDoc(doc);
+  const nav = [['sec-ueberblick', 'Überblick'], ['sec-steckbrief', 'A · Steckbrief'], ['sec-widersprueche', 'B · Widersprüche'], ['sec-lage', 'C · Lage & Energie'], ['sec-preis', 'D · Preis & Vergleich'], ['sec-kosten', 'E · Kosten & Szenarien'], ['sec-weg', 'F · WEG & Risiken'], ['sec-schritte', 'H · Nächste Schritte'], ['sec-quellen', 'Quellen & Belege'], ['sec-pruefung', 'Exportprüfung'], ['sec-roh', 'Rohdaten']];
+  return detailHead(doc)
+    + `<nav class="subnav" aria-label="Abschnitte">${nav.map(([id, t]) => `<button data-action="jump" data-target="${id}">${t}</button>`).join('')}</nav>`
+    + secOverview(doc) + secSteckbrief(doc) + secWidersprueche(doc) + secLage(doc) + secPreis(doc) + secKosten(doc) + secWeg(doc) + secSchritte(doc) + secQuellen(doc) + secPruefung(doc) + secRoh(doc);
+}
+
+function viewErrorDoc(doc) {
+  return `<div class="page-head"><div><div class="crumbs">${immoDocs().length > 1 ? '<button class="linkbtn" data-action="compare">← Zum Vergleich</button>' : ''}</div><h1 style="margin-top:6px">${esc(doc.fileName)}</h1><p class="sub">Diese Datei konnte nicht als Immobilienbewertung gelesen werden.</p></div></div>
+    <div class="card"><ul class="issues">${issueItems(doc.issues)}</ul>
+    ${doc.text ? `<details class="raw" style="margin-top:14px"><summary>Dateiinhalt (Auszug)</summary><pre>${esc(doc.text.slice(0, 6000))}</pre></details>` : ''}</div>`;
+}
+
+function detailHead(doc) {
+  const d = doc.data, a = obj(d.angebot), s = obj(d.standort), m = obj(d.metadaten);
+  const url = safeUrl(a.url);
+  const place = [[s.postleitzahl, s.ort].filter(Boolean).join(' '), s.stadtteil].filter(Boolean).join(' – ');
+  const ids = [platLabel(a.plattform), a.plattform_id != null ? `ID ${a.plattform_id}` : null, a.anbieter_objektnummer ? `Obj.-Nr. ${a.anbieter_objektnummer}` : null, a.einheit].filter(Boolean).join(' · ');
+  const chip = (label, v, extra) => v == null ? '' : `<span class="meta"><span class="muted">${label}</span>${esc(fmtValue(label === 'Prüfdatum' || label === 'Export' ? 'datum' : label === 'Status' ? 'analysestatus' : 'status', v))}${extra ? ` <span class="muted">(${esc(fmtDate(extra))})</span>` : ''}</span>`;
+  let rev = '';
+  if (doc.rev && doc.rev.total > 1) {
+    const others = doc.rev.group.filter(x => x !== doc);
+    rev = `<div class="revnote no-print"><b>${doc.rev.latest ? `Neueste von ${doc.rev.total} Revisionen.` : `Ältere Revision (${doc.rev.index} von ${doc.rev.total}).`}</b>${others.map(o => `<button class="linkbtn" data-action="open" data-uid="${o.uid}">Rev. ${o.rev.index} vom ${esc(fmtDate(obj(o.data.metadaten).exportdatum || obj(o.data.metadaten).pruefdatum || ''))} öffnen</button>`).join(' · ')}</div>`;
+  }
+  return `<div class="detail-head">
+    <div class="crumbs">${immoDocs().length > 1 ? '<button class="linkbtn" data-action="compare">← Zum Vergleich</button><span>/</span>' : ''}<span class="file" title="${esc(doc.fileName)}">${esc(doc.fileName)}</span></div>
+    <div class="dh-row">
+      <div class="dh-main">
+        <h1><span class="num">#${doc.num}</span> ${esc(docTitle(doc))}</h1>
+        <p class="sub">${esc([place, a.objektart].filter(Boolean).join(' · '))}</p>
+        <p class="sub small">${esc(ids)}${url ? ` · <a href="${esc(url)}" target="_blank" rel="noopener noreferrer">Inserat öffnen ↗</a>` : ''}</p>
+      </div>
+      <div class="dh-actions"><button class="btn sm" data-action="jump" data-target="sec-pruefung">${issueSummary(doc)}</button><button class="btn sm needs-print" data-action="print">Drucken / PDF</button></div>
+    </div>
+    <div class="meta-chips">
+      ${chip('Status', m.analysestatus)}${chip('Zugriff', a.zugriffsstatus)}${chip('Verfügbarkeit', a.verfuegbarkeit, a.verfuegbarkeit_stand)}${chip('Fokus', m.nutzungsfokus)}${chip('Prüfdatum', m.pruefdatum)}${chip('Export', m.exportdatum)}
+    </div>
+    ${offerNotice(d)}
+    ${rev}
+  </div>`;
+}
+
+function tile(doc, path, label) {
+  const key = lastKey(path);
+  const r = resolvePointer(doc.data, path);
+  const v = r.found ? r.value : null;
+  let main, sub = '';
+  if (v === null || v === undefined) {
+    main = '<span class="null">—</span>';
+    const w = doc.ctx.conflicts.get(path), sc = scenRange(doc, key);
+    const na = doc.ctx.belege.get(path)?.status === 'nicht_anwendbar';
+    sub = (w ? `<button class="tag tag-crit" data-action="ref" data-uid="${doc.uid}" data-id="${esc(w.id)}">strittig · ${esc(w.id)}</button>` : sc || na ? '' : '<span class="muted">nicht bestimmt</span>')
+      + (sc ? ` <span class="scen" data-tip="${esc(sc.tip)}">Szenario: ${esc(sc.text)}</span>` : '');
+  } else main = `<span class="${typeof v === 'number' && v < 0 ? 'neg' : ''}">${esc(fmtValue(key, v))}</span>`;
+  return `<div class="tile"><div class="tile-label">${esc(label)}</div><div class="tile-value">${main}</div><div class="tile-foot">${sub}${belegChip(doc, path)}</div></div>`;
+}
+
+function secOverview(doc) {
+  const b = obj(doc.data.bewertung), m = obj(doc.data.metadaten);
+  const tiles = [['/objekt/kaufpreis_eur', 'Kaufpreis'], ['/objekt/wohnflaeche_m2', 'Wohnfläche'], ['/kennzahlen/kaufpreis_pro_m2_eur', 'Kaufpreis pro m²'], ['/ist_kosten_und_ertraege/nettokaltmiete_monat_eur', 'Nettokaltmiete / Monat'], ['/kennzahlen/bruttomietrendite_prozent', 'Bruttomietrendite'], ['/kennzahlen/kaufpreisfaktor_jahre', 'Kaufpreisfaktor'], ['/kennzahlen/gesamtinvestition_eur', 'Gesamtinvestition'], ['/kennzahlen/wirtschaftliche_nettorendite_vor_finanzierung_steuern_prozent', 'Nettorendite vor Finanzierung/Steuern']];
+  const teil = (t, title) => {
+    t = obj(t);
+    return `<div class="teil"><div class="teil-head"><span class="teil-title">${esc(title)}</span>${meter(t.belegsicherheit, false)}</div>
+      <div class="teil-urteil">${t.urteil ? esc(t.urteil) : '<span class="null">Kein Urteil</span>'}</div>
+      ${t.begruendung ? `<p class="teil-text">${esc(t.begruendung)}</p>` : ''}</div>`;
+  };
+  const points = arr(b.entscheidende_offene_punkte);
+  const limits = arr(m.einschraenkungen);
+  return `<section class="sec" id="sec-ueberblick" style="margin-top:20px">
+    <div class="card verdict-card ${vcls(b.gesamturteil)}">
+      <div class="vc-head">
+        <div><div class="eyebrow">Vorläufiges Gesamturteil</div>${verdictBadge(b.gesamturteil, 'big')}</div>
+        <div><div class="eyebrow">Belegsicherheit</div>${meter(b.belegsicherheit)}</div>
+      </div>
+      ${b.begruendung ? `<p class="lead">${esc(b.begruendung)}</p>` : ''}
+      <div class="teil-grid">${TEILURTEILE.map(([k, t]) => teil(b[k], t)).join('')}</div>
+      ${points.length ? `<div class="open-points"><div class="eyebrow">Entscheidende offene Punkte</div><ol>${points.map(p => `<li>${esc(p)}</li>`).join('')}</ol></div>` : ''}
+    </div>
+    <div class="tiles">${tiles.map(([p, t]) => tile(doc, p, t)).join('')}</div>
+    ${limits.length ? `<div class="callout"><b>Einschränkungen der Prüfung</b><ul>${limits.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>` : ''}
+  </section>`;
+}
+
+function secSteckbrief(doc) {
+  return `<section class="sec" id="sec-steckbrief"><h2><span class="letter">A</span>Objektsteckbrief</h2>
+    <div class="card">
+      <div class="kv-title">Angebot</div>${kvList(doc, 'angebot', CORE.angebot, { skip: ['titel'] })}
+      <div class="kv-title">Objekt</div>${kvList(doc, 'objekt', CORE.objekt)}
+      <div class="kv-title">Prüfrahmen</div>${kvList(doc, 'metadaten', CORE.metadaten, { skip: ['einschraenkungen'] })}
+    </div></section>`;
+}
+
+function secWidersprueche(doc) {
+  const ws = doc.ctx.list('widersprueche');
+  const body = !ws.length ? emptyNote('Keine Widersprüche erfasst.') : `<div class="stack">${ws.map(w => {
+    const key = lastKey(w.feldpfad || '');
+    const open = w.status !== 'aufgeloest';
+    return `<div class="item" id="ref-${doc.uid}-${esc(w.id)}">
+      <div class="item-head"><span class="id">${esc(w.id)}</span><span class="title">${esc(L(key))}</span><code>${esc(w.feldpfad)}</code><span class="tag ${open ? 'tag-crit' : 'tag-good'}">${open ? 'Offen' : 'Aufgelöst'}</span></div>
+      <div class="table-wrap"><table class="t"><thead><tr><th>Wert</th><th>Datenstand</th><th>Quellen</th><th>Hinweis</th></tr></thead><tbody>
+        ${arr(w.varianten).filter(isObj).map(v => `<tr><td class="nowrap"><b>${esc(typeof v.wert === 'number' ? fmtValue(key, v.wert, unitFromText(v.einheit) ?? undefined) : v.wert ?? '—')}</b></td><td class="nowrap">${v.datenstand ? esc(fmtDate(v.datenstand)) : '<span class="null">—</span>'}</td><td>${refTags(doc, v.quellen_ids)}</td><td>${esc(v.hinweis ?? '')}</td></tr>`).join('')}
+      </tbody></table></div>
+      ${w.auswirkung ? `<p><span class="lbl">Auswirkung:</span> ${esc(w.auswirkung)}</p>` : ''}
+      ${w.klaerungsbedarf ? `<p><span class="lbl">Klärungsbedarf:</span> ${esc(w.klaerungsbedarf)}</p>` : ''}
+      ${w.aufloesung ? `<p><span class="lbl">Auflösung:</span> ${esc(w.aufloesung)}</p>` : ''}
+    </div>`;
+  }).join('')}</div>`;
+  return `<section class="sec" id="sec-widersprueche"><h2><span class="letter">B</span>Widersprüche</h2>${body}</section>`;
+}
+
+function energyScale(e, pruefdatum) {
+  const k = isNum(e.kennwert_kwh_m2_a) ? e.kennwert_kwh_m2_a : null;
+  const cls = ENERGY_CLASSES.includes(e.effizienzklasse) ? e.effizienzklasse : null;
+  if (k == null && !cls) return '';
+  const ramp = ['#cde2fb', '#b7d3f6', '#9ec5f4', '#6da7ec', '#3987e5', '#2a78d6', '#1c5cab', '#184f95', '#0d366b'];
+  let marker = '';
+  if (k != null) {
+    const kc = klasseFromKennwert(k), i = ENERGY_CLASSES.indexOf(kc);
+    const lo = ENERGY_BOUNDS[i], hi = ENERGY_BOUNDS[i + 1];
+    const pos = (i + Math.min(1, Math.max(0, (k - lo) / (hi - lo)))) / 9 * 100;
+    marker = `<div class="escale-marker"><i style="left:${pos}%"></i><b style="left:${Math.min(88, Math.max(12, pos))}%">${esc(fmtNum(k, 'kwh'))}</b></div>`;
+  }
+  const notes = [];
+  if (isValidDate(e.gueltig_bis) && isValidDate(pruefdatum) && e.gueltig_bis < pruefdatum) notes.push(`<span class="tag tag-warn">Zum Prüfdatum abgelaufen (gültig bis ${esc(fmtDate(e.gueltig_bis))})</span>`);
+  if (isValidDate(e.verbrauchszeitraum_bis) && isValidDate(pruefdatum)) {
+    const years = Math.floor((new Date(pruefdatum) - new Date(e.verbrauchszeitraum_bis)) / 31557600000);
+    if (years >= 3) notes.push(`<span class="tag">Verbrauchsdaten enden ${years} Jahre vor dem Prüfdatum</span>`);
+  }
+  if (k != null && cls && klasseFromKennwert(k) !== cls) notes.push(`<span class="tag tag-warn">Klasse ${esc(cls)} passt nicht zur Kennwertgrenze (${esc(klasseFromKennwert(k))})</span>`);
+  return `<div class="escale">
+    <div class="escale-bar">${ENERGY_CLASSES.map((c, i) => `<span class="${c === cls ? 'on' : ''}" style="--bg:${ramp[i]};--fg:${i < 4 ? '#0b0b0b' : '#fff'}">${c}</span>`).join('')}</div>
+    ${marker}
+    <div class="escale-ticks">${ENERGY_BOUNDS.slice(0, 9).map(b => `<span>${b === 0 ? '' : '≥' + b}</span>`).join('')}</div>
+    <p class="chart-note">Skala nach GEG-Klassengrenzen in kWh/(m²·a). Ein gültiger Ausweis kann einen älteren energetischen Zustand abbilden.</p>
+    ${notes.length ? `<div class="meta-chips" style="margin-top:6px">${notes.join('')}</div>` : ''}
+  </div>`;
+}
+
+function secLage(doc) {
+  const e = obj(doc.data.energie), m = obj(doc.data.metadaten);
+  return `<section class="sec" id="sec-lage"><h2><span class="letter">C</span>Lage, Gebäude & Energie</h2>
+    <div class="grid-2">
+      <div class="card"><h3>Standort</h3><p class="card-sub">Ohne hausgenaue Adresse keine hausgenauen Wegezeiten oder Gefahrenwerte.</p>${kvList(doc, 'standort', CORE.standort)}</div>
+      <div class="card"><h3>Energie</h3><p class="card-sub">Energieausweis laut Export.</p>${kvList(doc, 'energie', CORE.energie)}${energyScale(e, m.pruefdatum)}</div>
+    </div></section>`;
+}
+
+function secPreis(doc) {
+  const d = doc.data, pb = obj(d.preisbewertung), o = obj(d.objekt), kz = obj(d.kennzahlen);
+  const kp = isNum(o.kaufpreis_eur) ? o.kaufpreis_eur : null;
+  const priceRows = [];
+  if (kp != null) priceRows.push({ label: 'Kaufpreis', kind: 'point', style: 'subject', min: kp, max: kp, tip: `Kaufpreis: ${fmtNum(kp, 'eur')}` });
+  [['Angebotsvergleichsspanne', pb.angebotsvergleichsspanne_eur], ['Marktwertspanne', pb.marktwertspanne_eur]].forEach(([label, r]) => {
+    if (isRange(r)) priceRows.push({ label, kind: 'range', min: r.min, max: r.max, tip: `${label}\n${fmtNum(r.min, 'eur')} – ${fmtNum(r.max, 'eur')}` });
+  });
+  for (const s of arr(d.szenarien).filter(isObj)) {
+    const rs = arr(s.rechnung).filter(isObj);
+    const g = rs.find(r => r.kennzahl === 'zahlungsgrenze_eur' && isNum(r.wert));
+    if (!g) continue;
+    const ziel = rs.find(r => r.kennzahl === 'ziel_bruttomietrendite_prozent' && isNum(r.wert));
+    const label = ziel ? `Zahlungsgrenze bei ${nf1.format(ziel.wert)} %` : (s.bezeichnung || 'Zahlungsgrenze');
+    priceRows.push({ label, kind: 'point', style: 'limit', min: g.wert, max: g.wert, tip: `${s.id ?? ''} ${s.bezeichnung ?? ''}\nZahlungsgrenze: ${fmtNum(g.wert, 'eur')}${kp != null ? `\nAbstand zum Kaufpreis: ${fmtNum(g.wert - kp, 'eur')}` : ''}\nAnlegerannahme, kein Marktwert.` });
+  }
+  const hasLimit = priceRows.some(r => r.style === 'limit'), hasRange = priceRows.some(r => r.kind === 'range');
+  const rangeChart = priceRows.length > 1
+    ? chartSlot(w => svgPriceMap(w, priceRows, kp), 'Kaufpreis, Wertspannen und Zahlungsgrenzen')
+      + `<div class="chart-legend"><span>${legendDot('', 'diamond')}Kaufpreis</span>${hasRange ? `<span><svg width="18" height="10" viewBox="0 0 18 10"><rect x="1" y="2" width="16" height="6" rx="3" style="fill:var(--range)"/></svg>Wertspanne laut Export</span>` : ''}${hasLimit ? `<span><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="5" style="fill:var(--c-orange)"/></svg>Zahlungsgrenze (Zielrendite-Szenario)</span>` : ''}</div>`
+      + `<p class="chart-note">Angebotsspannen beruhen auf Angebotspreisen, nicht auf beurkundeten Kaufpreisen. Zahlungsgrenzen sind renditeabhängige Anlegerannahmen, kein Marktwert.${hasRange ? '' : ` Keine Wertspanne ausgewiesen (Aussagebasis: ${esc(L(pb.aussagebasis || 'unzureichend'))}).`}</p>`
+    : `<div class="empty"><b>Keine Wertspanne und keine Zahlungsgrenze ausgewiesen.</b><br>Aussagebasis: ${esc(L(pb.aussagebasis || 'unzureichend'))}. Bei unzureichender Grundlage bleibt die Spanne null.</div>`;
+  const vs = doc.ctx.list('vergleichsobjekte');
+  const rows = vs.map((v, i) => {
+    const calc = isNum(v.preis_eur) && isNum(v.wohnflaeche_m2) && v.wohnflaeche_m2 > 0 ? v.preis_eur / v.wohnflaeche_m2 : null;
+    const stored = isNum(v.preis_pro_m2_eur) ? v.preis_pro_m2_eur : null;
+    let qm = stored != null ? esc(fmtNum(stored, 'eur_m2')) : calc != null ? `<span class="muted" title="Im Export null; vom Viewer berechnet">≈ ${esc(fmtNum(calc, 'eur_m2'))}</span>` : '<span class="null">—</span>';
+    if (stored != null && calc != null && !near(stored, calc, 0.011)) qm += ` <span class="tag tag-warn" data-tip="Nachgerechnet: ${esc(fmtNum(calc, 'eur_m2'))}">⚠</span>`;
+    const url = safeUrl(v.url);
+    return `<tr id="ref-${doc.uid}-${esc(v.id)}" class="${v.eignung === 'ausgeschlossen' ? 'excluded' : ''}">
+      <td><span class="id">${esc(v.id ?? i + 1)}</span></td><td class="nowrap">${esc(L(v.preisart || 'unbekannt'))}</td>
+      <td class="num">${isNum(v.preis_eur) ? esc(fmtNum(v.preis_eur, 'eur')) : '<span class="null">—</span>'}</td>
+      <td class="num">${isNum(v.wohnflaeche_m2) ? esc(fmtNum(v.wohnflaeche_m2, 'm2')) : '<span class="null">—</span>'}</td>
+      <td class="num">${qm}</td>
+      <td class="nowrap"><span class="tag${v.eignung === 'gut' ? ' tag-good' : v.eignung === 'ausgeschlossen' ? ' tag-crit' : ''}">${esc(L(v.eignung || 'unbekannt'))}</span></td>
+      <td class="nowrap">${v.gleicher_gebaeudekomplex === true ? 'Ja' : v.gleicher_gebaeudekomplex === false ? 'Nein' : '<span class="null">—</span>'}</td>
+      <td>${esc(v.unterschiede_und_begruendung ?? '')}</td>
+      <td class="nowrap">${refTags(doc, v.quellen_ids)}${url ? ` <a href="${esc(url)}" target="_blank" rel="noopener noreferrer" title="Angebot öffnen">↗</a>` : ''}</td></tr>`;
+  }).join('');
+
+  // Punktdiagramm €/m²
+  const dotRows = [];
+  const subjVals = isNum(kz.kaufpreis_pro_m2_eur) ? [kz.kaufpreis_pro_m2_eur] : (scenRange(doc, 'kaufpreis_pro_m2_eur')?.values || []);
+  if (subjVals.length) dotRows.push({ label: 'Dieses Objekt', values: [Math.min(...subjVals), Math.max(...subjVals)].filter((x, i, a) => a.indexOf(x) === i), style: 'subject', tip: isNum(kz.kaufpreis_pro_m2_eur) ? `Dieses Objekt: ${fmtNum(kz.kaufpreis_pro_m2_eur, 'eur_m2')}` : scenRange(doc, 'kaufpreis_pro_m2_eur').tip });
+  for (const v of vs) {
+    const val = isNum(v.preis_pro_m2_eur) ? v.preis_pro_m2_eur : isNum(v.preis_eur) && isNum(v.wohnflaeche_m2) && v.wohnflaeche_m2 > 0 ? v.preis_eur / v.wohnflaeche_m2 : null;
+    if (val != null) dotRows.push({ label: `${v.id ?? ''} · ${L(v.eignung || 'unbekannt')}`, values: [val], style: v.eignung || 'gut', tip: `${v.id}: ${fmtNum(val, 'eur_m2')}\n${L(v.preisart || 'unbekannt')} · Eignung ${L(v.eignung || 'unbekannt')}\n${v.unterschiede_und_begruendung ?? ''}` });
+  }
+  const dotChart = dotRows.length > 1 ? `<div class="card"><h3>Preis pro m² im Vergleich</h3><p class="card-sub">Ausgeschlossene Vergleiche sind markiert und fließen nicht in Spannen ein.</p>${chartSlot(w => svgDots(w, dotRows), 'Preis pro m² dieses Objekts und der Vergleichsobjekte')}
+    <div class="chart-legend"><span>${legendDot('', 'diamond')}Dieses Objekt${subjVals.length > 1 ? ' (Szenario-Spanne)' : ''}</span><span>${legendDot('')}Eignung gut</span><span>${legendDot('hollow')}Eingeschränkt</span><span>${legendDot('', 'x')}Ausgeschlossen</span></div></div>` : '';
+
+  return `<section class="sec" id="sec-preis"><h2><span class="letter">D</span>Vergleichsobjekte & Preisurteil</h2>
+    <div class="stack">
+      <div class="grid-2">
+        <div class="card"><h3>Preisbewertung</h3><p class="card-sub">Angebotspreise sind keine Transaktionspreise; kein Verkehrswertgutachten.</p>${kvList(doc, 'preisbewertung', CORE.preisbewertung)}</div>
+        <div class="card"><h3>Preis-Einordnung</h3><p class="card-sub">Kaufpreis gegenüber Wertspannen und Zahlungsgrenzen aus dem Export.</p>${rangeChart}</div>
+      </div>
+      ${vs.length ? `<div class="card flush"><div class="table-wrap"><table class="t"><thead><tr><th>ID</th><th>Preisart</th><th class="num">Preis</th><th class="num">Fläche</th><th class="num">€/m²</th><th>Eignung</th><th>Gl. Komplex</th><th>Unterschiede & Begründung</th><th>Quellen</th></tr></thead><tbody>${rows}</tbody></table></div></div>` : emptyNote('Keine Vergleichsobjekte erfasst.')}
+      ${dotChart}
+    </div></section>`;
+}
+
+function secKosten(doc) {
+  const ctx = doc.ctx, an = ctx.list('annahmen'), sz = arr(doc.data.szenarien);
+  const annTable = an.length ? `<div class="card flush"><div class="table-wrap"><table class="t"><thead><tr><th>ID</th><th>Parameter</th><th class="num">Wert</th><th>Einheit</th><th>Begründung</th><th>Quellen</th></tr></thead><tbody>
+    ${an.map(a => `<tr id="ref-${doc.uid}-${esc(a.id)}"><td><span class="id">${esc(a.id)}</span></td><td>${esc(a.parameter ?? '')}</td><td class="num">${esc(typeof a.wert === 'number' ? minus(nfA.format(a.wert)) : a.wert === null || a.wert === undefined ? '—' : typeof a.wert === 'boolean' ? (a.wert ? 'Ja' : 'Nein') : a.wert)}</td><td>${esc(prettyUnit(a.einheit))}</td><td>${esc(a.begruendung ?? '')}</td><td>${refTags(doc, a.quellen_ids)}</td></tr>`).join('')}
+    </tbody></table></div></div>` : emptyNote('Keine Modellannahmen erfasst.');
+
+  const cfRows = [];
+  sz.forEach(s => { if (!isObj(s)) return; const r = arr(s.rechnung).find(x => isObj(x) && canonKz(x.kennzahl) === 'cashflow_monat_vor_steuern_eur' && isNum(x.wert)); if (r) cfRows.push({ label: `${s.id ?? ''} ${s.bezeichnung ?? ''}`.trim(), value: r.wert, tip: `${s.id ?? ''} ${s.bezeichnung ?? ''}\nCashflow vor Steuern: ${fmtNum(r.wert, 'eur')} pro Monat\n${s.einordnung ?? ''}` }); });
+  const cfChart = cfRows.length ? `<div class="card"><h3>Monatlicher Cashflow vor Steuern je Szenario</h3><p class="card-sub">Modellrechnung mit Annahmen – kein Ist-Wert. Negativer Cashflow ist nicht automatisch ein gleich hoher wirtschaftlicher Verlust (Tilgung = Vermögensaufbau).</p>${chartSlot(w => svgCashflow(w, cfRows), 'Cashflow je Szenario')}</div>` : '';
+
+  const many = sz.filter(isObj).length > 4;
+  const overview = many ? `<div class="card flush"><div class="table-wrap"><table class="t"><thead><tr><th>ID</th><th>Szenario</th><th>Typ</th><th>Kernergebnis</th><th class="num">Wert</th></tr></thead><tbody>
+    ${sz.filter(isObj).map(s => { const r = keyResult(s); return `<tr class="clickable" data-action="ref" data-uid="${doc.uid}" data-id="${esc(s.id)}"><td><span class="id">${esc(s.id ?? '?')}</span></td><td>${esc(s.bezeichnung ?? '')}</td><td class="nowrap">${esc(L(s.typ || 'sonstiges'))}</td><td>${r ? esc(L(r.kennzahl)) : '<span class="null">—</span>'}</td><td class="num${r && r.wert < 0 ? ' neg' : ''}">${r ? esc(fmtRechnung(r)) : ''}</td></tr>`; }).join('')}
+    </tbody></table></div></div><p class="chart-note">Zeile anklicken, um die Rechnung des Szenarios aufzuklappen.</p>` : '';
+  const scenCards = sz.length ? sz.map((s, si) => {
+    if (!isObj(s)) return '';
+    const kr = keyResult(s);
+    return `<details class="item" id="ref-${doc.uid}-${esc(s.id)}"${!many || s.typ === 'basis' ? ' open' : ''}>
+      <summary class="item-head"><span class="id">${esc(s.id ?? '?')}</span><span class="title">${esc(s.bezeichnung ?? '')}</span><span class="tag">${esc(L(s.typ || 'sonstiges'))}</span>${kr ? `<span class="kr">${esc(L(kr.kennzahl))}: <b class="${kr.wert < 0 ? 'neg' : ''}">${esc(fmtRechnung(kr))}</b></span>` : ''}</summary>
+      ${arr(s.annahme_ids).length ? `<p><span class="lbl">Annahmen</span> ${refTags(doc, s.annahme_ids)}</p>` : ''}
+      <div class="table-wrap"><table class="t"><thead><tr><th>Kennzahl</th><th class="num">Wert</th><th>Einheit</th><th>Rolle</th><th>Formel</th><th>Belege</th></tr></thead><tbody>
+      ${arr(s.rechnung).map((r, ri) => {
+        if (!isObj(r)) return '';
+        const path = `/szenarien/${si}/rechnung/${ri}/wert`;
+        const u = unitFromText(r.einheit);
+        const val = isNum(r.wert) ? minus(u === 'pct' || u === 'eur_m2' ? nf2.format(r.wert) : u && u.startsWith('eur') ? (Number.isInteger(r.wert) ? nf0 : nf2).format(r.wert) : nfA.format(r.wert)) : null;
+        return `<tr class="${r.rolle === 'ergebnis' ? 'strong' : ''}"><td>${esc(L(r.kennzahl))}<div class="obj-sub"><code>${esc(r.kennzahl)}</code></div></td>
+          <td class="num ${isNum(r.wert) && r.wert < 0 ? 'neg' : ''}">${val ?? '<span class="null">—</span>'}</td><td class="nowrap">${esc(prettyUnit(r.einheit))}</td><td>${esc(L(r.rolle || ''))}</td>
+          <td class="small">${esc(r.formel ?? '')}${arr(r.eingabe_pfade).length ? `<div class="obj-sub" title="${esc(arr(r.eingabe_pfade).join('\n'))}">${arr(r.eingabe_pfade).length} Eingabepfad${arr(r.eingabe_pfade).length === 1 ? '' : 'e'}</div>` : ''}</td>
+          <td class="nowrap">${refTags(doc, r.annahme_ids)} ${refTags(doc, r.quellen_ids)} ${belegChip(doc, path, true)}</td></tr>`;
+      }).join('')}
+      </tbody></table></div>
+      ${s.einordnung ? `<p><span class="lbl">Einordnung:</span> ${esc(s.einordnung)}</p>` : ''}
+    </details>`;
+  }).join('') : emptyNote('Keine Szenarien erfasst.');
+
+  return `<section class="sec" id="sec-kosten"><h2><span class="letter">E</span>Kosten, Kennzahlen & Szenarien</h2>
+    <div class="stack">
+      <div class="grid-2">
+        <div class="card"><h3>Ist-Kosten und Erträge</h3><p class="card-sub">Recherchierte Angaben mit Belegstatus – keine Modellwerte.</p>${kvList(doc, 'ist_kosten_und_ertraege', CORE.ist_kosten_und_ertraege)}</div>
+        <div class="card"><h3>Kennzahlen</h3><p class="card-sub">Nur berechnet, wenn alle Eingaben belegt und konfliktfrei sind; sonst null mit Szenariowerten.</p>${kvList(doc, 'kennzahlen', CORE.kennzahlen)}</div>
+      </div>
+      <h3 style="margin:8px 0 0">Annahmen</h3>${annTable}
+      ${cfChart}
+      <h3 style="margin:8px 0 0">Szenarien${many ? ` <span class="muted small" style="font-weight:400">(${sz.filter(isObj).length})</span>` : ''}</h3>${overview}${scenCards}
+    </div></section>`;
+}
+
+function secWeg(doc) {
+  const rs = doc.ctx.list('risiken').slice().sort((a, b) => (SEV_ORDER[a.schwere] ?? 9) - (SEV_ORDER[b.schwere] ?? 9));
+  const du = doc.ctx.list('fehlende_unterlagen').slice().sort((a, b) => (a.prioritaet ?? 99) - (b.prioritaet ?? 99));
+  const risks = rs.length ? `<div class="stack">${rs.map(r => `<div class="item" id="ref-${doc.uid}-${esc(r.id)}">
+      <div class="item-head"><span class="id">${esc(r.id)}</span>${sevBadge(r.schwere)}<span class="tag">${esc(L(r.bereich || 'sonstiges'))}</span><span class="tag">Befund: ${esc(L(r.befundstatus || 'ungeklaert'))}</span>${isRange(r.kostenband_eur) ? `<span class="tag">Kostenband ${esc(fmtValue('kostenband_eur', r.kostenband_eur))}</span>` : ''}${refTags(doc, r.quellen_ids)}</div>
+      <p>${esc(r.beschreibung ?? '')}</p>
+      ${r.moegliche_auswirkung ? `<p><span class="lbl">Mögliche Auswirkung:</span> ${esc(r.moegliche_auswirkung)}</p>` : ''}
+    </div>`).join('')}</div>` : emptyNote('Keine Risiken erfasst.');
+  const docs = du.length ? `<div class="card flush"><div class="table-wrap"><table class="t"><thead><tr><th>Prio</th><th>ID</th><th>Unterlage</th><th>Anzufordern bei</th><th>Entscheidungsrelevanz</th></tr></thead><tbody>
+    ${du.map(u => `<tr id="ref-${doc.uid}-${esc(u.id)}"><td class="num">${esc(u.prioritaet ?? '—')}</td><td><span class="id">${esc(u.id)}</span></td><td>${esc(u.bezeichnung ?? '')}</td><td>${esc(u.anzufordern_bei ?? '—')}</td><td>${esc(u.entscheidungsrelevanz ?? '')}</td></tr>`).join('')}
+    </tbody></table></div></div>` : emptyNote('Keine fehlenden Unterlagen erfasst.');
+  return `<section class="sec" id="sec-weg"><h2><span class="letter">F</span>WEG, Recht & Risiken</h2>
+    <div class="stack">
+      <div class="card"><h3>Wohnungseigentümergemeinschaft</h3><p class="card-sub">Rücklagenzahlen nur mit Stichtag aussagekräftig; rechnerische Wohnungsanteile sind kein frei verfügbares Guthaben.</p>${kvList(doc, 'weg', CORE.weg)}</div>
+      <h3 style="margin:8px 0 0">Risiken</h3>${risks}
+      <h3 style="margin:8px 0 0">Fehlende Unterlagen</h3>${docs}
+    </div></section>`;
+}
+
+function secSchritte(doc) {
+  const ns = doc.ctx.list('naechste_schritte').slice().sort((a, b) => (a.prioritaet ?? 99) - (b.prioritaet ?? 99));
+  const body = ns.length ? `<ol class="steps">${ns.map(n => `<li class="step item" id="ref-${doc.uid}-${esc(n.id)}">
+      <div class="step-prio p${esc(n.prioritaet ?? '')}" title="Priorität ${esc(n.prioritaet ?? '—')}">${esc(n.prioritaet ?? '–')}</div>
+      <div><div class="item-head"><span class="title">${esc(n.aufgabe ?? '')}</span><span class="id">${esc(n.id)}</span></div>
+        <dl>${n.zustaendig ? `<dt>Zuständig</dt><dd>${esc(n.zustaendig)}</dd>` : ''}${n.benoetigter_nachweis ? `<dt>Nachweis</dt><dd>${esc(n.benoetigter_nachweis)}</dd>` : ''}${arr(n.risiko_ids).length ? `<dt>Risiken</dt><dd>${refTags(doc, n.risiko_ids)}</dd>` : ''}${arr(n.unterlagen_ids).length ? `<dt>Unterlagen</dt><dd>${refTags(doc, n.unterlagen_ids)}</dd>` : ''}</dl>
+      </div></li>`).join('')}</ol>` : emptyNote('Keine nächsten Schritte erfasst.');
+  return `<section class="sec" id="sec-schritte"><h2><span class="letter">H</span>Nächste Schritte</h2>${body}</section>`;
+}
+
+function secQuellen(doc) {
+  const qs = doc.ctx.list('quellen'), bl = doc.ctx.list('datenbelege');
+  const counts = {};
+  for (const b of bl) counts[b.status] = (counts[b.status] || 0) + 1;
+  const qTable = qs.length ? `<div class="card flush"><div class="table-wrap"><table class="t"><thead><tr><th>ID</th><th>Titel</th><th>Typ</th><th>Zugriff</th><th>Veröffentlicht</th><th>Datenstand</th><th>Abgerufen</th><th>Fundstelle / Hinweis</th></tr></thead><tbody>
+    ${qs.map(q => { const u = safeUrl(q.url); return `<tr id="ref-${doc.uid}-${esc(q.id)}"><td><span class="id">${esc(q.id)}</span></td><td>${u ? `<a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(q.titel ?? u)} ↗</a>` : esc(q.titel ?? '')}${q.url && !u ? ` <span class="tag tag-crit" title="Ungültige URL">${esc(trunc(q.url, 30))}</span>` : ''}</td><td class="nowrap">${esc(L(q.typ || 'sonstiges'))}</td><td class="nowrap">${esc(L(q.zugriff || ''))}</td><td class="nowrap">${q.veroeffentlicht_am ? esc(fmtDate(q.veroeffentlicht_am)) : '—'}</td><td class="nowrap">${q.datenstand ? esc(fmtDate(q.datenstand)) : '—'}</td><td class="nowrap">${q.abgerufen_am ? esc(fmtDate(q.abgerufen_am)) : '—'}</td><td class="small">${esc([q.fundstelle, q.hinweis].filter(Boolean).join(' · '))}</td></tr>`; }).join('')}
+    </tbody></table></div></div>` : emptyNote('Keine Quellen erfasst.');
+  const bTable = bl.length ? `<details class="card flush" open style="padding:0"><summary style="padding:14px 18px;cursor:pointer;font-weight:600">Datenbelege (${bl.length}) <span class="meta-chips" style="display:inline-flex;margin:0 0 0 8px;vertical-align:middle">${Object.entries(counts).map(([s, n]) => `<span class="st st-${esc(s)}" style="cursor:default"><i></i>${esc(L(s))} ${n}</span>`).join('')}</span></summary>
+    <div class="table-wrap"><table class="t"><thead><tr><th>Feldpfad</th><th>Wert</th><th>Status</th><th>Quellen / Annahmen</th><th>Datenstand</th><th>Formel / Hinweis</th></tr></thead><tbody>
+    ${bl.map(b => { const r = resolvePointer(doc.data, b.feldpfad); return `<tr><td><code>${esc(b.feldpfad)}</code>${r.found ? '' : ' <span class="tag tag-crit">Pfad fehlt</span>'}</td><td class="nowrap">${r.found ? (r.value === null ? '<span class="null">null</span>' : esc(trunc(fmtAt(doc.data, b.feldpfad, r.value) ?? '', 40))) : '—'}</td><td>${belegChip(doc, b.feldpfad)}</td><td class="nowrap">${refTags(doc, b.quellen_ids)} ${refTags(doc, b.annahme_ids)}</td><td class="nowrap">${b.datenstand ? esc(fmtDate(b.datenstand)) : '—'}</td><td class="small">${esc([b.formel, b.hinweis].filter(Boolean).join(' · '))}</td></tr>`; }).join('')}
+    </tbody></table></div></details>` : emptyNote('Keine Datenbelege erfasst.');
+  return `<section class="sec" id="sec-quellen"><h2>Quellen & Datenbelege</h2><div class="stack">${qTable}${bTable}</div></section>`;
+}
+
+function issueItems(list) {
+  if (!list.length) return '<li class="issue info"><span class="ico">✓</span><span>Keine Befunde.</span></li>';
+  const ico = { error: '✕', warn: '⚠', info: 'i' };
+  return list.map(x => `<li class="issue ${x.lvl}"><span class="ico">${ico[x.lvl]}</span><span>${x.path ? `<code>${esc(x.path)}</code>` : ''}${esc(x.msg)}</span></li>`).join('');
+}
+
+function secPruefung(doc) {
+  const ep = obj(doc.data.exportpruefung), c = countIssues(doc);
+  const flags = ['json_syntax_geprueft', 'schema_geprueft', 'referenzen_geprueft', 'berichtskonsistenz_geprueft'].map(k => {
+    const v = ep[k];
+    return `<div class="flag"><b style="color:${v === true ? 'var(--good-ink)' : v === false ? 'var(--crit-ink)' : 'var(--muted)'}">${v === true ? '✓' : v === false ? '✕' : '–'}</b>${esc(L(k))}</div>`;
+  }).join('');
+  const hints = arr(ep.hinweise);
+  return `<section class="sec" id="sec-pruefung"><h2>Exportprüfung</h2>
+    <div class="grid-2">
+      <div class="card"><h3>Selbstauskunft des Exports</h3><p class="card-sub">Angaben aus <code>exportpruefung</code>. Formatprüfung ist keine Bestätigung der Inseratsangaben.</p><div class="flags">${flags}</div>
+        ${hints.length ? `<ul class="small" style="margin:12px 0 0;padding-left:18px">${hints.map(h => `<li>${esc(h)}</li>`).join('')}</ul>` : ''}</div>
+      <div class="card"><h3>Prüfung durch den Viewer</h3><p class="card-sub">${c.error} Fehler · ${c.warn} Warnungen · ${c.info} Hinweise – gegen den Datenvertrag Schema 1.0, inklusive Nachrechnen zentraler Kennzahlen.</p><ul class="issues">${issueItems(doc.issues)}</ul></div>
+    </div></section>`;
+}
+
+function secRoh(doc) {
+  return `<section class="sec" id="sec-roh"><h2>Rohdaten</h2>
+    <div class="card"><div class="dh-actions no-print" style="margin-bottom:10px"><button class="btn sm" data-action="copy-json" data-uid="${doc.uid}">JSON kopieren</button><button class="btn sm needs-download" data-action="download-json" data-uid="${doc.uid}">JSON herunterladen</button></div>
+    <details class="raw"><summary>JSON anzeigen (${nf0.format(doc.text.length)} Zeichen)</summary><pre>${esc(JSON.stringify(doc.data, null, 2))}</pre></details></div></section>`;
+}
+
+/* ---------- Vergleich ---------- */
+const COLS = [
+  { id: 'num', label: '#', sv: d => d.num },
+  { id: 'objekt', label: 'Objekt', sv: d => docTitle(d).toLowerCase() },
+  { id: 'urteil', label: 'Gesamturteil', sv: d => { const i = VERDICT_ORDER.indexOf(urteilOf(d)); return i < 0 ? null : i; } },
+  { id: 'sicherheit', label: 'Beleg­sicherheit', sv: d => { const i = SICHERHEIT.indexOf(obj(d.data.bewertung).belegsicherheit); return i < 0 ? null : i; } },
+  { id: 'kaufpreis', label: 'Kaufpreis', path: '/objekt/kaufpreis_eur', num: true },
+  { id: 'flaeche', label: 'Wohnfläche', path: '/objekt/wohnflaeche_m2', num: true },
+  { id: 'qm', label: '€/m²', path: '/kennzahlen/kaufpreis_pro_m2_eur', num: true },
+  { id: 'miete', label: 'Kaltmiete / Monat', path: '/ist_kosten_und_ertraege/nettokaltmiete_monat_eur', num: true },
+  { id: 'rendite', label: 'Brutto­rendite', path: '/kennzahlen/bruttomietrendite_prozent', num: true },
+  { id: 'faktor', label: 'Faktor', path: '/kennzahlen/kaufpreisfaktor_jahre', num: true },
+  { id: 'energie', label: 'Energie', sv: d => { const e = obj(d.data.energie); return isNum(e.kennwert_kwh_m2_a) ? e.kennwert_kwh_m2_a : null; } },
+  { id: 'baujahr', label: 'Baujahr', path: '/objekt/baujahr', num: true },
+  { id: 'offen', label: 'Offene Wider­sprüche', sv: d => d.ctx.conflicts.size },
+  { id: 'risiken', label: 'Risiken hoch', sv: d => d.ctx.list('risiken').filter(r => r.schwere === 'hoch').length },
+  { id: 'pruefdatum', label: 'Prüfdatum', path: '/metadaten/pruefdatum' },
+  { id: 'export', label: 'Export­prüfung', sv: d => { const c = countIssues(d); return c.error * 1000 + c.warn; } },
+];
+const colValue = (c, d) => (c.sv ? c.sv(d) : (() => { const r = resolvePointer(d.data, c.path); return r.found ? r.value : null; })());
+
+function filteredDocs() {
+  const q = state.filter.q.trim().toLowerCase();
+  const list = immoDocs().filter(d => (state.filter.showOld || d.rev?.latest)
+    && (!state.filter.urteil || urteilOf(d) === state.filter.urteil)
+    && (!q || [docTitle(d), docPlace(d), obj(d.data.angebot).plattform, obj(d.data.angebot).plattform_id, obj(d.data.angebot).objektart, d.fileName].join(' ').toLowerCase().includes(q)));
+  const col = COLS.find(c => c.id === state.sort.col) || COLS[0];
+  return list.sort((a, b) => {
+    const va = colValue(col, a), vb = colValue(col, b);
+    const na = va === null || va === undefined || va === '', nb = vb === null || vb === undefined || vb === '';
+    if (na || nb) return na === nb ? a.num - b.num : na ? 1 : -1;
+    return (va < vb ? -1 : va > vb ? 1 : 0) * state.sort.dir || a.num - b.num;
+  });
+}
+
+function viewCompare() {
+  const docs = immoDocs(), latest = docs.filter(d => d.rev?.latest);
+  if (!state.selectionTouched && !state.selected.size) latest.slice(0, 4).forEach(d => state.selected.add(d.uid));
+  const hasRevs = docs.length !== latest.length;
+  const bad = state.docs.filter(d => !d.isImmo).length;
+  const cnt = vs => latest.filter(d => vs.includes(urteilOf(d))).length;
+  const stat = (label, n, v) => `<div class="tile stat"><div class="tile-label">${v ? verdictBadge(v, 'sm') : esc(label)}</div><div class="tile-value">${n}</div></div>`;
+  return `<div class="page-head"><div><h1>Vergleich</h1><p class="sub">${latest.length} Objekt${latest.length === 1 ? '' : 'e'}${hasRevs ? ` · ${docs.length} Bewertungen inkl. älterer Revisionen` : ''}${bad ? ` · ${bad} Datei${bad === 1 ? '' : 'en'} nicht lesbar` : ''}. Gleiche Kriterien, Annahmen werden in der Gegenüberstellung abgeglichen.</p></div>
+      <div class="dh-actions"><button class="btn sm needs-download" data-action="csv">CSV exportieren</button></div></div>
+    <div class="tiles" style="margin-top:0">
+      ${stat('Objekte', latest.length)}${stat('', cnt(['weiter_pruefen']), 'weiter_pruefen')}${stat('', cnt(['nur_zu_anderen_konditionen_interessant']), 'nur_zu_anderen_konditionen_interessant')}${stat('', cnt(['bis_zur_klaerung_zurueckstellen']), 'bis_zur_klaerung_zurueckstellen')}${stat('', cnt(['fuer_das_ziel_verwerfen', 'nicht_bewertbar']), 'fuer_das_ziel_verwerfen')}
+    </div>
+    <div class="filters">
+      <input type="search" id="fq" placeholder="Suchen: Titel, Ort, Plattform-ID, Datei …" value="${esc(state.filter.q)}" aria-label="Suchen">
+      <select id="fu" aria-label="Nach Gesamturteil filtern"><option value="">Alle Urteile</option>${VERDICT_ORDER.map(v => `<option value="${v}"${state.filter.urteil === v ? ' selected' : ''}>${esc(L(v))}</option>`).join('')}</select>
+      ${hasRevs ? `<label class="check"><input type="checkbox" id="fold"${state.filter.showOld ? ' checked' : ''}> Ältere Revisionen zeigen</label>` : ''}
+    </div>
+    <div id="cmpResults">${compareResults()}</div>`;
+}
+
+function compareResults() {
+  const rows = filteredDocs();
+  const allSel = rows.length > 0 && rows.every(d => state.selected.has(d.uid));
+  const head = COLS.map(c => {
+    const active = state.sort.col === c.id;
+    return `<th class="sortable${c.num || ['num', 'offen', 'risiken'].includes(c.id) ? ' num' : ''}" data-action="sort" data-col="${c.id}" aria-sort="${active ? (state.sort.dir > 0 ? 'ascending' : 'descending') : 'none'}">${c.label}${active ? ` <span class="arrow">${state.sort.dir > 0 ? '▲' : '▼'}</span>` : ''}</th>`;
+  }).join('');
+  const body = rows.map(d => {
+    const e = obj(d.data.energie), m = obj(d.data.metadaten), a = obj(d.data.angebot), b = obj(d.data.bewertung);
+    const cell = c => {
+      if (c.id === 'num') return `<td class="num"><span class="num">#${d.num}</span></td>`;
+      if (c.id === 'objekt') return `<td class="cell-obj"><div class="obj-title">${esc(docTitle(d))} ${offerTag(d.data)}</div><div class="obj-sub">${esc([docPlace(d), platLabel(a.plattform), a.plattform_id].filter(Boolean).join(' · '))}${d.rev && d.rev.total > 1 ? ` · Rev. ${d.rev.index}/${d.rev.total}` : ''}</div></td>`;
+      if (c.id === 'urteil') return `<td class="nowrap">${verdictBadge(b.gesamturteil, 'sm')}</td>`;
+      if (c.id === 'sicherheit') return `<td>${meter(b.belegsicherheit)}</td>`;
+      if (c.id === 'energie') return `<td class="nowrap">${e.effizienzklasse ? `<b>${esc(e.effizienzklasse)}</b> ` : ''}${isNum(e.kennwert_kwh_m2_a) ? `<span class="muted small">${esc(nfA.format(e.kennwert_kwh_m2_a))}</span>` : (!e.effizienzklasse ? '<span class="null">—</span>' : '')}</td>`;
+      if (c.id === 'offen') return `<td class="num">${d.ctx.conflicts.size ? `<span class="tag tag-crit">${d.ctx.conflicts.size}</span>` : '0'}</td>`;
+      if (c.id === 'risiken') { const n = colValue(c, d); return `<td class="num">${n ? `<span class="tag tag-crit">${n}</span>` : '0'}</td>`; }
+      if (c.id === 'pruefdatum') return `<td class="nowrap">${m.pruefdatum ? esc(fmtDate(m.pruefdatum)) : '<span class="null">—</span>'}</td>`;
+      if (c.id === 'export') return `<td class="nowrap">${issueTags(d)}</td>`;
+      return `<td class="num">${valueCell(d, c.path, { compact: true })}</td>`;
+    };
+    return `<tr class="clickable" data-action="open" data-uid="${d.uid}"><td><input type="checkbox" data-select="${d.uid}" ${state.selected.has(d.uid) ? 'checked' : ''} aria-label="Für Gegenüberstellung auswählen"></td>${COLS.map(cell).join('')}</tr>`;
+  }).join('');
+
+  // Streudiagramm
+  const pts = [], missing = [];
+  for (const d of rows) {
+    const kz = obj(d.data.kennzahlen);
+    const xs = isNum(kz.kaufpreis_pro_m2_eur) ? [kz.kaufpreis_pro_m2_eur] : (scenRange(d, 'kaufpreis_pro_m2_eur')?.values || []);
+    const ys = isNum(kz.bruttomietrendite_prozent) ? [kz.bruttomietrendite_prozent] : (scenRange(d, 'bruttomietrendite_prozent')?.values || []);
+    if (!xs.length || !ys.length) { missing.push(d); continue; }
+    const hollow = !isNum(kz.kaufpreis_pro_m2_eur) || !isNum(kz.bruttomietrendite_prozent);
+    const xr = [Math.min(...xs), Math.max(...xs)], yr = [Math.min(...ys), Math.max(...ys)];
+    const f = (r, u, k) => r[0] === r[1] ? fmtNum(r[0], u, k) : `${fmtNum(r[0], u, k)} – ${fmtNum(r[1], u, k)}`;
+    pts.push({ num: d.num, uid: d.uid, x: xr.filter((v, i, a) => a.indexOf(v) === i), y: yr.filter((v, i, a) => a.indexOf(v) === i), hollow, tip: `#${d.num} ${docTitle(d)}\nKaufpreis pro m²: ${f(xr, 'eur_m2')}\nBruttomietrendite: ${f(yr, 'pct')}\nUrteil: ${L(urteilOf(d) || 'nicht_bewertbar')}${hollow ? '\n(enthält Szenariowerte)' : ''}\nKlicken für Details` });
+  }
+  const scatter = pts.length ? chartSlot(w => svgScatter(w, pts), 'Streudiagramm Kaufpreis pro m² gegen Bruttomietrendite')
+    + `<div class="chart-legend"><span>${legendDot('')}Ist-Kennzahlen</span><span>${legendDot('hollow')}Mit Szenario- oder Annahmewerten</span><span>Linie / Fläche = Spanne über Szenarien</span></div>`
+    + (missing.length ? `<p class="chart-note">Nicht dargestellt (Werte fehlen): ${missing.map(d => `#${d.num}`).join(', ')}</p>` : '')
+    : '<div class="empty"><b>Keine Objekte mit Kaufpreis pro m² und Bruttomietrendite.</b></div>';
+
+  return `<div class="card flush"><div class="table-wrap"><table class="t cmp-table"><thead><tr><th><input type="checkbox" id="selAll" ${allSel ? 'checked' : ''} aria-label="Alle sichtbaren auswählen"></th>${head}</tr></thead><tbody>${body || `<tr><td colspan="${COLS.length + 1}" class="muted">Keine Treffer.</td></tr>`}</tbody></table></div></div>
+    <p class="chart-note">„—“ = null im Export (nicht verlässlich bestimmbar). Kursive Werte stammen nur aus Szenarien. Farbige Punkte zeigen den Belegstatus – anklicken für Details.</p>
+    <div class="card" style="margin-top:14px"><h3>Kaufpreis pro m² und Bruttomietrendite</h3><p class="card-sub">Je Objekt ein Punkt (#-Nummer wie in der Tabelle). Eine höhere Rendite ist kein Urteil über Risiko oder Objektqualität.</p>${scatter}</div>
+    ${matrixCard()}`;
+}
+
+/** Führt alle Basisszenarien zusammen (Exporte trennen z. B. Erwerbskosten und Finanzierung); erste Zeile je Kennzahl gewinnt. */
+function basisRechnung(d) {
+  const list = arr(d.data.szenarien).filter(x => isObj(x) && x.typ === 'basis');
+  const map = new Map();
+  for (const s of list) for (const r of arr(s.rechnung)) if (isObj(r) && typeof r.kennzahl === 'string' && !map.has(canonKz(r.kennzahl))) map.set(canonKz(r.kennzahl), r);
+  return { list, map };
+}
+
+function matrixCard() {
+  const sel = immoDocs().filter(d => state.selected.has(d.uid)).sort((a, b) => a.num - b.num);
+  if (sel.length < 2) return `<div class="card" style="margin-top:14px"><h3>Gegenüberstellung</h3><p class="muted" style="margin:6px 0 0">Wähle in der Tabelle mindestens zwei Bewertungen aus, um sie nebeneinander zu sehen.</p></div>`;
+  const P = (label, path) => ({ label, cell: d => ({ html: valueCell(d, path, { compact: true }), sig: JSON.stringify(resolvePointer(d.data, path).value ?? null) }) });
+  const T = (label, fn) => ({ label, cell: d => { const v = fn(d); return { html: v == null || v === '' ? '<span class="null">—</span>' : esc(v), sig: JSON.stringify(v ?? null) }; } });
+  const teil = k => ({ label: TEILURTEILE.find(t => t[0] === k)[1], cell: d => { const t = obj(obj(d.data.bewertung)[k]); return { html: `${t.urteil ? `<div>${esc(t.urteil)}</div>` : '<span class="null">Kein Urteil</span>'}<div style="margin-top:3px">${meter(t.belegsicherheit)}</div>`, sig: JSON.stringify([t.urteil, t.belegsicherheit]) }; } });
+  const fin = (label, k, flag) => ({ label, flag, cell: d => { const r = basisRechnung(d).map.get(k); const u = r ? unitFromText(r.einheit) : null; return { html: r && isNum(r.wert) ? `<span class="val${r.wert < 0 ? ' neg' : ''}">${esc(fmtNum(r.wert, u === 'eur_monat' ? 'eur_monat' : unitForKey(k) || u, k))}</span>` : '<span class="null">—</span>', sig: JSON.stringify(r ? r.wert : null) }; } });
+
+  const groups = [
+    ['Bewertung', [
+      { label: 'Gesamturteil', cell: d => ({ html: verdictBadge(urteilOf(d), 'sm'), sig: urteilOf(d) || '' }) },
+      { label: 'Belegsicherheit', cell: d => ({ html: meter(obj(d.data.bewertung).belegsicherheit), sig: obj(d.data.bewertung).belegsicherheit || '' }) },
+      teil('objektqualitaet'), teil('preisangemessenheit'), teil('wirtschaftlichkeit'), teil('persoenliche_eignung'),
+      { label: 'Entscheidende offene Punkte', cell: d => { const p = arr(obj(d.data.bewertung).entscheidende_offene_punkte); return { html: p.length ? `<ol style="margin:0;padding-left:18px">${p.map(x => `<li>${esc(x)}</li>`).join('')}</ol>` : '<span class="null">—</span>', sig: JSON.stringify(p) }; } },
+    ]],
+    ['Angebot & Lage', [
+      T('Ort', docPlace), T('Objektart', d => obj(d.data.angebot).objektart), T('Plattform', d => [platLabel(obj(d.data.angebot).plattform), obj(d.data.angebot).plattform_id].filter(Boolean).join(' · ')),
+      P('Verfügbarkeit', '/angebot/verfuegbarkeit'), P('Analysestatus', '/metadaten/analysestatus'), P('Zugriff', '/angebot/zugriffsstatus'), P('Nutzungsfokus', '/metadaten/nutzungsfokus'), P('Prüfdatum', '/metadaten/pruefdatum'),
+    ]],
+    ['Objekt', CORE.objekt.filter(k => k !== 'zustandseinschaetzung').map(k => P(L(k), `/objekt/${k}`)).concat([P('Zustand', '/objekt/zustandseinschaetzung')])],
+    ['Kennzahlen', CORE.kennzahlen.map(k => P(L(k), `/kennzahlen/${k}`))],
+    ['Kosten & Erträge (Ist)', CORE.ist_kosten_und_ertraege.map(k => P(L(k), `/ist_kosten_und_ertraege/${k}`))],
+    ['Preisbewertung', [P('Aussagebasis', '/preisbewertung/aussagebasis'), P('Angebotsvergleichsspanne', '/preisbewertung/angebotsvergleichsspanne_eur'), P('Marktwertspanne', '/preisbewertung/marktwertspanne_eur'), T('Vergleichsobjekte (gut / gesamt)', d => { const v = d.ctx.list('vergleichsobjekte'); return `${v.filter(x => x.eignung === 'gut').length} / ${v.length}`; })]],
+    ['Energie', ['ausweisart', 'effizienzklasse', 'kennwert_kwh_m2_a', 'energietraeger', 'heizungsjahr', 'gueltig_bis'].map(k => P(L(k), `/energie/${k}`))],
+    ['WEG', CORE.weg.map(k => P(L(k), `/weg/${k}`))],
+    ['Finanzierungsmodell (Basisszenario)', [
+      T('Szenario', d => basisRechnung(d).list.map(s => `${s.id ?? ''} ${s.bezeichnung ?? ''}`.trim()).join(' · ') || null),
+      fin('Sollzins', 'sollzins_prozent', true), fin('Anfängliche Tilgung', 'tilgung_prozent', true), fin('Zinsbindung', 'zinsbindung_jahre', true),
+      fin('Eigenkapital', 'eigenkapital_eur'), fin('Darlehen', 'darlehen_eur'), fin('Gesamtinvestition', 'gesamtinvestition_eur'), fin('Monatsrate', 'monatsrate_eur'), fin('Cashflow / Monat vor Steuern', 'cashflow_monat_vor_steuern_eur'),
+    ]],
+  ];
+  // Gleichnamige Annahmen abgleichen (Synonyme auf die stabile ID zusammengeführt)
+  const params = new Map();
+  for (const d of sel) for (const a of d.ctx.list('annahmen')) {
+    const key = canonParam(a.parameter);
+    if (!key) continue;
+    if (!params.has(key)) params.set(key, /^[a-z0-9_]+$/.test(key) ? key : a.parameter);
+  }
+  const annRows = [...params].filter(([key]) => sel.filter(d => d.ctx.list('annahmen').some(a => canonParam(a.parameter) === key)).length >= 2).map(([key, label]) => ({
+    label: /^[a-z0-9_]+$/.test(label) ? L(label) : label, flag: true, cell: d => {
+      const found = d.ctx.list('annahmen').filter(x => canonParam(x.parameter) === key);
+      if (!found.length) return { html: '<span class="null">—</span>', sig: null };
+      return {
+        html: found.map(a => `${esc(typeof a.wert === 'number' ? minus(nfA.format(a.wert)) : String(a.wert ?? '—'))} <span class="muted small">${esc(prettyUnit(a.einheit))}</span> <span class="ref" style="cursor:default">${esc(a.id)}</span>`).join('<br>'),
+        sig: JSON.stringify(found.map(a => [a.wert, a.einheit])),
+      };
+    },
+  }));
+  if (annRows.length) groups.push(['Gleichnamige Annahmen', annRows]);
+  groups.push(['Datenlage', [
+    T('Offene Widersprüche', d => String(d.ctx.conflicts.size)),
+    T('Risiken hoch / mittel', d => { const r = d.ctx.list('risiken'); return `${r.filter(x => x.schwere === 'hoch').length} / ${r.filter(x => x.schwere === 'mittel').length}`; }),
+    T('Fehlende Unterlagen', d => String(d.ctx.list('fehlende_unterlagen').length)),
+    { label: 'Exportprüfung', cell: d => ({ html: issueTags(d), sig: JSON.stringify(countIssues(d)) }) },
+  ]]);
+
+  let diffCount = 0;
+  const bodyRows = groups.map(([title, rows]) => {
+    const rendered = rows.map(r => {
+      const cells = sel.map(d => r.cell(d));
+      const sigs = cells.map(c => c.sig).filter(s => s !== null && s !== 'null');
+      const differs = new Set(cells.map(c => c.sig)).size > 1;
+      const flagged = r.flag && new Set(sigs).size > 1;
+      if (flagged) diffCount++;
+      if (state.diffOnly && !differs) return '';
+      return `<tr class="${flagged ? 'diff' : ''}"><th class="rowhead" scope="row">${esc(r.label)}${flagged ? ' <span class="tag tag-warn" title="Annahmen unterscheiden sich zwischen den Objekten – Vergleich nur eingeschränkt fair">abweichend</span>' : ''}</th>${cells.map(c => `<td>${c.html}</td>`).join('')}</tr>`;
+    }).join('');
+    return rendered ? `<tr class="group"><th class="rowhead" colspan="${sel.length + 1}">${esc(title)}</th></tr>${rendered}` : '';
+  }).join('');
+
+  return `<div class="card flush" style="margin-top:14px">
+    <div style="padding:18px 20px 12px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:flex-end">
+      <div><h3>Gegenüberstellung</h3><p class="card-sub" style="margin:0">${sel.length} ausgewählte Bewertungen. ${diffCount ? `<span class="tag tag-warn">${diffCount} abweichende Annahme${diffCount === 1 ? '' : 'n'}</span> – Ergebnisse nur eingeschränkt vergleichbar.` : 'Gemeinsame Annahmen stimmen überein oder fehlen.'}</p></div>
+      <label class="check"><input type="checkbox" id="fdiff"${state.diffOnly ? ' checked' : ''}> Nur Unterschiede</label>
+    </div>
+    <div class="table-wrap" style="max-height:78vh"><table class="matrix"><thead><tr><th class="rowhead">Kriterium</th>${sel.map(d => `<th><div class="mh-title"><button class="linkbtn" data-action="open" data-uid="${d.uid}" style="color:var(--ink);font-weight:600"><span class="num">#${d.num}</span> ${esc(trunc(docTitle(d), 70))}</button></div><div class="obj-sub muted small" style="font-weight:400">${esc(docPlace(d))}</div></th>`).join('')}</tr></thead><tbody>${bodyRows}</tbody></table></div>
+  </div>`;
+}
+
+function exportCSV() {
+  const rows = filteredDocs();
+  const g = (d, p) => { const r = resolvePointer(d.data, p); return r.found ? r.value : null; };
+  const cols = [
+    ['Nr', d => d.num], ['Datei', d => d.fileName], ['Titel', docTitle], ['Ort', d => obj(d.data.standort).ort], ['Stadtteil', d => obj(d.data.standort).stadtteil],
+    ['Plattform', d => platLabel(obj(d.data.angebot).plattform)], ['Plattform-ID', d => obj(d.data.angebot).plattform_id], ['URL', d => obj(d.data.angebot).url],
+    ['Gesamturteil', d => L(urteilOf(d) || 'nicht_bewertbar')], ['Belegsicherheit', d => obj(d.data.bewertung).belegsicherheit],
+    ['Kaufpreis EUR', d => g(d, '/objekt/kaufpreis_eur')], ['Wohnfläche m2', d => g(d, '/objekt/wohnflaeche_m2')], ['Zimmer', d => g(d, '/objekt/zimmer')], ['Baujahr', d => g(d, '/objekt/baujahr')],
+    ['Kaufpreis pro m2 EUR', d => g(d, '/kennzahlen/kaufpreis_pro_m2_eur')], ['Nettokaltmiete Monat EUR', d => g(d, '/ist_kosten_und_ertraege/nettokaltmiete_monat_eur')],
+    ['Hausgeld Monat EUR', d => g(d, '/ist_kosten_und_ertraege/hausgeld_monat_eur')], ['Bruttomietrendite %', d => g(d, '/kennzahlen/bruttomietrendite_prozent')],
+    ['Kaufpreisfaktor', d => g(d, '/kennzahlen/kaufpreisfaktor_jahre')], ['Gesamtinvestition EUR', d => g(d, '/kennzahlen/gesamtinvestition_eur')],
+    ['Effizienzklasse', d => g(d, '/energie/effizienzklasse')], ['Energiekennwert kWh/m2a', d => g(d, '/energie/kennwert_kwh_m2_a')],
+    ['Offene Widersprüche', d => d.ctx.conflicts.size], ['Risiken hoch', d => d.ctx.list('risiken').filter(r => r.schwere === 'hoch').length],
+    ['Prüfdatum', d => g(d, '/metadaten/pruefdatum')], ['Exportdatum', d => g(d, '/metadaten/exportdatum')], ['Analysestatus', d => g(d, '/metadaten/analysestatus')],
+    ['Prüffehler', d => countIssues(d).error], ['Prüfwarnungen', d => countIssues(d).warn],
+  ];
+  const fmt = v => (v === null || v === undefined ? '' : typeof v === 'number' ? String(v).replace('.', ',') : String(v));
+  const q = s => (/[;"\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s);
+  const csv = '﻿' + [cols.map(c => q(c[0])).join(';'), ...rows.map(d => cols.map(c => q(fmt(c[1](d)))).join(';'))].join('\r\n');
+  download(`immobilien_vergleich_${today()}.csv`, csv, 'text/csv;charset=utf-8');
+}
+
+/* =====================================================================
+   Dialoge
+   ===================================================================== */
+function openDialog(html) {
+  $('#dlgBody').innerHTML = html;
+  const dlg = $('#dlg');
+  if (!dlg.open) dlg.showModal();
+}
+const dlgHead = title => `<div class="dlg-head"><h3>${title}</h3><button class="icon-btn" data-action="close-dlg" aria-label="Schließen">×</button></div>`;
+
+function quelleDl(doc, q) {
+  const u = safeUrl(q.url);
+  return `<dl>
+    <dt>Titel</dt><dd>${esc(q.titel ?? '—')}</dd>
+    <dt>URL</dt><dd>${u ? `<a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(u)} ↗</a>` : q.url ? `<span class="tag tag-crit">ungültig: ${esc(q.url)}</span>` : '<span class="null">keine</span>'}</dd>
+    <dt>Typ</dt><dd>${esc(L(q.typ || 'sonstiges'))}</dd><dt>Zugriff</dt><dd>${esc(L(q.zugriff || ''))}</dd>
+    <dt>Veröffentlicht</dt><dd>${q.veroeffentlicht_am ? esc(fmtDate(q.veroeffentlicht_am)) : '—'}</dd>
+    <dt>Datenstand</dt><dd>${q.datenstand ? esc(fmtDate(q.datenstand)) : '—'}</dd>
+    <dt>Abgerufen</dt><dd>${q.abgerufen_am ? esc(fmtDate(q.abgerufen_am)) : '—'}</dd>
+    ${q.fundstelle ? `<dt>Fundstelle</dt><dd>${esc(q.fundstelle)}</dd>` : ''}${q.hinweis ? `<dt>Hinweis</dt><dd>${esc(q.hinweis)}</dd>` : ''}
+  </dl>`;
+}
+
+function openBeleg(uid, path) {
+  const doc = getDoc(uid); if (!doc) return;
+  const b = doc.ctx.belege.get(path); if (!b) return;
+  const r = resolvePointer(doc.data, path), key = lastKey(path);
+  const val = r.found ? (r.value === null ? '<span class="null">null</span>' : esc(fmtAt(doc.data, path, r.value))) : '<span class="tag tag-crit">Pfad existiert nicht</span>';
+  const inputs = arr(b.eingabe_pfade).map(p => { const x = resolvePointer(doc.data, p); return `<li><code>${esc(p)}</code> = ${x.found ? (x.value === null ? 'null' : esc(fmtAt(doc.data, p, x.value))) : '<span class="tag tag-crit">fehlt</span>'}</li>`; }).join('');
+  const qs = arr(b.quellen_ids).map(id => { const q = doc.ctx.quellen.get(id); return q ? `<li><b>${esc(id)}</b> ${safeUrl(q.url) ? `<a href="${esc(safeUrl(q.url))}" target="_blank" rel="noopener noreferrer">${esc(q.titel ?? id)} ↗</a>` : esc(q.titel ?? '')} <span class="muted small">· ${esc(L(q.typ || ''))} · ${esc(L(q.zugriff || ''))}${q.abgerufen_am ? ' · abgerufen ' + esc(fmtDate(q.abgerufen_am)) : ''}</span></li>` : `<li><span class="tag tag-crit">${esc(id)} fehlt</span></li>`; }).join('');
+  const as = arr(b.annahme_ids).map(id => { const a = doc.ctx.annahmen.get(id); return a ? `<li><b>${esc(id)}</b> ${esc(a.parameter ?? '')}: ${esc(String(a.wert ?? '—'))} ${esc(prettyUnit(a.einheit))}<div class="muted small">${esc(a.begruendung ?? '')}</div></li>` : `<li><span class="tag tag-crit">${esc(id)} fehlt</span></li>`; }).join('');
+  openDialog(dlgHead('Datenbeleg') + `<dl>
+    <dt>Feld</dt><dd>${esc(L(key))} <code>${esc(path)}</code></dd>
+    <dt>Wert</dt><dd>${val}</dd>
+    <dt>Status</dt><dd>${belegChip(doc, path)}</dd>
+    ${b.datenstand ? `<dt>Datenstand</dt><dd>${esc(fmtDate(b.datenstand))}</dd>` : ''}
+    ${b.formel ? `<dt>Formel</dt><dd>${esc(b.formel)}</dd>` : ''}
+    ${inputs ? `<dt>Eingabepfade</dt><dd><ul class="sublist">${inputs}</ul></dd>` : ''}
+    ${qs ? `<dt>Quellen</dt><dd><ul class="sublist">${qs}</ul></dd>` : ''}
+    ${as ? `<dt>Annahmen</dt><dd><ul class="sublist">${as}</ul></dd>` : ''}
+    ${b.hinweis ? `<dt>Hinweis</dt><dd>${esc(b.hinweis)}</dd>` : ''}
+  </dl>`);
+}
+
+function openRef(uid, id) {
+  const doc = getDoc(uid); if (!doc) return;
+  const target = lookupRef(doc, id);
+  if (String(id)[0] === 'Q' && target) return openDialog(dlgHead(`Quelle ${esc(id)}`) + quelleDl(doc, target));
+  if (String(id)[0] === 'A' && target) return openDialog(dlgHead(`Annahme ${esc(id)}`) + `<dl><dt>Parameter</dt><dd>${esc(target.parameter ?? '')}</dd><dt>Wert</dt><dd>${esc(String(target.wert ?? '—'))} ${esc(prettyUnit(target.einheit))}</dd><dt>Begründung</dt><dd>${esc(target.begruendung ?? '')}</dd>${arr(target.quellen_ids).length ? `<dt>Quellen</dt><dd>${refTags(doc, target.quellen_ids)}</dd>` : ''}</dl><p class="fine" style="margin-top:14px">Modellannahme – kein beobachteter Objektwert.</p>`);
+  if (!target) return toast(`Verweis ${id} zeigt ins Leere.`);
+  if ($('#dlg').open) $('#dlg').close();
+  const show = () => {
+    const el = document.getElementById(`ref-${uid}-${id}`);
+    if (!el) return;
+    if (el.tagName === 'DETAILS') el.open = true;
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  };
+  if (state.view !== 'detail' || state.current !== uid) { state.view = 'detail'; state.current = uid; render(); requestAnimationFrame(show); }
+  else show();
+}
+
+function openPaste() {
+  openDialog(dlgHead('JSON einfügen') + `<p class="fine" style="margin-top:0">Inhalt einer Exportdatei einfügen – auch ein Array mehrerer Bewertungen ist möglich.</p><textarea id="pasteArea" spellcheck="false" placeholder='{ "schema_version": "1.0", … }'></textarea><div class="btn-row" style="justify-content:flex-end;margin-bottom:0"><button class="btn" data-action="close-dlg">Abbrechen</button><button class="btn primary" data-action="paste-load">Laden</button></div>`);
+  setTimeout(() => $('#pasteArea')?.focus(), 30);
+}
+
+/* =====================================================================
+   Sonstiges: Download, Toast, Theme
+   ===================================================================== */
+// In der claude.ai-Ansicht (eingebettet) sind direkte Downloads, Drucken und eigene Farbschemata gesperrt;
+// Speichern läuft dort über die Plattform-Funktion „downloads“.
+const HOSTED = typeof window.claude?.use === 'function';
+let downloadsApi = null;
+function updateHostClasses() {
+  document.body.classList.toggle('hosted', HOSTED);
+  document.body.classList.toggle('no-downloads', HOSTED && !downloadsApi);
+}
+if (HOSTED) window.claude.use('downloads').then(api => { downloadsApi = api; updateHostClasses(); }, () => {});
+
+async function download(name, content, type) {
+  if (HOSTED) {
+    if (!downloadsApi) { toast('Speichern ist in dieser Ansicht nicht verfügbar.'); return; }
+    try {
+      await downloadsApi.save({ filename: name, data: content });
+      toast(`${name} gespeichert.`);
+    } catch (e) {
+      if (e?.code === 'rate_limited') toast('Es ist bereits ein Speichern-Dialog offen. Bitte kurz warten.');
+      else if (e?.code !== 'declined') toast('Speichern ist in dieser Ansicht nicht möglich.');
+    }
+    return;
+  }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([content], { type }));
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+let toastTimer;
+function toast(msg) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+const THEMES = ['auto', 'light', 'dark'];
+function applyTheme(t) {
+  if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+  else delete document.documentElement.dataset.theme;
+  $('#themeLabel').textContent = { auto: 'Auto', light: 'Hell', dark: 'Dunkel' }[t] || 'Auto';
+}
+
+/* =====================================================================
+   Ereignisse
+   ===================================================================== */
+document.addEventListener('click', e => {
+  if (e.target.closest('a[href]') || e.target.matches('input')) return;
+  const el = e.target.closest('[data-action]');
+  if (!el) return;
+  const { action, uid } = el.dataset;
+  switch (action) {
+    case 'pick-files': $('#fileInput').click(); break;
+    case 'pick-dir': $('#dirInput').click(); break;
+    case 'paste': openPaste(); break;
+    case 'paste-load': {
+      const text = ($('#pasteArea')?.value || '').trim();
+      if (!text) return;
+      $('#dlg').close();
+      addTexts([{ name: `eingefuegt_${new Date().toLocaleTimeString('de-DE').replace(/:/g, '-')}.json`, text }]);
+      break;
+    }
+    case 'close-dlg': $('#dlg').close(); break;
+    case 'compare': state.view = 'compare'; render(); window.scrollTo(0, 0); break;
+    case 'open': if ($('#dlg').open) $('#dlg').close(); state.view = 'detail'; state.current = uid; render(); window.scrollTo(0, 0); break;
+    case 'remove': e.stopPropagation(); removeDoc(uid); break;
+    case 'clear-all':
+      openDialog(dlgHead('Alle Dateien entfernen?') + `<p style="margin:0">Alle ${state.docs.length} geladenen Dateien werden aus der Ansicht entfernt. Die Dateien auf deinem Rechner bleiben unverändert.</p><div class="btn-row" style="justify-content:flex-end;margin-bottom:0"><button class="btn" data-action="close-dlg">Abbrechen</button><button class="btn primary" data-action="clear-all-confirm">Alle entfernen</button></div>`);
+      break;
+    case 'clear-all-confirm': $('#dlg').close(); state.docs = []; state.selected.clear(); state.selectionTouched = false; save(); render(); break;
+    case 'load-samples': loadSamples(); break;
+    case 'sort': {
+      const col = el.dataset.col;
+      state.sort = state.sort.col === col ? { col, dir: -state.sort.dir } : { col, dir: 1 };
+      renderResults();
+      break;
+    }
+    case 'beleg': e.stopPropagation(); openBeleg(uid, el.dataset.path); break;
+    case 'ref': e.stopPropagation(); openRef(uid, el.dataset.id); break;
+    case 'jump': document.getElementById(el.dataset.target)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); break;
+    case 'csv': exportCSV(); break;
+    case 'copy-json': {
+      const d = getDoc(uid);
+      navigator.clipboard?.writeText(JSON.stringify(d.data, null, 2)).then(() => toast('JSON kopiert.'), () => toast('Kopieren nicht möglich.'));
+      break;
+    }
+    case 'download-json': { const d = getDoc(uid); download(d.fileName.replace(/[^\w.\-äöüÄÖÜß]+/g, '_').replace(/(\.json)?$/i, '.json'), JSON.stringify(d.data, null, 2), 'application/json'); break; }
+    case 'theme': {
+      const cur = lsGet(LS.theme) || 'auto';
+      const next = THEMES[(THEMES.indexOf(cur) + 1) % THEMES.length];
+      lsSet(LS.theme, next);
+      applyTheme(next);
+      drawCharts();
+      break;
+    }
+    case 'print': window.print(); break;
+  }
+});
+document.addEventListener('keydown', e => {
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('.docitem')) { e.preventDefault(); e.target.click(); }
+});
+function renderResults() {
+  const box = $('#cmpResults');
+  if (!box) return render();
+  chartFns.clear();
+  box.innerHTML = compareResults();
+  drawCharts();
+}
+document.addEventListener('change', e => {
+  const t = e.target;
+  if (t.id === 'fileInput' || t.id === 'dirInput') { addFiles([...t.files]); t.value = ''; return; }
+  if (t.dataset.select) { state.selectionTouched = true; t.checked ? state.selected.add(t.dataset.select) : state.selected.delete(t.dataset.select); renderResults(); return; }
+  if (t.id === 'selAll') { state.selectionTouched = true; for (const d of filteredDocs()) t.checked ? state.selected.add(d.uid) : state.selected.delete(d.uid); renderResults(); return; }
+  if (t.id === 'fu') { state.filter.urteil = t.value; renderResults(); return; }
+  if (t.id === 'fold') { state.filter.showOld = t.checked; renderResults(); return; }
+  if (t.id === 'fdiff') { state.diffOnly = t.checked; renderResults(); return; }
+  if (t.id === 'persist') { state.persist = t.checked; lsSet(LS.persist, t.checked ? '1' : '0'); save(); renderSidebar(); }
+});
+document.addEventListener('input', e => { if (e.target.id === 'fq') { state.filter.q = e.target.value; renderResults(); } });
+
+// Tooltip
+const tip = $('#tooltip');
+document.addEventListener('pointerover', e => {
+  const el = e.target.closest?.('[data-tip]');
+  if (!el) return;
+  tip.textContent = el.getAttribute('data-tip');
+  tip.classList.add('show');
+});
+document.addEventListener('pointermove', e => {
+  if (!tip.classList.contains('show')) return;
+  const r = tip.getBoundingClientRect();
+  let x = e.clientX + 14, y = e.clientY + 16;
+  if (x + r.width > innerWidth - 8) x = e.clientX - r.width - 14;
+  if (y + r.height > innerHeight - 8) y = e.clientY - r.height - 12;
+  tip.style.left = Math.max(8, x) + 'px';
+  tip.style.top = Math.max(8, y) + 'px';
+});
+document.addEventListener('pointerout', e => {
+  const el = e.target.closest?.('[data-tip]');
+  if (el && !el.contains(e.relatedTarget)) tip.classList.remove('show');
+});
+
+// Drag & Drop
+let dragDepth = 0;
+const hasFiles = e => [...(e.dataTransfer?.types || [])].includes('Files');
+addEventListener('dragenter', e => { if (!hasFiles(e)) return; e.preventDefault(); dragDepth++; document.body.classList.add('dragging'); });
+addEventListener('dragover', e => { if (hasFiles(e)) e.preventDefault(); });
+addEventListener('dragleave', e => { if (!hasFiles(e)) return; dragDepth = Math.max(0, dragDepth - 1); if (!dragDepth) document.body.classList.remove('dragging'); });
+addEventListener('drop', async e => {
+  if (!hasFiles(e)) return;
+  e.preventDefault();
+  dragDepth = 0;
+  document.body.classList.remove('dragging');
+  addFiles(await filesFromDataTransfer(e.dataTransfer));
+});
+
+addEventListener('beforeprint', () => document.querySelectorAll('details.item').forEach(el => { el.open = true; }));
+
+let resizeTimer;
+addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(drawCharts, 120); });
+
+// Start
+// Eingebettet bestimmt die Plattform das Farbschema (data-theme am Wurzelelement)
+if (!HOSTED) applyTheme(lsGet(LS.theme) || 'auto');
+updateHostClasses();
+restore();
+render();
+loadFromQuery();
+</script>
+</body>
+</html>

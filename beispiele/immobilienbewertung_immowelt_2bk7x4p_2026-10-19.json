@@ -1,0 +1,929 @@
+{
+  "schema_version": "1.0",
+  "metadaten": {
+    "bericht_id": "IB-immowelt-2bk7x4p-2026-10-19",
+    "pruefdatum": "2026-10-19",
+    "exportdatum": "2026-10-19",
+    "zeitzone": "Europe/Berlin",
+    "waehrung": "EUR",
+    "prueftiefe": "online_vorpruefung",
+    "analysestatus": "vorlaeufig",
+    "nutzungsfokus": "kapitalanlage",
+    "nutzungsfokus_grundlage": "Vermietetes Objekt; Prüfung als Kapitalanlage.",
+    "einschraenkungen": [
+      "Fiktiver Beispieldatensatz zur Demonstration des Viewers – kein reales Objekt.",
+      "Erbbaurechtsvertrag nicht zugänglich."
+    ]
+  },
+  "angebot": {
+    "url": "https://www.example.org/immowelt/expose/2bk7x4p",
+    "plattform": "immowelt",
+    "plattform_id": "2bk7x4p",
+    "anbieter_objektnummer": "DO-H-3312",
+    "einheit": "WE 12",
+    "titel": "3-Zimmer-Wohnung mit Balkon und Aufzug in Dortmund-Hörde (Erbbaurecht)",
+    "angebotsart": "kauf",
+    "objektart": "Eigentumswohnung im Erbbaurecht",
+    "zugriffsstatus": "vollstaendig",
+    "verfuegbarkeit": "angeboten",
+    "verfuegbarkeit_stand": "2026-10-19"
+  },
+  "standort": {
+    "land": "Deutschland",
+    "bundesland": "Nordrhein-Westfalen",
+    "ort": "Dortmund",
+    "stadtteil": "Hörde",
+    "postleitzahl": "44263",
+    "strasse": null,
+    "hausnummer": null,
+    "adressgenauigkeit": "stadtteil",
+    "lageeinschaetzung": "Stadtteil mit S-Bahn-Anschluss und Nahversorgung; Nähe zum Phoenix-See hebt Angebotspreise im Neubau, Bestand 1970er deutlich darunter."
+  },
+  "objekt": {
+    "kaufpreis_eur": 249000,
+    "verpflichtende_zusatzkaeufe_eur": 0,
+    "wohnflaeche_m2": 78.0,
+    "zimmer": 3,
+    "etage": "1",
+    "baujahr": 1972,
+    "aufzug": true,
+    "balkon_oder_terrasse": true,
+    "vermietungsstatus": "vermietet",
+    "innenfotos_geprueft": true,
+    "grundriss_geprueft": true,
+    "zustandseinschaetzung": "Bad und Küche ca. 2005, Fenster aus Baujahr; funktionaler Grundriss mit Durchgangszimmer."
+  },
+  "energie": {
+    "ausweisart": "bedarf",
+    "ausgestellt_am": "2022-04-11",
+    "gueltig_bis": "2032-04-10",
+    "verbrauchszeitraum_von": null,
+    "verbrauchszeitraum_bis": null,
+    "kennwert_kwh_m2_a": 121.0,
+    "effizienzklasse": "D",
+    "energietraeger": "Fernwärme",
+    "heizungsjahr": null
+  },
+  "weg": {
+    "anzahl_einheiten": 48,
+    "ruecklage_gesamt_eur": 312000,
+    "ruecklage_gesamt_stichtag": "2025-12-31",
+    "ruecklage_zuordnung_wohnung_eur": 6200,
+    "ruecklage_zuordnung_stichtag": "2025-12-31",
+    "ruecklagenzufuehrung_wohnung_monat_eur": 110,
+    "sonderumlage_beschlossen_wohnung_eur": null,
+    "sanierungsplanung": "Fassaden- und Fenstersanierung ab 2028 laut Protokoll 2026 in Diskussion (Kostenschätzung 0,52 Mio. €), nicht beschlossen."
+  },
+  "ist_kosten_und_ertraege": {
+    "nettokaltmiete_monat_eur": 610,
+    "nettokaltmiete_jahr_eur": 7320,
+    "betriebskostenvorauszahlung_monat_eur": 210,
+    "hausgeld_monat_eur": 395,
+    "hausgeld_umlagefaehig_monat_eur": 230,
+    "hausgeld_nicht_umlagefaehig_ohne_ruecklage_monat_eur": 55,
+    "kaeuferprovision_prozent": 3.57,
+    "grunderwerbsteuer_prozent": 6.5,
+    "notar_grundbuch_eur": null,
+    "anfaengliche_massnahmen_eur": null
+  },
+  "kennzahlen": {
+    "kaufpreis_pro_m2_eur": 3192.31,
+    "nettokaltmiete_pro_m2_eur": 7.82,
+    "bruttomietrendite_prozent": 2.94,
+    "kaufpreisfaktor_jahre": 34.02,
+    "gesamtinvestition_eur": null,
+    "bruttorendite_auf_gesamtinvestition_prozent": null,
+    "wirtschaftliche_nettorendite_vor_finanzierung_steuern_prozent": null
+  },
+  "preisbewertung": {
+    "aussagebasis": "angebotsvergleich",
+    "marktwertspanne_eur": null,
+    "angebotsvergleichsspanne_eur": {
+      "min": 205000,
+      "max": 211000
+    },
+    "einschaetzung": "Gegenüber Erbbaurechts-Vergleichen deutlich zu teuer; der Preis orientiert sich eher an Volleigentum."
+  },
+  "annahmen": [
+    {
+      "id": "A1",
+      "parameter": "notar_grundbuch_prozent",
+      "wert": 2.0,
+      "einheit": "Prozent",
+      "begruendung": "Pauschale Schätzung vom Kaufpreis.",
+      "quellen_ids": []
+    },
+    {
+      "id": "A2",
+      "parameter": "sollzins_prozent",
+      "wert": 3.8,
+      "einheit": "Prozent",
+      "begruendung": "Marktorientierung 10 Jahre Zinsbindung, Stand Oktober 2026; kein Kreditangebot.",
+      "quellen_ids": [
+        "Q5"
+      ]
+    },
+    {
+      "id": "A3",
+      "parameter": "tilgung_prozent",
+      "wert": 2.0,
+      "einheit": "Prozent",
+      "begruendung": "Anfänglicher Tilgungssatz des Modellkredits.",
+      "quellen_ids": []
+    },
+    {
+      "id": "A4",
+      "parameter": "mietausfallwagnis_prozent",
+      "wert": 2.0,
+      "einheit": "Prozent",
+      "begruendung": "Anteil der Jahreskaltmiete; Modellannahme für Bestandsmiete.",
+      "quellen_ids": []
+    },
+    {
+      "id": "A5",
+      "parameter": "instandhaltung_sondereigentum_pro_m2_eur",
+      "wert": 10.0,
+      "einheit": "EUR/m2/Jahr",
+      "begruendung": "Modellannahme; Gemeinschaftseigentum über Rücklagenzuführung abgedeckt.",
+      "quellen_ids": []
+    },
+    {
+      "id": "A7",
+      "parameter": "darlehensanteil_kaufpreis_prozent",
+      "wert": 90.0,
+      "einheit": "Prozent",
+      "begruendung": "Darlehen über 90 % des Kaufpreises; Eigenmittel decken 10 % des Kaufpreises und die Erwerbsnebenkosten. Modellannahme ohne persönliche Angaben.",
+      "quellen_ids": []
+    },
+    {
+      "id": "A8",
+      "parameter": "ziel_bruttomietrendite_prozent",
+      "wert": 4.0,
+      "einheit": "Prozent",
+      "begruendung": "Anlegerannahme, kein Marktbeweis.",
+      "quellen_ids": []
+    }
+  ],
+  "szenarien": [
+    {
+      "id": "S1",
+      "bezeichnung": "Basis: Finanzierung 90 %, Ist-Miete, Erbbauzins",
+      "typ": "basis",
+      "annahme_ids": [
+        "A1",
+        "A2",
+        "A3",
+        "A4",
+        "A5",
+        "A7"
+      ],
+      "rechnung": [
+        {
+          "kennzahl": "erbbauzins_monat_eur",
+          "wert": 92,
+          "einheit": "EUR/Monat",
+          "rolle": "eingabe",
+          "formel": null,
+          "eingabe_pfade": [],
+          "annahme_ids": [],
+          "quellen_ids": [
+            "Q1"
+          ]
+        },
+        {
+          "kennzahl": "erwerbsnebenkosten_eur",
+          "wert": 30054.3,
+          "einheit": "EUR",
+          "rolle": "ergebnis",
+          "formel": "kaufpreis_eur × (3,57 % + 6,5 % + 2,0 %)",
+          "eingabe_pfade": [
+            "/objekt/kaufpreis_eur",
+            "/ist_kosten_und_ertraege/kaeuferprovision_prozent",
+            "/ist_kosten_und_ertraege/grunderwerbsteuer_prozent"
+          ],
+          "annahme_ids": [
+            "A1"
+          ],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "gesamtinvestition_eur",
+          "wert": 279054.3,
+          "einheit": "EUR",
+          "rolle": "ergebnis",
+          "formel": "kaufpreis_eur + erwerbsnebenkosten_eur",
+          "eingabe_pfade": [
+            "/objekt/kaufpreis_eur",
+            "/szenarien/0/rechnung/1/wert"
+          ],
+          "annahme_ids": [],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "eigenkapital_eur",
+          "wert": 54954.3,
+          "einheit": "EUR",
+          "rolle": "eingabe",
+          "formel": "erwerbsnebenkosten_eur + 10 % kaufpreis_eur",
+          "eingabe_pfade": [
+            "/szenarien/0/rechnung/1/wert"
+          ],
+          "annahme_ids": [
+            "A7"
+          ],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "darlehen_eur",
+          "wert": 224100.0,
+          "einheit": "EUR",
+          "rolle": "ergebnis",
+          "formel": "90 % kaufpreis_eur",
+          "eingabe_pfade": [
+            "/objekt/kaufpreis_eur"
+          ],
+          "annahme_ids": [
+            "A7"
+          ],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "sollzins_prozent",
+          "wert": 3.8,
+          "einheit": "Prozent",
+          "rolle": "eingabe",
+          "formel": null,
+          "eingabe_pfade": [],
+          "annahme_ids": [
+            "A2"
+          ],
+          "quellen_ids": [
+            "Q5"
+          ]
+        },
+        {
+          "kennzahl": "tilgung_prozent",
+          "wert": 2.0,
+          "einheit": "Prozent",
+          "rolle": "eingabe",
+          "formel": null,
+          "eingabe_pfade": [],
+          "annahme_ids": [
+            "A3"
+          ],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "zinsbindung_jahre",
+          "wert": 10,
+          "einheit": "Jahre",
+          "rolle": "eingabe",
+          "formel": null,
+          "eingabe_pfade": [],
+          "annahme_ids": [
+            "A2"
+          ],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "monatsrate_eur",
+          "wert": 1083.15,
+          "einheit": "EUR/Monat",
+          "rolle": "ergebnis",
+          "formel": "darlehen_eur × (sollzins + tilgung) / 12",
+          "eingabe_pfade": [
+            "/szenarien/0/rechnung/4/wert",
+            "/szenarien/0/rechnung/5/wert",
+            "/szenarien/0/rechnung/6/wert"
+          ],
+          "annahme_ids": [],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "cashflow_monat_vor_steuern_eur",
+          "wert": -750.15,
+          "einheit": "EUR/Monat",
+          "rolle": "ergebnis",
+          "formel": "Kaltmiete + BK − Hausgeld − Erbbauzins − Monatsrate",
+          "eingabe_pfade": [
+            "/ist_kosten_und_ertraege/nettokaltmiete_monat_eur",
+            "/ist_kosten_und_ertraege/betriebskostenvorauszahlung_monat_eur",
+            "/ist_kosten_und_ertraege/hausgeld_monat_eur",
+            "/szenarien/0/rechnung/0/wert",
+            "/szenarien/0/rechnung/8/wert"
+          ],
+          "annahme_ids": [],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "zusaetzlicher_finanzierungsbedarf_monat_eur",
+          "wert": 750.15,
+          "einheit": "EUR/Monat",
+          "rolle": "ergebnis",
+          "formel": "max(0, −cashflow)",
+          "eingabe_pfade": [
+            "/szenarien/0/rechnung/9/wert"
+          ],
+          "annahme_ids": [],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "bruttorendite_auf_gesamtinvestition_prozent",
+          "wert": 2.62,
+          "einheit": "Prozent",
+          "rolle": "ergebnis",
+          "formel": "nettokaltmiete_jahr_eur / gesamtinvestition_eur × 100",
+          "eingabe_pfade": [
+            "/ist_kosten_und_ertraege/nettokaltmiete_jahr_eur",
+            "/szenarien/0/rechnung/2/wert"
+          ],
+          "annahme_ids": [],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "wirtschaftliche_nettorendite_vor_finanzierung_steuern_prozent",
+          "wert": 1.19,
+          "einheit": "Prozent",
+          "rolle": "ergebnis",
+          "formel": "(Jahreskaltmiete × 0,98 − nicht umlagefähiges Hausgeld − Rücklagenzuführung − Instandhaltung SE − Erbbauzins) / gesamtinvestition_eur × 100",
+          "eingabe_pfade": [
+            "/ist_kosten_und_ertraege/nettokaltmiete_jahr_eur",
+            "/ist_kosten_und_ertraege/hausgeld_nicht_umlagefaehig_ohne_ruecklage_monat_eur",
+            "/weg/ruecklagenzufuehrung_wohnung_monat_eur",
+            "/szenarien/0/rechnung/0/wert",
+            "/szenarien/0/rechnung/2/wert"
+          ],
+          "annahme_ids": [
+            "A4",
+            "A5"
+          ],
+          "quellen_ids": []
+        }
+      ],
+      "einordnung": "Erbbauzins schmälert Ertrag und Liquidität deutlich."
+    },
+    {
+      "id": "S2",
+      "bezeichnung": "Zahlungsgrenze bei 4 % Bruttomietrendite",
+      "typ": "zielrendite",
+      "annahme_ids": [
+        "A8"
+      ],
+      "rechnung": [
+        {
+          "kennzahl": "ziel_bruttomietrendite_prozent",
+          "wert": 4.0,
+          "einheit": "Prozent",
+          "rolle": "eingabe",
+          "formel": null,
+          "eingabe_pfade": [],
+          "annahme_ids": [
+            "A8"
+          ],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "zahlungsgrenze_eur",
+          "wert": 183000.0,
+          "einheit": "EUR",
+          "rolle": "ergebnis",
+          "formel": "nettokaltmiete_jahr_eur / 4 %",
+          "eingabe_pfade": [
+            "/ist_kosten_und_ertraege/nettokaltmiete_jahr_eur",
+            "/szenarien/1/rechnung/0/wert"
+          ],
+          "annahme_ids": [
+            "A8"
+          ],
+          "quellen_ids": []
+        }
+      ],
+      "einordnung": "Renditeabhängige Zahlungsgrenze, kein Marktwert."
+    }
+  ],
+  "vergleichsobjekte": [
+    {
+      "id": "V1",
+      "url": "https://www.example.org/portal/hoerde-volleigentum",
+      "preisart": "angebotspreis",
+      "preis_eur": 259000,
+      "wohnflaeche_m2": 75.0,
+      "preis_pro_m2_eur": 3453.33,
+      "eignung": "eingeschraenkt",
+      "gleicher_gebaeudekomplex": false,
+      "unterschiede_und_begruendung": "Hörde, Volleigentum statt Erbbaurecht – nicht unbereinigt vergleichbar.",
+      "quellen_ids": [
+        "Q6"
+      ]
+    },
+    {
+      "id": "V2",
+      "url": "https://www.example.org/portal/hoerde-erbbau",
+      "preisart": "angebotspreis",
+      "preis_eur": 219000,
+      "wohnflaeche_m2": 81.0,
+      "preis_pro_m2_eur": 2703.7,
+      "eignung": "gut",
+      "gleicher_gebaeudekomplex": false,
+      "unterschiede_und_begruendung": "Hörde, Erbbaurecht (Restlaufzeit 41 Jahre), Baujahr 1974.",
+      "quellen_ids": [
+        "Q7"
+      ]
+    },
+    {
+      "id": "V3",
+      "url": "https://www.example.org/portal/phoenixsee-neubau",
+      "preisart": "angebotspreis",
+      "preis_eur": 479000,
+      "wohnflaeche_m2": 80.0,
+      "preis_pro_m2_eur": 5987.5,
+      "eignung": "ausgeschlossen",
+      "gleicher_gebaeudekomplex": false,
+      "unterschiede_und_begruendung": "Neubau am Phoenix-See – anderes Marktsegment.",
+      "quellen_ids": [
+        "Q8"
+      ]
+    },
+    {
+      "id": "V4",
+      "url": "https://www.example.org/portal/benninghofen-erbbau",
+      "preisart": "angebotspreis",
+      "preis_eur": 189000,
+      "wohnflaeche_m2": 72.0,
+      "preis_pro_m2_eur": 2625.0,
+      "eignung": "gut",
+      "gleicher_gebaeudekomplex": false,
+      "unterschiede_und_begruendung": "Benninghofen, Erbbaurecht, einfachere Lage.",
+      "quellen_ids": [
+        "Q9"
+      ]
+    }
+  ],
+  "widersprueche": [],
+  "risiken": [
+    {
+      "id": "R1",
+      "bereich": "recht",
+      "befundstatus": "bestaetigt",
+      "schwere": "hoch",
+      "beschreibung": "Erbbaurecht mit Restlaufzeit bis 2064 (38 Jahre), Erbbauzins 92 €/Monat; Anpassungsklausel und Heimfallregelung unbekannt.",
+      "moegliche_auswirkung": "Sinkender Wiederverkaufswert gegen Laufzeitende; Finanzierbarkeit eingeschränkt.",
+      "kostenband_eur": null,
+      "quellen_ids": [
+        "Q1"
+      ]
+    },
+    {
+      "id": "R2",
+      "bereich": "weg",
+      "befundstatus": "hinweis",
+      "schwere": "mittel",
+      "beschreibung": "Fassaden- und Fenstersanierung in Diskussion; Anteil nach MEA rund 9.400 €.",
+      "moegliche_auswirkung": "Sonderumlage möglich, sofern Rücklage nicht ausreicht.",
+      "kostenband_eur": {
+        "min": 9000,
+        "max": 13000
+      },
+      "quellen_ids": [
+        "Q2"
+      ]
+    },
+    {
+      "id": "R3",
+      "bereich": "finanzierung",
+      "befundstatus": "hinweis",
+      "schwere": "hoch",
+      "beschreibung": "Im Basismodell rund −750 € Liquidität pro Monat vor Steuern.",
+      "moegliche_auswirkung": "Dauerhafter Zuschussbedarf.",
+      "kostenband_eur": null,
+      "quellen_ids": []
+    }
+  ],
+  "fehlende_unterlagen": [
+    {
+      "id": "D1",
+      "bezeichnung": "Erbbaurechtsvertrag inkl. Anpassungsklausel und Heimfallregelung",
+      "prioritaet": 1,
+      "anzufordern_bei": "Makler / Grundstückseigentümer",
+      "entscheidungsrelevanz": "Laufzeit, Zinsanpassung, Entschädigung."
+    },
+    {
+      "id": "D2",
+      "bezeichnung": "Mietvertrag",
+      "prioritaet": 2,
+      "anzufordern_bei": "Makler",
+      "entscheidungsrelevanz": "Bestätigung der Ist-Miete."
+    }
+  ],
+  "naechste_schritte": [
+    {
+      "id": "N1",
+      "prioritaet": 1,
+      "aufgabe": "Nur bei Preis nahe der Zahlungsgrenze weiterverfolgen",
+      "zustaendig": "Käufer",
+      "benoetigter_nachweis": null,
+      "risiko_ids": [
+        "R1",
+        "R3"
+      ],
+      "unterlagen_ids": []
+    },
+    {
+      "id": "N2",
+      "prioritaet": 2,
+      "aufgabe": "Erbbaurechtsvertrag prüfen lassen",
+      "zustaendig": "Notar / Fachanwalt",
+      "benoetigter_nachweis": "Erbbaurechtsvertrag",
+      "risiko_ids": [
+        "R1"
+      ],
+      "unterlagen_ids": [
+        "D1"
+      ]
+    }
+  ],
+  "bewertung": {
+    "gesamturteil": "fuer_das_ziel_verwerfen",
+    "belegsicherheit": "hoch",
+    "begruendung": "Als Kapitalanlage nicht tragfähig: Erbbaurecht mit 38 Jahren Restlaufzeit, Preis über Erbbaurechts-Vergleichen und deutlich negative Liquidität.",
+    "objektqualitaet": {
+      "urteil": "Solide, modernisierungsbedürftig",
+      "begruendung": "Aufzug, Balkon, Fernwärme; Fenster und Fassade stehen an.",
+      "belegsicherheit": "mittel"
+    },
+    "preisangemessenheit": {
+      "urteil": "Deutlich über Vergleichen im Erbbaurecht",
+      "begruendung": "3.192,31 €/m² gegenüber 2.625–2.704 €/m² bei Erbbaurechts-Vergleichen.",
+      "belegsicherheit": "hoch"
+    },
+    "wirtschaftlichkeit": {
+      "urteil": "Nicht tragfähig",
+      "begruendung": "Bruttomietrendite 2,94 %, Nettorendite im Szenario 1,19 %.",
+      "belegsicherheit": "hoch"
+    },
+    "persoenliche_eignung": {
+      "urteil": null,
+      "begruendung": "Kein persönliches Ziel angegeben.",
+      "belegsicherheit": "nicht_bewertbar"
+    },
+    "entscheidende_offene_punkte": [
+      "Erbbauzins-Anpassungsklausel",
+      "Verhandlungsbereitschaft des Verkäufers"
+    ]
+  },
+  "datenbelege": [
+    {
+      "feldpfad": "/objekt/kaufpreis_eur",
+      "status": "inseratsangabe",
+      "quellen_ids": [
+        "Q1"
+      ],
+      "annahme_ids": [],
+      "datenstand": "2026-10-19",
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/objekt/verpflichtende_zusatzkaeufe_eur",
+      "status": "inseratsangabe",
+      "quellen_ids": [
+        "Q1"
+      ],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": "Kein Stellplatzzwang laut Inserat."
+    },
+    {
+      "feldpfad": "/objekt/wohnflaeche_m2",
+      "status": "dokumentiert",
+      "quellen_ids": [
+        "Q2"
+      ],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/kennzahlen/kaufpreis_pro_m2_eur",
+      "status": "berechnet",
+      "quellen_ids": [],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": "kaufpreis_eur / wohnflaeche_m2",
+      "eingabe_pfade": [
+        "/objekt/kaufpreis_eur",
+        "/objekt/wohnflaeche_m2"
+      ],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/kennzahlen/nettokaltmiete_pro_m2_eur",
+      "status": "berechnet",
+      "quellen_ids": [],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": "nettokaltmiete_monat_eur / wohnflaeche_m2",
+      "eingabe_pfade": [
+        "/ist_kosten_und_ertraege/nettokaltmiete_monat_eur",
+        "/objekt/wohnflaeche_m2"
+      ],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/kennzahlen/bruttomietrendite_prozent",
+      "status": "berechnet",
+      "quellen_ids": [],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": "nettokaltmiete_jahr_eur / kaufpreis_eur × 100",
+      "eingabe_pfade": [
+        "/ist_kosten_und_ertraege/nettokaltmiete_jahr_eur",
+        "/objekt/kaufpreis_eur"
+      ],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/kennzahlen/kaufpreisfaktor_jahre",
+      "status": "berechnet",
+      "quellen_ids": [],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": "kaufpreis_eur / nettokaltmiete_jahr_eur",
+      "eingabe_pfade": [
+        "/objekt/kaufpreis_eur",
+        "/ist_kosten_und_ertraege/nettokaltmiete_jahr_eur"
+      ],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/ist_kosten_und_ertraege/nettokaltmiete_monat_eur",
+      "status": "inseratsangabe",
+      "quellen_ids": [
+        "Q1"
+      ],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/ist_kosten_und_ertraege/nettokaltmiete_jahr_eur",
+      "status": "berechnet",
+      "quellen_ids": [],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": "12 × nettokaltmiete_monat_eur",
+      "eingabe_pfade": [
+        "/ist_kosten_und_ertraege/nettokaltmiete_monat_eur"
+      ],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/ist_kosten_und_ertraege/hausgeld_monat_eur",
+      "status": "dokumentiert",
+      "quellen_ids": [
+        "Q3"
+      ],
+      "annahme_ids": [],
+      "datenstand": "2026-01-01",
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/ist_kosten_und_ertraege/hausgeld_umlagefaehig_monat_eur",
+      "status": "dokumentiert",
+      "quellen_ids": [
+        "Q3"
+      ],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/ist_kosten_und_ertraege/hausgeld_nicht_umlagefaehig_ohne_ruecklage_monat_eur",
+      "status": "dokumentiert",
+      "quellen_ids": [
+        "Q3"
+      ],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/ist_kosten_und_ertraege/grunderwerbsteuer_prozent",
+      "status": "unabhaengig_bestaetigt",
+      "quellen_ids": [
+        "Q4"
+      ],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/weg/ruecklage_gesamt_eur",
+      "status": "dokumentiert",
+      "quellen_ids": [
+        "Q2"
+      ],
+      "annahme_ids": [],
+      "datenstand": "2025-12-31",
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/weg/ruecklage_zuordnung_wohnung_eur",
+      "status": "dokumentiert",
+      "quellen_ids": [
+        "Q2"
+      ],
+      "annahme_ids": [],
+      "datenstand": "2025-12-31",
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": "Rechnerischer Anteil, kein frei verfügbares Guthaben."
+    },
+    {
+      "feldpfad": "/energie/kennwert_kwh_m2_a",
+      "status": "dokumentiert",
+      "quellen_ids": [
+        "Q2"
+      ],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/szenarien/0/rechnung/0/wert",
+      "status": "inseratsangabe",
+      "quellen_ids": [
+        "Q1"
+      ],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/szenarien/0/rechnung/9/wert",
+      "status": "berechnet",
+      "quellen_ids": [],
+      "annahme_ids": [
+        "A2",
+        "A3",
+        "A7"
+      ],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/szenarien/0/rechnung/12/wert",
+      "status": "berechnet",
+      "quellen_ids": [],
+      "annahme_ids": [
+        "A1",
+        "A4",
+        "A5"
+      ],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    }
+  ],
+  "quellen": [
+    {
+      "id": "Q1",
+      "titel": "Inserat Immowelt 2bk7x4p (fiktiv)",
+      "url": "https://www.example.org/immowelt/expose/2bk7x4p",
+      "typ": "inserat",
+      "veroeffentlicht_am": null,
+      "datenstand": null,
+      "abgerufen_am": "2026-10-19",
+      "zugriff": "vollstaendig",
+      "fundstelle": null,
+      "hinweis": null
+    },
+    {
+      "id": "Q2",
+      "titel": "Exposé mit Protokoll 2026 und Vermögensbericht (fiktiv)",
+      "url": "https://www.example.org/makler/do-h-3312.pdf",
+      "typ": "originaldokument",
+      "veroeffentlicht_am": null,
+      "datenstand": "2026-05-20",
+      "abgerufen_am": "2026-10-19",
+      "zugriff": "vollstaendig",
+      "fundstelle": "Anlagen 2 und 4",
+      "hinweis": null
+    },
+    {
+      "id": "Q3",
+      "titel": "Wirtschaftsplan 2026 (fiktiv)",
+      "url": "https://www.example.org/makler/do-h-3312-wirtschaftsplan.pdf",
+      "typ": "originaldokument",
+      "veroeffentlicht_am": null,
+      "datenstand": "2026-01-01",
+      "abgerufen_am": "2026-10-19",
+      "zugriff": "vollstaendig",
+      "fundstelle": null,
+      "hinweis": null
+    },
+    {
+      "id": "Q4",
+      "titel": "Grunderwerbsteuersatz NRW (Beispielquelle)",
+      "url": "https://www.example.org/amtlich/grunderwerbsteuer-nrw",
+      "typ": "amtliche_quelle",
+      "veroeffentlicht_am": null,
+      "datenstand": null,
+      "abgerufen_am": "2026-10-19",
+      "zugriff": "vollstaendig",
+      "fundstelle": null,
+      "hinweis": null
+    },
+    {
+      "id": "Q5",
+      "titel": "Bauzins-Orientierung Oktober 2026 (Beispielportal)",
+      "url": "https://www.example.org/zinsen/oktober-2026",
+      "typ": "portal",
+      "veroeffentlicht_am": null,
+      "datenstand": "2026-10-15",
+      "abgerufen_am": "2026-10-19",
+      "zugriff": "vollstaendig",
+      "fundstelle": null,
+      "hinweis": null
+    },
+    {
+      "id": "Q6",
+      "titel": "Vergleichsangebot V1 (fiktiv)",
+      "url": "https://www.example.org/portal/hoerde-volleigentum",
+      "typ": "portal",
+      "veroeffentlicht_am": null,
+      "datenstand": null,
+      "abgerufen_am": "2026-10-19",
+      "zugriff": "vollstaendig",
+      "fundstelle": null,
+      "hinweis": null
+    },
+    {
+      "id": "Q7",
+      "titel": "Vergleichsangebot V2 (fiktiv)",
+      "url": "https://www.example.org/portal/hoerde-erbbau",
+      "typ": "portal",
+      "veroeffentlicht_am": null,
+      "datenstand": null,
+      "abgerufen_am": "2026-10-19",
+      "zugriff": "vollstaendig",
+      "fundstelle": null,
+      "hinweis": null
+    },
+    {
+      "id": "Q8",
+      "titel": "Vergleichsangebot V3 (fiktiv)",
+      "url": "https://www.example.org/portal/phoenixsee-neubau",
+      "typ": "portal",
+      "veroeffentlicht_am": null,
+      "datenstand": null,
+      "abgerufen_am": "2026-10-19",
+      "zugriff": "vollstaendig",
+      "fundstelle": null,
+      "hinweis": null
+    },
+    {
+      "id": "Q9",
+      "titel": "Vergleichsangebot V4 (fiktiv)",
+      "url": "https://www.example.org/portal/benninghofen-erbbau",
+      "typ": "portal",
+      "veroeffentlicht_am": null,
+      "datenstand": null,
+      "abgerufen_am": "2026-10-19",
+      "zugriff": "vollstaendig",
+      "fundstelle": null,
+      "hinweis": null
+    }
+  ],
+  "exportpruefung": {
+    "json_syntax_geprueft": true,
+    "schema_geprueft": false,
+    "referenzen_geprueft": true,
+    "berichtskonsistenz_geprueft": true,
+    "hinweise": []
+  }
+}

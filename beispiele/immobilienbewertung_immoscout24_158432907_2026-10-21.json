@@ -1,0 +1,823 @@
+{
+  "schema_version": "1.0",
+  "metadaten": {
+    "bericht_id": "IB-immoscout24-158432907-2026-10-21",
+    "pruefdatum": "2026-10-21",
+    "exportdatum": "2026-10-21",
+    "zeitzone": "Europe/Berlin",
+    "waehrung": "EUR",
+    "prueftiefe": "online_vorpruefung",
+    "analysestatus": "eingeschraenkt",
+    "nutzungsfokus": "offen",
+    "nutzungsfokus_grundlage": "Leerstehendes Objekt, kein Nutzungsziel genannt; Mietpotenzial nur als Szenario.",
+    "einschraenkungen": [
+      "Fiktiver Beispieldatensatz zur Demonstration des Viewers – kein reales Objekt.",
+      "Bildergalerie nur teilweise geladen (4 von 11 Bildern); Exposé nur über Suchindex auffindbar."
+    ]
+  },
+  "angebot": {
+    "url": "https://www.example.org/immoscout24/expose/158432907",
+    "plattform": "immoscout24",
+    "plattform_id": "158432907",
+    "anbieter_objektnummer": null,
+    "einheit": null,
+    "titel": "Bezugsfreies 1-Zimmer-Apartment am Kaßberg",
+    "angebotsart": "kauf",
+    "objektart": "Eigentumswohnung (Apartment)",
+    "zugriffsstatus": "teilweise",
+    "verfuegbarkeit": "angeboten",
+    "verfuegbarkeit_stand": "2026-10-21"
+  },
+  "standort": {
+    "land": "Deutschland",
+    "bundesland": "Sachsen",
+    "ort": "Chemnitz",
+    "stadtteil": "Kaßberg",
+    "postleitzahl": "09112",
+    "strasse": null,
+    "hausnummer": null,
+    "adressgenauigkeit": "stadtteil",
+    "lageeinschaetzung": "Innenstadtnahes Gründerzeitviertel mit hohem Altbauanteil; städtische Leerstandsquote über Bundesdurchschnitt, daher Vermietungsdauer als Risiko berücksichtigen."
+  },
+  "objekt": {
+    "kaufpreis_eur": 59000,
+    "verpflichtende_zusatzkaeufe_eur": null,
+    "wohnflaeche_m2": 31.5,
+    "zimmer": 1,
+    "etage": "EG",
+    "baujahr": null,
+    "aufzug": false,
+    "balkon_oder_terrasse": false,
+    "vermietungsstatus": "leer",
+    "innenfotos_geprueft": true,
+    "grundriss_geprueft": false,
+    "zustandseinschaetzung": "Nur 4 Innenfotos zugänglich: neuer Bodenbelag, Pantryküche; Bad nicht abgebildet."
+  },
+  "energie": {
+    "ausweisart": "bedarf",
+    "ausgestellt_am": "2015-06-01",
+    "gueltig_bis": "2025-05-31",
+    "verbrauchszeitraum_von": null,
+    "verbrauchszeitraum_bis": null,
+    "kennwert_kwh_m2_a": 198.0,
+    "effizienzklasse": "F",
+    "energietraeger": "Fernwärme",
+    "heizungsjahr": null
+  },
+  "weg": {
+    "anzahl_einheiten": 14,
+    "ruecklage_gesamt_eur": 21000,
+    "ruecklage_gesamt_stichtag": null,
+    "ruecklage_zuordnung_wohnung_eur": null,
+    "ruecklage_zuordnung_stichtag": null,
+    "ruecklagenzufuehrung_wohnung_monat_eur": null,
+    "sonderumlage_beschlossen_wohnung_eur": null,
+    "sanierungsplanung": null
+  },
+  "ist_kosten_und_ertraege": {
+    "nettokaltmiete_monat_eur": null,
+    "nettokaltmiete_jahr_eur": null,
+    "betriebskostenvorauszahlung_monat_eur": null,
+    "hausgeld_monat_eur": 145,
+    "hausgeld_umlagefaehig_monat_eur": null,
+    "hausgeld_nicht_umlagefaehig_ohne_ruecklage_monat_eur": null,
+    "kaeuferprovision_prozent": 0,
+    "grunderwerbsteuer_prozent": 5.5,
+    "notar_grundbuch_eur": null,
+    "anfaengliche_massnahmen_eur": null
+  },
+  "kennzahlen": {
+    "kaufpreis_pro_m2_eur": 1873.02,
+    "nettokaltmiete_pro_m2_eur": null,
+    "bruttomietrendite_prozent": null,
+    "kaufpreisfaktor_jahre": null,
+    "gesamtinvestition_eur": null,
+    "bruttorendite_auf_gesamtinvestition_prozent": null,
+    "wirtschaftliche_nettorendite_vor_finanzierung_steuern_prozent": null
+  },
+  "preisbewertung": {
+    "aussagebasis": "angebotsvergleich",
+    "marktwertspanne_eur": null,
+    "angebotsvergleichsspanne_eur": {
+      "min": 52000,
+      "max": 66000
+    },
+    "einschaetzung": "Preis pro m² im Mittelfeld vergleichbarer Kaßberg-Apartments; abgelaufener Energieausweis und fehlende Bad-Fotos sind Klärungspunkte."
+  },
+  "annahmen": [
+    {
+      "id": "A1",
+      "parameter": "notar_grundbuch_prozent",
+      "wert": 2.0,
+      "einheit": "Prozent",
+      "begruendung": "Pauschale Schätzung vom Kaufpreis.",
+      "quellen_ids": []
+    },
+    {
+      "id": "A2",
+      "parameter": "nettokaltmiete_pro_m2_eur",
+      "wert": 7.2,
+      "einheit": "EUR/m2",
+      "begruendung": "Erzielbare Nettokaltmiete; Orientierung an Mietspiegel-Mittelwert für Altbau bis 1918, einfache Ausstattung. Annahme, keine Angebotsmiete.",
+      "quellen_ids": [
+        "Q4"
+      ]
+    },
+    {
+      "id": "A3",
+      "parameter": "ziel_bruttomietrendite_prozent",
+      "wert": 5.0,
+      "einheit": "Prozent",
+      "begruendung": "Anlegerannahme, kein Marktbeweis.",
+      "quellen_ids": []
+    }
+  ],
+  "szenarien": [
+    {
+      "id": "S1",
+      "bezeichnung": "Hypothetische Vermietung zu 7,20 €/m²",
+      "typ": "basis",
+      "annahme_ids": [
+        "A1",
+        "A2"
+      ],
+      "rechnung": [
+        {
+          "kennzahl": "nettokaltmiete_pro_m2_eur",
+          "wert": 7.2,
+          "einheit": "EUR/m2",
+          "rolle": "eingabe",
+          "formel": null,
+          "eingabe_pfade": [],
+          "annahme_ids": [
+            "A2"
+          ],
+          "quellen_ids": [
+            "Q4"
+          ]
+        },
+        {
+          "kennzahl": "nettokaltmiete_monat_eur",
+          "wert": 226.8,
+          "einheit": "EUR/Monat",
+          "rolle": "ergebnis",
+          "formel": "nettokaltmiete_pro_m2_eur × wohnflaeche_m2",
+          "eingabe_pfade": [
+            "/szenarien/0/rechnung/0/wert",
+            "/objekt/wohnflaeche_m2"
+          ],
+          "annahme_ids": [],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "bruttomietrendite_prozent",
+          "wert": 4.61,
+          "einheit": "Prozent",
+          "rolle": "ergebnis",
+          "formel": "12 × Monatsmiete / kaufpreis_eur × 100",
+          "eingabe_pfade": [
+            "/szenarien/0/rechnung/1/wert",
+            "/objekt/kaufpreis_eur"
+          ],
+          "annahme_ids": [],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "kaufpreisfaktor_jahre",
+          "wert": 21.68,
+          "einheit": "Jahre",
+          "rolle": "ergebnis",
+          "formel": "kaufpreis_eur / (12 × Monatsmiete)",
+          "eingabe_pfade": [
+            "/objekt/kaufpreis_eur",
+            "/szenarien/0/rechnung/1/wert"
+          ],
+          "annahme_ids": [],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "erwerbsnebenkosten_eur",
+          "wert": 4425.0,
+          "einheit": "EUR",
+          "rolle": "ergebnis",
+          "formel": "kaufpreis_eur × (0 % + 5,5 % + 2,0 %)",
+          "eingabe_pfade": [
+            "/objekt/kaufpreis_eur",
+            "/ist_kosten_und_ertraege/grunderwerbsteuer_prozent",
+            "/ist_kosten_und_ertraege/kaeuferprovision_prozent"
+          ],
+          "annahme_ids": [
+            "A1"
+          ],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "gesamtinvestition_eur",
+          "wert": 63425.0,
+          "einheit": "EUR",
+          "rolle": "ergebnis",
+          "formel": "kaufpreis_eur + erwerbsnebenkosten_eur",
+          "eingabe_pfade": [
+            "/objekt/kaufpreis_eur",
+            "/szenarien/0/rechnung/4/wert"
+          ],
+          "annahme_ids": [],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "bruttorendite_auf_gesamtinvestition_prozent",
+          "wert": 4.29,
+          "einheit": "Prozent",
+          "rolle": "ergebnis",
+          "formel": "12 × Monatsmiete / gesamtinvestition_eur × 100",
+          "eingabe_pfade": [
+            "/szenarien/0/rechnung/1/wert",
+            "/szenarien/0/rechnung/5/wert"
+          ],
+          "annahme_ids": [],
+          "quellen_ids": []
+        }
+      ],
+      "einordnung": "Rein hypothetisch: keine Angebotsmiete, kein Leerstand bis zur Vermietung eingerechnet."
+    },
+    {
+      "id": "S2",
+      "bezeichnung": "Zahlungsgrenze bei 5 % Bruttomietrendite",
+      "typ": "zielrendite",
+      "annahme_ids": [
+        "A2",
+        "A3"
+      ],
+      "rechnung": [
+        {
+          "kennzahl": "ziel_bruttomietrendite_prozent",
+          "wert": 5.0,
+          "einheit": "Prozent",
+          "rolle": "eingabe",
+          "formel": null,
+          "eingabe_pfade": [],
+          "annahme_ids": [
+            "A3"
+          ],
+          "quellen_ids": []
+        },
+        {
+          "kennzahl": "zahlungsgrenze_eur",
+          "wert": 54432.0,
+          "einheit": "EUR",
+          "rolle": "ergebnis",
+          "formel": "12 × Monatsmiete (S1) / 5 %",
+          "eingabe_pfade": [
+            "/szenarien/0/rechnung/1/wert",
+            "/szenarien/1/rechnung/0/wert"
+          ],
+          "annahme_ids": [
+            "A2",
+            "A3"
+          ],
+          "quellen_ids": []
+        }
+      ],
+      "einordnung": "Renditeabhängige Zahlungsgrenze, kein Marktwert."
+    }
+  ],
+  "vergleichsobjekte": [
+    {
+      "id": "V1",
+      "url": "https://www.example.org/portal/kassberg-apartment-1",
+      "preisart": "angebotspreis",
+      "preis_eur": 64900,
+      "wohnflaeche_m2": 34.0,
+      "preis_pro_m2_eur": 1908.82,
+      "eignung": "gut",
+      "gleicher_gebaeudekomplex": false,
+      "unterschiede_und_begruendung": "Kaßberg, 1. OG, Balkon, vermietet.",
+      "quellen_ids": [
+        "Q5"
+      ]
+    },
+    {
+      "id": "V2",
+      "url": "https://www.example.org/portal/kassberg-apartment-2",
+      "preisart": "angebotspreis",
+      "preis_eur": 49500,
+      "wohnflaeche_m2": 29.0,
+      "preis_pro_m2_eur": 1706.9,
+      "eignung": "gut",
+      "gleicher_gebaeudekomplex": false,
+      "unterschiede_und_begruendung": "Kaßberg, Souterrain, renovierungsbedürftig.",
+      "quellen_ids": [
+        "Q6"
+      ]
+    },
+    {
+      "id": "V3",
+      "url": "https://www.example.org/portal/schlosschemnitz-apartment",
+      "preisart": "angebotspreis",
+      "preis_eur": 59000,
+      "wohnflaeche_m2": 36.0,
+      "preis_pro_m2_eur": 1638.89,
+      "eignung": "eingeschraenkt",
+      "gleicher_gebaeudekomplex": false,
+      "unterschiede_und_begruendung": "Schloßchemnitz, andere Mikrolage, vermietet.",
+      "quellen_ids": [
+        "Q7"
+      ]
+    },
+    {
+      "id": "V4",
+      "url": "https://www.example.org/portal/kassberg-apartment-3",
+      "preisart": "angebotspreis",
+      "preis_eur": 69000,
+      "wohnflaeche_m2": 33.0,
+      "preis_pro_m2_eur": 2090.91,
+      "eignung": "gut",
+      "gleicher_gebaeudekomplex": false,
+      "unterschiede_und_begruendung": "Kaßberg, kernsaniert 2022, Bedarfsausweis C.",
+      "quellen_ids": [
+        "Q8"
+      ]
+    }
+  ],
+  "widersprueche": [
+    {
+      "id": "W1",
+      "feldpfad": "/objekt/baujahr",
+      "varianten": [
+        {
+          "wert": 1906,
+          "einheit": null,
+          "datenstand": "2026-10-21",
+          "quellen_ids": [
+            "Q1"
+          ],
+          "hinweis": "Inseratsangabe"
+        },
+        {
+          "wert": 1910,
+          "einheit": null,
+          "datenstand": null,
+          "quellen_ids": [
+            "Q2"
+          ],
+          "hinweis": "Exposé-Auszug im Suchindex"
+        }
+      ],
+      "auswirkung": "Gering – beide Angaben in derselben Mietspiegel-Baualtersklasse (bis 1918).",
+      "klaerungsbedarf": "Teilungserklärung oder Exposé im Original.",
+      "status": "offen",
+      "aufloesung": null
+    }
+  ],
+  "risiken": [
+    {
+      "id": "R1",
+      "bereich": "datenlage",
+      "befundstatus": "bestaetigt",
+      "schwere": "mittel",
+      "beschreibung": "Bildergalerie unvollständig, Exposé nur im Suchindex; Bad und Grundriss nicht geprüft.",
+      "moegliche_auswirkung": "Zustand und Raumnutzung nicht belastbar beurteilbar.",
+      "kostenband_eur": null,
+      "quellen_ids": [
+        "Q1",
+        "Q2"
+      ]
+    },
+    {
+      "id": "R2",
+      "bereich": "energie",
+      "befundstatus": "bestaetigt",
+      "schwere": "mittel",
+      "beschreibung": "Energieausweis laut Inserat am 31.05.2025 abgelaufen; Klasse F.",
+      "moegliche_auswirkung": "Aktueller energetischer Zustand unbekannt; Verkäufer muss gültigen Ausweis vorlegen.",
+      "kostenband_eur": null,
+      "quellen_ids": [
+        "Q1"
+      ]
+    },
+    {
+      "id": "R3",
+      "bereich": "vermietung",
+      "befundstatus": "hinweis",
+      "schwere": "mittel",
+      "beschreibung": "Leerstehend; Vermietungsdauer und erzielbare Miete unbelegt.",
+      "moegliche_auswirkung": "Leerstandskosten (Hausgeld 145 €/Monat) bis zur Vermietung.",
+      "kostenband_eur": null,
+      "quellen_ids": [
+        "Q4"
+      ]
+    },
+    {
+      "id": "R4",
+      "bereich": "weg",
+      "befundstatus": "ungeklaert",
+      "schwere": "nicht_bewertbar",
+      "beschreibung": "Rücklage 21.000 € ohne Stichtag; keine Protokolle, keine Hausgeldaufteilung.",
+      "moegliche_auswirkung": "Sanierungsstand und Sonderumlagerisiko offen.",
+      "kostenband_eur": null,
+      "quellen_ids": [
+        "Q1"
+      ]
+    }
+  ],
+  "fehlende_unterlagen": [
+    {
+      "id": "D1",
+      "bezeichnung": "Vollständiges Exposé mit allen Fotos und Grundriss",
+      "prioritaet": 1,
+      "anzufordern_bei": "Anbieter",
+      "entscheidungsrelevanz": "Zustand Bad, Raumaufteilung."
+    },
+    {
+      "id": "D2",
+      "bezeichnung": "Wirtschaftsplan, Jahresabrechnung, Protokolle",
+      "prioritaet": 1,
+      "anzufordern_bei": "WEG-Verwaltung über Anbieter",
+      "entscheidungsrelevanz": "Rücklage, Hausgeldaufteilung, Maßnahmen."
+    },
+    {
+      "id": "D3",
+      "bezeichnung": "Gültiger Energieausweis",
+      "prioritaet": 2,
+      "anzufordern_bei": "Anbieter",
+      "entscheidungsrelevanz": "Energetischer Zustand."
+    }
+  ],
+  "naechste_schritte": [
+    {
+      "id": "N1",
+      "prioritaet": 1,
+      "aufgabe": "Vollständiges Exposé und WEG-Unterlagen anfordern",
+      "zustaendig": "Käufer",
+      "benoetigter_nachweis": "Exposé, Wirtschaftsplan, Protokolle",
+      "risiko_ids": [
+        "R1",
+        "R4"
+      ],
+      "unterlagen_ids": [
+        "D1",
+        "D2"
+      ]
+    },
+    {
+      "id": "N2",
+      "prioritaet": 2,
+      "aufgabe": "Marktmiete mit aktuellen Angebotsmieten am Kaßberg gegenprüfen",
+      "zustaendig": "Käufer",
+      "benoetigter_nachweis": "3–5 Mietangebote",
+      "risiko_ids": [
+        "R3"
+      ],
+      "unterlagen_ids": []
+    },
+    {
+      "id": "N3",
+      "prioritaet": 3,
+      "aufgabe": "Gültigen Energieausweis verlangen",
+      "zustaendig": "Anbieter",
+      "benoetigter_nachweis": "Energieausweis",
+      "risiko_ids": [
+        "R2"
+      ],
+      "unterlagen_ids": [
+        "D3"
+      ]
+    }
+  ],
+  "bewertung": {
+    "gesamturteil": "weiter_pruefen",
+    "belegsicherheit": "mittel",
+    "begruendung": "Günstiger Einstiegspreis und provisionsfrei; das hypothetische Mietpotenzial rechtfertigt eine weitere Prüfung, sofern Zustand und WEG-Unterlagen nicht widersprechen.",
+    "objektqualitaet": {
+      "urteil": "Nicht abschließend beurteilbar",
+      "begruendung": "Nur Teil der Fotos geprüft; Bad unbekannt.",
+      "belegsicherheit": "niedrig"
+    },
+    "preisangemessenheit": {
+      "urteil": "Im Mittelfeld der Angebotsvergleiche",
+      "begruendung": "1.873,02 €/m² gegenüber 1.639–2.091 €/m².",
+      "belegsicherheit": "mittel"
+    },
+    "wirtschaftlichkeit": {
+      "urteil": "Hypothetisch rund 4,6 % brutto",
+      "begruendung": "Nur über Mietannahme A2; keine Ist-Miete.",
+      "belegsicherheit": "niedrig"
+    },
+    "persoenliche_eignung": {
+      "urteil": null,
+      "begruendung": "Kein Nutzungsziel genannt.",
+      "belegsicherheit": "nicht_bewertbar"
+    },
+    "entscheidende_offene_punkte": [
+      "Zustand von Bad und Gemeinschaftseigentum",
+      "Tatsächlich erzielbare Miete und Vermietungsdauer",
+      "Rücklagen- und Sanierungsstand der WEG"
+    ]
+  },
+  "datenbelege": [
+    {
+      "feldpfad": "/objekt/kaufpreis_eur",
+      "status": "inseratsangabe",
+      "quellen_ids": [
+        "Q1"
+      ],
+      "annahme_ids": [],
+      "datenstand": "2026-10-21",
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/objekt/wohnflaeche_m2",
+      "status": "inseratsangabe",
+      "quellen_ids": [
+        "Q1"
+      ],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/objekt/baujahr",
+      "status": "widerspruechlich",
+      "quellen_ids": [
+        "Q1",
+        "Q2"
+      ],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": "Siehe W1."
+    },
+    {
+      "feldpfad": "/kennzahlen/kaufpreis_pro_m2_eur",
+      "status": "berechnet",
+      "quellen_ids": [],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": "kaufpreis_eur / wohnflaeche_m2",
+      "eingabe_pfade": [
+        "/objekt/kaufpreis_eur",
+        "/objekt/wohnflaeche_m2"
+      ],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/ist_kosten_und_ertraege/nettokaltmiete_monat_eur",
+      "status": "nicht_anwendbar",
+      "quellen_ids": [],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": "Objekt leerstehend; Mietpotenzial nur in S1."
+    },
+    {
+      "feldpfad": "/ist_kosten_und_ertraege/hausgeld_monat_eur",
+      "status": "inseratsangabe",
+      "quellen_ids": [
+        "Q1"
+      ],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/ist_kosten_und_ertraege/kaeuferprovision_prozent",
+      "status": "inseratsangabe",
+      "quellen_ids": [
+        "Q1"
+      ],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": "Provisionsfrei laut Inserat."
+    },
+    {
+      "feldpfad": "/ist_kosten_und_ertraege/grunderwerbsteuer_prozent",
+      "status": "unabhaengig_bestaetigt",
+      "quellen_ids": [
+        "Q3"
+      ],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/energie/gueltig_bis",
+      "status": "inseratsangabe",
+      "quellen_ids": [
+        "Q1"
+      ],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/energie/kennwert_kwh_m2_a",
+      "status": "inseratsangabe",
+      "quellen_ids": [
+        "Q1"
+      ],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/energie/effizienzklasse",
+      "status": "inseratsangabe",
+      "quellen_ids": [
+        "Q1"
+      ],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/weg/ruecklage_gesamt_eur",
+      "status": "inseratsangabe",
+      "quellen_ids": [
+        "Q1"
+      ],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": "Stichtag nicht angegeben."
+    },
+    {
+      "feldpfad": "/preisbewertung/angebotsvergleichsspanne_eur",
+      "status": "berechnet",
+      "quellen_ids": [
+        "Q5",
+        "Q6",
+        "Q8"
+      ],
+      "annahme_ids": [],
+      "datenstand": null,
+      "formel": "Spanne geeigneter Vergleiche × 31,5 m², gerundet",
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/szenarien/0/rechnung/0/wert",
+      "status": "annahme",
+      "quellen_ids": [
+        "Q4"
+      ],
+      "annahme_ids": [
+        "A2"
+      ],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/szenarien/0/rechnung/2/wert",
+      "status": "berechnet",
+      "quellen_ids": [],
+      "annahme_ids": [
+        "A2"
+      ],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    },
+    {
+      "feldpfad": "/szenarien/1/rechnung/1/wert",
+      "status": "berechnet",
+      "quellen_ids": [],
+      "annahme_ids": [
+        "A2",
+        "A3"
+      ],
+      "datenstand": null,
+      "formel": null,
+      "eingabe_pfade": [],
+      "hinweis": null
+    }
+  ],
+  "quellen": [
+    {
+      "id": "Q1",
+      "titel": "Inserat ImmoScout24 158432907 (fiktiv)",
+      "url": "https://www.example.org/immoscout24/expose/158432907",
+      "typ": "inserat",
+      "veroeffentlicht_am": null,
+      "datenstand": null,
+      "abgerufen_am": "2026-10-21",
+      "zugriff": "teilweise",
+      "fundstelle": null,
+      "hinweis": "Galerie nur teilweise geladen."
+    },
+    {
+      "id": "Q2",
+      "titel": "Exposé-Auszug im Suchindex (fiktiv)",
+      "url": "https://www.example.org/suche/expose-kassberg",
+      "typ": "sonstiges",
+      "veroeffentlicht_am": null,
+      "datenstand": null,
+      "abgerufen_am": "2026-10-21",
+      "zugriff": "nur_suchindex",
+      "fundstelle": null,
+      "hinweis": null
+    },
+    {
+      "id": "Q3",
+      "titel": "Grunderwerbsteuersatz Sachsen (Beispielquelle)",
+      "url": "https://www.example.org/amtlich/grunderwerbsteuer-sachsen",
+      "typ": "amtliche_quelle",
+      "veroeffentlicht_am": null,
+      "datenstand": "2026-01-01",
+      "abgerufen_am": "2026-10-21",
+      "zugriff": "vollstaendig",
+      "fundstelle": null,
+      "hinweis": null
+    },
+    {
+      "id": "Q4",
+      "titel": "Mietspiegel Chemnitz (Beispielquelle)",
+      "url": "https://www.example.org/amtlich/mietspiegel-chemnitz",
+      "typ": "amtliche_quelle",
+      "veroeffentlicht_am": null,
+      "datenstand": "2025-04-01",
+      "abgerufen_am": "2026-10-21",
+      "zugriff": "vollstaendig",
+      "fundstelle": null,
+      "hinweis": "Einfacher Mietspiegel; Anwendungsbereich geprüft."
+    },
+    {
+      "id": "Q5",
+      "titel": "Vergleichsangebot V1 (fiktiv)",
+      "url": "https://www.example.org/portal/kassberg-apartment-1",
+      "typ": "portal",
+      "veroeffentlicht_am": null,
+      "datenstand": null,
+      "abgerufen_am": "2026-10-21",
+      "zugriff": "vollstaendig",
+      "fundstelle": null,
+      "hinweis": null
+    },
+    {
+      "id": "Q6",
+      "titel": "Vergleichsangebot V2 (fiktiv)",
+      "url": "https://www.example.org/portal/kassberg-apartment-2",
+      "typ": "portal",
+      "veroeffentlicht_am": null,
+      "datenstand": null,
+      "abgerufen_am": "2026-10-21",
+      "zugriff": "vollstaendig",
+      "fundstelle": null,
+      "hinweis": null
+    },
+    {
+      "id": "Q7",
+      "titel": "Vergleichsangebot V3 (fiktiv)",
+      "url": "https://www.example.org/portal/schlosschemnitz-apartment",
+      "typ": "portal",
+      "veroeffentlicht_am": null,
+      "datenstand": null,
+      "abgerufen_am": "2026-10-21",
+      "zugriff": "vollstaendig",
+      "fundstelle": null,
+      "hinweis": null
+    },
+    {
+      "id": "Q8",
+      "titel": "Vergleichsangebot V4 (fiktiv)",
+      "url": "https://www.example.org/portal/kassberg-apartment-3",
+      "typ": "portal",
+      "veroeffentlicht_am": null,
+      "datenstand": null,
+      "abgerufen_am": "2026-10-21",
+      "zugriff": "vollstaendig",
+      "fundstelle": null,
+      "hinweis": null
+    }
+  ],
+  "exportpruefung": {
+    "json_syntax_geprueft": true,
+    "schema_geprueft": false,
+    "referenzen_geprueft": true,
+    "berichtskonsistenz_geprueft": true,
+    "hinweise": [
+      "Schema-Datei nicht verfügbar."
+    ]
+  }
+}
