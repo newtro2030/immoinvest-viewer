@@ -2368,6 +2368,23 @@ function profilGeaendert(p) {
   pSpeichern();
 }
 
+/** Wechselt zu den Profilen und merkt sich, woher man kam – Ziel des Zurück-Links. */
+function pZuProfilen() {
+  if (state.view !== 'profile') state.vorProfil = { view: state.view, current: state.current, detailModus: state.detailModus, y: window.scrollY };
+  state.view = 'profile';
+}
+
+/** Zurück zur Ansicht vor den Profilen; ohne gültige Vorgeschichte zum Vergleich bzw. zum einzigen Objekt. */
+function pZurueckZiel() {
+  const kurz = t => (t.length > 60 ? t.slice(0, 59) + '…' : t);
+  const v = state.vorProfil;
+  if (v && v.view === 'detail' && getDoc(v.current)) return { ...v, text: `Zurück zu „${kurz(docTitle(getDoc(v.current)))}“` };
+  if (v && v.view === 'compare' && immoDocs().length) return { ...v, text: 'Zurück zum Vergleich' };
+  if (immoDocs().length > 1) return { view: 'compare', text: 'Zum Vergleich' };
+  const d = immoDocs()[0] || state.docs[0];
+  return d ? { view: 'detail', current: d.uid, text: `Zu „${kurz(docTitle(d))}“` } : null;
+}
+
 /* ---------- Anzeigeformate ---------- */
 const pEur = v => (pIstZahl(v) ? fmtNum(v, 'eur') : '—');
 const pZuzahlung = v => (pIstZahl(v) ? (v > 0.004 ? `${fmtNum(v, 'eur')}` : v < -0.004 ? `${fmtNum(-v, 'eur')} Überschuss` : '0 €') : '—');
@@ -2441,7 +2458,7 @@ function pNeu() {
   state.profile.liste.push(p);
   state.profile.aktivId = p.id;
   profilMeta(p.id).geaendert = true;
-  state.view = 'profile';
+  pZuProfilen();
   state.profilTab = 'haushalt';
   pSpeichern();
   render();
@@ -2542,7 +2559,7 @@ function pProfilImport(parsed, name, still) {
   if (!still) {
     toast(`Profil „${imp.profil.bezeichnung}“ importiert${imp.warnungen.length ? ` (${imp.warnungen.length} Hinweis${imp.warnungen.length === 1 ? '' : 'e'})` : ''}.`);
     if (imp.warnungen.length) openDialog(dlgHead('Profil importiert – Hinweise') + `<ul class="issues">${imp.warnungen.map(w => `<li class="issue warn"><span class="ico">⚠</span><span>${esc(w)}</span></li>`).join('')}</ul>`);
-    if (!state.docs.length || state.view === 'start') state.view = 'profile';
+    if (!state.docs.length || state.view === 'start') pZuProfilen();
     render();
   }
   return { ok: true, profil: imp.profil };
@@ -2622,7 +2639,7 @@ function pPaketUebernehmen() {
     window.scrollTo(0, 0);
     if (!diff.length) toast('Übernommen – die Neuberechnung stimmt mit dem Paket überein.');
     else openDialog(dlgHead('Neuberechnung weicht ab') + `<p style="margin-top:0">Mögliche Gründe: andere Immobiliendatei, geänderte Rechenregeln oder ein bereits vorhandenes, abweichendes Profil.</p><div class="table-wrap"><table class="t"><thead><tr><th>Kennzahl</th><th class="num">Paket</th><th class="num">Neu</th></tr></thead><tbody>${diff.map(d => `<tr><td><code>${esc(d.kennzahl)}</code></td><td class="num">${esc(String(d.gespeichert))}</td><td class="num">${esc(String(d.neu))}</td></tr>`).join('')}</tbody></table></div>`);
-  } else { state.view = 'profile'; render(); toast('Profil und Szenario übernommen. Lade die passende Immobiliendatei, um neu zu rechnen.'); }
+  } else { pZuProfilen(); render(); toast('Profil und Szenario übernommen. Lade die passende Immobiliendatei, um neu zu rechnen.'); }
 }
 
 async function pBeispieleLaden() {
@@ -2639,7 +2656,7 @@ async function pBeispieleLaden() {
   state.profile.aktivId = vorher || erstes || state.profile.aktivId;
   pSpeichern();
   toast(n ? `${n} fiktive Beispielprofile geladen.` : 'Beispielprofile nicht erreichbar (nur über einen Webserver, nicht per Doppelklick).');
-  state.view = 'profile';
+  pZuProfilen();
   render();
 }
 
@@ -2881,7 +2898,16 @@ function pAktion(action, el) {
     case 'p-paket-export': return pPaketExportFragen(doc, el.dataset.umfang);
     case 'p-paket-export-ok': return pPaketExport(doc, el.dataset.umfang);
     case 'detail-modus': state.detailModus = el.dataset.modus; return renderMitFokus();
-    case 'profile': state.view = 'profile'; render(); return window.scrollTo(0, 0);
+    case 'profile': pZuProfilen(); render(); return window.scrollTo(0, 0);
+    case 'p-zurueck': {
+      const z = pZurueckZiel();
+      if (!z) return undefined;
+      state.view = z.view;
+      if (z.current) state.current = z.current;
+      if (z.detailModus) state.detailModus = z.detailModus;
+      render();
+      return window.scrollTo(0, z.y || 0);
+    }
     default: return undefined;
   }
 }
@@ -2916,7 +2942,8 @@ function pEingabeLaeuft(t) {
    ===================================================================== */
 function viewProfile() {
   const p = aktivesProfil();
-  return `<div class="page-head"><div><h1>Persönliche Profile</h1><p class="sub">Haushalt, Einkommen, Steuern, Kapital und Finanzierung – nur in diesem Browser. Sicherung und Austausch über die Profil-Datei (JSON).</p></div>
+  const zurueck = pZurueckZiel();
+  return `<div class="page-head"><div>${zurueck ? `<div class="crumbs no-print"><button class="linkbtn" data-action="p-zurueck">← ${esc(zurueck.text)}</button></div>` : ''}<h1${zurueck ? ' style="margin-top:6px"' : ''}>Persönliche Profile</h1><p class="sub">Haushalt, Einkommen, Steuern, Kapital und Finanzierung – nur in diesem Browser. Sicherung und Austausch über die Profil-Datei (JSON).</p></div>
       <div class="dh-actions"><button class="btn sm primary" data-action="p-neu">Neues Profil</button><button class="btn sm" data-action="pick-files">Profil oder Paket importieren</button>${location.protocol !== 'file:' ? '<button class="btn sm" data-action="p-beispiele">Fiktive Beispielprofile laden</button>' : ''}</div></div>
     ${pProfilListe()}
     ${p ? pProfilEditor(p) : `<div class="empty"><b>Noch kein Profil.</b><br>Lege ein neues Profil an oder importiere eine Profil-Datei. Es sind keine persönlichen Daten voreingestellt.</div>`}
@@ -3803,6 +3830,7 @@ const state = {
   feldRoh: {},
   feldKontext: null,
   pImport: null,
+  vorProfil: null,
 };
 let uidCounter = 0;
 let numCounter = 0;
