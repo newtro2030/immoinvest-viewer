@@ -1,0 +1,136 @@
+{
+  "dokumenttyp": "household_profile",
+  "formatversion": "1.0",
+  "id": "prof-beispiel-d",
+  "bezeichnung": "Beispiel D – Konditionenvergleich (fiktiv)",
+  "revision": 1,
+  "erstellt_am": "2026-10-24T09:00:00.000Z",
+  "geaendert_am": "2026-10-24T09:00:00.000Z",
+  "waehrung": "EUR",
+  "haushalt": {
+    "erwachsene": 1,
+    "kinder": 0,
+    "familienstand": "ledig",
+    "veranlagung": "einzel",
+    "steuerjahr": 2026,
+    "bundesland": null
+  },
+  "personen": [
+    {
+      "id": "P1",
+      "bezeichnung": "Person A",
+      "beschaeftigung": "selbststaendig",
+      "gewinn_selbststaendig_eur": null,
+      "monatsnetto_eur": 3400
+    }
+  ],
+  "steuer": {
+    "modus": "manuell",
+    "manuelle_saetze_prozent": [
+      42
+    ],
+    "fortschreibung_tarif": true,
+    "schaetzung": {}
+  },
+  "budget": {
+    "weitere_einnahmen": [],
+    "wohnkosten_monat_eur": 950,
+    "lebenshaltung_monat_eur": 750,
+    "versicherungen_monat_eur": 90,
+    "weitere_ausgaben_monat_eur": 120,
+    "kredite_monat_eur": 0,
+    "leasing_monat_eur": 0,
+    "unterhalt_monat_eur": 0,
+    "sparen_monat_eur": 250,
+    "sicherheitspuffer_monat_eur": 150
+  },
+  "kapital": {
+    "eigenkapital_einsetzbar_eur": 20000,
+    "notfallreserve_eur": 15000,
+    "max_zuzahlung_monat_eur": 450,
+    "grenze_bezug": "vor_steuer",
+    "vorsorge_monat_eur": 25,
+    "vorsorge_in_grenze": true,
+    "betrachtung_jahre": 15,
+    "mietabschlag_prozent": 0
+  },
+  "finanzierung": {
+    "notar_grundbuch_prozent": 2,
+    "standard_kondition_id": "K1",
+    "konditionen": [
+      {
+        "id": "K1",
+        "bezeichnung": "Annahme 10 Jahre, 2 % Tilgung",
+        "art": "annahme",
+        "darlehensbetrag_eur": null,
+        "sollzins_prozent": 3.9,
+        "effektivzins_prozent": null,
+        "tilgung_prozent": 2,
+        "monatsrate_eur": null,
+        "zinsbindung_jahre": 10,
+        "beginn": "2027-01",
+        "sondertilgung_jahr_eur": 0,
+        "anschluss": {
+          "sollzins_prozent": 5.5,
+          "regel": "rate_beibehalten",
+          "tilgung_prozent": null
+        },
+        "gebuehren_eur": 0,
+        "hinweis": null
+      },
+      {
+        "id": "K2",
+        "bezeichnung": "Fiktives Angebot Musterbank, 15 Jahre",
+        "art": "angebot",
+        "darlehensbetrag_eur": null,
+        "sollzins_prozent": 4.15,
+        "effektivzins_prozent": 4.24,
+        "tilgung_prozent": 2.5,
+        "monatsrate_eur": null,
+        "zinsbindung_jahre": 15,
+        "beginn": "2027-01",
+        "sondertilgung_jahr_eur": 2000,
+        "anschluss": null,
+        "gebuehren_eur": 0,
+        "hinweis": "Fiktives Beispielangebot"
+      },
+      {
+        "id": "K3",
+        "bezeichnung": "Annahme 5 Jahre, danach neue Tilgung",
+        "art": "annahme",
+        "darlehensbetrag_eur": null,
+        "sollzins_prozent": 3.5,
+        "effektivzins_prozent": null,
+        "tilgung_prozent": 3,
+        "monatsrate_eur": null,
+        "zinsbindung_jahre": 5,
+        "beginn": "2027-01",
+        "sondertilgung_jahr_eur": 0,
+        "anschluss": {
+          "sollzins_prozent": 5,
+          "regel": "neue_tilgung",
+          "tilgung_prozent": 3
+        },
+        "gebuehren_eur": 0,
+        "hinweis": null
+      },
+      {
+        "id": "K4",
+        "bezeichnung": "Feste Monatsrate 900 €",
+        "art": "annahme",
+        "darlehensbetrag_eur": null,
+        "sollzins_prozent": 3.9,
+        "effektivzins_prozent": null,
+        "tilgung_prozent": null,
+        "monatsrate_eur": 900,
+        "zinsbindung_jahre": 10,
+        "beginn": "2027-01",
+        "sondertilgung_jahr_eur": 0,
+        "anschluss": null,
+        "gebuehren_eur": 0,
+        "hinweis": null
+      }
+    ]
+  },
+  "erweiterungen": {}
+}

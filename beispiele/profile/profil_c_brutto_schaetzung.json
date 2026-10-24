@@ -1,0 +1,100 @@
+{
+  "dokumenttyp": "household_profile",
+  "formatversion": "1.0",
+  "id": "prof-beispiel-c",
+  "bezeichnung": "Beispiel C – Paar, Schätzung aus Bruttoeinkommen (fiktiv)",
+  "revision": 1,
+  "erstellt_am": "2026-10-24T09:00:00.000Z",
+  "geaendert_am": "2026-10-24T09:00:00.000Z",
+  "waehrung": "EUR",
+  "haushalt": {
+    "erwachsene": 2,
+    "kinder": 0,
+    "familienstand": "verheiratet",
+    "veranlagung": "zusammen",
+    "steuerjahr": 2026,
+    "bundesland": "Nordrhein-Westfalen"
+  },
+  "personen": [
+    {
+      "id": "P1",
+      "bezeichnung": "Person A",
+      "beschaeftigung": "angestellt",
+      "jahresbrutto_eur": 58000,
+      "sonderzahlungen_eur": 3000,
+      "weitere_einkuenfte_eur": 0,
+      "monatsnetto_eur": 3150
+    },
+    {
+      "id": "P2",
+      "bezeichnung": "Person B",
+      "beschaeftigung": "verbeamtet",
+      "jahresbrutto_eur": 46000,
+      "sonderzahlungen_eur": 0,
+      "weitere_einkuenfte_eur": 0,
+      "monatsnetto_eur": 2950
+    }
+  ],
+  "steuer": {
+    "modus": "brutto_schaetzung",
+    "manuelle_saetze_prozent": [],
+    "fortschreibung_tarif": true,
+    "schaetzung": {
+      "werbungskosten_eur": {
+        "P1": null,
+        "P2": 2100
+      },
+      "vorsorgeaufwendungen_eur": {
+        "P1": 9200,
+        "P2": 3600
+      },
+      "sonderausgaben_eur": null,
+      "weitere_abzuege_eur": 0
+    }
+  },
+  "budget": {
+    "weitere_einnahmen": [],
+    "wohnkosten_monat_eur": 1400,
+    "lebenshaltung_monat_eur": 1300,
+    "versicherungen_monat_eur": 380,
+    "weitere_ausgaben_monat_eur": 120,
+    "kredite_monat_eur": 0,
+    "leasing_monat_eur": 0,
+    "unterhalt_monat_eur": 0,
+    "sparen_monat_eur": 500,
+    "sicherheitspuffer_monat_eur": 300
+  },
+  "kapital": {
+    "eigenkapital_einsetzbar_eur": 30000,
+    "notfallreserve_eur": 25000,
+    "max_zuzahlung_monat_eur": 350,
+    "grenze_bezug": "beide",
+    "vorsorge_monat_eur": 25,
+    "vorsorge_in_grenze": true,
+    "betrachtung_jahre": 15,
+    "mietabschlag_prozent": 0
+  },
+  "finanzierung": {
+    "notar_grundbuch_prozent": 2,
+    "standard_kondition_id": "K1",
+    "konditionen": [
+      {
+        "id": "K1",
+        "bezeichnung": "Annahme 15 Jahre (Modell)",
+        "art": "annahme",
+        "darlehensbetrag_eur": null,
+        "sollzins_prozent": 4,
+        "effektivzins_prozent": null,
+        "tilgung_prozent": 2,
+        "monatsrate_eur": null,
+        "zinsbindung_jahre": 15,
+        "beginn": "2027-01",
+        "sondertilgung_jahr_eur": 0,
+        "anschluss": null,
+        "gebuehren_eur": 0,
+        "hinweis": null
+      }
+    ]
+  },
+  "erweiterungen": {}
+}

@@ -1,0 +1,298 @@
+{
+  "dokumenttyp": "investment_scenario",
+  "formatversion": "1.0",
+  "id": "szen-beispiel-leipzig-b-kurz",
+  "erstellt_am": "2026-10-24T09:00:00.000Z",
+  "umfang": "zusammenfassung",
+  "immobilie": {
+    "fingerabdruck": "sha256:71c127128a989956635042c17342fac02f44537b837416b27fe1fb739f651edb",
+    "schluessel": "kleinanzeigen|2987654321",
+    "bericht_id": "IB-kleinanzeigen-2987654321-2026-10-22-rev2",
+    "plattform": "kleinanzeigen",
+    "plattform_id": "2987654321",
+    "titel": "Vermietete 2-Zimmer-Altbauwohnung mit Balkon in Leipzig-Gohlis",
+    "snapshot": null
+  },
+  "profil": {
+    "id": "prof-beispiel-b",
+    "revision": 1,
+    "bezeichnung": "Beispiel B – Paar, zu versteuerndes Einkommen bekannt (fiktiv)",
+    "daten": null
+  },
+  "objektszenario": null,
+  "kondition_id": "K1",
+  "regeln": {
+    "rechenkern_version": "1.0.0",
+    "steuertarif": {
+      "steuerjahr": 2026,
+      "regelversion": "est-32a-2026.1",
+      "quelle": "https://www.gesetze-im-internet.de/estg/__32a.html",
+      "geprueft_am": "2026-10-24"
+    },
+    "afa_regelversion": "afa-7-4-2026.1",
+    "steuermodus": "zve"
+  },
+  "eingaben": null,
+  "offene_angaben": [],
+  "annahmen": [
+    "Verpflichtende Zusatzkäufe: 0 (Objektanpassung – Kein Stellplatz im Angebot)",
+    "Anfängliche Maßnahmen: 0 (Objektanpassung – Keine Maßnahmen geplant)",
+    "Umlagefähige Kosten (tatsächlich): 140 (Objektanpassung – Annahme: umlagefähige Kosten entsprechen der Vorauszahlung)",
+    "Nicht umlagefähige Eigentümerkosten (ohne Rücklage): 75 (Objektanpassung – Hausgeld 260 € − 140 € umlagefähig − 45 € Rücklage)",
+    "Pauschaler Kaltmietausfall: 0 (Standardannahme)",
+    "Mietsteigerung pro Jahr (Annahme): 0 (Standardannahme)",
+    "Kostensteigerung pro Jahr (Annahme): 0 (Standardannahme)",
+    "Gebäudeanteil an den Anschaffungskosten: 75 (Objektanpassung – Annahme für innerstädtischen Altbau, Gutachten fehlt)",
+    "Notar und Grundbuch: 2 % des Kaufpreises (Profilannahme, keine Gebührenberechnung).",
+    "Kondition „Annahme 10 Jahre (Modell)“ ist eine Modellannahme, kein Angebot.",
+    "Notar- und Grundbuchkosten vollständig als Anschaffungsnebenkosten behandelt (Grundschuldkosten wären sofort abziehbar – vorsichtige Vereinfachung).",
+    "Einkommensteuertarif 2026 für spätere Steuerjahre unverändert fortgeschrieben.",
+    "Steuerwirkung wird dem jeweiligen Veranlagungsjahr zugeordnet und als Monatsdurchschnitt gezeigt; die tatsächliche Erstattung erfolgt später.",
+    "WEG-Rücklage mindert die Liquidität, ist aber erst bei Verausgabung durch die WEG abziehbar; Zeitpunkt und Höhe der Verwendung sind nicht modelliert.",
+    "Betriebskostenvorauszahlungen decken die umlagefähigen Kosten genau (Neutralitätsannahme); Abrechnungssalden sind nicht modelliert."
+  ],
+  "ergebnisse": {
+    "status": {
+      "finanzierung": "vollstaendig",
+      "cashflow": "vollstaendig",
+      "steuer": "vollstaendig",
+      "haushalt": "vollstaendig"
+    },
+    "kpi": {
+      "bezugsjahr": 2027,
+      "bezugsmonate": 12,
+      "darlehen": 169922.3,
+      "monatsrate": 821.29,
+      "monatsrate_anschluss": null,
+      "cf_vor_steuer_monat": -421.29,
+      "zuzahlung_vor_steuer_monat": 461.29,
+      "zuzahlung_nach_steuer_monat": 320.46,
+      "steuerwirkung_monat_durchschnitt": 140.83,
+      "vorsorge_monat": 40,
+      "vorsorge_enthalten": true,
+      "restschuld_ende_bindung": 128657.56,
+      "vorfinanzierung_bezugsjahr": 5535.48,
+      "schlechtestes_jahr": {
+        "jahr": 2027,
+        "vor_steuer": 461.29,
+        "nach_steuer": 320.46
+      },
+      "kumuliert_vor_steuer": 55354.8,
+      "kumuliert_nach_steuer": 40696.8,
+      "modelliert_von_jahr": 2027,
+      "modelliert_bis_jahr": 2036
+    },
+    "kapital": {
+      "kapitalbedarf": 209922.3,
+      "darlehen": 169922.3,
+      "eigenkapital_eingesetzt": 40000
+    },
+    "einordnung": {
+      "gesamt": "passt",
+      "wunschgrenze": "innerhalb",
+      "tragbarkeit": "tragbar"
+    },
+    "konditionen": [
+      {
+        "id": "K1",
+        "bezeichnung": "Annahme 10 Jahre (Modell)",
+        "art": "annahme",
+        "kpi": {
+          "bezugsjahr": 2027,
+          "bezugsmonate": 12,
+          "darlehen": 169922.3,
+          "monatsrate": 821.29,
+          "monatsrate_anschluss": null,
+          "cf_vor_steuer_monat": -421.29,
+          "zuzahlung_vor_steuer_monat": 461.29,
+          "zuzahlung_nach_steuer_monat": 320.46,
+          "steuerwirkung_monat_durchschnitt": 140.83,
+          "vorsorge_monat": 40,
+          "vorsorge_enthalten": true,
+          "restschuld_ende_bindung": 128657.56,
+          "vorfinanzierung_bezugsjahr": 5535.48,
+          "schlechtestes_jahr": {
+            "jahr": 2027,
+            "vor_steuer": 461.29,
+            "nach_steuer": 320.46
+          },
+          "kumuliert_vor_steuer": 55354.8,
+          "kumuliert_nach_steuer": 40696.8,
+          "modelliert_von_jahr": 2027,
+          "modelliert_bis_jahr": 2036,
+          "verbleibendes_haushaltsbudget": 1067.71
+        },
+        "status": {
+          "finanzierung": "vollstaendig",
+          "cashflow": "vollstaendig",
+          "steuer": "vollstaendig",
+          "haushalt": "vollstaendig"
+        }
+      },
+      {
+        "id": "K-objekt1",
+        "bezeichnung": "Fiktives Objektangebot 3,6 %",
+        "art": "angebot",
+        "kpi": {
+          "bezugsjahr": 2027,
+          "bezugsmonate": 12,
+          "darlehen": 169922.3,
+          "monatsrate": 792.97,
+          "monatsrate_anschluss": null,
+          "cf_vor_steuer_monat": -392.97,
+          "zuzahlung_vor_steuer_monat": 432.97,
+          "zuzahlung_nach_steuer_monat": 301.47,
+          "steuerwirkung_monat_durchschnitt": 131.5,
+          "vorsorge_monat": 40,
+          "vorsorge_enthalten": true,
+          "restschuld_ende_bindung": 129088.46,
+          "vorfinanzierung_bezugsjahr": 5195.64,
+          "schlechtestes_jahr": {
+            "jahr": 2027,
+            "vor_steuer": 432.97,
+            "nach_steuer": 301.47
+          },
+          "kumuliert_vor_steuer": 51956.4,
+          "kumuliert_nach_steuer": 38290.4,
+          "modelliert_von_jahr": 2027,
+          "modelliert_bis_jahr": 2036,
+          "verbleibendes_haushaltsbudget": 1096.03
+        },
+        "status": {
+          "finanzierung": "vollstaendig",
+          "cashflow": "vollstaendig",
+          "steuer": "vollstaendig",
+          "haushalt": "vollstaendig"
+        }
+      }
+    ],
+    "varianten": [
+      {
+        "id": "V1",
+        "bezeichnung": "Sollzins 4,8 %",
+        "aenderungen": [
+          {
+            "feld": "Sollzins (%)",
+            "vorher": 3.8,
+            "nachher": 4.8
+          }
+        ],
+        "kpi": {
+          "bezugsjahr": 2027,
+          "bezugsmonate": 12,
+          "darlehen": 169922.3,
+          "monatsrate": 962.89,
+          "monatsrate_anschluss": null,
+          "cf_vor_steuer_monat": -562.89,
+          "zuzahlung_vor_steuer_monat": 602.89,
+          "zuzahlung_nach_steuer_monat": 415.39,
+          "steuerwirkung_monat_durchschnitt": 187.5,
+          "vorsorge_monat": 40,
+          "vorsorge_enthalten": true,
+          "restschuld_ende_bindung": 126413.61,
+          "vorfinanzierung_bezugsjahr": 7234.68,
+          "schlechtestes_jahr": {
+            "jahr": 2027,
+            "vor_steuer": 602.89,
+            "nach_steuer": 415.39
+          },
+          "kumuliert_vor_steuer": 72346.8,
+          "kumuliert_nach_steuer": 52762.8,
+          "modelliert_von_jahr": 2027,
+          "modelliert_bis_jahr": 2036,
+          "verbleibendes_haushaltsbudget": 926.11
+        },
+        "status": {
+          "finanzierung": "vollstaendig",
+          "cashflow": "vollstaendig",
+          "steuer": "vollstaendig",
+          "haushalt": "vollstaendig"
+        }
+      },
+      {
+        "id": "V2",
+        "bezeichnung": "Leerstand 3 Monate im 2. Jahr",
+        "aenderungen": [
+          {
+            "feld": "Leerstand (Kaltmiete und Vorauszahlungen entfallen)",
+            "vorher": null,
+            "nachher": "3 Monate im Modelljahr 2"
+          }
+        ],
+        "kpi": {
+          "bezugsjahr": 2027,
+          "bezugsmonate": 12,
+          "darlehen": 169922.3,
+          "monatsrate": 821.29,
+          "monatsrate_anschluss": null,
+          "cf_vor_steuer_monat": -421.29,
+          "zuzahlung_vor_steuer_monat": 461.29,
+          "zuzahlung_nach_steuer_monat": 320.46,
+          "steuerwirkung_monat_durchschnitt": 140.83,
+          "vorsorge_monat": 40,
+          "vorsorge_enthalten": true,
+          "restschuld_ende_bindung": 128657.56,
+          "vorfinanzierung_bezugsjahr": 5535.48,
+          "schlechtestes_jahr": {
+            "jahr": 2028,
+            "vor_steuer": 626.29,
+            "nach_steuer": 434.46
+          },
+          "kumuliert_vor_steuer": 57334.8,
+          "kumuliert_nach_steuer": 42018.8,
+          "modelliert_von_jahr": 2027,
+          "modelliert_bis_jahr": 2036,
+          "verbleibendes_haushaltsbudget": 1067.71
+        },
+        "status": {
+          "finanzierung": "vollstaendig",
+          "cashflow": "vollstaendig",
+          "steuer": "vollstaendig",
+          "haushalt": "vollstaendig"
+        }
+      },
+      {
+        "id": "V3",
+        "bezeichnung": "Sonderumlage Dach 5.000 €",
+        "aenderungen": [
+          {
+            "feld": "Einmalige Zahlung",
+            "vorher": null,
+            "nachher": "5.000 € im Modelljahr 3 (Erhaltungsaufwand, sofort abziehbar)"
+          }
+        ],
+        "kpi": {
+          "bezugsjahr": 2027,
+          "bezugsmonate": 12,
+          "darlehen": 169922.3,
+          "monatsrate": 821.29,
+          "monatsrate_anschluss": null,
+          "cf_vor_steuer_monat": -421.29,
+          "zuzahlung_vor_steuer_monat": 461.29,
+          "zuzahlung_nach_steuer_monat": 320.46,
+          "steuerwirkung_monat_durchschnitt": 140.83,
+          "vorsorge_monat": 40,
+          "vorsorge_enthalten": true,
+          "restschuld_ende_bindung": 128657.56,
+          "vorfinanzierung_bezugsjahr": 5535.48,
+          "schlechtestes_jahr": {
+            "jahr": 2029,
+            "vor_steuer": 877.96,
+            "nach_steuer": 607.29
+          },
+          "kumuliert_vor_steuer": 60354.8,
+          "kumuliert_nach_steuer": 44046.8,
+          "modelliert_von_jahr": 2027,
+          "modelliert_bis_jahr": 2036,
+          "verbleibendes_haushaltsbudget": 1067.71
+        },
+        "status": {
+          "finanzierung": "vollstaendig",
+          "cashflow": "vollstaendig",
+          "steuer": "vollstaendig",
+          "haushalt": "vollstaendig"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "dokumenttyp": "household_profile",
+  "formatversion": "1.0",
+  "id": "prof-beispiel-a",
+  "bezeichnung": "Beispiel A – Single, manueller Steuersatz (fiktiv)",
+  "revision": 1,
+  "erstellt_am": "2026-10-24T09:00:00.000Z",
+  "geaendert_am": "2026-10-24T09:00:00.000Z",
+  "waehrung": "EUR",
+  "haushalt": {
+    "erwachsene": 1,
+    "kinder": 0,
+    "familienstand": "ledig",
+    "veranlagung": "einzel",
+    "steuerjahr": 2026,
+    "bundesland": null
+  },
+  "personen": [
+    {
+      "id": "P1",
+      "bezeichnung": "Person A",
+      "beschaeftigung": "angestellt",
+      "jahresbrutto_eur": null,
+      "monatsnetto_eur": 2850
+    }
+  ],
+  "steuer": {
+    "modus": "manuell",
+    "manuelle_saetze_prozent": [
+      35,
+      42
+    ],
+    "fortschreibung_tarif": true,
+    "schaetzung": {}
+  },
+  "budget": {
+    "weitere_einnahmen": [],
+    "wohnkosten_monat_eur": 780,
+    "lebenshaltung_monat_eur": 650,
+    "versicherungen_monat_eur": 90,
+    "weitere_ausgaben_monat_eur": 120,
+    "kredite_monat_eur": 0,
+    "leasing_monat_eur": 0,
+    "unterhalt_monat_eur": 0,
+    "sparen_monat_eur": 250,
+    "sicherheitspuffer_monat_eur": 150
+  },
+  "kapital": {
+    "eigenkapital_einsetzbar_eur": 25000,
+    "notfallreserve_eur": 10000,
+    "max_zuzahlung_monat_eur": 300,
+    "grenze_bezug": "vor_steuer",
+    "vorsorge_monat_eur": 30,
+    "vorsorge_in_grenze": true,
+    "betrachtung_jahre": 15,
+    "mietabschlag_prozent": 0
+  },
+  "finanzierung": {
+    "notar_grundbuch_prozent": 2,
+    "standard_kondition_id": "K1",
+    "konditionen": [
+      {
+        "id": "K1",
+        "bezeichnung": "Annahme 10 Jahre (Modell)",
+        "art": "annahme",
+        "darlehensbetrag_eur": null,
+        "sollzins_prozent": 3.9,
+        "effektivzins_prozent": null,
+        "tilgung_prozent": 2,
+        "monatsrate_eur": null,
+        "zinsbindung_jahre": 10,
+        "beginn": "2027-01",
+        "sondertilgung_jahr_eur": 0,
+        "anschluss": {
+          "sollzins_prozent": 5.5,
+          "regel": "rate_beibehalten",
+          "tilgung_prozent": null
+        },
+        "gebuehren_eur": 0,
+        "hinweis": null
+      }
+    ]
+  },
+  "erweiterungen": {}
+}

@@ -1,0 +1,90 @@
+{
+  "dokumenttyp": "household_profile",
+  "formatversion": "1.0",
+  "id": "prof-beispiel-b",
+  "bezeichnung": "Beispiel B – Paar, zu versteuerndes Einkommen bekannt (fiktiv)",
+  "revision": 1,
+  "erstellt_am": "2026-10-24T09:00:00.000Z",
+  "geaendert_am": "2026-10-24T09:00:00.000Z",
+  "waehrung": "EUR",
+  "haushalt": {
+    "erwachsene": 2,
+    "kinder": 1,
+    "familienstand": "verheiratet",
+    "veranlagung": "zusammen",
+    "steuerjahr": 2026,
+    "bundesland": "Sachsen"
+  },
+  "personen": [
+    {
+      "id": "P1",
+      "bezeichnung": "Person A",
+      "beschaeftigung": "angestellt",
+      "monatsnetto_eur": 2700
+    },
+    {
+      "id": "P2",
+      "bezeichnung": "Person B",
+      "beschaeftigung": "angestellt",
+      "monatsnetto_eur": 2100
+    }
+  ],
+  "steuer": {
+    "modus": "zve",
+    "manuelle_saetze_prozent": [],
+    "zve_ohne_investition_eur": 95000,
+    "fortschreibung_tarif": true,
+    "schaetzung": {}
+  },
+  "budget": {
+    "weitere_einnahmen": [
+      {
+        "bezeichnung": "Kindergeld",
+        "betrag_monat_eur": 259,
+        "im_netto_enthalten": false
+      }
+    ],
+    "wohnkosten_monat_eur": 1350,
+    "lebenshaltung_monat_eur": 1250,
+    "versicherungen_monat_eur": 160,
+    "weitere_ausgaben_monat_eur": 120,
+    "kredite_monat_eur": 0,
+    "leasing_monat_eur": 0,
+    "unterhalt_monat_eur": 0,
+    "sparen_monat_eur": 400,
+    "sicherheitspuffer_monat_eur": 250
+  },
+  "kapital": {
+    "eigenkapital_einsetzbar_eur": 40000,
+    "notfallreserve_eur": 20000,
+    "max_zuzahlung_monat_eur": 400,
+    "grenze_bezug": "nach_steuer",
+    "vorsorge_monat_eur": 40,
+    "vorsorge_in_grenze": true,
+    "betrachtung_jahre": 20,
+    "mietabschlag_prozent": 5
+  },
+  "finanzierung": {
+    "notar_grundbuch_prozent": 2,
+    "standard_kondition_id": "K1",
+    "konditionen": [
+      {
+        "id": "K1",
+        "bezeichnung": "Annahme 10 Jahre (Modell)",
+        "art": "annahme",
+        "darlehensbetrag_eur": null,
+        "sollzins_prozent": 3.8,
+        "effektivzins_prozent": null,
+        "tilgung_prozent": 2,
+        "monatsrate_eur": null,
+        "zinsbindung_jahre": 10,
+        "beginn": "2027-01",
+        "sondertilgung_jahr_eur": 0,
+        "anschluss": null,
+        "gebuehren_eur": 0,
+        "hinweis": null
+      }
+    ]
+  },
+  "erweiterungen": {}
+}

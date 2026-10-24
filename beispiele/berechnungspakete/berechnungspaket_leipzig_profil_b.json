@@ -1,0 +1,1041 @@
+{
+  "dokumenttyp": "investment_scenario",
+  "formatversion": "1.0",
+  "id": "szen-beispiel-leipzig-b",
+  "erstellt_am": "2026-10-24T09:00:00.000Z",
+  "umfang": "vollstaendig",
+  "immobilie": {
+    "fingerabdruck": "sha256:71c127128a989956635042c17342fac02f44537b837416b27fe1fb739f651edb",
+    "schluessel": "kleinanzeigen|2987654321",
+    "bericht_id": "IB-kleinanzeigen-2987654321-2026-10-22-rev2",
+    "plattform": "kleinanzeigen",
+    "plattform_id": "2987654321",
+    "titel": "Vermietete 2-Zimmer-Altbauwohnung mit Balkon in Leipzig-Gohlis",
+    "snapshot": null
+  },
+  "profil": {
+    "id": "prof-beispiel-b",
+    "revision": 1,
+    "bezeichnung": "Beispiel B – Paar, zu versteuerndes Einkommen bekannt (fiktiv)",
+    "daten": {
+      "dokumenttyp": "household_profile",
+      "formatversion": "1.0",
+      "id": "prof-beispiel-b",
+      "bezeichnung": "Beispiel B – Paar, zu versteuerndes Einkommen bekannt (fiktiv)",
+      "revision": 1,
+      "erstellt_am": "2026-10-24T09:00:00.000Z",
+      "geaendert_am": "2026-10-24T09:00:00.000Z",
+      "waehrung": "EUR",
+      "haushalt": {
+        "erwachsene": 2,
+        "kinder": 1,
+        "familienstand": "verheiratet",
+        "veranlagung": "zusammen",
+        "steuerjahr": 2026,
+        "bundesland": "Sachsen"
+      },
+      "personen": [
+        {
+          "id": "P1",
+          "bezeichnung": "Person A",
+          "beschaeftigung": "angestellt",
+          "monatsnetto_eur": 2700
+        },
+        {
+          "id": "P2",
+          "bezeichnung": "Person B",
+          "beschaeftigung": "angestellt",
+          "monatsnetto_eur": 2100
+        }
+      ],
+      "steuer": {
+        "modus": "zve",
+        "manuelle_saetze_prozent": [],
+        "zve_ohne_investition_eur": 95000,
+        "fortschreibung_tarif": true,
+        "schaetzung": {}
+      },
+      "budget": {
+        "weitere_einnahmen": [
+          {
+            "bezeichnung": "Kindergeld",
+            "betrag_monat_eur": 259,
+            "im_netto_enthalten": false
+          }
+        ],
+        "wohnkosten_monat_eur": 1350,
+        "lebenshaltung_monat_eur": 1250,
+        "versicherungen_monat_eur": 160,
+        "weitere_ausgaben_monat_eur": 120,
+        "kredite_monat_eur": 0,
+        "leasing_monat_eur": 0,
+        "unterhalt_monat_eur": 0,
+        "sparen_monat_eur": 400,
+        "sicherheitspuffer_monat_eur": 250
+      },
+      "kapital": {
+        "eigenkapital_einsetzbar_eur": 40000,
+        "notfallreserve_eur": 20000,
+        "max_zuzahlung_monat_eur": 400,
+        "grenze_bezug": "nach_steuer",
+        "vorsorge_monat_eur": 40,
+        "vorsorge_in_grenze": true,
+        "betrachtung_jahre": 20,
+        "mietabschlag_prozent": 5
+      },
+      "finanzierung": {
+        "notar_grundbuch_prozent": 2,
+        "standard_kondition_id": "K1",
+        "konditionen": [
+          {
+            "id": "K1",
+            "bezeichnung": "Annahme 10 Jahre (Modell)",
+            "art": "annahme",
+            "darlehensbetrag_eur": null,
+            "sollzins_prozent": 3.8,
+            "effektivzins_prozent": null,
+            "tilgung_prozent": 2,
+            "monatsrate_eur": null,
+            "zinsbindung_jahre": 10,
+            "beginn": "2027-01",
+            "sondertilgung_jahr_eur": 0,
+            "anschluss": null,
+            "gebuehren_eur": 0,
+            "hinweis": null
+          }
+        ]
+      },
+      "erweiterungen": {}
+    }
+  },
+  "objektszenario": {
+    "objekt_schluessel": "kleinanzeigen|2987654321",
+    "beginn": null,
+    "afa_beginn": "2027-01",
+    "anpassungen": {
+      "umlagefaehig_monat_eur": {
+        "wert": 140,
+        "begruendung": "Annahme: umlagefähige Kosten entsprechen der Vorauszahlung"
+      },
+      "nicht_umlagefaehig_monat_eur": {
+        "wert": 75,
+        "begruendung": "Hausgeld 260 € − 140 € umlagefähig − 45 € Rücklage"
+      },
+      "verpflichtende_zusatzkaeufe_eur": {
+        "wert": 0,
+        "begruendung": "Kein Stellplatz im Angebot"
+      },
+      "anfaengliche_massnahmen_eur": {
+        "wert": 0,
+        "begruendung": "Keine Maßnahmen geplant"
+      },
+      "gebaeudeanteil_prozent": {
+        "wert": 75,
+        "begruendung": "Annahme für innerstädtischen Altbau, Gutachten fehlt"
+      }
+    },
+    "massnahmen_kategorie": "erhaltung",
+    "afa_abweichend": null,
+    "eigentum": {
+      "anteile_prozent": {
+        "P1": 50,
+        "P2": 50
+      },
+      "bestaetigt": true,
+      "kostentraeger_abweichend": false
+    },
+    "steuerliche_klaerung": {
+      "verbilligte_vermietung": false,
+      "teilweise_eigennutzung": false,
+      "einkuenfteerzielungsabsicht_unklar": false
+    },
+    "konditionen_objekt": [
+      {
+        "id": "K-objekt1",
+        "bezeichnung": "Fiktives Objektangebot 3,6 %",
+        "art": "angebot",
+        "darlehensbetrag_eur": null,
+        "sollzins_prozent": 3.6,
+        "effektivzins_prozent": null,
+        "tilgung_prozent": 2,
+        "monatsrate_eur": null,
+        "zinsbindung_jahre": 10,
+        "beginn": "2027-01",
+        "sondertilgung_jahr_eur": 0,
+        "anschluss": null,
+        "gebuehren_eur": 0,
+        "hinweis": null
+      }
+    ],
+    "aktive_kondition_id": "K1",
+    "varianten": [
+      {
+        "id": "V1",
+        "typ": "zins",
+        "bezeichnung": "Sollzins 4,8 %",
+        "parameter": {
+          "sollzins_prozent": 4.8
+        }
+      },
+      {
+        "id": "V2",
+        "typ": "leerstand",
+        "bezeichnung": "Leerstand 3 Monate im 2. Jahr",
+        "parameter": {
+          "monate": 3,
+          "modelljahr": 2
+        }
+      },
+      {
+        "id": "V3",
+        "typ": "sonderumlage",
+        "bezeichnung": "Sonderumlage Dach 5.000 €",
+        "parameter": {
+          "betrag_eur": 5000,
+          "modelljahr": 3,
+          "kategorie": "erhaltung"
+        }
+      }
+    ]
+  },
+  "kondition_id": "K1",
+  "regeln": {
+    "rechenkern_version": "1.0.0",
+    "steuertarif": {
+      "steuerjahr": 2026,
+      "regelversion": "est-32a-2026.1",
+      "quelle": "https://www.gesetze-im-internet.de/estg/__32a.html",
+      "geprueft_am": "2026-10-24"
+    },
+    "afa_regelversion": "afa-7-4-2026.1",
+    "steuermodus": "zve"
+  },
+  "eingaben": {
+    "kaufpreis_eur": {
+      "key": "kaufpreis_eur",
+      "label": "Kaufpreis",
+      "einheit": "eur",
+      "gruppe": "erwerb",
+      "komponente": "finanzierung",
+      "objekt_wert": 189000,
+      "objekt_status": "inseratsangabe",
+      "objekt_pfad": "/objekt/kaufpreis_eur",
+      "widerspruch": null,
+      "hinweis": null,
+      "wert": 189000,
+      "herkunft": "objekt",
+      "status": "inseratsangabe"
+    },
+    "verpflichtende_zusatzkaeufe_eur": {
+      "key": "verpflichtende_zusatzkaeufe_eur",
+      "label": "Verpflichtende Zusatzkäufe",
+      "einheit": "eur",
+      "gruppe": "erwerb",
+      "komponente": "finanzierung",
+      "objekt_wert": null,
+      "objekt_status": "unbekannt",
+      "objekt_pfad": "/objekt/verpflichtende_zusatzkaeufe_eur",
+      "widerspruch": null,
+      "hinweis": null,
+      "wert": 0,
+      "herkunft": "anpassung",
+      "status": "annahme",
+      "begruendung": "Kein Stellplatz im Angebot"
+    },
+    "grunderwerbsteuer_prozent": {
+      "key": "grunderwerbsteuer_prozent",
+      "label": "Grunderwerbsteuer (Standort der Immobilie)",
+      "einheit": "prozent",
+      "gruppe": "erwerb",
+      "komponente": "finanzierung",
+      "objekt_wert": 5.5,
+      "objekt_status": "unabhaengig_bestaetigt",
+      "objekt_pfad": "/ist_kosten_und_ertraege/grunderwerbsteuer_prozent",
+      "widerspruch": null,
+      "hinweis": null,
+      "wert": 5.5,
+      "herkunft": "objekt",
+      "status": "unabhaengig_bestaetigt"
+    },
+    "kaeuferprovision_prozent": {
+      "key": "kaeuferprovision_prozent",
+      "label": "Käuferprovision inkl. USt",
+      "einheit": "prozent",
+      "gruppe": "erwerb",
+      "komponente": "finanzierung",
+      "objekt_wert": 3.57,
+      "objekt_status": "inseratsangabe",
+      "objekt_pfad": "/ist_kosten_und_ertraege/kaeuferprovision_prozent",
+      "widerspruch": null,
+      "hinweis": null,
+      "wert": 3.57,
+      "herkunft": "objekt",
+      "status": "inseratsangabe"
+    },
+    "notar_grundbuch_prozent": {
+      "key": "notar_grundbuch_prozent",
+      "label": "Notar und Grundbuch",
+      "einheit": "prozent",
+      "gruppe": "erwerb",
+      "komponente": "finanzierung",
+      "widerspruch": null,
+      "profil_wert": 2,
+      "hinweis": null,
+      "wert": 2,
+      "herkunft": "profil",
+      "status": "profilangabe"
+    },
+    "anfaengliche_massnahmen_eur": {
+      "key": "anfaengliche_massnahmen_eur",
+      "label": "Anfängliche Maßnahmen",
+      "einheit": "eur",
+      "gruppe": "erwerb",
+      "komponente": "finanzierung",
+      "objekt_wert": null,
+      "objekt_status": "unbekannt",
+      "objekt_pfad": "/ist_kosten_und_ertraege/anfaengliche_massnahmen_eur",
+      "widerspruch": null,
+      "hinweis": null,
+      "wert": 0,
+      "herkunft": "anpassung",
+      "status": "annahme",
+      "begruendung": "Keine Maßnahmen geplant"
+    },
+    "eigenkapital_einsatz_eur": {
+      "key": "eigenkapital_einsatz_eur",
+      "label": "Eingesetztes Eigenkapital",
+      "einheit": "eur",
+      "gruppe": "erwerb",
+      "komponente": "finanzierung",
+      "widerspruch": null,
+      "profil_wert": 40000,
+      "hinweis": null,
+      "wert": 40000,
+      "herkunft": "profil",
+      "status": "profilangabe"
+    },
+    "kaltmiete_monat_eur": {
+      "key": "kaltmiete_monat_eur",
+      "label": "Nettokaltmiete",
+      "einheit": "eur_monat",
+      "gruppe": "miete",
+      "komponente": "cashflow",
+      "objekt_wert": 520,
+      "objekt_status": "inseratsangabe",
+      "objekt_pfad": "/ist_kosten_und_ertraege/nettokaltmiete_monat_eur",
+      "widerspruch": null,
+      "hinweis": "Mietvertrag nicht eingesehen.",
+      "wert": 520,
+      "herkunft": "objekt",
+      "status": "inseratsangabe"
+    },
+    "bk_vorauszahlung_monat_eur": {
+      "key": "bk_vorauszahlung_monat_eur",
+      "label": "Betriebskostenvorauszahlung des Mieters",
+      "einheit": "eur_monat",
+      "gruppe": "miete",
+      "komponente": "cashflow",
+      "objekt_wert": 140,
+      "objekt_status": "inseratsangabe",
+      "objekt_pfad": "/ist_kosten_und_ertraege/betriebskostenvorauszahlung_monat_eur",
+      "widerspruch": null,
+      "hinweis": null,
+      "wert": 140,
+      "herkunft": "objekt",
+      "status": "inseratsangabe"
+    },
+    "umlagefaehig_monat_eur": {
+      "key": "umlagefaehig_monat_eur",
+      "label": "Umlagefähige Kosten (tatsächlich)",
+      "einheit": "eur_monat",
+      "gruppe": "miete",
+      "komponente": "cashflow",
+      "objekt_wert": null,
+      "objekt_status": "unbekannt",
+      "objekt_pfad": "/ist_kosten_und_ertraege/hausgeld_umlagefaehig_monat_eur",
+      "widerspruch": null,
+      "hinweis": null,
+      "wert": 140,
+      "herkunft": "anpassung",
+      "status": "annahme",
+      "begruendung": "Annahme: umlagefähige Kosten entsprechen der Vorauszahlung"
+    },
+    "nicht_umlagefaehig_monat_eur": {
+      "key": "nicht_umlagefaehig_monat_eur",
+      "label": "Nicht umlagefähige Eigentümerkosten (ohne Rücklage)",
+      "einheit": "eur_monat",
+      "gruppe": "miete",
+      "komponente": "cashflow",
+      "objekt_wert": null,
+      "objekt_status": "unbekannt",
+      "objekt_pfad": "/ist_kosten_und_ertraege/hausgeld_nicht_umlagefaehig_ohne_ruecklage_monat_eur",
+      "widerspruch": null,
+      "hinweis": null,
+      "wert": 75,
+      "herkunft": "anpassung",
+      "status": "annahme",
+      "begruendung": "Hausgeld 260 € − 140 € umlagefähig − 45 € Rücklage"
+    },
+    "ruecklage_monat_eur": {
+      "key": "ruecklage_monat_eur",
+      "label": "WEG-Erhaltungsrücklage",
+      "einheit": "eur_monat",
+      "gruppe": "miete",
+      "komponente": "cashflow",
+      "objekt_wert": 45,
+      "objekt_status": "inseratsangabe",
+      "objekt_pfad": "/weg/ruecklagenzufuehrung_wohnung_monat_eur",
+      "widerspruch": null,
+      "hinweis": null,
+      "wert": 45,
+      "herkunft": "objekt",
+      "status": "inseratsangabe"
+    },
+    "vorsorge_monat_eur": {
+      "key": "vorsorge_monat_eur",
+      "label": "Eigene zusätzliche Vorsorge",
+      "einheit": "eur_monat",
+      "gruppe": "miete",
+      "komponente": null,
+      "widerspruch": null,
+      "profil_wert": 40,
+      "hinweis": null,
+      "wert": 40,
+      "herkunft": "profil",
+      "status": "profilangabe"
+    },
+    "mietausfall_prozent": {
+      "key": "mietausfall_prozent",
+      "label": "Pauschaler Kaltmietausfall",
+      "einheit": "prozent",
+      "gruppe": "miete",
+      "komponente": null,
+      "widerspruch": null,
+      "hinweis": "Standardannahme, änderbar.",
+      "wert": 0,
+      "herkunft": "standard",
+      "status": "annahme"
+    },
+    "mietsteigerung_prozent": {
+      "key": "mietsteigerung_prozent",
+      "label": "Mietsteigerung pro Jahr (Annahme)",
+      "einheit": "prozent",
+      "gruppe": "miete",
+      "komponente": null,
+      "widerspruch": null,
+      "hinweis": "Standardannahme, änderbar.",
+      "wert": 0,
+      "herkunft": "standard",
+      "status": "annahme"
+    },
+    "kostensteigerung_prozent": {
+      "key": "kostensteigerung_prozent",
+      "label": "Kostensteigerung pro Jahr (Annahme)",
+      "einheit": "prozent",
+      "gruppe": "miete",
+      "komponente": null,
+      "widerspruch": null,
+      "hinweis": "Standardannahme, änderbar.",
+      "wert": 0,
+      "herkunft": "standard",
+      "status": "annahme"
+    },
+    "gebaeudeanteil_prozent": {
+      "key": "gebaeudeanteil_prozent",
+      "label": "Gebäudeanteil an den Anschaffungskosten",
+      "einheit": "prozent",
+      "gruppe": "steuer",
+      "komponente": "steuer",
+      "widerspruch": null,
+      "hinweis": null,
+      "wert": 75,
+      "herkunft": "anpassung",
+      "status": "annahme",
+      "begruendung": "Annahme für innerstädtischen Altbau, Gutachten fehlt"
+    },
+    "fertigstellung_jahr": {
+      "key": "fertigstellung_jahr",
+      "label": "Fertigstellungsjahr des Gebäudes",
+      "einheit": "jahr",
+      "gruppe": "steuer",
+      "komponente": "steuer",
+      "objekt_wert": 1912,
+      "objekt_status": "inseratsangabe",
+      "objekt_pfad": "/objekt/baujahr",
+      "widerspruch": null,
+      "hinweis": "Baujahr laut Analyse als Fertigstellungsjahr übernommen (für den AfA-Satz maßgeblich).",
+      "wert": 1912,
+      "herkunft": "objekt",
+      "status": "inseratsangabe"
+    }
+  },
+  "offene_angaben": [],
+  "annahmen": [
+    "Verpflichtende Zusatzkäufe: 0 (Objektanpassung – Kein Stellplatz im Angebot)",
+    "Anfängliche Maßnahmen: 0 (Objektanpassung – Keine Maßnahmen geplant)",
+    "Umlagefähige Kosten (tatsächlich): 140 (Objektanpassung – Annahme: umlagefähige Kosten entsprechen der Vorauszahlung)",
+    "Nicht umlagefähige Eigentümerkosten (ohne Rücklage): 75 (Objektanpassung – Hausgeld 260 € − 140 € umlagefähig − 45 € Rücklage)",
+    "Pauschaler Kaltmietausfall: 0 (Standardannahme)",
+    "Mietsteigerung pro Jahr (Annahme): 0 (Standardannahme)",
+    "Kostensteigerung pro Jahr (Annahme): 0 (Standardannahme)",
+    "Gebäudeanteil an den Anschaffungskosten: 75 (Objektanpassung – Annahme für innerstädtischen Altbau, Gutachten fehlt)",
+    "Notar und Grundbuch: 2 % des Kaufpreises (Profilannahme, keine Gebührenberechnung).",
+    "Kondition „Annahme 10 Jahre (Modell)“ ist eine Modellannahme, kein Angebot.",
+    "Notar- und Grundbuchkosten vollständig als Anschaffungsnebenkosten behandelt (Grundschuldkosten wären sofort abziehbar – vorsichtige Vereinfachung).",
+    "Einkommensteuertarif 2026 für spätere Steuerjahre unverändert fortgeschrieben.",
+    "Steuerwirkung wird dem jeweiligen Veranlagungsjahr zugeordnet und als Monatsdurchschnitt gezeigt; die tatsächliche Erstattung erfolgt später.",
+    "WEG-Rücklage mindert die Liquidität, ist aber erst bei Verausgabung durch die WEG abziehbar; Zeitpunkt und Höhe der Verwendung sind nicht modelliert.",
+    "Betriebskostenvorauszahlungen decken die umlagefähigen Kosten genau (Neutralitätsannahme); Abrechnungssalden sind nicht modelliert."
+  ],
+  "ergebnisse": {
+    "status": {
+      "finanzierung": "vollstaendig",
+      "cashflow": "vollstaendig",
+      "steuer": "vollstaendig",
+      "haushalt": "vollstaendig"
+    },
+    "kpi": {
+      "bezugsjahr": 2027,
+      "bezugsmonate": 12,
+      "darlehen": 169922.3,
+      "monatsrate": 821.29,
+      "monatsrate_anschluss": null,
+      "cf_vor_steuer_monat": -421.29,
+      "zuzahlung_vor_steuer_monat": 461.29,
+      "zuzahlung_nach_steuer_monat": 320.46,
+      "steuerwirkung_monat_durchschnitt": 140.83,
+      "vorsorge_monat": 40,
+      "vorsorge_enthalten": true,
+      "restschuld_ende_bindung": 128657.56,
+      "vorfinanzierung_bezugsjahr": 5535.48,
+      "schlechtestes_jahr": {
+        "jahr": 2027,
+        "vor_steuer": 461.29,
+        "nach_steuer": 320.46
+      },
+      "kumuliert_vor_steuer": 55354.8,
+      "kumuliert_nach_steuer": 40696.8,
+      "modelliert_von_jahr": 2027,
+      "modelliert_bis_jahr": 2036,
+      "verbleibendes_haushaltsbudget": 1067.71
+    },
+    "kapital": {
+      "kapitalbedarf": 209922.3,
+      "darlehen": 169922.3,
+      "eigenkapital_eingesetzt": 40000
+    },
+    "einordnung": {
+      "wunschgrenze": "innerhalb",
+      "tragbarkeit": "tragbar",
+      "gesamt": "passt",
+      "verbleibend_haushalt": 1067.71,
+      "gruende": [
+        "Bis zur Steuerwirkung sind monatlich 461,29 € aufzubringen; die Entlastung von Ø 140,83 € im Monat kommt erst mit Veranlagung oder angepassten Vorauszahlungen."
+      ]
+    },
+    "jahre": [
+      {
+        "jahr": 2027,
+        "monate": 12,
+        "teiljahr": false,
+        "kaltmiete": 6240,
+        "bk_vorauszahlung": 1680,
+        "einnahmen": 7920,
+        "umlagefaehig": 1680,
+        "nicht_umlagefaehig": 900,
+        "ruecklage": 540,
+        "zins": 6397.23,
+        "tilgung": 3458.25,
+        "sondertilgung": 0,
+        "kreditrate": 9855.48,
+        "einmalig": 0,
+        "ausgaben_faellig": 12975.48,
+        "cf_vor_steuer": -5055.48,
+        "abzugsfaehig_ohne_afa": 8977.23,
+        "afa": 3936.04,
+        "steuer_ergebnis": -4993.27,
+        "entlastung": 1690,
+        "entlastungen": null,
+        "steuer_hinweis": "Tarif 2026 für 2027 unverändert fortgeschrieben – Annahme, keine Aussage über künftiges Recht.",
+        "cf_nach_steuer": -3365.48,
+        "vorsorge": 480,
+        "cf_nach_vorsorge": -5535.48,
+        "cf_nach_vorsorge_und_steuer": -3845.48,
+        "restschuld": 166464.05,
+        "kum_tilgung": 3458.25
+      },
+      {
+        "jahr": 2028,
+        "monate": 12,
+        "teiljahr": false,
+        "kaltmiete": 6240,
+        "bk_vorauszahlung": 1680,
+        "einnahmen": 7920,
+        "umlagefaehig": 1680,
+        "nicht_umlagefaehig": 900,
+        "ruecklage": 540,
+        "zins": 6263.5,
+        "tilgung": 3591.98,
+        "sondertilgung": 0,
+        "kreditrate": 9855.48,
+        "einmalig": 0,
+        "ausgaben_faellig": 12975.48,
+        "cf_vor_steuer": -5055.48,
+        "abzugsfaehig_ohne_afa": 8843.5,
+        "afa": 3936.04,
+        "steuer_ergebnis": -4859.54,
+        "entlastung": 1644,
+        "entlastungen": null,
+        "steuer_hinweis": "Tarif 2026 für 2028 unverändert fortgeschrieben – Annahme, keine Aussage über künftiges Recht.",
+        "cf_nach_steuer": -3411.48,
+        "vorsorge": 480,
+        "cf_nach_vorsorge": -5535.48,
+        "cf_nach_vorsorge_und_steuer": -3891.48,
+        "restschuld": 162872.07,
+        "kum_tilgung": 7050.23
+      },
+      {
+        "jahr": 2029,
+        "monate": 12,
+        "teiljahr": false,
+        "kaltmiete": 6240,
+        "bk_vorauszahlung": 1680,
+        "einnahmen": 7920,
+        "umlagefaehig": 1680,
+        "nicht_umlagefaehig": 900,
+        "ruecklage": 540,
+        "zins": 6124.6,
+        "tilgung": 3730.88,
+        "sondertilgung": 0,
+        "kreditrate": 9855.48,
+        "einmalig": 0,
+        "ausgaben_faellig": 12975.48,
+        "cf_vor_steuer": -5055.48,
+        "abzugsfaehig_ohne_afa": 8704.6,
+        "afa": 3936.04,
+        "steuer_ergebnis": -4720.64,
+        "entlastung": 1598,
+        "entlastungen": null,
+        "steuer_hinweis": "Tarif 2026 für 2029 unverändert fortgeschrieben – Annahme, keine Aussage über künftiges Recht.",
+        "cf_nach_steuer": -3457.48,
+        "vorsorge": 480,
+        "cf_nach_vorsorge": -5535.48,
+        "cf_nach_vorsorge_und_steuer": -3937.48,
+        "restschuld": 159141.2,
+        "kum_tilgung": 10781.1
+      },
+      {
+        "jahr": 2030,
+        "monate": 12,
+        "teiljahr": false,
+        "kaltmiete": 6240,
+        "bk_vorauszahlung": 1680,
+        "einnahmen": 7920,
+        "umlagefaehig": 1680,
+        "nicht_umlagefaehig": 900,
+        "ruecklage": 540,
+        "zins": 5980.34,
+        "tilgung": 3875.14,
+        "sondertilgung": 0,
+        "kreditrate": 9855.48,
+        "einmalig": 0,
+        "ausgaben_faellig": 12975.48,
+        "cf_vor_steuer": -5055.48,
+        "abzugsfaehig_ohne_afa": 8560.34,
+        "afa": 3936.04,
+        "steuer_ergebnis": -4576.38,
+        "entlastung": 1550,
+        "entlastungen": null,
+        "steuer_hinweis": "Tarif 2026 für 2030 unverändert fortgeschrieben – Annahme, keine Aussage über künftiges Recht.",
+        "cf_nach_steuer": -3505.48,
+        "vorsorge": 480,
+        "cf_nach_vorsorge": -5535.48,
+        "cf_nach_vorsorge_und_steuer": -3985.48,
+        "restschuld": 155266.05,
+        "kum_tilgung": 14656.25
+      },
+      {
+        "jahr": 2031,
+        "monate": 12,
+        "teiljahr": false,
+        "kaltmiete": 6240,
+        "bk_vorauszahlung": 1680,
+        "einnahmen": 7920,
+        "umlagefaehig": 1680,
+        "nicht_umlagefaehig": 900,
+        "ruecklage": 540,
+        "zins": 5830.49,
+        "tilgung": 4024.99,
+        "sondertilgung": 0,
+        "kreditrate": 9855.48,
+        "einmalig": 0,
+        "ausgaben_faellig": 12975.48,
+        "cf_vor_steuer": -5055.48,
+        "abzugsfaehig_ohne_afa": 8410.49,
+        "afa": 3936.04,
+        "steuer_ergebnis": -4426.53,
+        "entlastung": 1500,
+        "entlastungen": null,
+        "steuer_hinweis": "Tarif 2026 für 2031 unverändert fortgeschrieben – Annahme, keine Aussage über künftiges Recht.",
+        "cf_nach_steuer": -3555.48,
+        "vorsorge": 480,
+        "cf_nach_vorsorge": -5535.48,
+        "cf_nach_vorsorge_und_steuer": -4035.48,
+        "restschuld": 151241.06,
+        "kum_tilgung": 18681.24
+      },
+      {
+        "jahr": 2032,
+        "monate": 12,
+        "teiljahr": false,
+        "kaltmiete": 6240,
+        "bk_vorauszahlung": 1680,
+        "einnahmen": 7920,
+        "umlagefaehig": 1680,
+        "nicht_umlagefaehig": 900,
+        "ruecklage": 540,
+        "zins": 5674.85,
+        "tilgung": 4180.63,
+        "sondertilgung": 0,
+        "kreditrate": 9855.48,
+        "einmalig": 0,
+        "ausgaben_faellig": 12975.48,
+        "cf_vor_steuer": -5055.48,
+        "abzugsfaehig_ohne_afa": 8254.85,
+        "afa": 3936.04,
+        "steuer_ergebnis": -4270.89,
+        "entlastung": 1448,
+        "entlastungen": null,
+        "steuer_hinweis": "Tarif 2026 für 2032 unverändert fortgeschrieben – Annahme, keine Aussage über künftiges Recht.",
+        "cf_nach_steuer": -3607.48,
+        "vorsorge": 480,
+        "cf_nach_vorsorge": -5535.48,
+        "cf_nach_vorsorge_und_steuer": -4087.48,
+        "restschuld": 147060.43,
+        "kum_tilgung": 22861.87
+      },
+      {
+        "jahr": 2033,
+        "monate": 12,
+        "teiljahr": false,
+        "kaltmiete": 6240,
+        "bk_vorauszahlung": 1680,
+        "einnahmen": 7920,
+        "umlagefaehig": 1680,
+        "nicht_umlagefaehig": 900,
+        "ruecklage": 540,
+        "zins": 5513.19,
+        "tilgung": 4342.29,
+        "sondertilgung": 0,
+        "kreditrate": 9855.48,
+        "einmalig": 0,
+        "ausgaben_faellig": 12975.48,
+        "cf_vor_steuer": -5055.48,
+        "abzugsfaehig_ohne_afa": 8093.19,
+        "afa": 3936.04,
+        "steuer_ergebnis": -4109.23,
+        "entlastung": 1394,
+        "entlastungen": null,
+        "steuer_hinweis": "Tarif 2026 für 2033 unverändert fortgeschrieben – Annahme, keine Aussage über künftiges Recht.",
+        "cf_nach_steuer": -3661.48,
+        "vorsorge": 480,
+        "cf_nach_vorsorge": -5535.48,
+        "cf_nach_vorsorge_und_steuer": -4141.48,
+        "restschuld": 142718.13,
+        "kum_tilgung": 27204.17
+      },
+      {
+        "jahr": 2034,
+        "monate": 12,
+        "teiljahr": false,
+        "kaltmiete": 6240,
+        "bk_vorauszahlung": 1680,
+        "einnahmen": 7920,
+        "umlagefaehig": 1680,
+        "nicht_umlagefaehig": 900,
+        "ruecklage": 540,
+        "zins": 5345.27,
+        "tilgung": 4510.21,
+        "sondertilgung": 0,
+        "kreditrate": 9855.48,
+        "einmalig": 0,
+        "ausgaben_faellig": 12975.48,
+        "cf_vor_steuer": -5055.48,
+        "abzugsfaehig_ohne_afa": 7925.27,
+        "afa": 3936.04,
+        "steuer_ergebnis": -3941.31,
+        "entlastung": 1338,
+        "entlastungen": null,
+        "steuer_hinweis": "Tarif 2026 für 2034 unverändert fortgeschrieben – Annahme, keine Aussage über künftiges Recht.",
+        "cf_nach_steuer": -3717.48,
+        "vorsorge": 480,
+        "cf_nach_vorsorge": -5535.48,
+        "cf_nach_vorsorge_und_steuer": -4197.48,
+        "restschuld": 138207.93,
+        "kum_tilgung": 31714.37
+      },
+      {
+        "jahr": 2035,
+        "monate": 12,
+        "teiljahr": false,
+        "kaltmiete": 6240,
+        "bk_vorauszahlung": 1680,
+        "einnahmen": 7920,
+        "umlagefaehig": 1680,
+        "nicht_umlagefaehig": 900,
+        "ruecklage": 540,
+        "zins": 5170.87,
+        "tilgung": 4684.61,
+        "sondertilgung": 0,
+        "kreditrate": 9855.48,
+        "einmalig": 0,
+        "ausgaben_faellig": 12975.48,
+        "cf_vor_steuer": -5055.48,
+        "abzugsfaehig_ohne_afa": 7750.87,
+        "afa": 3936.04,
+        "steuer_ergebnis": -3766.91,
+        "entlastung": 1278,
+        "entlastungen": null,
+        "steuer_hinweis": "Tarif 2026 für 2035 unverändert fortgeschrieben – Annahme, keine Aussage über künftiges Recht.",
+        "cf_nach_steuer": -3777.48,
+        "vorsorge": 480,
+        "cf_nach_vorsorge": -5535.48,
+        "cf_nach_vorsorge_und_steuer": -4257.48,
+        "restschuld": 133523.32,
+        "kum_tilgung": 36398.98
+      },
+      {
+        "jahr": 2036,
+        "monate": 12,
+        "teiljahr": false,
+        "kaltmiete": 6240,
+        "bk_vorauszahlung": 1680,
+        "einnahmen": 7920,
+        "umlagefaehig": 1680,
+        "nicht_umlagefaehig": 900,
+        "ruecklage": 540,
+        "zins": 4989.72,
+        "tilgung": 4865.76,
+        "sondertilgung": 0,
+        "kreditrate": 9855.48,
+        "einmalig": 0,
+        "ausgaben_faellig": 12975.48,
+        "cf_vor_steuer": -5055.48,
+        "abzugsfaehig_ohne_afa": 7569.72,
+        "afa": 3936.04,
+        "steuer_ergebnis": -3585.76,
+        "entlastung": 1218,
+        "entlastungen": null,
+        "steuer_hinweis": "Tarif 2026 für 2036 unverändert fortgeschrieben – Annahme, keine Aussage über künftiges Recht.",
+        "cf_nach_steuer": -3837.48,
+        "vorsorge": 480,
+        "cf_nach_vorsorge": -5535.48,
+        "cf_nach_vorsorge_und_steuer": -4317.48,
+        "restschuld": 128657.56,
+        "kum_tilgung": 41264.74
+      }
+    ],
+    "konditionen": [
+      {
+        "id": "K1",
+        "bezeichnung": "Annahme 10 Jahre (Modell)",
+        "art": "annahme",
+        "kpi": {
+          "bezugsjahr": 2027,
+          "bezugsmonate": 12,
+          "darlehen": 169922.3,
+          "monatsrate": 821.29,
+          "monatsrate_anschluss": null,
+          "cf_vor_steuer_monat": -421.29,
+          "zuzahlung_vor_steuer_monat": 461.29,
+          "zuzahlung_nach_steuer_monat": 320.46,
+          "steuerwirkung_monat_durchschnitt": 140.83,
+          "vorsorge_monat": 40,
+          "vorsorge_enthalten": true,
+          "restschuld_ende_bindung": 128657.56,
+          "vorfinanzierung_bezugsjahr": 5535.48,
+          "schlechtestes_jahr": {
+            "jahr": 2027,
+            "vor_steuer": 461.29,
+            "nach_steuer": 320.46
+          },
+          "kumuliert_vor_steuer": 55354.8,
+          "kumuliert_nach_steuer": 40696.8,
+          "modelliert_von_jahr": 2027,
+          "modelliert_bis_jahr": 2036,
+          "verbleibendes_haushaltsbudget": 1067.71
+        },
+        "status": {
+          "finanzierung": "vollstaendig",
+          "cashflow": "vollstaendig",
+          "steuer": "vollstaendig",
+          "haushalt": "vollstaendig"
+        }
+      },
+      {
+        "id": "K-objekt1",
+        "bezeichnung": "Fiktives Objektangebot 3,6 %",
+        "art": "angebot",
+        "kpi": {
+          "bezugsjahr": 2027,
+          "bezugsmonate": 12,
+          "darlehen": 169922.3,
+          "monatsrate": 792.97,
+          "monatsrate_anschluss": null,
+          "cf_vor_steuer_monat": -392.97,
+          "zuzahlung_vor_steuer_monat": 432.97,
+          "zuzahlung_nach_steuer_monat": 301.47,
+          "steuerwirkung_monat_durchschnitt": 131.5,
+          "vorsorge_monat": 40,
+          "vorsorge_enthalten": true,
+          "restschuld_ende_bindung": 129088.46,
+          "vorfinanzierung_bezugsjahr": 5195.64,
+          "schlechtestes_jahr": {
+            "jahr": 2027,
+            "vor_steuer": 432.97,
+            "nach_steuer": 301.47
+          },
+          "kumuliert_vor_steuer": 51956.4,
+          "kumuliert_nach_steuer": 38290.4,
+          "modelliert_von_jahr": 2027,
+          "modelliert_bis_jahr": 2036,
+          "verbleibendes_haushaltsbudget": 1096.03
+        },
+        "status": {
+          "finanzierung": "vollstaendig",
+          "cashflow": "vollstaendig",
+          "steuer": "vollstaendig",
+          "haushalt": "vollstaendig"
+        }
+      }
+    ],
+    "varianten": [
+      {
+        "id": "V1",
+        "bezeichnung": "Sollzins 4,8 %",
+        "aenderungen": [
+          {
+            "feld": "Sollzins (%)",
+            "vorher": 3.8,
+            "nachher": 4.8
+          }
+        ],
+        "kpi": {
+          "bezugsjahr": 2027,
+          "bezugsmonate": 12,
+          "darlehen": 169922.3,
+          "monatsrate": 962.89,
+          "monatsrate_anschluss": null,
+          "cf_vor_steuer_monat": -562.89,
+          "zuzahlung_vor_steuer_monat": 602.89,
+          "zuzahlung_nach_steuer_monat": 415.39,
+          "steuerwirkung_monat_durchschnitt": 187.5,
+          "vorsorge_monat": 40,
+          "vorsorge_enthalten": true,
+          "restschuld_ende_bindung": 126413.61,
+          "vorfinanzierung_bezugsjahr": 7234.68,
+          "schlechtestes_jahr": {
+            "jahr": 2027,
+            "vor_steuer": 602.89,
+            "nach_steuer": 415.39
+          },
+          "kumuliert_vor_steuer": 72346.8,
+          "kumuliert_nach_steuer": 52762.8,
+          "modelliert_von_jahr": 2027,
+          "modelliert_bis_jahr": 2036,
+          "verbleibendes_haushaltsbudget": 926.11
+        },
+        "status": {
+          "finanzierung": "vollstaendig",
+          "cashflow": "vollstaendig",
+          "steuer": "vollstaendig",
+          "haushalt": "vollstaendig"
+        }
+      },
+      {
+        "id": "V2",
+        "bezeichnung": "Leerstand 3 Monate im 2. Jahr",
+        "aenderungen": [
+          {
+            "feld": "Leerstand (Kaltmiete und Vorauszahlungen entfallen)",
+            "vorher": null,
+            "nachher": "3 Monate im Modelljahr 2"
+          }
+        ],
+        "kpi": {
+          "bezugsjahr": 2027,
+          "bezugsmonate": 12,
+          "darlehen": 169922.3,
+          "monatsrate": 821.29,
+          "monatsrate_anschluss": null,
+          "cf_vor_steuer_monat": -421.29,
+          "zuzahlung_vor_steuer_monat": 461.29,
+          "zuzahlung_nach_steuer_monat": 320.46,
+          "steuerwirkung_monat_durchschnitt": 140.83,
+          "vorsorge_monat": 40,
+          "vorsorge_enthalten": true,
+          "restschuld_ende_bindung": 128657.56,
+          "vorfinanzierung_bezugsjahr": 5535.48,
+          "schlechtestes_jahr": {
+            "jahr": 2028,
+            "vor_steuer": 626.29,
+            "nach_steuer": 434.46
+          },
+          "kumuliert_vor_steuer": 57334.8,
+          "kumuliert_nach_steuer": 42018.8,
+          "modelliert_von_jahr": 2027,
+          "modelliert_bis_jahr": 2036,
+          "verbleibendes_haushaltsbudget": 1067.71
+        },
+        "status": {
+          "finanzierung": "vollstaendig",
+          "cashflow": "vollstaendig",
+          "steuer": "vollstaendig",
+          "haushalt": "vollstaendig"
+        }
+      },
+      {
+        "id": "V3",
+        "bezeichnung": "Sonderumlage Dach 5.000 €",
+        "aenderungen": [
+          {
+            "feld": "Einmalige Zahlung",
+            "vorher": null,
+            "nachher": "5.000 € im Modelljahr 3 (Erhaltungsaufwand, sofort abziehbar)"
+          }
+        ],
+        "kpi": {
+          "bezugsjahr": 2027,
+          "bezugsmonate": 12,
+          "darlehen": 169922.3,
+          "monatsrate": 821.29,
+          "monatsrate_anschluss": null,
+          "cf_vor_steuer_monat": -421.29,
+          "zuzahlung_vor_steuer_monat": 461.29,
+          "zuzahlung_nach_steuer_monat": 320.46,
+          "steuerwirkung_monat_durchschnitt": 140.83,
+          "vorsorge_monat": 40,
+          "vorsorge_enthalten": true,
+          "restschuld_ende_bindung": 128657.56,
+          "vorfinanzierung_bezugsjahr": 5535.48,
+          "schlechtestes_jahr": {
+            "jahr": 2029,
+            "vor_steuer": 877.96,
+            "nach_steuer": 607.29
+          },
+          "kumuliert_vor_steuer": 60354.8,
+          "kumuliert_nach_steuer": 44046.8,
+          "modelliert_von_jahr": 2027,
+          "modelliert_bis_jahr": 2036,
+          "verbleibendes_haushaltsbudget": 1067.71
+        },
+        "status": {
+          "finanzierung": "vollstaendig",
+          "cashflow": "vollstaendig",
+          "steuer": "vollstaendig",
+          "haushalt": "vollstaendig"
+        }
+      }
+    ]
+  }
+}
