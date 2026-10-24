@@ -416,6 +416,36 @@ details.item .kr { margin-left: auto; font-size: 12.5px; color: var(--ink-2); fo
 details.raw summary { cursor: pointer; font-weight: 600; }
 details.raw pre { margin: 12px 0 0; padding: 14px; max-height: 560px; overflow: auto; background: var(--surface-2); border-radius: 8px; font: 12px/1.5 ui-monospace, "SF Mono", Menlo, monospace; white-space: pre; }
 
+/* Vergleich: Reiter, Ortsfilter, Preisübersicht, Auswahl */
+.cmp-tabs { display: flex; gap: 2px; margin-top: 20px; border-bottom: 1px solid var(--line); overflow-x: auto; scrollbar-width: none; }
+.cmp-tabs::-webkit-scrollbar { display: none; }
+.cmp-tab { flex: none; display: inline-flex; align-items: center; gap: 7px; padding: 10px 16px; border: 0; border-bottom: 2px solid transparent; margin-bottom: -1px; background: none; font-size: 14px; font-weight: 600; color: var(--ink-2); cursor: pointer; white-space: nowrap; }
+.cmp-tab:hover { color: var(--ink); }
+.cmp-tab.active { color: var(--ink); border-bottom-color: var(--accent); }
+.cmp-tab .count { font-size: 12px; font-weight: 500; color: var(--ink-2); background: var(--surface-3); border-radius: 999px; padding: 0 7px; }
+.ort-filter { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: -2px 0 14px; }
+.ort-filter .lbl { font-size: 12.5px; font-weight: 600; color: var(--ink-2); margin-right: 4px; }
+.chip-btn { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--surface); font-size: 13px; cursor: pointer; }
+.chip-btn:hover { background: var(--surface-2); }
+.chip-btn .n { font-size: 11.5px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.chip-btn.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.chip-btn.on .n { color: rgba(255, 255, 255, .8); }
+.price-grid { display: grid; grid-template-columns: minmax(0, 3fr) minmax(380px, 2fr); gap: 14px; align-items: start; }
+.card-pad { padding: 16px 18px 4px; }
+.t.vals td.num { white-space: normal; }
+.t.vals td.num .val { white-space: nowrap; }
+.t.vals .scen { white-space: normal; }
+.pick-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+.pick-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 8px; }
+.pick-item { display: flex; align-items: flex-start; gap: 8px; padding: 9px 12px; border: 1px solid var(--line-2); border-radius: 10px; background: var(--surface); cursor: pointer; font-size: 13px; }
+.pick-item:hover { background: var(--surface-2); }
+.pick-item.on { border-color: var(--accent); background: var(--accent-wash); }
+.pick-item input { margin-top: 2px; }
+.pick-text { display: flex; flex-direction: column; min-width: 0; }
+.pick-title { font-weight: 600; line-height: 1.35; }
+.pick-sub { font-size: 12px; color: var(--ink-2); }
+@media (max-width: 1300px) { .price-grid { grid-template-columns: minmax(0, 1fr); } }
+
 /* Filter */
 .filters { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 18px 0 12px; }
 .filters input[type="search"], .filters select { height: 34px; border-radius: 8px; border: 1px solid var(--line-2); background: var(--surface); padding: 0 10px; font-size: 13.5px; }
@@ -501,6 +531,8 @@ dialog::backdrop { background: rgba(10, 10, 10, .38); }
   .tiles, .tiles.stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
   .tiles.stats .tile:first-child { grid-column: 1 / -1; min-height: 0; }
   .cmp-table td.cell-obj, .cmp-table thead th:nth-child(3) { position: static; box-shadow: none; }
+  .cmp-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .cmp-tab { justify-content: center; text-align: center; white-space: normal; padding: 9px 6px; font-size: 13px; line-height: 1.25; }
   .tile { min-height: 84px; padding: 10px 12px; }
   .tile-value { font-size: 17px; }
   .stat .tile-value { font-size: 24px; }
@@ -842,14 +874,15 @@ const state = {
   selected: new Set(),
   selectionTouched: false,
   sort: { col: 'num', dir: 1 },
-  filter: { q: '', urteil: '', showOld: false },
+  filter: { q: '', urteil: '', showOld: false, orte: new Set() },
+  cmpTab: 'tabelle',
   diffOnly: false,
   persist: true,
   saveError: null,
 };
 let uidCounter = 0;
 let numCounter = 0;
-const LS = { docs: 'immoviewer.v1.docs', persist: 'immoviewer.v1.persist', theme: 'immoviewer.v1.theme' };
+const LS = { docs: 'immoviewer.v1.docs', persist: 'immoviewer.v1.persist', theme: 'immoviewer.v1.theme', cmpTab: 'immoviewer.v1.cmptab' };
 const lsGet = k => { try { return localStorage.getItem(k); } catch { return null; } };
 const lsSet = (k, v) => { try { localStorage.setItem(k, v); return true; } catch { return false; } };
 const lsDel = k => { try { localStorage.removeItem(k); } catch { /* ignorieren */ } };
@@ -974,6 +1007,7 @@ function save() {
 
 function restore() {
   state.persist = lsGet(LS.persist) !== '0';
+  state.cmpTab = lsGet(LS.cmpTab) || 'tabelle';
   const raw = lsGet(LS.docs);
   if (!raw || !state.persist) return;
   try {
@@ -1916,9 +1950,14 @@ const COLS = [
 ];
 const colValue = (c, d) => (c.sv ? c.sv(d) : (() => { const r = resolvePointer(d.data, c.path); return r.found ? r.value : null; })());
 
+const CMP_TABS = [['tabelle', 'Tabelle'], ['preis', 'Kaufpreis/m² &amp; Rendite'], ['gegenueberstellung', 'Gegen&shy;über&shy;stellung']];
+const ortKey = d => String(obj(obj(d.data).standort).ort ?? '').trim();
+const inOrtFilter = d => !state.filter.orte.size || state.filter.orte.has(ortKey(d));
+
 function filteredDocs() {
   const q = state.filter.q.trim().toLowerCase();
   const list = immoDocs().filter(d => (state.filter.showOld || d.rev?.latest)
+    && inOrtFilter(d)
     && (!state.filter.urteil || urteilOf(d) === state.filter.urteil)
     && (!q || [docTitle(d), docPlace(d), obj(d.data.angebot).plattform, obj(d.data.angebot).plattform_id, obj(d.data.angebot).objektart, d.fileName].join(' ').toLowerCase().includes(q)));
   const col = COLS.find(c => c.id === state.sort.col) || COLS[0];
@@ -1933,25 +1972,49 @@ function filteredDocs() {
 function viewCompare() {
   const docs = immoDocs(), latest = docs.filter(d => d.rev?.latest);
   if (!state.selectionTouched && !state.selected.size) latest.slice(0, 4).forEach(d => state.selected.add(d.uid));
+  if (!CMP_TABS.some(([id]) => id === state.cmpTab)) state.cmpTab = 'tabelle';
+  const filtered = state.cmpTab !== 'gegenueberstellung';
   const hasRevs = docs.length !== latest.length;
   const bad = state.docs.filter(d => !d.isImmo).length;
-  const cnt = vs => latest.filter(d => vs.includes(urteilOf(d))).length;
+  // Kacheln zählen Objekte (neueste Revision); der Ortsfilter gilt überall außer in der Gegenüberstellung
+  const scope = filtered ? latest.filter(inOrtFilter) : latest;
+  const cnt = vs => scope.filter(d => vs.includes(urteilOf(d))).length;
+  const orte = filtered ? [...state.filter.orte] : [];
   const stat = (label, n, v) => `<div class="tile stat"><div class="tile-label">${v ? verdictBadge(v, 'sm') : esc(label)}</div><div class="tile-value">${n}</div></div>`;
-  return `<div class="page-head"><div><h1>Vergleich</h1><p class="sub">${latest.length} Objekt${latest.length === 1 ? '' : 'e'}${hasRevs ? ` · ${docs.length} Bewertungen inkl. älterer Revisionen` : ''}${bad ? ` · ${bad} Datei${bad === 1 ? '' : 'en'} nicht lesbar` : ''}. Gleiche Kriterien, Annahmen werden in der Gegenüberstellung abgeglichen.</p></div>
-      <div class="dh-actions"><button class="btn sm needs-download" data-action="csv">CSV exportieren</button></div></div>
+  return `<div class="page-head"><div><h1>Vergleich</h1><p class="sub">${latest.length} Objekt${latest.length === 1 ? '' : 'e'}${hasRevs ? ` · ${docs.length} Bewertungen inkl. älterer Revisionen` : ''}${bad ? ` · ${bad} Datei${bad === 1 ? '' : 'en'} nicht lesbar` : ''}${orte.length ? ` · Filter Ort: ${esc(orte.map(o => o || 'ohne Angabe').join(', '))}` : ''}</p></div>
+      ${filtered ? '<div class="dh-actions"><button class="btn sm needs-download" data-action="csv">CSV exportieren</button></div>' : ''}</div>
     <div class="tiles stats">
-      ${stat('Objekte', latest.length)}${stat('', cnt(['weiter_pruefen']), 'weiter_pruefen')}${stat('', cnt(['nur_zu_anderen_konditionen_interessant']), 'nur_zu_anderen_konditionen_interessant')}${stat('', cnt(['bis_zur_klaerung_zurueckstellen']), 'bis_zur_klaerung_zurueckstellen')}${stat('', cnt(['fuer_das_ziel_verwerfen', 'nicht_bewertbar']), 'fuer_das_ziel_verwerfen')}
+      ${stat(orte.length ? 'Objekte im Filter' : 'Objekte', scope.length)}${stat('', cnt(['weiter_pruefen']), 'weiter_pruefen')}${stat('', cnt(['nur_zu_anderen_konditionen_interessant']), 'nur_zu_anderen_konditionen_interessant')}${stat('', cnt(['bis_zur_klaerung_zurueckstellen']), 'bis_zur_klaerung_zurueckstellen')}${stat('', cnt(['fuer_das_ziel_verwerfen', 'nicht_bewertbar']), 'fuer_das_ziel_verwerfen')}
     </div>
-    <div class="filters">
-      <input type="search" id="fq" placeholder="Suchen: Titel, Ort, Plattform-ID, Datei …" value="${esc(state.filter.q)}" aria-label="Suchen">
-      <select id="fu" aria-label="Nach Gesamturteil filtern"><option value="">Alle Urteile</option>${VERDICT_ORDER.map(v => `<option value="${v}"${state.filter.urteil === v ? ' selected' : ''}>${esc(L(v))}</option>`).join('')}</select>
-      ${hasRevs ? `<label class="check"><input type="checkbox" id="fold"${state.filter.showOld ? ' checked' : ''}> Ältere Revisionen zeigen</label>` : ''}
-    </div>
+    <div class="cmp-tabs" role="tablist" aria-label="Bereiche des Vergleichs">${CMP_TABS.map(([id, label]) => `<button class="cmp-tab${state.cmpTab === id ? ' active' : ''}" role="tab" aria-selected="${state.cmpTab === id}" data-action="cmp-tab" data-tab="${id}">${label}${id === 'gegenueberstellung' ? ` <span class="count">${state.selected.size}</span>` : ''}</button>`).join('')}</div>
+    ${filtered ? compareFilters(hasRevs) : ''}
     <div id="cmpResults">${compareResults()}</div>`;
 }
 
+/** Suche, Urteil, Revisionen und Schnellfilter nach Ort (für Tabelle und Kaufpreis/m² & Rendite). */
+function compareFilters(hasRevs) {
+  const base = immoDocs().filter(d => state.filter.showOld || d.rev?.latest);
+  const counts = new Map();
+  for (const d of base) counts.set(ortKey(d), (counts.get(ortKey(d)) || 0) + 1);
+  const orte = [...counts].sort((a, b) => (a[0] === '') - (b[0] === '') || a[0].localeCompare(b[0], 'de'));
+  const chips = orte.length > 1 ? `<div class="ort-filter" role="group" aria-label="Nach Ort filtern"><span class="lbl">Ort</span>
+      <button class="chip-btn${state.filter.orte.size ? '' : ' on'}" data-action="filter-ort-all" aria-pressed="${!state.filter.orte.size}">Alle <span class="n">${base.length}</span></button>
+      ${orte.map(([o, n]) => { const on = state.filter.orte.has(o); return `<button class="chip-btn${on ? ' on' : ''}" data-action="filter-ort" data-ort="${esc(o)}" aria-pressed="${on}">${esc(o || 'Ohne Ortsangabe')} <span class="n">${n}</span></button>`; }).join('')}
+    </div>` : '';
+  return `<div class="filters">
+      <input type="search" id="fq" placeholder="Suchen: Titel, Ort, Plattform-ID, Datei …" value="${esc(state.filter.q)}" aria-label="Suchen">
+      <select id="fu" aria-label="Nach Gesamturteil filtern"><option value="">Alle Urteile</option>${VERDICT_ORDER.map(v => `<option value="${v}"${state.filter.urteil === v ? ' selected' : ''}>${esc(L(v))}</option>`).join('')}</select>
+      ${hasRevs ? `<label class="check"><input type="checkbox" id="fold"${state.filter.showOld ? ' checked' : ''}> Ältere Revisionen zeigen</label>` : ''}
+    </div>${chips}`;
+}
+
 function compareResults() {
+  if (state.cmpTab === 'gegenueberstellung') return selectionPicker() + matrixCard();
   const rows = filteredDocs();
+  return state.cmpTab === 'preis' ? priceOverview(rows) : compareTable(rows);
+}
+
+function compareTable(rows) {
   const allSel = rows.length > 0 && rows.every(d => state.selected.has(d.uid));
   const head = COLS.map(c => {
     const active = state.sort.col === c.id;
@@ -1974,7 +2037,12 @@ function compareResults() {
     return `<tr class="clickable" data-action="open" data-uid="${d.uid}"><td><input type="checkbox" data-select="${d.uid}" ${state.selected.has(d.uid) ? 'checked' : ''} aria-label="Für Gegenüberstellung auswählen"></td>${COLS.map(cell).join('')}</tr>`;
   }).join('');
 
-  // Streudiagramm
+  return `<div class="card flush"><div class="table-wrap"><table class="t cmp-table"><thead><tr><th><input type="checkbox" id="selAll" ${allSel ? 'checked' : ''} aria-label="Alle sichtbaren auswählen"></th>${head}</tr></thead><tbody>${body || `<tr><td colspan="${COLS.length + 1}" class="muted">Keine Treffer.</td></tr>`}</tbody></table></div></div>
+    <p class="chart-note">„—“ = null im Export (nicht verlässlich bestimmbar). Kursive Werte stammen nur aus Szenarien. Farbige Punkte zeigen den Belegstatus – anklicken für Details. Häkchen wählen Objekte für die Gegenüberstellung.</p>`;
+}
+
+/** Streudiagramm Kaufpreis/m² gegen Bruttomietrendite mit Werteliste daneben. */
+function priceOverview(rows) {
   const pts = [], missing = [];
   for (const d of rows) {
     const kz = obj(d.data.kennzahlen);
@@ -1991,10 +2059,27 @@ function compareResults() {
     + (missing.length ? `<p class="chart-note">Nicht dargestellt (Werte fehlen): ${missing.map(d => `#${d.num}`).join(', ')}</p>` : '')
     : '<div class="empty"><b>Keine Objekte mit Kaufpreis pro m² und Bruttomietrendite.</b></div>';
 
-  return `<div class="card flush"><div class="table-wrap"><table class="t cmp-table"><thead><tr><th><input type="checkbox" id="selAll" ${allSel ? 'checked' : ''} aria-label="Alle sichtbaren auswählen"></th>${head}</tr></thead><tbody>${body || `<tr><td colspan="${COLS.length + 1}" class="muted">Keine Treffer.</td></tr>`}</tbody></table></div></div>
-    <p class="chart-note">„—“ = null im Export (nicht verlässlich bestimmbar). Kursive Werte stammen nur aus Szenarien. Farbige Punkte zeigen den Belegstatus – anklicken für Details.</p>
-    <div class="card" style="margin-top:14px"><h3>Kaufpreis pro m² und Bruttomietrendite</h3><p class="card-sub">Je Objekt ein Punkt (#-Nummer wie in der Tabelle). Eine höhere Rendite ist kein Urteil über Risiko oder Objektqualität.</p>${scatter}</div>
-    ${matrixCard()}`;
+  const valuesList = rows.length ? `<div class="card flush"><div class="card-pad"><h3>Werte im Diagramm</h3><p class="card-sub">Reihenfolge wie in der Tabelle. Zeile anklicken für Details.</p></div>
+    <div class="table-wrap"><table class="t vals"><thead><tr><th class="num">#</th><th>Objekt</th><th class="num">€/m²</th><th class="num">Brutto&shy;rendite</th></tr></thead><tbody>
+    ${rows.map(d => `<tr class="clickable" data-action="open" data-uid="${d.uid}"><td class="num"><span class="num">#${d.num}</span></td><td><div class="obj-title">${esc(trunc(docTitle(d), 44))}</div><div class="obj-sub">${esc(docPlace(d) || 'ohne Ort')}</div></td>
+      <td class="num">${valueCell(d, '/kennzahlen/kaufpreis_pro_m2_eur', { chip: false })}</td><td class="num">${valueCell(d, '/kennzahlen/bruttomietrendite_prozent', { chip: false })}</td></tr>`).join('')}
+    </tbody></table></div></div>` : '';
+
+  return `<div class="price-grid">
+      <div class="card"><h3>Kaufpreis pro m² und Bruttomietrendite</h3><p class="card-sub">Je Objekt ein Punkt (#-Nummer wie in der Tabelle). Eine höhere Rendite ist kein Urteil über Risiko oder Objektqualität.</p>${scatter}</div>
+      ${valuesList}
+    </div>`;
+}
+
+/** Auswahl der Objekte direkt im Bereich Gegenüberstellung (ohne Ortsfilter). */
+function selectionPicker() {
+  const docs = immoDocs().filter(d => state.filter.showOld || d.rev?.latest || state.selected.has(d.uid));
+  const n = state.selected.size;
+  return `<div class="card pick">
+      <div class="pick-head"><div><h3>Auswahl für die Gegenüberstellung</h3><p class="card-sub" style="margin:0">${n} ausgewählt${n < 2 ? ' – mindestens zwei auswählen' : ''}. Der Ortsfilter gilt hier nicht.</p></div>
+        <div class="dh-actions"><button class="btn sm" data-action="select-all">Alle auswählen</button><button class="btn sm" data-action="select-none">Auswahl leeren</button></div></div>
+      <div class="pick-list">${docs.map(d => { const on = state.selected.has(d.uid); return `<label class="pick-item${on ? ' on' : ''}"><input type="checkbox" data-select="${d.uid}"${on ? ' checked' : ''}><span class="num">#${d.num}</span><span class="pick-text"><span class="pick-title">${esc(trunc(docTitle(d), 60))}</span><span class="pick-sub">${esc(docPlace(d) || 'ohne Ort')}${d.rev && d.rev.total > 1 ? ` · Rev. ${d.rev.index}/${d.rev.total}` : ''}</span></span></label>`; }).join('')}</div>
+    </div>`;
 }
 
 /** Führt alle Basisszenarien zusammen (Exporte trennen z. B. Erwerbskosten und Finanzierung); erste Zeile je Kennzahl gewinnt. */
@@ -2007,7 +2092,7 @@ function basisRechnung(d) {
 
 function matrixCard() {
   const sel = immoDocs().filter(d => state.selected.has(d.uid)).sort((a, b) => a.num - b.num);
-  if (sel.length < 2) return `<div class="card" style="margin-top:14px"><h3>Gegenüberstellung</h3><p class="muted" style="margin:6px 0 0">Wähle in der Tabelle mindestens zwei Bewertungen aus, um sie nebeneinander zu sehen.</p></div>`;
+  if (sel.length < 2) return `<div class="card" style="margin-top:14px"><h3>Gegenüberstellung</h3><p class="muted" style="margin:6px 0 0">Wähle oben mindestens zwei Bewertungen aus, um sie nebeneinander zu sehen.</p></div>`;
   const P = (label, path) => ({ label, cell: d => ({ html: valueCell(d, path, { compact: true }), sig: JSON.stringify(resolvePointer(d.data, path).value ?? null) }) });
   const T = (label, fn) => ({ label, cell: d => { const v = fn(d); return { html: v == null || v === '' ? '<span class="null">—</span>' : esc(v), sig: JSON.stringify(v ?? null) }; } });
   const teil = k => ({ label: TEILURTEILE.find(t => t[0] === k)[1], cell: d => { const t = obj(obj(d.data.bewertung)[k]); return { html: `${t.urteil ? `<div>${esc(t.urteil)}</div>` : '<span class="null">Kein Urteil</span>'}<div style="margin-top:3px">${meter(t.belegsicherheit)}</div>`, sig: JSON.stringify([t.urteil, t.belegsicherheit]) }; } });
@@ -2254,6 +2339,16 @@ document.addEventListener('click', e => {
       renderResults();
       break;
     }
+    case 'cmp-tab': state.cmpTab = el.dataset.tab; lsSet(LS.cmpTab, state.cmpTab); render(); break;
+    case 'filter-ort': {
+      const o = el.dataset.ort ?? '';
+      state.filter.orte.has(o) ? state.filter.orte.delete(o) : state.filter.orte.add(o);
+      render();
+      break;
+    }
+    case 'filter-ort-all': state.filter.orte.clear(); render(); break;
+    case 'select-all': state.selectionTouched = true; immoDocs().filter(d => state.filter.showOld || d.rev?.latest).forEach(d => state.selected.add(d.uid)); render(); break;
+    case 'select-none': state.selectionTouched = true; state.selected.clear(); render(); break;
     case 'beleg': e.stopPropagation(); openBeleg(uid, el.dataset.path); break;
     case 'ref': e.stopPropagation(); openRef(uid, el.dataset.id); break;
     case 'jump': document.getElementById(el.dataset.target)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); break;
@@ -2288,10 +2383,10 @@ function renderResults() {
 document.addEventListener('change', e => {
   const t = e.target;
   if (t.id === 'fileInput' || t.id === 'dirInput') { addFiles([...t.files]); t.value = ''; return; }
-  if (t.dataset.select) { state.selectionTouched = true; t.checked ? state.selected.add(t.dataset.select) : state.selected.delete(t.dataset.select); renderResults(); return; }
-  if (t.id === 'selAll') { state.selectionTouched = true; for (const d of filteredDocs()) t.checked ? state.selected.add(d.uid) : state.selected.delete(d.uid); renderResults(); return; }
+  if (t.dataset.select) { state.selectionTouched = true; t.checked ? state.selected.add(t.dataset.select) : state.selected.delete(t.dataset.select); render(); return; }
+  if (t.id === 'selAll') { state.selectionTouched = true; for (const d of filteredDocs()) t.checked ? state.selected.add(d.uid) : state.selected.delete(d.uid); render(); return; }
   if (t.id === 'fu') { state.filter.urteil = t.value; renderResults(); return; }
-  if (t.id === 'fold') { state.filter.showOld = t.checked; renderResults(); return; }
+  if (t.id === 'fold') { state.filter.showOld = t.checked; render(); return; }
   if (t.id === 'fdiff') { state.diffOnly = t.checked; renderResults(); return; }
   if (t.id === 'persist') { state.persist = t.checked; lsSet(LS.persist, t.checked ? '1' : '0'); save(); renderSidebar(); }
 });
