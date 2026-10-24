@@ -127,7 +127,9 @@ h1, h2, h3 { letter-spacing: -.01em; }
   background: var(--surface); border-right: 1px solid var(--line);
 }
 .main { padding: 24px clamp(16px, 3vw, 36px) 72px; min-width: 0; }
-.main > * { max-width: 1240px; }
+/* Vergleich nutzt die volle Breite (breite Tabelle), Einzelansicht bleibt lesbar begrenzt und mittig */
+.view { max-width: 1600px; margin-inline: auto; }
+.view-compare { max-width: none; }
 
 /* ---------- Buttons ---------- */
 .btn {
@@ -295,6 +297,7 @@ button.tag { cursor: pointer; }
 
 /* ---------- Kennzahlen-Kacheln ---------- */
 .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 188px), 1fr)); gap: 10px; margin-top: 14px; }
+.tiles.stats { grid-template-columns: repeat(5, minmax(0, 1fr)); margin-top: 0; }
 .tile { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 3px; min-height: 98px; box-shadow: var(--shadow); }
 .tile-label { font-size: 12.5px; color: var(--ink-2); }
 .tile-value { font-size: 21px; font-weight: 600; letter-spacing: -.01em; line-height: 1.25; }
@@ -328,11 +331,25 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13px; }
 .t th.sortable { cursor: pointer; user-select: none; }
 .t th.sortable:hover { color: var(--ink); }
 .t th .arrow { color: var(--accent); }
-.t td.cell-obj { min-width: 220px; }
+.t td.cell-obj { min-width: 200px; }
 .t .obj-title { font-weight: 600; line-height: 1.35; }
 .t .obj-sub { font-size: 12px; color: var(--ink-2); }
 .t .scen { display: block; font-size: 11.5px; }
 .cmp-table th:first-child, .cmp-table td:first-child { width: 34px; padding-right: 0; }
+.cmp-table thead th, .cmp-table thead th.num { white-space: normal; vertical-align: bottom; line-height: 1.3; }
+.cmp-table td.cell-urteil { min-width: 150px; }
+.cmp-table th, .cmp-table td { padding-left: 8px; padding-right: 8px; }
+/* Zusätze wie „strittig · W1“ oder Szenariowerte brechen in eine zweite Zeile um, statt die Spalte zu verbreitern */
+.cmp-table td.num { white-space: normal; }
+.cmp-table td.num .val { white-space: nowrap; }
+.cmp-table .scen { white-space: normal; }
+/* Objektspalte bleibt beim seitlichen Scrollen auf schmaleren Bildschirmen stehen */
+.cmp-table td.cell-obj, .cmp-table thead th:nth-child(3) { position: sticky; left: 0; z-index: 1; box-shadow: 1px 0 0 var(--line); }
+.cmp-table td.cell-obj { background: var(--surface); }
+.cmp-table thead th:nth-child(3) { background: var(--surface-2); }
+.cmp-table tr.clickable:hover td.cell-obj { background: color-mix(in srgb, var(--accent) 10%, var(--surface)); }
+.cmp-table .verdict.sm { align-items: flex-start; }
+.cmp-table .verdict.sm .vi { margin-top: 1px; }
 
 /* Gegenüberstellung */
 .matrix { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 13px; }
@@ -477,8 +494,13 @@ dialog::backdrop { background: rgba(10, 10, 10, .38); }
   .side-foot { margin-top: 0; }
   .brand .light { display: none; }
 }
+@media (max-width: 1000px) {
+  .tiles.stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
 @media (max-width: 600px) {
-  .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .tiles, .tiles.stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .tiles.stats .tile:first-child { grid-column: 1 / -1; min-height: 0; }
+  .cmp-table td.cell-obj, .cmp-table thead th:nth-child(3) { position: static; box-shadow: none; }
   .tile { min-height: 84px; padding: 10px 12px; }
   .tile-value { font-size: 17px; }
   .stat .tile-value { font-size: 24px; }
@@ -1366,7 +1388,7 @@ function hbarPath(x0, x1, y, h, r = 4) {
 
 /** Streudiagramm Kaufpreis/m² gegen Bruttomietrendite (Vergleich). */
 function svgScatter(w, pts) {
-  const h = 340, m = { l: 58, r: 34, t: 30, b: 46 };
+  const h = Math.round(Math.min(480, Math.max(320, w * 0.3))), m = { l: 58, r: 34, t: 30, b: 46 };
   const xs = pts.flatMap(p => p.x), ys = pts.flatMap(p => p.y);
   const [x0, x1] = pad(Math.min(...xs), Math.max(...xs)), [y0, y1] = pad(Math.min(...ys), Math.max(...ys));
   const iw = w - m.l - m.r, ih = h - m.t - m.b;
@@ -1481,7 +1503,7 @@ function render() {
   if (!state.docs.length) state.view = 'start';
   if (state.view === 'detail' && !getDoc(state.current)) state.view = state.docs.length ? 'compare' : 'start';
   if (state.view === 'compare' && !immoDocs().length) { state.view = state.docs.length ? 'detail' : 'start'; state.current = state.docs[0]?.uid; }
-  main.innerHTML = state.view === 'start' ? viewStart() : state.view === 'compare' ? viewCompare() : viewDetail(getDoc(state.current));
+  main.innerHTML = `<div class="view view-${state.view}">${state.view === 'start' ? viewStart() : state.view === 'compare' ? viewCompare() : viewDetail(getDoc(state.current))}</div>`;
   drawCharts();
 }
 
@@ -1917,7 +1939,7 @@ function viewCompare() {
   const stat = (label, n, v) => `<div class="tile stat"><div class="tile-label">${v ? verdictBadge(v, 'sm') : esc(label)}</div><div class="tile-value">${n}</div></div>`;
   return `<div class="page-head"><div><h1>Vergleich</h1><p class="sub">${latest.length} Objekt${latest.length === 1 ? '' : 'e'}${hasRevs ? ` · ${docs.length} Bewertungen inkl. älterer Revisionen` : ''}${bad ? ` · ${bad} Datei${bad === 1 ? '' : 'en'} nicht lesbar` : ''}. Gleiche Kriterien, Annahmen werden in der Gegenüberstellung abgeglichen.</p></div>
       <div class="dh-actions"><button class="btn sm needs-download" data-action="csv">CSV exportieren</button></div></div>
-    <div class="tiles" style="margin-top:0">
+    <div class="tiles stats">
       ${stat('Objekte', latest.length)}${stat('', cnt(['weiter_pruefen']), 'weiter_pruefen')}${stat('', cnt(['nur_zu_anderen_konditionen_interessant']), 'nur_zu_anderen_konditionen_interessant')}${stat('', cnt(['bis_zur_klaerung_zurueckstellen']), 'bis_zur_klaerung_zurueckstellen')}${stat('', cnt(['fuer_das_ziel_verwerfen', 'nicht_bewertbar']), 'fuer_das_ziel_verwerfen')}
     </div>
     <div class="filters">
@@ -1940,7 +1962,7 @@ function compareResults() {
     const cell = c => {
       if (c.id === 'num') return `<td class="num"><span class="num">#${d.num}</span></td>`;
       if (c.id === 'objekt') return `<td class="cell-obj"><div class="obj-title">${esc(docTitle(d))} ${offerTag(d.data)}</div><div class="obj-sub">${esc([docPlace(d), platLabel(a.plattform), a.plattform_id].filter(Boolean).join(' · '))}${d.rev && d.rev.total > 1 ? ` · Rev. ${d.rev.index}/${d.rev.total}` : ''}</div></td>`;
-      if (c.id === 'urteil') return `<td class="nowrap">${verdictBadge(b.gesamturteil, 'sm')}</td>`;
+      if (c.id === 'urteil') return `<td class="cell-urteil">${verdictBadge(b.gesamturteil, 'sm')}</td>`;
       if (c.id === 'sicherheit') return `<td>${meter(b.belegsicherheit)}</td>`;
       if (c.id === 'energie') return `<td class="nowrap">${e.effizienzklasse ? `<b>${esc(e.effizienzklasse)}</b> ` : ''}${isNum(e.kennwert_kwh_m2_a) ? `<span class="muted small">${esc(nfA.format(e.kennwert_kwh_m2_a))}</span>` : (!e.effizienzklasse ? '<span class="null">—</span>' : '')}</td>`;
       if (c.id === 'offen') return `<td class="num">${d.ctx.conflicts.size ? `<span class="tag tag-crit">${d.ctx.conflicts.size}</span>` : '0'}</td>`;
