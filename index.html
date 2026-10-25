@@ -599,6 +599,27 @@ dialog::backdrop { background: rgba(10, 10, 10, .38); }
 .p-tabelle td.p-anp { width: 220px; min-width: 170px; }
 .p-tabelle .p-begr { margin-top: 6px; height: 30px; font-size: 12.5px; }
 .p-kond-tabelle td:first-child { min-width: 210px; }
+.p-luecken-karte { margin-bottom: 12px; border-left: 3px solid var(--s-warn); }
+.p-luecken-raster { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 12px 20px; }
+.p-luecken-gruppe ul { margin: 4px 0 0; padding-left: 18px; font-size: 13px; line-height: 1.55; }
+.p-luecken-kompakt .p-luecken-gruppe + .p-luecken-gruppe { margin-top: 8px; }
+.p-luecken-kompakt ul { padding-left: 16px; font-size: 12.5px; }
+.p-profil-ok { color: var(--good-ink); }
+.p-vergleich-tabelle td.cell-obj { min-width: 260px; max-width: 420px; }
+.p-vergleich-tabelle .obj-title .linkbtn { text-align: left; font-weight: 600; }
+.p-fehlt { font-size: 12px; line-height: 1.5; color: var(--ink-2); display: flex; flex-direction: column; gap: 2px; margin-top: 8px; padding-top: 6px; border-top: 1px dashed var(--line); }
+.p-fehlt-titel { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.p-fehlt-k { display: inline-block; font-weight: 600; color: var(--warn-ink); margin-right: 2px; }
+.p-vorschlag-btn { margin-top: 6px; }
+.p-vorschlag-liste { display: flex; flex-direction: column; gap: 8px; margin: 12px 0; max-height: 55vh; overflow: auto; }
+.p-vorschlag { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; cursor: pointer; font-size: 13.5px; }
+.p-vorschlag input { margin-top: 3px; flex: none; }
+.p-vorschlag .feld-hilfe { display: block; margin-top: 4px; }
+.p-vorschlag-eins { display: block; margin-top: 6px; font-size: 12px; text-align: left; }
+.p-offen-ebene { margin-top: 10px; }
+.p-offen-ebene .btn { margin-top: 8px; white-space: normal; height: auto; min-height: 28px; padding-top: 5px; padding-bottom: 5px; text-align: left; max-width: 100%; }
+.herk-analyse i { background: var(--c-green); }
+.herk-modell i { background: var(--c-yellow); }
 .p-schnell .btn { white-space: normal; height: auto; min-height: 28px; padding-top: 5px; padding-bottom: 5px; text-align: left; max-width: 100%; }
 .p-kv-raster { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr)); gap: 14px 18px; }
 .p-kv { display: flex; flex-direction: column; gap: 2px; }
@@ -1355,6 +1376,60 @@ dialog::backdrop { background: rgba(10, 10, 10, .38); }
     fertigstellung_jahr: '/objekt/baujahr',
   };
 
+  /**
+   * Modellannahmen der Analyse (Abschnitt „annahmen“), die als Vorschlag für offene Rechenwerte taugen.
+   * Die Parameternamen der KI-Exporte schwanken („Basis: …: gebaeudeanteil_prozent“); gelesen wird der Teil
+   * nach dem letzten Doppelpunkt. Sensitivitätswerte (niedrig/hoch, hypothetisch) sind bewusst nicht zugeordnet.
+   */
+  const ANNAHME_PARAMETER = {
+    gebaeudeanteil_prozent: { namen: ['gebaeudeanteil_prozent'], einheit: 'prozent' },
+    anfaengliche_massnahmen_eur: { namen: ['anfaengliche_massnahmen_modell_eur', 'anfaengliche_massnahmen_eur'], einheit: 'eur' },
+    verpflichtende_zusatzkaeufe_eur: { namen: ['zusatzkauf_modell_eur', 'zusatzkaeufe_modell_eur', 'verpflichtende_zusatzkaeufe_eur'], einheit: 'eur' },
+    nicht_umlagefaehig_monat_eur: { namen: ['laufende_abziehbare_kosten_monat_eur', 'laufende_abziehbare_eigentuemeraufwendungen_monat_eur', 'nicht_umlagefaehig_monat_eur'], einheit: 'eur_monat' },
+    ruecklage_monat_eur: { namen: ['weg_reserve_modell_monat_eur', 'weg_ruecklage_modell_monat_eur', 'ruecklage_monat_eur'], einheit: 'eur_monat' },
+    notar_grundbuch_prozent: { namen: ['notar_grundbuch_prozent'], einheit: 'prozent' },
+  };
+  const UNGEKLAERT = ['weitere_ungeklaerte_kosten_monat_eur'];
+
+  function einheitPasst(einheit, soll) {
+    const e = String(einheit ?? '').toLowerCase();
+    if (soll === 'prozent') return e === '' || /prozent|%/.test(e);
+    if (/jahr/.test(e)) return false;
+    return e === '' || /eur|€/.test(e);
+  }
+
+  /** Liefert je Rechenwert den häufigsten Wert (Basisszenario bevorzugt) samt Alternativen und Belegen. */
+  function annahmeVorschlaege(daten) {
+    const kandidaten = {};
+    let ungeklaert = null;
+    for (const a of Array.isArray(daten.annahmen) ? daten.annahmen : []) {
+      if (!a || typeof a.parameter !== 'string' || !B.istZahl(a.wert) || a.wert < 0) continue;
+      const teile = a.parameter.split(':');
+      const name = teile[teile.length - 1].trim().toLowerCase();
+      const basis = teile.length === 1 || /basis/i.test(teile.slice(0, -1).join(':'));
+      if (UNGEKLAERT.includes(name) && a.wert > 0 && basis) ungeklaert = Math.max(ungeklaert || 0, a.wert);
+      for (const [key, def] of Object.entries(ANNAHME_PARAMETER)) {
+        if (!def.namen.includes(name) || !einheitPasst(a.einheit, def.einheit) || (def.einheit === 'prozent' && a.wert > 100)) continue;
+        (kandidaten[key] = kandidaten[key] || []).push({ wert: a.wert, basis, id: a.id ?? null, begruendung: typeof a.begruendung === 'string' ? a.begruendung : null, parameter: a.parameter });
+      }
+    }
+    const out = {};
+    for (const [key, liste] of Object.entries(kandidaten)) {
+      const auswahl = liste.some(k => k.basis) ? liste.filter(k => k.basis) : liste;
+      const haeufigkeit = new Map();
+      for (const k of auswahl) haeufigkeit.set(k.wert, (haeufigkeit.get(k.wert) || 0) + 1);
+      const wert = [...haeufigkeit].sort((x, y) => y[1] - x[1])[0][0];
+      const treffer = auswahl.filter(k => k.wert === wert);
+      out[key] = {
+        wert,
+        alternativen: [...new Set(liste.map(k => k.wert).filter(w => w !== wert))],
+        annahme_ids: [...new Set(treffer.map(k => k.id).filter(Boolean))],
+        begruendung: (treffer.find(k => k.begruendung) || {}).begruendung || null,
+      };
+    }
+    return { werte: out, ungeklaert_monat_eur: ungeklaert };
+  }
+
   function lesen(daten, pfad) {
     let cur = daten;
     for (const teil of pfad.slice(1).split('/')) {
@@ -1400,10 +1475,10 @@ dialog::backdrop { background: rgba(10, 10, 10, .38); }
     const hg = felder.hausgeld_monat_eur.wert, u = felder.umlagefaehig_monat_eur.wert, n = felder.nicht_umlagefaehig_monat_eur.wert, r = felder.ruecklage_monat_eur.wert;
     if ([hg, u, n, r].every(B.istZahl) && Math.abs(u + n + r - hg) > 1) hinweise.push(`Hausgeldaufteilung passt nicht zum Gesamtbetrag (${B.euro(u + n + r)} statt ${B.euro(hg)}) – bitte klären.`);
     const s = daten.standort || {};
-    return { anwendbar, felder, hinweise, schluessel: schluessel(daten), titel: a.titel || [a.objektart, s.ort].filter(Boolean).join(' in ') || 'Objekt', ort: s.ort || null };
+    return { anwendbar, felder, hinweise, vorschlaege: annahmeVorschlaege(daten), schluessel: schluessel(daten), titel: a.titel || [a.objektart, s.ort].filter(Boolean).join(' in ') || 'Objekt', ort: s.ort || null };
   }
 
-  const api = { FELDER, lesen, schluessel, ausImmobilie };
+  const api = { FELDER, ANNAHME_PARAMETER, lesen, schluessel, annahmeVorschlaege, ausImmobilie };
   if (nodeModul) module.exports = api;
   else (root.ImmoRechenkern = root.ImmoRechenkern || {}).objekt = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);
@@ -1469,7 +1544,7 @@ dialog::backdrop { background: rgba(10, 10, 10, .38); }
       const profilWert = def.profil ? holen(profil, def.profil) : undefined;
       const basis = { key: def.key, label: def.label, einheit: def.einheit, gruppe: def.gruppe, komponente: def.komponente || null, objekt_wert: f ? f.wert : undefined, objekt_status: f ? f.belegstatus : undefined, objekt_pfad: f ? f.pfad : undefined, widerspruch: f ? f.widerspruch : null, profil_wert: profilWert, hinweis: f ? f.hinweis : null };
       const a = anp[def.key];
-      if (a && a.wert !== undefined && a.wert !== null) out[def.key] = { ...basis, wert: a.wert, herkunft: 'anpassung', status: 'annahme', begruendung: a.begruendung || null };
+      if (a && a.wert !== undefined && a.wert !== null) out[def.key] = { ...basis, wert: a.wert, herkunft: 'anpassung', status: 'annahme', begruendung: a.begruendung || null, anpassung_quelle: a.quelle || null, annahme_id: a.annahme_id || null };
       else if (f && f.wert !== null) out[def.key] = { ...basis, wert: f.wert, herkunft: 'objekt', status: f.belegstatus };
       else if (def.profil && B.istZahl(profilWert)) out[def.key] = { ...basis, wert: profilWert, herkunft: 'profil', status: 'profilangabe' };
       else if (def.standard !== undefined) out[def.key] = { ...basis, wert: def.standard, herkunft: 'standard', status: 'annahme', hinweis: 'Standardannahme, änderbar.' };
@@ -1559,6 +1634,10 @@ dialog::backdrop { background: rgba(10, 10, 10, .38); }
    * @param {{immobilie: object, profil: object, objektszenario?: object, kondition_id?: string, variante?: object}} eingang
    */
   function berechne(eingang) {
+    return ebeneDerOffenenAngaben(rechne(eingang));
+  }
+
+  function rechne(eingang) {
     const profil = eingang.profil || {};
     const os = eingang.objektszenario || {};
     const objekt = O.ausImmobilie(eingang.immobilie || {});
@@ -1585,9 +1664,10 @@ dialog::backdrop { background: rgba(10, 10, 10, .38); }
         res.offen.push({ feld: e.key, label: e.label, komponente: e.komponente, grund: e.status === 'widerspruechlich' ? 'in der Analyse widersprüchlich' : e.status === 'nicht_anwendbar' ? 'in der Analyse nicht anwendbar (z. B. Leerstand) – Szenarioannahme setzen' : 'unbekannt' });
       }
       if (e.herkunft === 'standard') res.annahmen.push(`${e.label}: ${e.wert} (Standardannahme)`);
-      if (e.herkunft === 'anpassung') res.annahmen.push(`${e.label}: ${e.wert} (Objektanpassung${e.begruendung ? ' – ' + e.begruendung : ''})`);
+      if (e.herkunft === 'anpassung') res.annahmen.push(e.anpassung_quelle === 'analyse' || e.anpassung_quelle === 'annahme' ? `${e.label}: ${e.wert} (${e.begruendung || 'übernommene Annahme'})` : `${e.label}: ${e.wert} (Objektanpassung${e.begruendung ? ' – ' + e.begruendung : ''})`);
     }
     if (eingaben.notar_grundbuch_prozent.herkunft === 'profil') res.annahmen.push(`Notar und Grundbuch: ${w('notar_grundbuch_prozent')} % des Kaufpreises (Profilannahme, keine Gebührenberechnung).`);
+    res.vorschlaege = vorschlaege(objekt, eingaben);
 
     // 1. Kapitalbedarf und Darlehen
     const kp = w('kaufpreis_eur');
@@ -1865,6 +1945,120 @@ dialog::backdrop { background: rgba(10, 10, 10, .38); }
     return res;
   }
 
+  /**
+   * Vorschläge für offene Rechenwerte – nie automatisch übernommen:
+   *  - Modellannahmen der importierten Analyse (z. B. Gebäudeanteil, Maßnahmen-Modell, WEG-Reserve-Modell),
+   *  - das Kaltmietenmodell: Betriebskostenvorauszahlung des Mieters deckt die umlagefähigen Kosten.
+   */
+  function vorschlaege(objekt, eingaben) {
+    const liste = [];
+    const va = objekt.vorschlaege || { werte: {}, ungeklaert_monat_eur: null };
+    const offen = key => eingaben[key].wert === null && !(key === 'notar_grundbuch_prozent' && B.istZahl(eingaben[key].betrag_eur));
+    for (const [key, v] of Object.entries(va.werte)) {
+      if (!eingaben[key] || !offen(key)) continue;
+      const ids = v.annahme_ids.length ? ` (${v.annahme_ids.join(', ')})` : '';
+      liste.push({
+        id: `analyse:${key}`, quelle: 'analyse', komponente: EINGABE[key].komponente, label: EINGABE[key].label, einheit: EINGABE[key].einheit,
+        setzt: { [key]: v.wert }, alternativen: v.alternativen, annahme_id: v.annahme_ids[0] || null, hinweise: [],
+        begruendung: `Annahme der Analyse${ids}${v.begruendung ? ': ' + v.begruendung : ''}`.slice(0, 300),
+      });
+    }
+    if (offen('verpflichtende_zusatzkaeufe_eur') && !va.werte.verpflichtende_zusatzkaeufe_eur) {
+      liste.push({
+        id: 'annahme:verpflichtende_zusatzkaeufe_eur', quelle: 'annahme', komponente: 'finanzierung', label: EINGABE.verpflichtende_zusatzkaeufe_eur.label, einheit: 'eur',
+        setzt: { verpflichtende_zusatzkaeufe_eur: 0 }, alternativen: [], annahme_id: null, hinweise: [],
+        begruendung: 'Annahme: keine verpflichtenden Zusatzkäufe (z. B. Stellplatz, Küche) – in der Analyse nicht belegt, vor dem Kauf prüfen.',
+      });
+    }
+    const bk = eingaben.bk_vorauszahlung_monat_eur.wert, um = eingaben.umlagefaehig_monat_eur.wert;
+    if (bk === null || um === null) {
+      const hinweise = [];
+      let setzt;
+      if (bk !== null) setzt = { umlagefaehig_monat_eur: bk };
+      else if (um !== null) setzt = { bk_vorauszahlung_monat_eur: um };
+      else {
+        const wertOderVorschlag = key => eingaben[key].wert ?? (va.werte[key] ? va.werte[key].wert : null);
+        const hg = objekt.felder.hausgeld_monat_eur.wert, nicht = wertOderVorschlag('nicht_umlagefaehig_monat_eur'), rl = wertOderVorschlag('ruecklage_monat_eur');
+        let x = 0;
+        if ([hg, nicht, rl].every(B.istZahl)) {
+          x = B.cent(hg - nicht - rl);
+          if (x < 0) { hinweise.push('Hausgeld ist kleiner als nicht umlagefähige Kosten plus Rücklage – umlagefähiger Anteil mit 0 € angesetzt.'); x = 0; }
+          else hinweise.push(`Höhe = Hausgeld ${B.euro(hg)} − nicht umlagefähig ${B.euro(nicht)} − Rücklage ${B.euro(rl)}.`);
+        } else hinweise.push('Höhe unbekannt, beide mit 0 € angesetzt: wirkt im Normalfall neutral, fehlt aber in Leerstandsszenarien (dann zahlt der Eigentümer die umlagefähigen Kosten).');
+        setzt = { bk_vorauszahlung_monat_eur: x, umlagefaehig_monat_eur: x };
+      }
+      if (B.istZahl(va.ungeklaert_monat_eur)) hinweise.push(`Die Analyse rechnet zusätzlich ${B.euro(va.ungeklaert_monat_eur)} im Monat ungeklärte Kosten ohne Steuerabzug; das Kaltmietenmodell enthält sie nicht. Vorsichtiger: nicht umlagefähige Kosten erhöhen oder Variante „Eigentümerkosten“ rechnen.`);
+      liste.push({
+        id: 'kaltmietenmodell', quelle: 'annahme', komponente: 'cashflow', label: 'Kaltmietenmodell: Vorauszahlung des Mieters deckt die umlagefähigen Kosten', einheit: 'eur_monat',
+        setzt, alternativen: [], annahme_id: null, hinweise,
+        begruendung: 'Kaltmietenmodell (Annahme): Betriebskostenvorauszahlung = umlagefähige Kosten; Abrechnungssalden nicht modelliert.',
+      });
+    }
+    return liste;
+  }
+
+  /** Übernimmt Vorschläge (alle oder die genannten IDs) als gekennzeichnete Objektanpassungen; vorhandene Anpassungen bleiben. */
+  function wendeVorschlaegeAn(eingang, ids) {
+    const os = JSON.parse(JSON.stringify(eingang.objektszenario || {}));
+    const r = berechne({ ...eingang, objektszenario: os, variante: null });
+    const anp = os.anpassungen = os.anpassungen || {};
+    let n = 0;
+    for (const v of r.vorschlaege || []) {
+      if (ids && !ids.includes(v.id)) continue;
+      for (const [key, wert] of Object.entries(v.setzt)) {
+        if (anp[key] && anp[key].wert !== null && anp[key].wert !== undefined) continue;
+        anp[key] = { wert, begruendung: v.begruendung, quelle: v.quelle, ...(v.annahme_id ? { annahme_id: v.annahme_id } : {}) };
+        n++;
+      }
+    }
+    return { objektszenario: os, uebernommen: n };
+  }
+
+  /** Ordnet jede offene Angabe dem Profil oder dem Objekt zu, damit die Oberfläche zeigen kann, wo sie fehlt. */
+  function ebeneDerOffenenAngaben(res) {
+    for (const o of res.offen) {
+      const def = EINGABE[o.feld];
+      if (def) o.ebene = def.profil ? 'profil' : 'objekt';
+      else if (o.feld === 'beginn' || o.feld.startsWith('kondition')) o.ebene = res.kondition && res.kondition.quelle === 'objekt' ? 'objekt' : 'profil';
+      else o.ebene = o.feld === 'eigentum' ? 'objekt' : 'profil';
+    }
+    return res;
+  }
+
+  /**
+   * Was im Profil für die Objektrechnung noch fehlt – unabhängig von einer bestimmten Immobilie.
+   * fuer: welche Ergebnisse ohne die Angabe leer bleiben; tab: Bereich im Profil-Editor.
+   */
+  function profilLuecken(profil) {
+    const l = [];
+    const add = (fuer, tab, text) => l.push({ fuer, tab, text });
+    const kap = profil.kapital || {};
+    if (!B.istZahl(kap.eigenkapital_einsetzbar_eur)) add('finanzierung', 'kapital', 'Einsetzbares Eigenkapital (0 € ist erlaubt)');
+    const konditionen = (profil.finanzierung && profil.finanzierung.konditionen) || [];
+    const standard = konditionen.find(k => k.id === (profil.finanzierung || {}).standard_kondition_id) || konditionen[0];
+    if (!standard) add('finanzierung', 'finanzierung', 'Mindestens eine Finanzierungskondition');
+    else for (const text of Object.values(D.pruefeKondition(standard))) add('finanzierung', 'finanzierung', `Kondition „${standard.bezeichnung || standard.id}“: ${text}`);
+    if (!B.istZahl(holen(profil, 'finanzierung.notar_grundbuch_prozent'))) add('finanzierung', 'finanzierung', 'Annahme Notar und Grundbuch in % (falls die Analyse keinen Betrag nennt)');
+    const st = profil.steuer || {};
+    const veranlagung = holen(profil, 'haushalt.veranlagung');
+    if (!st.modus) add('steuer', 'steuer', 'Steuermodus');
+    else if (st.modus === 'manuell') { if (!(st.manuelle_saetze_prozent || []).some(B.istZahl)) add('steuer', 'steuer', 'Grenzsteuersatz'); }
+    else {
+      const fehler = S.pruefeVeranlagung(veranlagung, (profil.personen || []).length);
+      if (fehler) add('steuer', 'haushalt', fehler);
+      if (st.modus === 'zve') {
+        const ok = veranlagung === 'einzeln_getrennt' ? (profil.personen || []).every(p => B.istZahl((st.zve_personen_eur || {})[p.id])) : B.istZahl(st.zve_ohne_investition_eur);
+        if (!ok) add('steuer', 'steuer', 'Zu versteuerndes Einkommen ohne diese Investition');
+      } else {
+        for (const lu of S.schaetzeZve(profil, holen(profil, 'haushalt.steuerjahr') || 2026).luecken) add('steuer', /vorsorge|steuer\./.test(lu.feld) ? 'steuer' : 'haushalt', lu.text);
+      }
+    }
+    const h = H.haushaltsrechnung(profil);
+    for (const f of h.fehlend) add('haushalt', f.feld.startsWith('budget') ? 'budget' : 'haushalt', f.text);
+    if (!B.istZahl(kap.max_zuzahlung_monat_eur)) add('haushalt', 'kapital', 'Maximal gewünschte monatliche Zuzahlung');
+    return l;
+  }
+
   /** Vergleicht alle Konditionen für dieselbe Immobilie und dasselbe Profil. */
   function vergleicheKonditionen(eingang) {
     return alleKonditionen(eingang.profil || {}, eingang.objektszenario || {}).map(k => {
@@ -1880,7 +2074,7 @@ dialog::backdrop { background: rgba(10, 10, 10, .38); }
     return { basis, varianten: liste };
   }
 
-  const api = { EINGABEN, VARIANTEN, wirksameEingaben, alleKonditionen, wendeVarianteAn, anteileFuerSteuer, berechne, vergleicheKonditionen, vergleicheVarianten };
+  const api = { EINGABEN, VARIANTEN, wirksameEingaben, alleKonditionen, wendeVarianteAn, anteileFuerSteuer, berechne, vorschlaege, wendeVorschlaegeAn, profilLuecken, vergleicheKonditionen, vergleicheVarianten };
   if (nodeModul) module.exports = api;
   else (root.ImmoRechenkern = root.ImmoRechenkern || {}).szenario = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);
@@ -2000,7 +2194,7 @@ dialog::backdrop { background: rgba(10, 10, 10, .38); }
     erweiterungen: { typ: 'frei' },
   };
 
-  const ANPASSUNG = objekt({ wert: zahl(), begruendung: text({ max: 300 }) });
+  const ANPASSUNG = objekt({ wert: zahl(), begruendung: text({ max: 300 }), quelle: wahl(['analyse', 'annahme'], { beschreibung: 'analyse = übernommene Modellannahme der Immobilienanalyse, annahme = vom Viewer vorgeschlagene Modellannahme; fehlt = eigene Eingabe' }), annahme_id: text({ max: 40 }) });
   const OBJEKTSZENARIO = objekt({
     objekt_schluessel: text({ max: 200 }),
     beginn: text({ muster: MONAT }),
@@ -2746,7 +2940,7 @@ function pAnpassungFeld(t) {
   pOSAendern(doc, os => {
     os.anpassungen = os.anpassungen || {};
     if (r.leer) delete os.anpassungen[feld];
-    else os.anpassungen[feld] = { wert: r.wert, begruendung: (os.anpassungen[feld] || {}).begruendung || null };
+    else { const alt = os.anpassungen[feld] || {}; os.anpassungen[feld] = { wert: r.wert, begruendung: alt.quelle ? null : alt.begruendung || null }; }
   });
 }
 
@@ -2890,7 +3084,6 @@ function pAktion(action, el) {
     }
     case 'p-kond-aktiv': return pOSAendern(doc, os => { os.aktive_kondition_id = el.dataset.kid; });
     case 'p-anp-reset': return pOSAendern(doc, os => { if (os.anpassungen) delete os.anpassungen[el.dataset.feld]; });
-    case 'p-bk-neutral': return pOSAendern(doc, os => { os.anpassungen = os.anpassungen || {}; os.anpassungen.umlagefaehig_monat_eur = { wert: Number(el.dataset.wert), begruendung: 'Annahme: umlagefähige Kosten = Betriebskostenvorauszahlung' }; });
     case 'p-nicht-umlage': return pOSAendern(doc, os => { os.anpassungen = os.anpassungen || {}; os.anpassungen.nicht_umlagefaehig_monat_eur = { wert: Number(el.dataset.wert), begruendung: 'Hausgeld minus umlagefähige Kosten minus Rücklage' }; });
     case 'p-anteile-5050': return pOSAendern(doc, os => { os.eigentum = { ...(os.eigentum || {}), anteile_prozent: { P1: 50, P2: 50 }, bestaetigt: true }; });
     case 'p-var-neu': return pVarianteNeu(doc, el.dataset.typ, doc ? RK.szenario.berechne({ immobilie: doc.data, profil: aktivesProfil(), objektszenario: pOS(doc) }) : null);
@@ -2899,6 +3092,25 @@ function pAktion(action, el) {
     case 'p-paket-export-ok': return pPaketExport(doc, el.dataset.umfang);
     case 'detail-modus': state.detailModus = el.dataset.modus; return renderMitFokus();
     case 'profile': pZuProfilen(); render(); return window.scrollTo(0, 0);
+    case 'p-profil-tab':
+      pZuProfilen(); state.profilTab = el.dataset.tab; render();
+      return (document.querySelector('.p-editor') || document.body).scrollIntoView({ block: 'start' });
+    case 'p-vorschlaege': return pVorschlaegeDialog(getDoc(el.dataset.uid));
+    case 'p-vorschlaege-ok': {
+      const ids = [...document.querySelectorAll('#dlg [data-vorschlag]:checked')].map(x => x.dataset.vorschlag);
+      const n = ids.length ? pVorschlaegeUebernehmen(getDoc(el.dataset.uid), ids) : 0;
+      pSpeichern(); $('#dlg').close(); renderMitFokus();
+      return toast(n ? `${n} Wert${n === 1 ? '' : 'e'} übernommen – als Annahme gekennzeichnet.` : 'Nichts übernommen.');
+    }
+    case 'p-vorschlag-eins': { const n = pVorschlaegeUebernehmen(doc, [el.dataset.vid]); pSpeichern(); renderMitFokus(); return toast(`${n} Wert${n === 1 ? '' : 'e'} übernommen.`); }
+    case 'p-vorschlaege-alle': return pVorschlaegeAlleDialog();
+    case 'p-vorschlaege-alle-ok': {
+      let n = 0;
+      const uids = state.pVorschlagUids || [];
+      for (const uid of uids) n += pVorschlaegeUebernehmen(getDoc(uid));
+      state.pVorschlagUids = null; pSpeichern(); $('#dlg').close(); renderMitFokus();
+      return toast(`${n} Werte für ${uids.length} Objekte übernommen – als Annahme gekennzeichnet.`);
+    }
     case 'p-zurueck': {
       const z = pZurueckZiel();
       if (!z) return undefined;
@@ -3126,7 +3338,8 @@ function pProfilSeitenleiste(p) {
       ${h.einnahmen.map(e => zeile(e.posten, pEur(e.betrag))).join('')}${h.ausgaben.map(a => zeile(a.posten, '− ' + pEur(a.betrag))).join('')}
       ${zeile('Überschuss vor Investition', h.vollstaendig ? `<b>${pEur(h.ueberschuss)}</b>` : '<span class="tag tag-warn">unvollständig</span>', 'summe')}
       ${h.fehlend.length ? `<div class="p-luecken">Fehlt: ${h.fehlend.map(f => esc(f.text)).join(', ')}</div>` : ''}</div>
-    <div class="p-seite-block"><div class="eyebrow">Steuer · ${esc((MODI[modus] || {}).kurz || 'kein Modus')}</div>${steuer || '<span class="muted small">Modus wählen.</span>'}</div>`;
+    <div class="p-seite-block"><div class="eyebrow">Steuer · ${esc((MODI[modus] || {}).kurz || 'kein Modus')}</div>${steuer || '<span class="muted small">Modus wählen.</span>'}</div>
+    ${pProfilLuecken(p, true)}`;
 }
 
 /* =====================================================================
@@ -3150,7 +3363,7 @@ function viewPersoenlich(doc) {
   const eingang = { immobilie: doc.data, profil: p, objektszenario: os };
   const r = RK.szenario.berechne(eingang);
   if (!r.anwendbar) return pBanner(p, r, os) + `<div class="callout warn">${r.hinweise.map(h => esc(h)).join('<br>')}</div>`;
-  return pBanner(p, r, os) + pUngueltigHinweis() + pKennzahlen(r, p) + pOffeneAngaben(r) + pEingaben(doc, r, os, p) + pKonditionen(doc, eingang, r, os) + pHaushalt(r, p) + pSteuer(r, p) + pVerlauf(r) + pSzenarien(doc, eingang, r, os, p) + pAnnahmen(r) + pExportBereich();
+  return pBanner(p, r, os) + pUngueltigHinweis() + pKennzahlen(r, p) + pOffeneAngaben(r, doc) + pEingaben(doc, r, os, p) + pKonditionen(doc, eingang, r, os) + pHaushalt(r, p) + pSteuer(r, p) + pVerlauf(r) + pSzenarien(doc, eingang, r, os, p) + pAnnahmen(r) + pExportBereich();
 }
 
 /** Solange eine Eingabe ungültig ist, rechnet alles mit dem letzten gültigen Wert – das muss sichtbar sein. */
@@ -3201,18 +3414,26 @@ function pKennzahlen(r) {
   </section>`;
 }
 
-function pOffeneAngaben(r) {
-  if (!r.offen.length) return '';
-  const nachKomp = {};
-  for (const o of r.offen) (nachKomp[o.komponente] = nachKomp[o.komponente] || []).push(o);
-  const name = { finanzierung: 'Finanzierung', cashflow: 'Cashflow', steuer: 'Steuer' };
+function pOffeneAngaben(r, doc) {
+  const gruppe = liste => {
+    const nachKomp = {};
+    for (const o of liste) (nachKomp[o.komponente] = nachKomp[o.komponente] || []).push(o);
+    return Object.entries(nachKomp).map(([komp, l]) => `<div class="p-offen-gruppe"><span class="tag">${esc(KOMPONENTE_NAME[komp] || komp)}</span> ${l.map(o => `<span class="p-offen-punkt">${esc(o.label)}${o.grund && o.grund !== 'unbekannt' && o.grund !== 'fehlt' ? ` <span class="muted">(${esc(o.grund)})</span>` : ''}</span>`).join(' · ')}</div>`).join('');
+  };
+  const imProfil = r.offen.filter(o => o.ebene === 'profil'), imObjekt = r.offen.filter(o => o.ebene !== 'profil');
+  // Für das Profil die vollständige Liste: Konditionsfehler zeigen sich in der Rechnung erst, wenn der Kapitalbedarf feststeht
+  const profilListe = pProfilLuecken(aktivesProfil(), 'inline') || (imProfil.length ? gruppe(imProfil) : '');
+  const n = (r.vorschlaege || []).length;
+  if (!profilListe && !imObjekt.length) return '';
   return `<div class="callout warn p-offen"><b>Offene Angaben – betroffene Teilrechnungen zeigen keine Zahlen</b>
-    ${Object.entries(nachKomp).map(([komp, liste]) => `<div class="p-offen-gruppe"><span class="tag">${esc(name[komp] || komp)}</span> ${liste.map(o => `<span class="p-offen-punkt">${esc(o.label)}${o.grund && o.grund !== 'unbekannt' && o.grund !== 'fehlt' ? ` <span class="muted">(${esc(o.grund)})</span>` : ''}</span>`).join(' · ')}</div>`).join('')}
-    <p class="fine" style="margin:6px 0 0">Ergänze objektbezogene Werte unten als Anpassung, persönliche Werte im Profil.</p></div>`;
+    ${profilListe ? `<div class="p-offen-ebene"><div class="eyebrow">Im Profil – ein Klick öffnet den Bereich</div>${profilListe}</div>` : ''}
+    ${imObjekt.length ? `<div class="p-offen-ebene"><div class="eyebrow">Für dieses Objekt</div>${gruppe(imObjekt)}${n ? `<button class="btn sm primary" data-action="p-vorschlaege" data-uid="${esc(doc.uid)}">${n} Vorschl${n === 1 ? 'ag' : 'äge'} aus der Analyse prüfen und übernehmen</button>` : ''}<p class="fine" style="margin:6px 0 0">Oder einzeln unten in „Eingaben und Herkunft“ als Anpassung setzen.</p></div>` : ''}
+  </div>`;
 }
 
 function pHerkunftChip(e) {
   const h = e.herkunft;
+  if (h === 'anpassung' && e.anpassung_quelle) return `<span class="herk herk-${e.anpassung_quelle === 'analyse' ? 'analyse' : 'modell'}"><i></i>${e.anpassung_quelle === 'analyse' ? 'Annahme der Analyse' : 'Modellannahme'}${e.annahme_id ? ' · ' + esc(e.annahme_id) : ''}</span>`;
   const beleg = h === 'objekt' && e.status ? ` · ${BELEG[e.status] || e.status}` : h === 'profil' && e.status === 'unbekannt' ? ' · unbekannt' : '';
   const cls = e.wert === null && !pIstZahl(e.betrag_eur) ? 'herk-offen' : `herk-${h}`;
   return `<span class="herk ${cls}"><i></i>${esc(HERKUNFT[h] || h)}${esc(beleg)}</span>`;
@@ -3226,7 +3447,8 @@ function pEingaben(doc, r, os, p) {
     const fehler = state.feldFehler[fkey];
     const einheit = e.einheit === 'prozent' ? '%' : e.einheit === 'jahr' ? '' : '€';
     const wirksam = pIstZahl(e.betrag_eur) && e.wert === null ? pEur(e.betrag_eur) : pWert(e.wert, e.einheit);
-    const ausgang = e.herkunft === 'anpassung' ? (pIstZahl(e.objekt_wert) ? `Analyse: ${pWert(e.objekt_wert, e.einheit)}` : pIstZahl(e.profil_wert) ? `Profil: ${pWert(e.profil_wert, e.einheit)}` : 'ohne Ausgangswert') : '';
+    const ausgang = e.herkunft !== 'anpassung' ? '' : e.anpassung_quelle && e.begruendung ? e.begruendung.replace(/^Annahme der Analyse( \([^)]*\))?: ?/, '').slice(0, 140) : pIstZahl(e.objekt_wert) ? `Analyse: ${pWert(e.objekt_wert, e.einheit)}` : pIstZahl(e.profil_wert) ? `Profil: ${pWert(e.profil_wert, e.einheit)}` : 'ohne Ausgangswert';
+    const vorschlag = e.wert === null && !pIstZahl(e.betrag_eur) ? (r.vorschlaege || []).find(v => e.key in v.setzt) : null;
     const widerspruch = e.widerspruch ? `<div class="feld-hilfe">Analyse widersprüchlich (${esc(e.widerspruch.id)}): ${e.widerspruch.varianten.map(v => esc(String(v.wert))).join(' / ')}</div>` : '';
     const anzeige = fehler && state.feldRoh[fkey] !== undefined ? state.feldRoh[fkey] : anp[e.key] ? pAnzeige(anp[e.key].wert, einheit) : '';
     return `<tr>
@@ -3234,13 +3456,13 @@ function pEingaben(doc, r, os, p) {
       <td class="num ${e.wert === null && !pIstZahl(e.betrag_eur) ? 'null' : ''}">${wirksam}</td>
       <td>${pHerkunftChip(e)}${ausgang ? `<div class="feld-hilfe">${esc(ausgang)}</div>` : ''}</td>
       <td class="p-anp"><div class="inp-wrap"><input type="text" inputmode="decimal" class="mit-einheit${fehler ? ' fehlerhaft' : ''}" data-oanp="${esc(e.key)}" data-einheit="${einheit}" data-fkey="${esc(fkey)}" value="${esc(anzeige)}" placeholder="${e.wert === null ? 'Wert setzen' : 'anpassen'}" aria-label="${esc(e.label)} anpassen"${fehler ? ' aria-invalid="true"' : ''}>${einheit ? `<span class="inp-einheit">${einheit}</span>` : ''}</div>${fehler ? `<div class="feld-fehler" role="alert">${esc(fehler)}</div>` : ''}
+        ${vorschlag ? `<button class="linkbtn p-vorschlag-eins" data-action="p-vorschlag-eins" data-vid="${esc(vorschlag.id)}" data-tip="${esc(vorschlag.begruendung + (vorschlag.hinweise.length ? '\n' + vorschlag.hinweise.join('\n') : ''))}">${vorschlag.quelle === 'analyse' ? 'Annahme der Analyse' : 'Modellannahme'} übernehmen: ${esc(pWert(vorschlag.setzt[e.key], e.einheit))}</button>` : ''}
         ${anp[e.key] ? `<input type="text" class="p-begr" data-oanp="${esc(e.key)}" data-begr="" data-fkey="ob:${esc(e.key)}" value="${esc(anp[e.key].begruendung || '')}" placeholder="Begründung der Annahme" aria-label="Begründung">` : ''}</td>
       <td>${anp[e.key] ? `<button class="linkbtn" data-action="p-anp-reset" data-feld="${esc(e.key)}">${pIstZahl(e.objekt_wert) ? 'Analysewert wiederherstellen' : pIstZahl(e.profil_wert) ? 'Profilwert wiederherstellen' : 'Anpassung entfernen'}</button>` : ''}</td>
     </tr>`;
   };
   const e = r.eingaben;
   const schnell = [];
-  if (pIstZahl(e.bk_vorauszahlung_monat_eur.wert) && e.umlagefaehig_monat_eur.wert === null) schnell.push(`<button class="btn sm" data-action="p-bk-neutral" data-wert="${e.bk_vorauszahlung_monat_eur.wert}">Umlagefähige Kosten = Vorauszahlung (${pEur(e.bk_vorauszahlung_monat_eur.wert)}) annehmen</button>`);
   const hg = doc.data && doc.data.ist_kosten_und_ertraege ? doc.data.ist_kosten_und_ertraege.hausgeld_monat_eur : null;
   if (pIstZahl(hg) && pIstZahl(e.umlagefaehig_monat_eur.wert) && pIstZahl(e.ruecklage_monat_eur.wert) && e.nicht_umlagefaehig_monat_eur.wert === null) {
     const rest = Math.round((hg - e.umlagefaehig_monat_eur.wert - e.ruecklage_monat_eur.wert) * 100) / 100;
@@ -3493,20 +3715,98 @@ function pPaketExport(doc, umfang) {
 function vergleichPersoenlich(rows) {
   const p = aktivesProfil();
   if (!p) return pKeinProfil();
-  const zeilen = rows.map(d => {
-    const r = RK.szenario.berechne({ immobilie: d.data, profil: p, objektszenario: pOS(d) });
+  const ergebnisse = rows.map(d => ({ d, r: RK.szenario.berechne({ immobilie: d.data, profil: p, objektszenario: pOS(d) }) }));
+  const mitVorschlaegen = ergebnisse.filter(x => x.r.anwendbar && x.r.vorschlaege.length);
+  const zeilen = ergebnisse.map(({ d, r }) => {
     const k = r.kpi || {}, ok = r.status.cashflow === 'vollstaendig';
     const e = r.einordnung ? EINORDNUNG[r.einordnung.gesamt] : null;
-    return `<tr class="clickable" data-action="p-oeffnen" data-uid="${d.uid}"><td class="cell-obj"><div class="obj-title"><button class="linkbtn" data-action="p-oeffnen" data-uid="${d.uid}">${esc(docTitle(d))}</button> ${offerTag(d.data)}</div><div class="obj-sub">${esc(docPlace(d))}</div></td>
+    return `<tr class="clickable" data-action="p-oeffnen" data-uid="${d.uid}"><td class="cell-obj"><div class="obj-title"><button class="linkbtn" data-action="p-oeffnen" data-uid="${d.uid}">${esc(docTitle(d))}</button> ${offerTag(d.data)}</div><div class="obj-sub">${esc(docPlace(d))}</div>${r.anwendbar ? pFehltImObjekt(r, d) : ''}</td>
       <td class="num">${r.eingaben ? pWert(r.eingaben.kaufpreis_eur.wert, 'eur') : '—'}</td><td class="num">${r.kapital && pIstZahl(r.kapital.darlehen) ? pEur(r.kapital.darlehen) : '—'}</td>
-      <td class="num">${ok && r.plan ? pEur(r.plan.rate) : '—'}</td><td class="num">${ok ? pZuzahlung(k.zuzahlung_vor_steuer_monat) : '—'}</td><td class="num">${ok && pIstZahl(k.zuzahlung_nach_steuer_monat) ? pZuzahlung(k.zuzahlung_nach_steuer_monat) : '—'}</td>
-      <td class="num">${ok && pIstZahl(k.verbleibendes_haushaltsbudget) ? pEur(k.verbleibendes_haushaltsbudget) : '—'}</td><td class="num">${ok && r.plan ? pEur(r.plan.restschuld_ende_bindung) : '—'}</td>
+      <td class="num">${r.plan ? pEur(r.plan.rate) : '—'}</td><td class="num">${ok ? pZuzahlung(k.zuzahlung_vor_steuer_monat) : '—'}</td><td class="num">${ok && pIstZahl(k.zuzahlung_nach_steuer_monat) ? pZuzahlung(k.zuzahlung_nach_steuer_monat) : '—'}</td>
+      <td class="num">${ok && pIstZahl(k.verbleibendes_haushaltsbudget) ? pEur(k.verbleibendes_haushaltsbudget) : '—'}</td><td class="num">${r.plan ? pEur(r.plan.restschuld_ende_bindung) : '—'}</td>
       <td>${!r.anwendbar ? '<span class="tag">nicht anwendbar</span>' : e && ok ? `<span class="verdict sm ${e[1]}"><span class="vi" aria-hidden="true">${e[0]}</span><span>${esc(e[2].replace(' zum persönlichen Budget', ''))}</span></span>` : '—'}</td>
-      <td class="num">${r.offen.length ? `<span class="tag tag-warn">${r.offen.length}</span>` : '0'}</td></tr>`;
+</tr>`;
   }).join('');
-  return `<div class="callout"><b>Alternative Einzelkäufe mit Profil „${esc(p.bezeichnung)}“</b> – jede Zeile nutzt das volle Eigenkapital und das volle Haushaltsbudget. Werte werden nicht addiert; eine gemeinsame Portfoliorechnung ist nicht Teil dieser Ansicht.</div>
-    <div class="card flush" style="margin-top:12px"><div class="table-wrap"><table class="t"><thead><tr><th>Objekt</th><th class="num">Kaufpreis</th><th class="num">Darlehen</th><th class="num">Rate</th><th class="num">Zuzahlung vor Steuer</th><th class="num">Ø nach Steuer</th><th class="num">Verbleibendes Budget</th><th class="num">Restschuld</th><th>Einordnung</th><th class="num">Offene Angaben</th></tr></thead><tbody>${zeilen || `<tr><td colspan="10" class="muted">Keine Treffer.</td></tr>`}</tbody></table></div></div>
-    <p class="chart-note">Zeile anklicken, um die Berechnung mit deinem Profil zu öffnen und offene Angaben zu ergänzen.</p>`;
+  return `${pProfilLuecken(p)}
+    <div class="callout"><b>Alternative Einzelkäufe mit Profil „${esc(p.bezeichnung)}“</b> – jede Zeile nutzt das volle Eigenkapital und das volle Haushaltsbudget. Werte werden nicht addiert; eine gemeinsame Portfoliorechnung ist nicht Teil dieser Ansicht.</div>
+    ${mitVorschlaegen.length > 1 ? `<div class="btn-row p-schnell" style="justify-content:flex-start;margin-top:12px"><button class="btn sm" data-action="p-vorschlaege-alle">Vorschläge für alle ${mitVorschlaegen.length} Objekte prüfen und übernehmen</button></div>` : ''}
+    <div class="card flush" style="margin-top:12px"><div class="table-wrap"><table class="t p-vergleich-tabelle"><thead><tr><th>Objekt</th><th class="num">Kaufpreis</th><th class="num">Darlehen</th><th class="num">Rate</th><th class="num">Zuzahlung vor Steuer</th><th class="num">Ø nach Steuer</th><th class="num">Verbleibendes Budget</th><th class="num">Restschuld</th><th>Einordnung</th></tr></thead><tbody>${zeilen || `<tr><td colspan="9" class="muted">Keine Treffer.</td></tr>`}</tbody></table></div></div>
+    <p class="chart-note">Objekt anklicken, um die Berechnung mit deinem Profil zu öffnen und einzelne Werte anzupassen. Vorschläge kommen aus den Modellannahmen der jeweiligen Analyse und werden als solche gekennzeichnet.</p>`;
+}
+
+const FEHLT_KURZ = { kaufpreis_eur: 'Kaufpreis', verpflichtende_zusatzkaeufe_eur: 'Zusatzkäufe', grunderwerbsteuer_prozent: 'Grunderwerbsteuer', kaeuferprovision_prozent: 'Provision', anfaengliche_massnahmen_eur: 'Maßnahmen', kaltmiete_monat_eur: 'Kaltmiete', bk_vorauszahlung_monat_eur: 'BK-Vorauszahlung', umlagefaehig_monat_eur: 'umlagefähige Kosten', nicht_umlagefaehig_monat_eur: 'nicht umlagefähige Kosten', ruecklage_monat_eur: 'Rücklage', gebaeudeanteil_prozent: 'Gebäudeanteil', fertigstellung_jahr: 'Baujahr', eigentum: 'Eigentumsanteile', beginn: 'Beginn' };
+const KOMPONENTE_NAME = { finanzierung: 'Finanzierung', cashflow: 'Cashflow', steuer: 'Steuer' };
+
+/** Kurzliste der objektbezogenen Lücken je Teilrechnung plus Knopf für die Vorschläge. */
+function pFehltImObjekt(r, d) {
+  const offen = r.offen.filter(o => o.ebene === 'objekt');
+  const nach = {};
+  for (const o of offen) (nach[o.komponente] = nach[o.komponente] || []).push(FEHLT_KURZ[o.feld] || o.label);
+  const liste = Object.entries(nach).map(([k, l]) => `<div><span class="p-fehlt-k">${esc(KOMPONENTE_NAME[k] || k)}</span> ${esc([...new Set(l)].join(', '))}</div>`).join('');
+  const vs = r.vorschlaege || [];
+  const tip = vs.map(v => `• ${v.label}: ${pVorschlagWert(v)}`).join('\n');
+  if (!liste && !vs.length) return '';
+  return `${liste ? `<div class="p-fehlt"><div class="p-fehlt-titel">Fehlt für dieses Objekt</div>${liste}</div>` : ''}${vs.length ? `<button class="btn sm p-vorschlag-btn" data-action="p-vorschlaege" data-uid="${d.uid}" data-tip="${esc(tip)}">${vs.length} Vorschl${vs.length === 1 ? 'ag' : 'äge'} prüfen</button>` : ''}`;
+}
+
+const LUECKE_FUER = { finanzierung: 'Für Darlehen und Rate', steuer: 'Für die Zuzahlung nach Steuer', haushalt: 'Für Budget und Einordnung' };
+const PROFIL_TAB_NAME = { haushalt: 'Haushalt & Einkommen', steuer: 'Steuer', budget: 'Ausgaben & Budget', kapital: 'Kapital & Grenzen', finanzierung: 'Finanzierung' };
+
+/** Was im Profil für die Objektrechnung fehlt; gruppiert nach Wirkung, je Editor-Bereich ein Sprunglink. */
+function pProfilLuecken(p, art) {
+  const kompakt = art === 'seite' || art === true;
+  const l = RK.szenario.profilLuecken(p);
+  if (art === 'inline' && !l.length) return '';
+  if (!l.length) return kompakt ? '<div class="p-seite-block p-profil-ok">✓ Für die Objektrechnung vollständig.</div>' : `<div class="callout p-profil-ok">✓ Das Profil „${esc(p.bezeichnung)}“ ist für die Objektrechnung vollständig. Fehlen trotzdem Zahlen, liegt es an Werten der jeweiligen Analyse (unter dem Objektnamen aufgeführt).</div>`;
+  const gruppen = {};
+  for (const x of l) ((gruppen[x.fuer] = gruppen[x.fuer] || {})[x.tab] = gruppen[x.fuer][x.tab] || []).push(x.text);
+  const block = ([fuer, tabs]) => `<div class="p-luecken-gruppe"><div class="eyebrow">${esc(LUECKE_FUER[fuer] || fuer)}</div><ul>${Object.entries(tabs).map(([tab, texte]) => `<li><button class="linkbtn" data-action="p-profil-tab" data-tab="${esc(tab)}">${esc(PROFIL_TAB_NAME[tab] || tab)}</button>: ${esc(texte.slice(0, 4).join(', '))}${texte.length > 4 ? ` und ${texte.length - 4} weitere` : ''}</li>`).join('')}</ul></div>`;
+  const reihenfolge = ['finanzierung', 'steuer', 'haushalt'].filter(f => gruppen[f]).map(f => [f, gruppen[f]]);
+  if (art === 'inline') return `<div class="p-luecken-raster p-luecken-inline">${reihenfolge.map(block).join('')}</div>`;
+  if (kompakt) return `<div class="p-seite-block p-luecken-kompakt"><div class="eyebrow">Für die Objektrechnung fehlt noch</div>${reihenfolge.map(block).join('')}</div>`;
+  return `<div class="card p-luecken-karte"><h3>Was im Profil „${esc(p.bezeichnung)}“ noch fehlt</h3><p class="card-sub">Ohne diese Angaben bleiben die genannten Spalten bei allen Objekten leer. Ein Klick öffnet den passenden Bereich im Profil.</p><div class="p-luecken-raster">${reihenfolge.map(block).join('')}</div></div>`;
+}
+
+const EINHEIT_VON = key => (RK.szenario.EINGABEN.find(e => e.key === key) || {}).einheit;
+function pVorschlagWert(v) {
+  const eintraege = Object.entries(v.setzt);
+  if (eintraege.length === 2 && v.id === 'kaltmietenmodell') return `Vorauszahlung = umlagefähige Kosten = ${pWert(eintraege[0][1], 'eur_monat')}`;
+  return eintraege.map(([key, wert]) => pWert(wert, EINHEIT_VON(key))).join(', ');
+}
+
+/** Dialog zum Prüfen der Vorschläge eines Objekts; alles ist vorausgewählt und abwählbar. */
+function pVorschlaegeDialog(doc) {
+  const p = aktivesProfil();
+  if (!doc || !p) return;
+  const r = RK.szenario.berechne({ immobilie: doc.data, profil: p, objektszenario: pOS(doc) });
+  if (!r.vorschlaege.length) return toast('Keine Vorschläge für offene Werte.');
+  const zeile = v => `<label class="p-vorschlag"><input type="checkbox" data-vorschlag="${esc(v.id)}" checked><span><b>${esc(v.label)}</b>: ${esc(pVorschlagWert(v))} <span class="tag ${v.quelle === 'analyse' ? 'tag-good' : ''}">${v.quelle === 'analyse' ? 'Annahme der Analyse' : 'Modellannahme'}</span>
+      <span class="feld-hilfe">${esc(v.begruendung.replace(/^Annahme der Analyse \(([^)]*)\): ?/, '$1: ').replace(/^Annahme der Analyse: ?/, ''))}${v.alternativen.length ? ` Weitere Werte in der Analyse: ${esc(v.alternativen.map(w => pWert(w, EINHEIT_VON(Object.keys(v.setzt)[0]))).join(', '))}.` : ''}${v.hinweise.length ? ' ' + esc(v.hinweise.join(' ')) : ''}</span></span></label>`;
+  openDialog(dlgHead('Vorschläge für offene Werte') + `<p style="margin-top:0">„${esc(docTitle(doc))}“. Die Werte werden als Anpassung für dieses Objekt übernommen und bleiben als Annahme gekennzeichnet; in „Eingaben und Herkunft“ lassen sie sich ändern oder entfernen. Die importierte Analyse bleibt unverändert.</p>
+    <div class="p-vorschlag-liste">${r.vorschlaege.map(zeile).join('')}</div>
+    <div class="btn-row" style="justify-content:flex-end;margin-bottom:0"><button class="btn" data-action="close-dlg">Abbrechen</button><button class="btn primary" data-action="p-vorschlaege-ok" data-uid="${esc(doc.uid)}">Ausgewählte übernehmen</button></div>`);
+}
+
+function pVorschlaegeUebernehmen(doc, ids) {
+  const p = aktivesProfil(), k = pOSKey(doc);
+  if (!doc || !p || !k) return 0;
+  const { objektszenario, uebernommen } = RK.szenario.wendeVorschlaegeAn({ immobilie: doc.data, profil: p, objektszenario: pOS(doc) }, ids);
+  state.objektszenarien[k] = objektszenario;
+  return uebernommen;
+}
+
+function pVorschlaegeAlleDialog() {
+  const p = aktivesProfil();
+  if (!p) return;
+  const ziel = filteredDocs().map(d => ({ d, r: RK.szenario.berechne({ immobilie: d.data, profil: p, objektszenario: pOS(d) }) })).filter(x => x.r.anwendbar && x.r.vorschlaege.length);
+  if (!ziel.length) return toast('Keine Vorschläge für offene Werte.');
+  state.pVorschlagUids = ziel.map(x => x.d.uid);
+  const arten = {};
+  for (const { r } of ziel) for (const v of r.vorschlaege) arten[v.label] = (arten[v.label] || 0) + 1;
+  openDialog(dlgHead('Vorschläge für alle Objekte übernehmen?') + `<p style="margin-top:0">Für ${ziel.length} Objekte werden offene Werte aus den Modellannahmen der jeweiligen Analyse bzw. als gekennzeichnete Modellannahme übernommen. Eigene Anpassungen bleiben unverändert; jede Übernahme lässt sich je Objekt in „Eingaben und Herkunft“ ändern oder entfernen.</p>
+    <div class="table-wrap"><table class="t"><thead><tr><th>Vorschlag</th><th class="num">Objekte</th></tr></thead><tbody>${Object.entries(arten).map(([l, n]) => `<tr><td>${esc(l)}</td><td class="num">${n}</td></tr>`).join('')}</tbody></table></div>
+    <p class="fine">Einzeln prüfen: „Vorschläge prüfen“ in der jeweiligen Zeile.</p>
+    <div class="btn-row" style="justify-content:flex-end;margin-bottom:0"><button class="btn" data-action="close-dlg">Abbrechen</button><button class="btn primary" data-action="p-vorschlaege-alle-ok">Für ${ziel.length} Objekte übernehmen</button></div>`);
 }
 </script>
 <script>

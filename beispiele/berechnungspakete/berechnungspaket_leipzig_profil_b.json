@@ -240,7 +240,9 @@
       "wert": 0,
       "herkunft": "anpassung",
       "status": "annahme",
-      "begruendung": "Kein Stellplatz im Angebot"
+      "begruendung": "Kein Stellplatz im Angebot",
+      "anpassung_quelle": null,
+      "annahme_id": null
     },
     "grunderwerbsteuer_prozent": {
       "key": "grunderwerbsteuer_prozent",
@@ -299,7 +301,9 @@
       "wert": 0,
       "herkunft": "anpassung",
       "status": "annahme",
-      "begruendung": "Keine Maßnahmen geplant"
+      "begruendung": "Keine Maßnahmen geplant",
+      "anpassung_quelle": null,
+      "annahme_id": null
     },
     "eigenkapital_einsatz_eur": {
       "key": "eigenkapital_einsatz_eur",
@@ -358,7 +362,9 @@
       "wert": 140,
       "herkunft": "anpassung",
       "status": "annahme",
-      "begruendung": "Annahme: umlagefähige Kosten entsprechen der Vorauszahlung"
+      "begruendung": "Annahme: umlagefähige Kosten entsprechen der Vorauszahlung",
+      "anpassung_quelle": null,
+      "annahme_id": null
     },
     "nicht_umlagefaehig_monat_eur": {
       "key": "nicht_umlagefaehig_monat_eur",
@@ -374,7 +380,9 @@
       "wert": 75,
       "herkunft": "anpassung",
       "status": "annahme",
-      "begruendung": "Hausgeld 260 € − 140 € umlagefähig − 45 € Rücklage"
+      "begruendung": "Hausgeld 260 € − 140 € umlagefähig − 45 € Rücklage",
+      "anpassung_quelle": null,
+      "annahme_id": null
     },
     "ruecklage_monat_eur": {
       "key": "ruecklage_monat_eur",
@@ -451,7 +459,9 @@
       "wert": 75,
       "herkunft": "anpassung",
       "status": "annahme",
-      "begruendung": "Annahme für innerstädtischen Altbau, Gutachten fehlt"
+      "begruendung": "Annahme für innerstädtischen Altbau, Gutachten fehlt",
+      "anpassung_quelle": null,
+      "annahme_id": null
     },
     "fertigstellung_jahr": {
       "key": "fertigstellung_jahr",
