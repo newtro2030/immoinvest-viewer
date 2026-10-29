@@ -518,6 +518,12 @@ dialog::backdrop { background: rgba(10, 10, 10, .38); }
 @keyframes flash { 0% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
 
 /* ---------- Persönliche Profile und Berechnung mit dem Profil ---------- */
+.side-ordner { display: flex; flex-direction: column; gap: 6px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.side-ordner > .btn { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; }
+.side-ordner .fine { margin: 0; }
+.side-ordner-kopf { display: flex; align-items: center; gap: 6px; font-size: 13px; min-width: 0; }
+.side-ordner-kopf b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.side-ordner-aktionen { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
 .side-profil { display: flex; flex-direction: column; gap: 4px; padding: 8px 0 4px; border-bottom: 1px solid var(--line); }
 .side-profil-aktiv { font-size: 12px; color: var(--ink-2); margin: 0 10px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
 .feld-raster { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 12px 16px; margin: 12px 0; }
@@ -3809,6 +3815,241 @@ function pVorschlaegeAlleDialog() {
     <div class="btn-row" style="justify-content:flex-end;margin-bottom:0"><button class="btn" data-action="close-dlg">Abbrechen</button><button class="btn primary" data-action="p-vorschlaege-alle-ok">Für ${ziel.length} Objekte übernehmen</button></div>`);
 }
 </script>
+<script>/* src/oberflaeche/ordner.js */
+/*
+ * ImmoInvest Viewer – Ablageordner verbinden, z. B. einen von „Google Drive für Desktop“ synchronisierten Ordner
+ *
+ * Nutzt die File System Access API (Chrome, Edge): Der Ordner wird einmal ausgewählt, der Zugriff im Browser
+ * (IndexedDB) gemerkt und beim Öffnen, beim Zurückkehren in den Tab und alle 30 Sekunden neu eingelesen.
+ * Gelesen wird ausschließlich lokal – keine Verbindung zu Google oder anderen Servern, keine Anmeldung.
+ * Der Ordner ist die Quelle: neue Dateien kommen hinzu, geänderte werden ersetzt, gelöschte verschwinden.
+ * Automatisch geladen werden nur Bewertungs-Exporte. Profile und Berechnungspakete enthalten persönliche
+ * Finanzdaten und werden weiterhin bewusst über „+ Dateien“ importiert.
+ *
+ * Klassisches Skript; nutzt state, addTexts, render … des Hauptskripts erst zur Laufzeit (ordnerStart()).
+ */
+'use strict';
+
+const ORDNER_UNTERSTUETZT = typeof window.showDirectoryPicker === 'function';
+const ORDNER_INTERVALL_MS = 30000;
+const ORDNER_MAX_DATEIEN = 1000;
+const ORDNER_TIEFE = 3;
+const LS_ORDNER_AUTO = 'immoviewer.v1.ordner_auto';
+const LS_ORDNER_HASHES = 'immoviewer.v1.ordner_hashes';
+
+function ordnerZustand() {
+  return { handle: null, name: null, status: ORDNER_UNTERSTUETZT ? 'getrennt' : 'nicht_unterstuetzt', auto: true, bekannt: {}, letzte: null, dateien: 0, uebersprungen: 0, fehler: null, laeuft: false };
+}
+
+/* ---------- Ordner-Handle in IndexedDB (localStorage kann keine Handles speichern) ---------- */
+function ordnerIdb(modus, aktion) {
+  return new Promise(resolve => {
+    try {
+      const req = indexedDB.open('immoviewer', 1);
+      req.onupgradeneeded = () => req.result.createObjectStore('kv');
+      req.onerror = () => resolve(undefined);
+      req.onsuccess = () => {
+        const db = req.result;
+        try {
+          const tx = db.transaction('kv', modus);
+          const anfrage = aktion(tx.objectStore('kv'));
+          tx.oncomplete = () => { db.close(); resolve(anfrage ? anfrage.result : undefined); };
+          tx.onerror = tx.onabort = () => { db.close(); resolve(undefined); };
+        } catch { db.close(); resolve(undefined); }
+      };
+    } catch { resolve(undefined); }
+  });
+}
+const ordnerHandleLesen = () => ordnerIdb('readonly', st => st.get('ordner'));
+const ordnerHandleSpeichern = h => ordnerIdb('readwrite', st => st.put(h, 'ordner'));
+const ordnerHandleLoeschen = () => ordnerIdb('readwrite', st => st.delete('ordner'));
+
+/* ---------- Start, Verbinden, Freigeben, Trennen ---------- */
+async function ordnerStart() {
+  if (state.ordner.status === 'nicht_unterstuetzt') return;
+  state.ordner.auto = lsGet(LS_ORDNER_AUTO) !== '0';
+  ordnerTakt();
+  const h = await ordnerHandleLesen();
+  if (!h || typeof h.queryPermission !== 'function') return;
+  state.ordner.handle = h;
+  state.ordner.name = h.name;
+  let recht = 'prompt';
+  try { recht = await h.queryPermission({ mode: 'read' }); } catch { /* bleibt prompt */ }
+  if (recht === 'granted') { state.ordner.status = 'verbunden'; await ordnerEinlesen({ erst: true }); }
+  else { state.ordner.status = 'freigabe'; renderSidebar(); }
+}
+
+async function ordnerVerbinden() {
+  let h;
+  try { h = await window.showDirectoryPicker({ id: 'immoinvest-ablage', mode: 'read' }); }
+  catch (e) { if (!e || e.name !== 'AbortError') toast('Ordner konnte nicht verbunden werden' + (e && e.message ? `: ${e.message}` : '.')); return; }
+  Object.assign(state.ordner, { handle: h, name: h.name, status: 'verbunden', bekannt: {}, fehler: null });
+  await ordnerHandleSpeichern(h);
+  await ordnerEinlesen({ erst: true });
+}
+
+/** Nach einem Neustart verlangt der Browser je nach Einstellung einen Klick, bevor er den Ordner wieder freigibt. */
+async function ordnerFreigeben() {
+  const h = state.ordner.handle;
+  if (!h) return;
+  let recht = 'denied';
+  try { recht = await h.requestPermission({ mode: 'read' }); } catch { /* bleibt denied */ }
+  if (recht !== 'granted') return toast('Kein Zugriff auf den Ordner erteilt.');
+  state.ordner.status = 'verbunden';
+  await ordnerEinlesen({ erst: true });
+}
+
+async function ordnerTrennen() {
+  await ordnerHandleLoeschen();
+  for (const d of state.docs) delete d.ordnerPfad;
+  lsDel(LS_ORDNER_HASHES);
+  const name = state.ordner.name;
+  state.ordner = Object.assign(ordnerZustand(), { auto: state.ordner.auto });
+  renderSidebar();
+  toast(`Verbindung zu „${name}“ getrennt. Bereits geladene Dateien bleiben in der Ansicht.`);
+}
+
+/* ---------- Einlesen ---------- */
+async function ordnerDateien(verzeichnis, pfad, tiefe, out) {
+  for await (const eintrag of verzeichnis.values()) {
+    if (out.length >= ORDNER_MAX_DATEIEN) break;
+    if (eintrag.name.startsWith('.') || eintrag.name.startsWith('~$')) continue;
+    const p = pfad ? `${pfad}/${eintrag.name}` : eintrag.name;
+    if (eintrag.kind === 'directory') { if (tiefe < ORDNER_TIEFE) await ordnerDateien(eintrag, p, tiefe + 1, out); }
+    else if (/\.json$/i.test(eintrag.name)) out.push({ pfad: p, eintrag });
+  }
+  return out;
+}
+
+function ordnerIstPersoenlich(text) {
+  try {
+    const j = JSON.parse(text.replace(/^﻿/, ''));
+    return !!j && (j.dokumenttyp === 'household_profile' || j.dokumenttyp === 'investment_scenario');
+  } catch { return false; }
+}
+
+/**
+ * Liest den Ordner und gleicht die Ansicht ab. Unveränderte Dateien (gleiche Änderungszeit und Größe) werden
+ * nicht erneut gelesen; Dateien, die Google Drive noch nicht lokal bereitgestellt hat, beim nächsten Mal.
+ */
+async function ordnerEinlesen({ erst = false, manuell = false } = {}) {
+  const o = state.ordner;
+  if (!o.handle || o.laeuft || o.status !== 'verbunden') return;
+  o.laeuft = true;
+  try {
+    const liste = await ordnerDateien(o.handle, '', 1, []);
+    const gesehen = new Set(), neu = [], geaendert = [];
+    for (const { pfad, eintrag } of liste) {
+      gesehen.add(pfad);
+      let datei;
+      try { datei = await eintrag.getFile(); } catch { continue; }
+      const stempel = `${datei.lastModified}|${datei.size}`;
+      const alt = o.bekannt[pfad];
+      if (alt && alt.stempel === stempel) continue;
+      let text;
+      try { text = await datei.text(); } catch { continue; }
+      const persoenlich = ordnerIstPersoenlich(text);
+      o.bekannt[pfad] = { stempel, persoenlich };
+      if (!persoenlich) (alt && !alt.persoenlich ? geaendert : neu).push({ pfad, name: eintrag.name, text });
+    }
+    const entfernt = Object.keys(o.bekannt).filter(p => !gesehen.has(p));
+    for (const p of entfernt) delete o.bekannt[p];
+
+    // Ersetzte und gelöschte Dateien aus der Ansicht nehmen; eine offene Einzelansicht folgt der neuen Fassung
+    const wegPfade = new Set(entfernt.concat(geaendert.map(x => x.pfad)));
+    const offenerPfad = state.view === 'detail' ? (getDoc(state.current) || {}).ordnerPfad : null;
+    const weg = new Set(state.docs.filter(d => d.ordnerPfad && wegPfade.has(d.ordnerPfad)).map(d => d.uid));
+    const items = neu.concat(geaendert);
+    const leerVorher = !immoDocs().length;
+    if (weg.size) { state.docs = state.docs.filter(d => !weg.has(d.uid)); for (const u of weg) state.selected.delete(u); }
+    if (items.length) {
+      addTexts(items.map(x => ({ name: x.name, text: x.text })), { silent: true });
+      for (const x of items) { const h = hashStr(x.text); const d = state.docs.find(doc => doc.hash === h); if (d) d.ordnerPfad = x.pfad; }
+    }
+    // Beim ersten Einlesen: früher aus dem Ordner gemerkte Dateien entfernen, die dort nicht mehr liegen
+    let altEntfernt = 0;
+    if (erst) {
+      let alteHashes = [];
+      try { alteHashes = JSON.parse(lsGet(LS_ORDNER_HASHES) || '[]'); } catch { /* leer */ }
+      const alt = new Set(Array.isArray(alteHashes) ? alteHashes : []);
+      const vorher = state.docs.length;
+      state.docs = state.docs.filter(d => d.ordnerPfad || !alt.has(d.hash));
+      altEntfernt = vorher - state.docs.length;
+    }
+    lsSet(LS_ORDNER_HASHES, JSON.stringify(state.docs.filter(d => d.ordnerPfad).map(d => d.hash)));
+    computeGroups();
+
+    o.letzte = new Date();
+    o.dateien = state.docs.filter(d => d.ordnerPfad).length;
+    o.uebersprungen = Object.values(o.bekannt).filter(b => b.persoenlich).length;
+    o.fehler = null;
+    const veraendert = items.length || weg.size || altEntfernt;
+    if (veraendert) {
+      save();
+      if (offenerPfad && wegPfade.has(offenerPfad)) { const ersatz = state.docs.find(d => d.ordnerPfad === offenerPfad); if (ersatz) state.current = ersatz.uid; }
+      if ((erst && (state.view === 'start' || leerVorher)) || !state.docs.length) {
+        state.view = immoDocs().length > 1 ? 'compare' : state.docs.length ? 'detail' : 'start';
+        state.current = (immoDocs()[0] || state.docs[0] || {}).uid;
+        render();
+        window.scrollTo(0, 0);
+      } else renderMitFokus();
+      const teile = [neu.length && `${neu.length} neu`, geaendert.length && `${geaendert.length} geändert`, (entfernt.length || altEntfernt) && `${entfernt.length + altEntfernt} entfernt`].filter(Boolean);
+      toast(erst ? `${o.dateien} Bewertung${o.dateien === 1 ? '' : 'en'} aus „${o.name}“ eingelesen.` : `Aus „${o.name}“: ${teile.join(', ')}.`);
+    } else {
+      ordnerStandAktualisieren();
+      if (erst) renderSidebar();
+      if (manuell) toast(`„${o.name}“ ist aktuell – keine Änderungen.`);
+    }
+  } catch (e) {
+    if (e && e.name === 'NotAllowedError') o.status = 'freigabe';
+    else if (e && e.name === 'NotFoundError') { o.status = 'fehlt'; o.fehler = 'Der Ordner wurde nicht gefunden – verschoben, umbenannt oder Google Drive nicht gestartet?'; }
+    else o.fehler = `Einlesen fehlgeschlagen${e && e.message ? `: ${e.message}` : ''}`;
+    renderSidebar();
+  } finally {
+    o.laeuft = false;
+  }
+}
+
+/* ---------- Automatisch: beim Zurückkehren in den Tab und im Takt ---------- */
+let ordnerTimer = null;
+function ordnerTakt() {
+  if (ordnerTimer) return;
+  const pruefen = () => { if (state.ordner.auto && state.ordner.status === 'verbunden' && document.visibilityState === 'visible') ordnerEinlesen(); };
+  ordnerTimer = setInterval(pruefen, ORDNER_INTERVALL_MS);
+  document.addEventListener('visibilitychange', pruefen);
+}
+
+/* ---------- Anzeige in der Seitenleiste ---------- */
+const ORDNER_ICON = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>';
+
+function ordnerStandText() {
+  const o = state.ordner;
+  const zeit = o.letzte ? o.letzte.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) : '–';
+  return `${o.dateien} Bewertung${o.dateien === 1 ? '' : 'en'} · geprüft ${zeit}${o.uebersprungen ? ` · ${o.uebersprungen} Profil-/Paketdatei${o.uebersprungen === 1 ? '' : 'en'} nicht automatisch geladen` : ''}`;
+}
+/** Nur den Stand-Text austauschen, damit der Takt weder Fokus noch Scrollposition stört. */
+function ordnerStandAktualisieren() {
+  const el = document.getElementById('ordner-stand');
+  if (el) el.textContent = ordnerStandText();
+}
+
+function sidebarOrdner() {
+  const o = state.ordner;
+  if (o.status === 'nicht_unterstuetzt') return '';
+  if (!o.handle) {
+    return `<div class="side-ordner"><button class="btn sm" data-action="ordner-verbinden">${ORDNER_ICON} Ablageordner verbinden</button><span class="fine">z. B. Google-Drive-Ordner mit den Exporten – wird dann automatisch eingelesen.</span></div>`;
+  }
+  const kopf = `<div class="side-ordner-kopf">${ORDNER_ICON}<b title="${esc(o.name)}">${esc(o.name)}</b></div>`;
+  if (o.status === 'freigabe') {
+    return `<div class="side-ordner">${kopf}<button class="btn sm primary" data-action="ordner-freigeben">Ordner einlesen</button><span class="fine">Der Browser fragt nach dem Zugriff. Mit „Bei jedem Besuch zulassen“ geht es künftig ohne Klick.</span><button class="linkbtn" data-action="ordner-trennen">Verbindung trennen</button></div>`;
+  }
+  if (o.status === 'fehlt') {
+    return `<div class="side-ordner">${kopf}<span class="notice">${esc(o.fehler)}</span><div class="side-ordner-aktionen"><button class="btn sm" data-action="ordner-verbinden">Neu verbinden</button><button class="linkbtn" data-action="ordner-trennen">Trennen</button></div></div>`;
+  }
+  return `<div class="side-ordner">${kopf}<div class="fine" id="ordner-stand" aria-live="polite">${esc(ordnerStandText())}</div>${o.fehler ? `<span class="notice">${esc(o.fehler)}</span>` : ''}
+      <div class="side-ordner-aktionen"><button class="btn sm" data-action="ordner-einlesen">Jetzt einlesen</button><label class="check"><input type="checkbox" id="ordner-auto"${o.auto ? ' checked' : ''}> automatisch</label><button class="linkbtn" data-action="ordner-trennen">Trennen</button></div></div>`;
+}
+</script>
 <script>
 'use strict';
 
@@ -4131,6 +4372,8 @@ const state = {
   feldKontext: null,
   pImport: null,
   vorProfil: null,
+  // Verbundener Ablageordner (nur in diesem Browser gemerkt, siehe src/oberflaeche/ordner.js)
+  ordner: ordnerZustand(),
 };
 let uidCounter = 0;
 let numCounter = 0;
@@ -4811,6 +5054,7 @@ function renderSidebar() {
       <button class="btn" data-action="pick-dir" title="Ordner mit JSON-Dateien wählen">Ordner</button>
       <button class="btn" data-action="paste" title="JSON-Text einfügen">Einfügen</button>
     </div>
+    ${sidebarOrdner()}
     ${sidebarProfil()}
     ${state.docs.length ? `
     <nav class="doclist">
@@ -4854,6 +5098,7 @@ function viewStart() {
         <button class="btn" data-action="pick-dir">Ordner wählen</button>
         <button class="btn" data-action="paste">JSON einfügen</button>
       </div>
+      ${ORDNER_UNTERSTUETZT ? '<p class="fine">Oder einen <button class="linkbtn" data-action="ordner-verbinden">Ablageordner verbinden</button>, z. B. den Google-Drive-Ordner mit deinen Exporten: Er wird bei jedem Öffnen und laufend automatisch eingelesen.</p>' : '<p class="fine">Einen Ordner dauerhaft verbinden und automatisch einlesen geht in Chrome und Edge.</p>'}
       <p class="fine">Die Dateien werden nur lokal in diesem Browser gelesen. Nichts wird hochgeladen.</p>
     </div>
     <div class="flow" aria-label="Arbeitsablauf"><span class="box">Inserat-Link</span>→<span class="box">KI-Prüfung mit Master-Prompt V3.1</span>→<span class="box">JSON-Export</span>→<span class="box">Dieser Viewer</span></div>
@@ -5645,6 +5890,10 @@ document.addEventListener('click', e => {
       break;
     }
     case 'print': window.print(); break;
+    case 'ordner-verbinden': ordnerVerbinden(); break;
+    case 'ordner-freigeben': ordnerFreigeben(); break;
+    case 'ordner-einlesen': ordnerEinlesen({ manuell: true }); break;
+    case 'ordner-trennen': ordnerTrennen(); break;
     default: pAktion(action, el);
   }
 });
@@ -5662,6 +5911,7 @@ document.addEventListener('change', e => {
   const t = e.target;
   if (t.id === 'fileInput' || t.id === 'dirInput') { addFiles([...t.files]); t.value = ''; return; }
   if (pAenderung(t)) return;
+  if (t.id === 'ordner-auto') { state.ordner.auto = t.checked; lsSet(LS_ORDNER_AUTO, t.checked ? '1' : '0'); return; }
   if (t.dataset.select) { state.selectionTouched = true; t.checked ? state.selected.add(t.dataset.select) : state.selected.delete(t.dataset.select); render(); return; }
   if (t.id === 'selAll') { state.selectionTouched = true; for (const d of filteredDocs()) t.checked ? state.selected.add(d.uid) : state.selected.delete(d.uid); render(); return; }
   if (t.id === 'fu') { state.filter.urteil = t.value; renderResults(); return; }
@@ -5722,6 +5972,7 @@ updateHostClasses();
 restore();
 render();
 loadFromQuery();
+ordnerStart();
 </script>
 </body>
 </html>
