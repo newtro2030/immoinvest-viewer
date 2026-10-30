@@ -809,7 +809,7 @@ h1, h2, h3 { letter-spacing: -.01em; }
   height: 52px; padding: 0 16px;
   background: var(--surface); border-bottom: 1px solid var(--line);
 }
-.brand { display: flex; align-items: center; gap: 10px; font-weight: 600; white-space: nowrap; }
+.brand { display: flex; align-items: center; gap: 10px; margin-right: auto; font-weight: 600; white-space: nowrap; min-width: 0; }
 .brand svg { width: 22px; height: 22px; color: var(--accent); flex: none; }
 .brand .light { font-weight: 500; color: var(--ink-2); }
 .layout { display: grid; grid-template-columns: 300px minmax(0, 1fr); min-height: calc(100vh - 52px); }
@@ -845,26 +845,36 @@ body.hosted .needs-print, body.hosted .needs-theme, body.no-downloads .needs-dow
 /* ---------- Sidebar ---------- */
 .side-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
 .side-actions .btn { padding: 0 6px; }
-.side-label { font-size: 11.5px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin: 6px 4px 0; }
-.doclist { display: flex; flex-direction: column; gap: 2px; }
-.navitem, .docitem {
-  display: flex; align-items: flex-start; gap: 10px; width: 100%;
+.navitem {
+  display: flex; align-items: center; gap: 10px; width: 100%;
   padding: 8px 10px; border-radius: 8px; border: 0; background: transparent;
-  text-align: left; cursor: pointer;
+  text-align: left; cursor: pointer; font-weight: 600;
 }
-.navitem { align-items: center; font-weight: 600; }
 .navitem .count { margin-left: auto; font-size: 12px; font-weight: 500; color: var(--ink-2); background: var(--surface-3); border-radius: 999px; padding: 0 8px; }
-.navitem:hover, .docitem:hover { background: var(--surface-2); }
-.navitem.active, .docitem.active { background: var(--accent-wash); }
-.docitem .vdot { flex: none; width: 10px; height: 10px; border-radius: 50%; margin-top: 5px; background: var(--vc); }
-.docitem.old { opacity: .62; }
-.di-main { min-width: 0; flex: 1; }
-.di-title { font-weight: 500; font-size: 13.5px; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.di-sub { font-size: 12px; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.di-badges { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px; }
+.navitem:hover { background: var(--surface-2); }
+.navitem.active { background: var(--accent-wash); color: var(--accent-ink); }
+.navitem.sub { padding: 6px 10px; font-weight: 500; font-size: 13.5px; }
+.navitem .vdot { flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--vc); }
+.menue-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Menü links: Gruppen zum Auf- und Zuklappen */
+.menue-gruppe { border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+.menue-gruppe:last-child { border-bottom: 0; }
+.menue-gruppe > summary { display: flex; align-items: center; gap: 8px; padding: 8px 6px; border-radius: 8px; font-size: 13px; font-weight: 650; cursor: pointer; list-style: none; user-select: none; }
+.menue-gruppe > summary::-webkit-details-marker { display: none; }
+.menue-gruppe > summary svg { width: 17px; height: 17px; flex: none; color: var(--accent); }
+.menue-gruppe > summary::after { content: ""; margin-left: auto; width: 7px; height: 7px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(-45deg); transition: transform .15s; }
+.menue-gruppe[open] > summary::after { transform: rotate(45deg); }
+.menue-gruppe > summary:hover { background: var(--surface-2); }
+.menue-gruppe > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.menue-inhalt { display: flex; flex-direction: column; gap: 8px; padding: 2px 0 0 4px; }
+.menue-nav { display: flex; flex-direction: column; gap: 1px; }
+.menue-label { margin: 6px 10px 2px; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+.menue-knopf { padding: 0 8px; margin-left: -6px; }
+.menue-zu .layout { grid-template-columns: minmax(0, 1fr); }
+.menue-zu .sidebar { display: none; }
 .icon-btn { flex: none; width: 24px; height: 24px; border-radius: 6px; border: 0; background: transparent; color: var(--muted); cursor: pointer; font-size: 16px; line-height: 1; }
 .icon-btn:hover { background: var(--surface-3); color: var(--ink); }
-.side-foot { margin-top: auto; padding-top: 10px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 8px; font-size: 12.5px; color: var(--ink-2); }
+.side-foot { padding-top: 10px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 8px; font-size: 12.5px; color: var(--ink-2); }
 .check { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px; }
 .notice { font-size: 12px; color: var(--crit-ink); }
 
@@ -1023,6 +1033,10 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13px; }
 .t th.sortable { cursor: pointer; user-select: none; }
 .t th.sortable:hover { color: var(--ink); }
 .t th .arrow { color: var(--accent); }
+/* Tabellen mit festem Kopf: eigener Scrollbereich in Fensterhöhe, Kopfzeile bleibt oben stehen */
+.table-wrap.fest { max-height: calc(100vh - 52px - 32px); overflow: auto; overscroll-behavior: contain; }
+.table-wrap.fest .t thead th { position: sticky; top: 0; z-index: 2; box-shadow: inset 0 -1px 0 var(--line); }
+.table-wrap.fest .cmp-table thead th:nth-child(3) { z-index: 3; box-shadow: inset 0 -1px 0 var(--line), 1px 0 0 var(--line); }
 /* Überschriften der Vergleichstabelle: Beschriftung sortiert, Trichter öffnet das Spaltenmenü (src/oberflaeche/spaltenfilter.js) */
 .cmp-table th.sortable { cursor: default; }
 .cmp-table .th-kopf { display: flex; align-items: flex-end; gap: 3px; }
@@ -1441,10 +1455,10 @@ a.btn { color: inherit; text-decoration: none; }
 }
 
 @media (max-width: 900px) {
-  .layout { grid-template-columns: 1fr; }
-  .sidebar { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); }
-  .doclist { max-height: 260px; overflow: auto; }
-  .side-foot { margin-top: 0; }
+  .layout, .menue-zu .layout { grid-template-columns: 1fr; }
+  /* Schmal: Menü standardmäßig zu, der Knopf oben öffnet es über dem Inhalt */
+  .sidebar, .menue-zu .sidebar { display: none; position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); }
+  .menue-mobil-auf .sidebar { display: flex; }
   .brand .light { display: none; }
 }
 @media (max-width: 1000px) {
@@ -1454,6 +1468,7 @@ a.btn { color: inherit; text-decoration: none; }
   .tiles, .tiles.stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
   .tiles.stats .tile:first-child { grid-column: 1 / -1; min-height: 0; }
   .cmp-table td.cell-obj, .cmp-table thead th:nth-child(3) { position: static; box-shadow: none; }
+  .table-wrap.fest .cmp-table thead th:nth-child(3) { position: sticky; left: auto; box-shadow: inset 0 -1px 0 var(--line); }
   .cmp-tabs { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); }
   .modus-schalter { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
   .modus-schalter button { padding: 7px 6px; font-size: 13px; }
@@ -1476,6 +1491,7 @@ a.btn { color: inherit; text-decoration: none; }
 </head>
 <body>
 <header class="topbar">
+  <button class="btn ghost sm menue-knopf" data-action="menue" id="menueBtn" aria-controls="sidebar" aria-expanded="true" title="Menü ein- oder ausblenden" aria-label="Menü ein- oder ausblenden"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
   <div class="brand">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-5.5h6V21"/></svg>
     <span>Immobilienbewertung <span class="light">Viewer · Schema 1.0</span></span>
@@ -1483,7 +1499,7 @@ a.btn { color: inherit; text-decoration: none; }
   <button class="btn ghost sm needs-theme" data-action="theme" id="themeBtn" title="Farbschema wechseln">◐ <span id="themeLabel">Auto</span></button>
 </header>
 <div class="layout">
-  <aside class="sidebar" id="sidebar" aria-label="Geladene Dateien"></aside>
+  <aside class="sidebar" id="sidebar" aria-label="Menü"></aside>
   <main class="main" id="main"></main>
 </div>
 <input type="file" id="fileInput" accept=".json,application/json" multiple hidden>
@@ -4769,7 +4785,7 @@ function vergleichPersoenlich(rows) {
   return `${pProfilLuecken(p)}
     <div class="callout"><b>Alternative Einzelkäufe mit Profil „${esc(p.bezeichnung)}“</b> – jede Zeile nutzt das volle Eigenkapital und das volle Haushaltsbudget. Werte werden nicht addiert; eine gemeinsame Portfoliorechnung ist nicht Teil dieser Ansicht.</div>
     ${mitVorschlaegen.length > 1 ? `<div class="btn-row p-schnell" style="justify-content:flex-start;margin-top:12px"><button class="btn sm" data-action="p-vorschlaege-alle">Vorschläge für alle ${mitVorschlaegen.length} Objekte prüfen und übernehmen</button></div>` : ''}
-    <div class="card flush" style="margin-top:12px"><div class="table-wrap"><table class="t p-vergleich-tabelle"><thead><tr><th>Objekt</th><th class="num">Kaufpreis</th><th class="num">Darlehen</th><th class="num">Rate</th><th class="num">Zuzahlung vor Steuer</th><th class="num">Ø nach Steuer</th><th class="num">Verbleibendes Budget</th><th class="num">Restschuld</th><th>Einordnung</th></tr></thead><tbody>${zeilen || `<tr><td colspan="9" class="muted">Keine Treffer.</td></tr>`}</tbody></table></div></div>
+    <div class="card flush" style="margin-top:12px"><div class="table-wrap fest"><table class="t p-vergleich-tabelle"><thead><tr><th>Objekt</th><th class="num">Kaufpreis</th><th class="num">Darlehen</th><th class="num">Rate</th><th class="num">Zuzahlung vor Steuer</th><th class="num">Ø nach Steuer</th><th class="num">Verbleibendes Budget</th><th class="num">Restschuld</th><th>Einordnung</th></tr></thead><tbody>${zeilen || `<tr><td colspan="9" class="muted">Keine Treffer.</td></tr>`}</tbody></table></div></div>
     <p class="chart-note">Objekt anklicken, um die Berechnung mit deinem Profil zu öffnen und einzelne Werte anzupassen. Vorschläge kommen aus den Modellannahmen der jeweiligen Analyse und werden als solche gekennzeichnet.</p>`;
 }
 
@@ -5020,8 +5036,10 @@ async function ordnerEinlesen({ erst = false, manuell = false } = {}) {
     if (veraendert) {
       save();
       if (offenerPfad && wegPfade.has(offenerPfad)) { const ersatz = state.docs.find(d => d.ordnerPfad === offenerPfad); if (ersatz) state.current = ersatz.uid; }
-      if ((erst && (state.view === 'start' || leerVorher)) || !state.docs.length) {
-        state.view = immoDocs().length > 1 ? 'compare' : state.docs.length ? 'detail' : 'start';
+      // Beim ersten Einlesen (Öffnen der Seite) immer zum Vergleich mit der Tabelle, außer man ist gerade in den Profilen
+      if ((erst && state.view !== 'profile') || leerVorher || !state.docs.length) {
+        state.view = immoDocs().length ? 'compare' : state.docs.length ? 'detail' : 'start';
+        if (state.view === 'compare') state.cmpTab = 'tabelle';
         state.current = (immoDocs()[0] || state.docs[0] || {}).uid;
         render();
         window.scrollTo(0, 0);
@@ -6177,10 +6195,12 @@ const state = {
   ordner: ordnerZustand(),
   // Kartenansicht: Adressnachträge, gesetzte Punkte, gemerkte Suchergebnisse (siehe src/oberflaeche/karte.js)
   karte: karteZustand(),
+  // Menü links: ganz zugeklappt (nur breite Bildschirme, gemerkt) und offene Gruppen
+  menue: { zu: false, mobilAuf: false, gruppen: { ansicht: true, profil: true, daten: true } },
 };
 let uidCounter = 0;
 let numCounter = 0;
-const LS = { docs: 'immoviewer.v1.docs', persist: 'immoviewer.v1.persist', theme: 'immoviewer.v1.theme', cmpTab: 'immoviewer.v1.cmptab' };
+const LS = { docs: 'immoviewer.v1.docs', persist: 'immoviewer.v1.persist', theme: 'immoviewer.v1.theme', cmpTab: 'immoviewer.v1.cmptab', menue: 'immoviewer.v1.menue' };
 const lsGet = k => { try { return localStorage.getItem(k); } catch { return null; } };
 const lsSet = (k, v) => { try { localStorage.setItem(k, v); return true; } catch { return false; } };
 const lsDel = k => { try { localStorage.removeItem(k); } catch { /* ignorieren */ } };
@@ -6241,7 +6261,7 @@ function addTexts(items, { silent = false } = {}) {
     if (persoenlich && !fresh.length && persoenlich === items.length) return fresh;
     const immo = fresh.filter(d => d.isImmo);
     if (fresh.length === 1) { state.view = 'detail'; state.current = fresh[0].uid; }
-    else if (immoDocs().length > 1) state.view = 'compare';
+    else if (immoDocs().length > 1) { state.view = 'compare'; state.cmpTab = 'tabelle'; }
     else if (fresh.length) { state.view = 'detail'; state.current = (immo[0] || fresh[0]).uid; }
     const dup = items.length - persoenlich - fresh.length;
     toast(`${fresh.length} Datei${fresh.length === 1 ? '' : 'en'} geladen${dup > 0 ? ` · ${dup} bereits vorhanden` : ''}`);
@@ -6296,7 +6316,7 @@ function removeDoc(uid) {
   state.selected.delete(uid);
   computeGroups();
   if (!state.docs.length) state.view = 'start';
-  else if (state.view === 'detail' && state.current === uid) state.view = immoDocs().length > 1 ? 'compare' : 'detail', state.current = (immoDocs()[0] || state.docs[0]).uid;
+  else if (state.view === 'detail' && state.current === uid) state.view = immoDocs().length ? 'compare' : 'detail', state.current = (immoDocs()[0] || state.docs[0]).uid;
   save();
   render();
 }
@@ -6304,13 +6324,17 @@ function removeDoc(uid) {
 function save() {
   if (!state.persist) { lsDel(LS.docs); state.saveError = null; return; }
   const ok = lsSet(LS.docs, JSON.stringify(state.docs.filter(d => d.text).map(d => ({ name: d.fileName, text: d.text }))));
-  state.saveError = ok ? null : 'Speichern im Browser nicht möglich (Speicher voll oder gesperrt).';
+  // Passt nicht alles in den Speicher, wird der alte Stand gelöscht, damit beim nächsten Öffnen kein veralteter Ausschnitt erscheint
+  if (!ok) lsDel(LS.docs);
+  state.saveError = ok ? null : (state.ordner.handle ? 'Zu viele Dateien für den Browser-Speicher – sie kommen beim Öffnen aus dem Ablageordner.' : 'Speichern im Browser nicht möglich (Speicher voll oder gesperrt).');
   karteSpeichern();
 }
 
 function restore() {
   state.persist = lsGet(LS.persist) !== '0';
-  state.cmpTab = lsGet(LS.cmpTab) || 'tabelle';
+  // Beim Öffnen immer der Vergleich mit der Tabelle; der zuletzt gewählte Reiter gilt nur innerhalb der Sitzung
+  state.cmpTab = 'tabelle';
+  menueLaden();
   pLadenAusBrowser();
   karteLaden();
   const raw = lsGet(LS.docs);
@@ -6319,7 +6343,7 @@ function restore() {
     const items = JSON.parse(raw);
     if (Array.isArray(items) && items.length) {
       addTexts(items.filter(x => x && typeof x.text === 'string'), { silent: true });
-      state.view = immoDocs().length > 1 ? 'compare' : 'detail';
+      state.view = immoDocs().length ? 'compare' : 'detail';
       state.current = (immoDocs()[0] || state.docs[0] || {}).uid;
       if (!state.docs.length) state.view = 'start';
     }
@@ -6842,6 +6866,7 @@ function render() {
   if (!state.docs.length && state.view !== 'profile') state.view = 'start';
   if (state.view === 'detail' && !getDoc(state.current)) state.view = state.docs.length ? 'compare' : 'start';
   if (state.view === 'compare' && !immoDocs().length) { state.view = state.docs.length ? 'detail' : 'start'; state.current = state.docs[0]?.uid; }
+  menueKlassen();
   // Feldfehler gelten nur für die Ansicht, in der sie entstanden sind
   const kontext = `${state.view}|${state.current}|${state.profile.aktivId}|${state.detailModus}`;
   if (kontext !== state.feldKontext) { state.feldFehler = {}; state.feldRoh = {}; state.feldKontext = kontext; }
@@ -6851,46 +6876,76 @@ function render() {
   spaltenmenueAusrichten();
 }
 
+/* ---------- Menü links ---------- */
+const MENUE_ICON = {
+  ansicht: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18v14H3z"/><path d="M3 10h18M9 10v9"/></svg>',
+  profil: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>',
+  daten: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+};
+
+function menueLaden() {
+  try {
+    const m = JSON.parse(lsGet(LS.menue) || '{}');
+    if (typeof m.zu === 'boolean') state.menue.zu = m.zu;
+    if (m.gruppen && typeof m.gruppen === 'object') for (const k of Object.keys(state.menue.gruppen)) if (typeof m.gruppen[k] === 'boolean') state.menue.gruppen[k] = m.gruppen[k];
+  } catch { /* defekter Speicherinhalt wird ignoriert */ }
+}
+const menueSpeichern = () => lsSet(LS.menue, JSON.stringify({ zu: state.menue.zu, gruppen: state.menue.gruppen }));
+const menueMobil = () => matchMedia('(max-width: 900px)').matches;
+
+function menueKlassen() {
+  document.body.classList.toggle('menue-zu', state.menue.zu);
+  document.body.classList.toggle('menue-mobil-auf', state.menue.mobilAuf);
+  const offen = menueMobil() ? state.menue.mobilAuf : !state.menue.zu;
+  $('#menueBtn')?.setAttribute('aria-expanded', String(offen));
+}
+
+/** Menüknopf oben: auf breiten Bildschirmen Menü ein-/ausblenden (gemerkt), auf schmalen über dem Inhalt öffnen. */
+function menueUmschalten() {
+  if (menueMobil()) state.menue.mobilAuf = !state.menue.mobilAuf;
+  else { state.menue.zu = !state.menue.zu; menueSpeichern(); }
+  menueKlassen();
+  drawCharts();
+  if (typeof karteKarte !== 'undefined' && karteKarte) setTimeout(() => karteKarte.map.invalidateSize(), 50);
+}
+
+function menueGruppe(id, titel, inhalt) {
+  return `<details class="menue-gruppe" data-gruppe="${id}"${state.menue.gruppen[id] !== false ? ' open' : ''}><summary>${MENUE_ICON[id]}<span>${titel}</span></summary><div class="menue-inhalt">${inhalt}</div></details>`;
+}
+
 function renderSidebar() {
   const sb = $('#sidebar');
-  const immo = immoDocs();
-  const latestCount = immo.filter(d => d.rev?.latest).length;
-  sb.innerHTML = `
+  const immo = immoDocs(), objekte = immo.filter(d => d.rev?.latest).length;
+  const kaputt = state.docs.filter(d => !d.isImmo);
+  const aktuell = state.view === 'detail' ? getDoc(state.current) : null;
+  const ansicht = immo.length
+    ? `<nav class="menue-nav" aria-label="Ansichten">
+        <div class="menue-label">Vergleich · ${objekte} Objekt${objekte === 1 ? '' : 'e'}</div>
+        ${CMP_TABS.map(([id, t]) => `<button class="navitem sub${state.view === 'compare' && state.cmpTab === id ? ' active' : ''}" data-action="menue-tab" data-tab="${id}"${state.view === 'compare' && state.cmpTab === id ? ' aria-current="page"' : ''}>${t.replace(/&shy;/g, '')}${id === 'gegenueberstellung' && state.selected.size ? ` <span class="count">${state.selected.size}</span>` : ''}</button>`).join('')}
+        ${aktuell && aktuell.isImmo ? `<div class="menue-label">Geöffnet</div><button class="navitem sub active" data-action="open" data-uid="${aktuell.uid}" aria-current="page"><span class="vdot ${vcls(urteilOf(aktuell))}"></span><span class="menue-text">#${aktuell.num} ${esc(docTitle(aktuell))}</span></button>` : ''}
+      </nav>`
+    : '<p class="fine" style="margin:4px 10px">Noch keine Bewertungen geladen.</p>';
+  const daten = `
     <div class="side-actions">
       <button class="btn primary" data-action="pick-files" title="JSON-Dateien auswählen">+ Dateien</button>
-      <button class="btn" data-action="pick-dir" title="Ordner mit JSON-Dateien wählen">Ordner</button>
+      <button class="btn" data-action="pick-dir" title="Ordner mit JSON-Dateien einmalig laden">Ordner</button>
       <button class="btn" data-action="paste" title="JSON-Text einfügen">Einfügen</button>
     </div>
     ${sidebarOrdner()}
-    ${sidebarProfil()}
-    ${state.docs.length ? `
-    <nav class="doclist">
-      ${immo.length > 1 ? `<button class="navitem${state.view === 'compare' ? ' active' : ''}" data-action="compare">Vergleich <span class="count">${latestCount}</span></button>` : ''}
-      <div class="side-label">Bewertungen</div>
-      ${state.docs.map(d => {
-        const active = state.view === 'detail' && state.current === d.uid;
-        const m = obj(obj(d.data).metadaten), a = obj(obj(d.data).angebot);
-        const sub = d.isImmo ? [docPlace(d), platLabel(a.plattform), m.pruefdatum ? fmtDate(m.pruefdatum) : null].filter(Boolean).join(' · ') : 'nicht lesbar';
-        const rev = d.isImmo && d.rev && d.rev.total > 1 ? `<span class="tag" title="${d.rev.latest ? 'Neueste Revision' : 'Ältere Revision'}">Rev. ${d.rev.index}/${d.rev.total}</span>` : '';
-        return `<div class="docitem${active ? ' active' : ''}${d.isImmo && d.rev && !d.rev.latest ? ' old' : ''}" data-action="open" data-uid="${d.uid}" role="button" tabindex="0">
-          <span class="vdot ${d.isImmo ? vcls(urteilOf(d)) : 'v-crit'}" title="${esc(d.isImmo ? L(urteilOf(d) || 'nicht_bewertbar') : 'Fehler')}"></span>
-          <div class="di-main"><div class="di-title">${d.isImmo ? `<span class="num">#${d.num}</span> ` : ''}${esc(docTitle(d))}</div><div class="di-sub" title="${esc(d.fileName)}">${esc(sub)}</div><div class="di-badges">${rev}${d.isImmo ? offerTag(d.data) : ''}${issueTags(d)}</div></div>
-          <button class="icon-btn" data-action="remove" data-uid="${d.uid}" title="Aus der Ansicht entfernen" aria-label="Entfernen">×</button>
-        </div>`;
-      }).join('')}
-    </nav>` : '<p class="fine" style="margin:4px">Noch keine Dateien geladen.</p>'}
+    ${kaputt.length ? `<div class="menue-label">Nicht lesbar</div>${kaputt.map(d => `<button class="navitem sub${state.current === d.uid && state.view === 'detail' ? ' active' : ''}" data-action="open" data-uid="${d.uid}"><span class="vdot v-crit"></span><span class="menue-text">${esc(d.fileName)}</span></button>`).join('')}` : ''}
     <div class="side-foot">
       <label class="check"><input type="checkbox" id="persist" ${state.persist ? 'checked' : ''}> Dateien in diesem Browser merken</label>
       ${state.saveError ? `<span class="notice">${esc(state.saveError)}</span>` : ''}
-      ${state.docs.length ? '<button class="linkbtn" data-action="clear-all" style="align-self:flex-start">Alle entfernen</button>' : ''}
+      ${state.docs.length ? `<button class="linkbtn" data-action="clear-all" style="align-self:flex-start">Alle ${state.docs.length} Dateien aus der Ansicht entfernen</button>` : ''}
     </div>`;
+  sb.innerHTML = menueGruppe('ansicht', 'Ansicht', ansicht) + menueGruppe('profil', 'Persönliche Profile', sidebarProfil()) + menueGruppe('daten', 'Daten &amp; Ablageordner', daten);
 }
 
 function sidebarProfil() {
   const p = aktivesProfil();
   return `<div class="side-profil">
-      <button class="navitem${state.view === 'profile' ? ' active' : ''}" data-action="profile">Persönliche Profile${state.profile.liste.length ? ` <span class="count">${state.profile.liste.length}</span>` : ''}</button>
-      ${p ? `<div class="side-profil-aktiv">Aktiv: <b>${esc(p.bezeichnung)}</b>${profilMeta(p.id).geaendert ? '<span class="tag tag-warn">nicht exportiert</span>' : ''}</div>` : ''}
+      <button class="navitem sub${state.view === 'profile' ? ' active' : ''}" data-action="profile">Profile verwalten${state.profile.liste.length ? ` <span class="count">${state.profile.liste.length}</span>` : ''}</button>
+      ${p ? `<div class="side-profil-aktiv">Aktiv: <b>${esc(p.bezeichnung)}</b>${profilMeta(p.id).geaendert ? '<span class="tag tag-warn">nicht exportiert</span>' : ''}</div>` : '<div class="side-profil-aktiv">Kein Profil aktiv</div>'}
     </div>`;
 }
 
@@ -6938,7 +6993,7 @@ function viewDetail(doc) {
 }
 
 function viewErrorDoc(doc) {
-  return `<div class="page-head"><div><div class="crumbs">${immoDocs().length > 1 ? '<button class="linkbtn" data-action="compare">← Zum Vergleich</button>' : ''}</div><h1 style="margin-top:6px">${esc(doc.fileName)}</h1><p class="sub">Diese Datei konnte nicht als Immobilienbewertung gelesen werden.</p></div></div>
+  return `<div class="page-head"><div><div class="crumbs">${immoDocs().length > 1 ? '<button class="linkbtn" data-action="compare">← Zum Vergleich</button>' : ''}</div><h1 style="margin-top:6px">${esc(doc.fileName)}</h1><p class="sub">Diese Datei konnte nicht als Immobilienbewertung gelesen werden.</p></div><div class="dh-actions"><button class="btn sm" data-action="remove" data-uid="${doc.uid}">Aus der Ansicht entfernen</button></div></div>
     <div class="card"><ul class="issues">${issueItems(doc.issues)}</ul>
     ${doc.text ? `<details class="raw" style="margin-top:14px"><summary>Dateiinhalt (Auszug)</summary><pre>${esc(doc.text.slice(0, 6000))}</pre></details>` : ''}</div>`;
 }
@@ -6962,7 +7017,7 @@ function detailHead(doc) {
         <p class="sub">${esc([place, a.objektart].filter(Boolean).join(' · '))}</p>
         <p class="sub small">${esc(ids)}${url ? ` · <a href="${esc(url)}" target="_blank" rel="noopener noreferrer">Inserat öffnen ↗</a>` : ''}</p>
       </div>
-      <div class="dh-actions"><button class="btn sm" data-action="jump" data-target="sec-pruefung">${issueSummary(doc)}</button><button class="btn sm needs-print" data-action="print">Drucken / PDF</button></div>
+      <div class="dh-actions"><button class="btn sm" data-action="jump" data-target="sec-pruefung">${issueSummary(doc)}</button><button class="btn sm needs-print" data-action="print">Drucken / PDF</button><button class="btn sm" data-action="remove" data-uid="${doc.uid}" title="Nur aus dieser Ansicht entfernen – die Datei bleibt unverändert">Entfernen</button></div>
     </div>
     <div class="meta-chips">
       ${chip('Status', m.analysestatus)}${chip('Zugriff', a.zugriffsstatus)}${chip('Verfügbarkeit', a.verfuegbarkeit, a.verfuegbarkeit_stand)}${chip('Fokus', m.nutzungsfokus)}${chip('Prüfdatum', m.pruefdatum)}${chip('Export', m.exportdatum)}
@@ -7379,7 +7434,7 @@ function compareTable(rows) {
     return `<tr class="clickable" data-action="open" data-uid="${d.uid}"><td><input type="checkbox" data-select="${d.uid}" ${state.selected.has(d.uid) ? 'checked' : ''} aria-label="Für Gegenüberstellung auswählen"></td>${COLS.map(cell).join('')}</tr>`;
   }).join('');
 
-  return `<div class="card flush"><div class="table-wrap"><table class="t cmp-table"><thead><tr><th><input type="checkbox" id="selAll" ${allSel ? 'checked' : ''} aria-label="Alle sichtbaren auswählen"></th>${head}</tr></thead><tbody>${body || `<tr><td colspan="${COLS.length + 1}" class="muted">Keine Treffer.${Object.keys(state.filter.spalten).length ? ' <button class="linkbtn" data-action="spaltenfilter-alle-weg">Spaltenfilter löschen</button>' : ''}</td></tr>`}</tbody></table></div></div>
+  return `<div class="card flush"><div class="table-wrap fest"><table class="t cmp-table"><thead><tr><th><input type="checkbox" id="selAll" ${allSel ? 'checked' : ''} aria-label="Alle sichtbaren auswählen"></th>${head}</tr></thead><tbody>${body || `<tr><td colspan="${COLS.length + 1}" class="muted">Keine Treffer.${Object.keys(state.filter.spalten).length ? ' <button class="linkbtn" data-action="spaltenfilter-alle-weg">Spaltenfilter löschen</button>' : ''}</td></tr>`}</tbody></table></div></div>
     <p class="chart-note">Überschrift anklicken = sortieren, Trichter daneben = sortieren und filtern. „—“ = null im Export (nicht verlässlich bestimmbar); Zahlenfilter zeigen solche Objekte standardmäßig weiter an. Kursive Werte stammen nur aus Szenarien und zählen beim Sortieren und Filtern nicht. Farbige Punkte zeigen den Belegstatus – anklicken für Details. Häkchen wählen Objekte für die Gegenüberstellung.</p>`;
 }
 
@@ -7668,7 +7723,7 @@ document.addEventListener('click', e => {
     }
     case 'close-dlg': $('#dlg').close(); break;
     case 'compare': state.view = 'compare'; render(); window.scrollTo(0, 0); break;
-    case 'open': if ($('#dlg').open) $('#dlg').close(); state.view = 'detail'; state.current = uid; render(); window.scrollTo(0, 0); break;
+    case 'open': if ($('#dlg').open) $('#dlg').close(); state.view = 'detail'; state.current = uid; state.menue.mobilAuf = false; render(); window.scrollTo(0, 0); break;
     case 'remove': e.stopPropagation(); removeDoc(uid); break;
     case 'clear-all':
       openDialog(dlgHead('Alle Dateien entfernen?') + `<p style="margin:0">Alle ${state.docs.length} geladenen Dateien werden aus der Ansicht entfernt. Die Dateien auf deinem Rechner bleiben unverändert.</p><div class="btn-row" style="justify-content:flex-end;margin-bottom:0"><button class="btn" data-action="close-dlg">Abbrechen</button><button class="btn primary" data-action="clear-all-confirm">Alle entfernen</button></div>`);
@@ -7682,6 +7737,12 @@ document.addEventListener('click', e => {
       break;
     }
     case 'cmp-tab': state.cmpTab = el.dataset.tab; lsSet(LS.cmpTab, state.cmpTab); render(); break;
+    case 'menue': menueUmschalten(); break;
+    case 'menue-tab':
+      if ($('#dlg').open) $('#dlg').close();
+      state.view = 'compare'; state.cmpTab = el.dataset.tab; state.menue.mobilAuf = false;
+      render(); window.scrollTo(0, 0);
+      break;
     case 'filter-ort': {
       const o = el.dataset.ort ?? '';
       state.filter.orte.has(o) ? state.filter.orte.delete(o) : state.filter.orte.add(o);
@@ -7717,9 +7778,14 @@ document.addEventListener('click', e => {
     default: if (!karteAktion(action, el) && !spaltenAktion(action, el)) pAktion(action, el);
   }
 });
-document.addEventListener('keydown', e => {
-  if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('.docitem')) { e.preventDefault(); e.target.click(); }
-});
+// Auf- und Zuklappen der Menügruppen merken (toggle steigt nicht auf, daher in der Einfangphase)
+document.addEventListener('toggle', e => {
+  const g = e.target.closest?.('.menue-gruppe');
+  if (!g || e.target !== g) return;
+  state.menue.gruppen[g.dataset.gruppe] = g.open;
+  menueSpeichern();
+}, true);
+addEventListener('resize', () => { if (!menueMobil() && state.menue.mobilAuf) { state.menue.mobilAuf = false; } menueKlassen(); });
 function renderResults() {
   const box = $('#cmpResults');
   if (!box) return render();
