@@ -1023,6 +1023,44 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13px; }
 .t th.sortable { cursor: pointer; user-select: none; }
 .t th.sortable:hover { color: var(--ink); }
 .t th .arrow { color: var(--accent); }
+/* Überschriften der Vergleichstabelle: Beschriftung sortiert, Trichter öffnet das Spaltenmenü (src/oberflaeche/spaltenfilter.js) */
+.cmp-table th.sortable { cursor: default; }
+.cmp-table .th-kopf { display: flex; align-items: flex-end; gap: 3px; }
+.cmp-table th.num .th-kopf { justify-content: flex-end; }
+.th-sort { border: 0; background: none; padding: 0; font: inherit; color: inherit; text-align: inherit; line-height: inherit; cursor: pointer; }
+.th-sort:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 2px; }
+.th-filter { flex: none; display: inline-grid; place-items: center; width: 22px; height: 22px; margin: 0 -2px -3px 0; border: 0; border-radius: 6px; background: none; color: var(--muted); cursor: pointer; }
+.th-filter:hover, .th-filter[aria-expanded="true"] { background: var(--surface-3); color: var(--ink); }
+.th-filter.aktiv { background: var(--accent); color: #fff; }
+.th-filter.aktiv svg path { fill: currentColor; }
+.cmp-table th.gefiltert .th-sort { color: var(--accent-ink); }
+.th-sort:focus-visible, .th-filter:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.spaltenmenue:not([hidden]) { position: fixed; z-index: 250; width: min(320px, calc(100vw - 16px)); max-height: calc(100vh - 16px); overflow: auto; display: flex; flex-direction: column; gap: 14px; padding: 12px 14px; border: 1px solid var(--line-2); border-radius: 12px; background: var(--surface); box-shadow: 0 8px 28px rgba(0, 0, 0, .2); font-size: 13px; }
+.sm-kopf { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 14px; }
+.sm-titel { margin-bottom: 6px; font-size: 11.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: .06em; }
+.sm-sort { display: flex; flex-wrap: wrap; gap: 6px; }
+.sm-sort .btn.on { border-color: var(--accent); background: var(--accent-wash); color: var(--accent-ink); }
+.sm-bereich { display: flex; align-items: flex-end; gap: 8px; }
+.sm-feld { display: flex; flex: 1; flex-direction: column; gap: 3px; min-width: 0; font-size: 12px; color: var(--ink-2); }
+.sm-feld input { width: 100%; min-width: 0; height: 32px; padding: 0 8px; border-radius: 8px; border: 1px solid var(--line-2); background: var(--surface); color: var(--ink); font-size: 13.5px; }
+.sm-feld input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+.sm-feld input:disabled { opacity: .5; }
+.sm-einheit { padding-bottom: 7px; font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+.sm-hinweis { margin: 6px 0 0; font-size: 12px; color: var(--ink-2); }
+.sm-werte { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 10px 0 0; padding: 0; border: 0; }
+.sm-werte legend { width: 100%; margin-bottom: 4px; padding: 0; font-size: 12px; color: var(--ink-2); }
+.sm-liste { display: flex; flex-direction: column; gap: 7px; max-height: 240px; overflow: auto; }
+.sm-liste .check { display: flex; }
+.sm-liste .n { margin-left: auto; padding-left: 10px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.sm-links { display: flex; gap: 14px; margin-top: 8px; }
+.sm-fuss { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 10px; border-top: 1px solid var(--line); }
+.sm-anzahl { font-size: 12.5px; color: var(--ink-2); }
+.sf-leiste { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 0 0 12px; }
+.sf-leiste .lbl { margin-right: 2px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); }
+.sf-chip { display: inline-flex; align-items: stretch; max-width: 100%; min-height: 30px; border-radius: 999px; border: 1px solid var(--accent); background: var(--accent-wash); color: var(--accent-ink); font-size: 12.5px; overflow: hidden; }
+.sf-chip-text { padding: 4px 4px 4px 12px; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.sf-chip-x { width: 28px; flex: none; border: 0; background: none; color: inherit; font-size: 15px; cursor: pointer; }
+.sf-chip-text:hover, .sf-chip-x:hover { background: color-mix(in srgb, var(--accent) 14%, transparent); }
 .t td.cell-obj { min-width: 200px; }
 .t .obj-title { font-weight: 600; line-height: 1.35; }
 .t .obj-sub { font-size: 12px; color: var(--ink-2); }
@@ -1453,6 +1491,7 @@ a.btn { color: inherit; text-decoration: none; }
 <dialog id="dlg"><div class="dlg" id="dlgBody"></div></dialog>
 <div class="drop-overlay" aria-hidden="true"><div>JSON-Dateien hier ablegen</div></div>
 <div class="tooltip" id="tooltip" role="tooltip"></div>
+<div class="spaltenmenue" id="spaltenmenue" role="dialog" hidden></div>
 <div class="toast" id="toast" role="status"></div>
 
 <!-- Einzeldatei, erzeugt mit tools/viewer_bauen.py aus immobilien-viewer.html und src/ – nicht direkt bearbeiten -->
@@ -3348,6 +3387,105 @@ a.btn { color: inherit; text-decoration: none; }
   const api = { NOMINATIM, LAENGE, FELDNAME, adresse, trenneHausnummer, schluessel, suchanfragen, umgebungsanfrage, auswerten, pruefeNachtrag, pruefePunkt, googleMapsLink };
   if (typeof module === 'object' && module.exports) module.exports = api;
   else (root.ImmoRechenkern = root.ImmoRechenkern || {}).standort = api;
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+</script>
+<script>/* src/rechenkern/tabellenfilter.js */
+/*
+ * ImmoInvest Rechenkern – Spaltenfilter der Vergleichstabelle
+ * Filterbedingungen bereinigen und prüfen, deutsche Zahleneingaben lesen. Ohne DOM und ohne Netz: Die Oberfläche
+ * (src/oberflaeche/spaltenfilter.js) liefert je Spalte Typ und Wert, hier wird nur entschieden, ob eine Zeile passt.
+ * Werte ohne Angabe (null, fehlend) sind eine eigene Gruppe „ohne Wert“ und werden nie still als 0 behandelt.
+ *
+ * Typen und Bedingungen:
+ *   zahl    { min, max, werte }   werte: 'alle' (ohne Wert zeigen) | 'mit' (ohne Wert ausblenden) | 'ohne' (nur ohne Wert)
+ *   datum   { von, bis, werte }   wie zahl, Datumsangaben als JJJJ-MM-TT
+ *   auswahl { werte: [...] }      erlaubte Schlüssel; '' steht für „ohne Angabe“
+ *   text    { text }              enthält (ohne Groß-/Kleinschreibung)
+ */
+(function (root) {
+  'use strict';
+
+  const TYPEN = ['zahl', 'datum', 'auswahl', 'text'];
+  const WERTE = ['alle', 'mit', 'ohne'];
+  const DATUM = /^\d{4}-\d{2}-\d{2}$/;
+  const istZahl = v => typeof v === 'number' && Number.isFinite(v);
+
+  /** Deutsche oder englische Zahleneingabe lesen: „150.000“, „4,5“, „1.234,5“, „1234.5“. Leer → null, ungültig → NaN. */
+  function zahlLesen(text) {
+    if (istZahl(text)) return text;
+    let s = String(text ?? '').replace(/[\s €%]/g, '').replace(/^−/, '-');
+    if (!s) return null;
+    if (s.includes(',')) s = s.replace(/\./g, '').replace(',', '.');
+    else if (/^-?\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g, '');
+    if (!/^-?(\d+\.?\d*|\.\d+)$/.test(s)) return NaN;
+    return Number(s);
+  }
+
+  /** Bedingung vereinheitlichen; null heißt: schränkt nichts ein. */
+  function bereinige(typ, roh) {
+    const r = roh && typeof roh === 'object' ? roh : {};
+    if (typ === 'zahl' || typ === 'datum') {
+      const gueltig = typ === 'zahl' ? istZahl : v => typeof v === 'string' && DATUM.test(v);
+      let unten = gueltig(r[typ === 'zahl' ? 'min' : 'von']) ? r[typ === 'zahl' ? 'min' : 'von'] : null;
+      let oben = gueltig(r[typ === 'zahl' ? 'max' : 'bis']) ? r[typ === 'zahl' ? 'max' : 'bis'] : null;
+      const werte = WERTE.includes(r.werte) ? r.werte : 'alle';
+      if (unten !== null && oben !== null && unten > oben) [unten, oben] = [oben, unten];
+      if (werte === 'ohne') unten = oben = null;
+      if (unten === null && oben === null && werte === 'alle') return null;
+      return typ === 'zahl' ? { min: unten, max: oben, werte } : { von: unten, bis: oben, werte };
+    }
+    if (typ === 'auswahl') {
+      if (!Array.isArray(r.werte)) return null;
+      return { werte: [...new Set(r.werte.map(v => String(v ?? '')))] };
+    }
+    if (typ === 'text') {
+      const text = String(r.text ?? '').trim().toLowerCase();
+      return text ? { text } : null;
+    }
+    return null;
+  }
+
+  /** Passt ein Wert zur Bedingung? Ohne Bedingung passt alles. */
+  function passt(typ, bedingung, wert) {
+    if (!bedingung) return true;
+    if (typ === 'zahl' || typ === 'datum') {
+      const leer = typ === 'zahl' ? !istZahl(wert) : !(typeof wert === 'string' && DATUM.test(wert));
+      if (bedingung.werte === 'ohne') return leer;
+      if (leer) return bedingung.werte === 'alle';
+      const [unten, oben] = typ === 'zahl' ? [bedingung.min, bedingung.max] : [bedingung.von, bedingung.bis];
+      return (unten === null || wert >= unten) && (oben === null || wert <= oben);
+    }
+    if (typ === 'auswahl') return bedingung.werte.includes(String(wert ?? ''));
+    if (typ === 'text') return String(wert ?? '').toLowerCase().includes(bedingung.text);
+    return true;
+  }
+
+  /**
+   * Zeilen filtern. spalten: [{ id, typ }], bedingungen: { id: Bedingung }, wertVon(spalte, zeile).
+   * Mit ausser = Spalten-ID bleibt deren Bedingung unberücksichtigt (für die Auswahlliste dieser Spalte).
+   */
+  function anwenden(zeilen, spalten, bedingungen, wertVon, { ausser = null } = {}) {
+    const aktiv = spalten.filter(s => s.id !== ausser && bedingungen && bedingungen[s.id]);
+    if (!aktiv.length) return zeilen.slice();
+    return zeilen.filter(z => aktiv.every(s => passt(s.typ, bedingungen[s.id], wertVon(s, z))));
+  }
+
+  /** Häufigkeit je Schlüssel (für Auswahllisten mit Anzahl). */
+  function haeufigkeit(werte) {
+    const m = new Map();
+    for (const w of werte) { const k = String(w ?? ''); m.set(k, (m.get(k) || 0) + 1); }
+    return m;
+  }
+
+  /** Kleinster und größter vorhandener Wert (für den Hinweis im Zahlenfilter); null, wenn keiner da ist. */
+  function spanne(werte) {
+    const z = werte.filter(istZahl);
+    return z.length ? { min: Math.min(...z), max: Math.max(...z) } : null;
+  }
+
+  const api = { TYPEN, WERTE, zahlLesen, bereinige, passt, anwenden, haeufigkeit, spanne };
+  if (typeof module === 'object' && module.exports) module.exports = api;
+  else (root.ImmoRechenkern = root.ImmoRechenkern || {}).tabellenfilter = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);
 </script>
 <script>/* src/oberflaeche/persoenlich.js */
@@ -5456,6 +5594,262 @@ document.addEventListener('keydown', e => {
 });
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') karteSuchen(); });
 </script>
+<script>/* src/oberflaeche/spaltenfilter.js */
+/*
+ * ImmoInvest Viewer – Sortieren und Filtern an jeder Spaltenüberschrift der Vergleichstabelle
+ *
+ * Jede Überschrift hat zwei Knöpfe: die Beschriftung sortiert (wie bisher), der Trichter öffnet ein Menü zum
+ * Sortieren und Filtern. Filtertyp und Werte kommen aus COLS im Hauptskript (filter, fv, optionen, einheit),
+ * die Prüfung aus dem Rechenkern-Modul tabellenfilter.js. Die Filter wirken über filteredDocs() in allen
+ * gefilterten Reitern (Tabelle, Kaufpreis/m² & Rendite, Karte, Mit meinem Profil) und im CSV-Export; aktive
+ * Filter stehen deshalb in jedem dieser Reiter als Leiste über den Ergebnissen.
+ *
+ * Klassisches Skript; nutzt state, COLS, renderResults … des Hauptskripts erst zur Laufzeit.
+ */
+'use strict';
+
+const FILTER_ICON = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18l-7 8.5V19l-4 2v-7.5z"/></svg>';
+const SORT_TEXTE = { zahl: ['Kleinste zuerst', 'Größte zuerst'], datum: ['Älteste zuerst', 'Neueste zuerst'], text: ['A bis Z', 'Z bis A'], auswahl: ['Aufsteigend', 'Absteigend'] };
+const SORT_TEXTE_SPALTE = { urteil: ['Beste zuerst', 'Schlechteste zuerst'], sicherheit: ['Hoch zuerst', 'Niedrig zuerst'], energie: ['Sparsamste zuerst', 'Höchster Verbrauch zuerst'], export: ['Ohne Befund zuerst', 'Fehler zuerst'] };
+const WERTE_TEXTE = [['alle', 'zeigen'], ['mit', 'ausblenden'], ['ohne', 'nur diese']];
+
+// Offenes Menü: Spalte, Art des Ankers (Überschrift oder Filterleiste), Rohtext der Eingaben, Eingabefehler
+let spaltenMenue = { col: null, anker: 'kopf', roh: {}, fehler: {} };
+
+const spalteMit = id => COLS.find(c => c.id === id);
+const spaltenTypen = () => COLS.map(c => ({ id: c.id, typ: c.filter }));
+const spaltenWert = (s, d) => colFilterValue(spalteMit(s.id), d);
+const spaltenZahl = (c, v) => `${nfA.format(v)}${c.einheit ? NB + c.einheit : ''}`;
+
+/* ---------- Überschrift, Urteilsauswahl, Leiste der aktiven Filter ---------- */
+function spaltenKopf(c, aktiv) {
+  const gefiltert = !!state.filter.spalten[c.id], titel = colTitel(c);
+  return `<div class="th-kopf"><button class="th-sort" data-action="sort" data-col="${c.id}" title="Nach „${esc(titel)}“ sortieren">${c.label}${aktiv ? ` <span class="arrow">${state.sort.dir > 0 ? '▲' : '▼'}</span>` : ''}</button><button class="th-filter${gefiltert ? ' aktiv' : ''}" data-action="spaltenmenue" data-col="${c.id}" aria-haspopup="dialog" aria-expanded="${spaltenMenue.col === c.id}" aria-label="${esc(titel)}: sortieren und filtern${gefiltert ? ' (Filter aktiv)' : ''}" title="Sortieren und filtern">${FILTER_ICON}</button></div>`;
+}
+
+/** Die Auswahl „Alle Urteile“ über der Tabelle zeigt denselben Filter wie die Spalte „Gesamturteil“. */
+function urteilAuswahl() {
+  const b = state.filter.spalten.urteil;
+  const einer = b && b.werte.length === 1 && VERDICT_ORDER.includes(b.werte[0]) ? b.werte[0] : null;
+  return `<select id="fu" aria-label="Nach Gesamturteil filtern"><option value=""${b ? '' : ' selected'}>Alle Urteile</option>${VERDICT_ORDER.map(v => `<option value="${v}"${einer === v ? ' selected' : ''}>${esc(L(v))}</option>`).join('')}${b && !einer ? '<option value="__mehrere" selected>Mehrere (Spaltenfilter)</option>' : ''}</select>`;
+}
+function urteilAuswahlSetzen(v) {
+  if (v === '__mehrere') return;
+  spaltenBedingungSetzen(spalteMit('urteil'), v ? { werte: [v] } : null);
+  if (spaltenMenue.col === 'urteil') spaltenmenueZeichnen();
+}
+
+function spaltenBeschreibung(c, b) {
+  if (c.filter === 'zahl' || c.filter === 'datum') {
+    if (b.werte === 'ohne') return 'nur ohne Wert';
+    const f = v => (c.filter === 'datum' ? fmtDate(v) : spaltenZahl(c, v));
+    const [u, o] = c.filter === 'zahl' ? [b.min, b.max] : [b.von, b.bis];
+    const bereich = u !== null && o !== null ? `${f(u)} bis ${f(o)}` : u !== null ? `ab ${f(u)}` : o !== null ? `bis ${f(o)}` : '';
+    if (!bereich) return 'nur mit Wert';
+    return `${bereich}${b.werte === 'mit' ? ' · ohne Wert ausgeblendet' : ' · ohne Wert sichtbar'}`;
+  }
+  if (c.filter === 'auswahl') {
+    const namen = new Map(c.optionen()), l = b.werte.map(k => namen.get(k) ?? k);
+    const ohne = c.optionen().filter(([k]) => !b.werte.includes(k)).map(([, t]) => t);
+    const kurz = liste => (liste.length <= 2 ? liste.join(', ') : `${liste.slice(0, 2).join(', ')} und ${liste.length - 2} weitere`);
+    // Wer nur wenig abwählt, liest lieber, was fehlt
+    return !l.length ? 'nichts ausgewählt' : ohne.length < l.length ? `alle außer ${kurz(ohne)}` : kurz(l);
+  }
+  return `enthält „${b.text}“`;
+}
+
+function spaltenfilterLeiste(rows) {
+  const aktiv = COLS.filter(c => state.filter.spalten[c.id]);
+  if (!aktiv.length) return '';
+  return `<div class="sf-leiste" role="group" aria-label="Aktive Spaltenfilter"><span class="lbl">Spaltenfilter · ${rows.length} von ${basisDocs().length}</span>
+    ${aktiv.map(c => `<span class="sf-chip"><button class="sf-chip-text" data-action="spaltenmenue" data-col="${c.id}" aria-haspopup="dialog" title="Filter ändern">${esc(colTitel(c))}: ${esc(spaltenBeschreibung(c, state.filter.spalten[c.id]))}</button><button class="sf-chip-x" data-action="spaltenfilter-weg" data-col="${c.id}" aria-label="Filter „${esc(colTitel(c))}“ entfernen">×</button></span>`).join('')}
+    <button class="linkbtn" data-action="spaltenfilter-alle-weg">Alle Spaltenfilter löschen</button></div>`;
+}
+
+/* ---------- Menü ---------- */
+function spaltenmenueInhalt(c) {
+  const F = RK.tabellenfilter, b = state.filter.spalten[c.id] || null, { roh, fehler } = spaltenMenue;
+  const dir = state.sort.col === c.id ? state.sort.dir : 0;
+  const [auf, ab] = SORT_TEXTE_SPALTE[c.id] || SORT_TEXTE[c.filter];
+  const ohneDiese = F.anwenden(basisDocs(), spaltenTypen(), state.filter.spalten, spaltenWert, { ausser: c.id });
+  let filter;
+  if (c.filter === 'zahl' || c.filter === 'datum') {
+    const werte = b ? b.werte : 'alle', [u, o] = c.filter === 'zahl' ? ['min', 'max'] : ['von', 'bis'];
+    const sp = c.filter === 'zahl' ? F.spanne(ohneDiese.map(d => colFilterValue(c, d))) : null;
+    const feld = (k, text) => `<label class="sm-feld"><span>${text}</span><input type="${c.filter === 'datum' ? 'date' : 'text'}"${c.filter === 'zahl' ? ' inputmode="decimal" autocomplete="off"' : ''} data-sf="${k}" value="${esc(roh[k] ?? '')}"${werte === 'ohne' ? ' disabled' : ''}${fehler[k] ? ' aria-invalid="true"' : ''}></label>`;
+    filter = `<div class="sm-bereich">${feld(u, 'von')}${feld(o, 'bis')}${c.einheit ? `<span class="sm-einheit">${esc(c.einheit)}</span>` : ''}</div>
+      <div class="feld-fehler" id="sm-fehler"${fehler[u] || fehler[o] ? '' : ' hidden'}>Bitte eine Zahl eingeben, z. B. 150.000 oder 4,5.</div>
+      ${sp ? `<div class="sm-hinweis">In der Liste: ${esc(spaltenZahl(c, sp.min))} bis ${esc(spaltenZahl(c, sp.max))}</div>` : ''}
+      <fieldset class="sm-werte"><legend>Objekte ohne Wert (—)</legend>${WERTE_TEXTE.map(([v, t]) => `<label class="check"><input type="radio" name="sm-werte" data-sf="werte" value="${v}"${werte === v ? ' checked' : ''}> ${t}</label>`).join('')}</fieldset>`;
+  } else if (c.filter === 'auswahl') {
+    const zahl = F.haeufigkeit(ohneDiese.map(d => colFilterValue(c, d)));
+    const erlaubt = b ? new Set(b.werte) : null;
+    const sichtbar = c.optionen().filter(([k]) => zahl.get(k) || (erlaubt && erlaubt.has(k)));
+    filter = sichtbar.length
+      ? `<div class="sm-liste">${sichtbar.map(([k, t]) => `<label class="check"><input type="checkbox" data-sf="wert" value="${esc(k)}"${!erlaubt || erlaubt.has(k) ? ' checked' : ''}><span>${esc(t)}</span><span class="n">${zahl.get(k) || 0}</span></label>`).join('')}</div>
+        <div class="sm-links"><button class="linkbtn" data-action="spaltenfilter-alle" data-col="${c.id}">Alle auswählen</button><button class="linkbtn" data-action="spaltenfilter-keine" data-col="${c.id}">Keine</button></div>`
+      : '<p class="sm-hinweis">Keine Werte vorhanden.</p>';
+  } else {
+    filter = `<label class="sm-feld"><span>enthält</span><input type="search" data-sf="text" value="${esc(roh.text ?? '')}" placeholder="z. B. Gohlis, Altbau, ImmoScout" autocomplete="off"></label>`;
+  }
+  return `<div class="sm-kopf"><b>${esc(colTitel(c))}</b><button class="icon-btn" data-action="spaltenmenue-zu" aria-label="Schließen">×</button></div>
+    <div><div class="sm-titel">Sortieren</div><div class="sm-sort">
+      <button class="btn sm${dir === 1 ? ' on' : ''}" data-action="spalte-sort" data-col="${c.id}" data-dir="1" aria-pressed="${dir === 1}">↑ ${auf}</button>
+      <button class="btn sm${dir === -1 ? ' on' : ''}" data-action="spalte-sort" data-col="${c.id}" data-dir="-1" aria-pressed="${dir === -1}">↓ ${ab}</button></div></div>
+    <div><div class="sm-titel">Filtern</div>${filter}</div>
+    <div class="sm-fuss" id="sm-fuss">${spaltenmenueFuss(c)}</div>`;
+}
+
+function spaltenmenueFuss(c) {
+  return `<span class="sm-anzahl">${filteredDocs().length} von ${basisDocs().length} Objekten</span>${state.filter.spalten[c.id] ? `<button class="linkbtn" data-action="spaltenfilter-weg" data-col="${c.id}">Filter löschen</button>` : ''}`;
+}
+
+function spaltenmenueOeffnen(c, ausLeiste) {
+  const b = state.filter.spalten[c.id];
+  const zahl = v => (v === null || v === undefined ? '' : nfA.format(v));
+  spaltenMenue = { col: c.id, anker: ausLeiste ? 'leiste' : 'kopf', fehler: {},
+    roh: !b ? {} : c.filter === 'zahl' ? { min: zahl(b.min), max: zahl(b.max) } : c.filter === 'datum' ? { von: b.von || '', bis: b.bis || '' } : c.filter === 'text' ? { text: b.text } : {} };
+  const m = $('#spaltenmenue');
+  m.setAttribute('aria-label', `${colTitel(c)}: sortieren und filtern`);
+  m.hidden = false;
+  spaltenmenueZeichnen();
+  document.querySelectorAll('.th-filter').forEach(x => x.setAttribute('aria-expanded', String(x.dataset.col === c.id)));
+  setTimeout(() => (m.querySelector('[data-sf]:not([disabled])') || m.querySelector('.sm-sort .btn'))?.focus(), 0);
+}
+
+function spaltenmenueZeichnen() {
+  const c = spalteMit(spaltenMenue.col);
+  if (!c) return spaltenmenueSchliessen();
+  $('#spaltenmenue').innerHTML = spaltenmenueInhalt(c);
+  spaltenmenueAusrichten();
+}
+
+function spaltenmenueAnker() {
+  const sel = `[data-action="spaltenmenue"][data-col="${spaltenMenue.col}"]`;
+  const kopf = document.querySelector(`.cmp-table ${sel}`), leiste = document.querySelector(`.sf-leiste ${sel}`);
+  return spaltenMenue.anker === 'leiste' ? leiste || kopf : kopf || leiste;
+}
+
+/** Nach jedem Neuzeichnen und beim Scrollen: Menü unter (oder über) seinen Knopf setzen; ohne Knopf schließen. */
+function spaltenmenueAusrichten() {
+  const m = $('#spaltenmenue');
+  if (!spaltenMenue.col || !m || m.hidden) return;
+  const anker = state.view === 'compare' ? spaltenmenueAnker() : null;
+  if (!anker) return spaltenmenueSchliessen({ fokus: false });
+  const r = anker.getBoundingClientRect(), w = m.offsetWidth, h = m.offsetHeight;
+  if (r.bottom < 0 || r.top > innerHeight) return spaltenmenueSchliessen({ fokus: false });
+  const left = Math.max(8, Math.min(r.left, innerWidth - w - 8));
+  let top = r.bottom + 6;
+  if (top + h > innerHeight - 8 && r.top - h - 6 >= 8) top = r.top - h - 6;
+  m.style.left = `${left}px`;
+  m.style.top = `${Math.max(8, Math.min(top, innerHeight - h - 8))}px`;
+}
+
+function spaltenmenueSchliessen({ fokus = true } = {}) {
+  const m = $('#spaltenmenue');
+  if (!spaltenMenue.col) return;
+  const anker = fokus ? spaltenmenueAnker() : null;
+  spaltenMenue = { col: null, anker: 'kopf', roh: {}, fehler: {} };
+  if (m) { m.hidden = true; m.innerHTML = ''; }
+  document.querySelectorAll('.th-filter[aria-expanded="true"]').forEach(x => x.setAttribute('aria-expanded', 'false'));
+  anker?.focus();
+}
+
+/** Bedingung setzen (null = Filter entfernen), Ergebnisse und Menüfuß aktualisieren. */
+function spaltenBedingungSetzen(c, roh) {
+  const b = roh ? RK.tabellenfilter.bereinige(c.filter, roh) : null;
+  if (b) state.filter.spalten[c.id] = b;
+  else delete state.filter.spalten[c.id];
+  renderResults();
+  if (c.id === 'urteil') { const sel = $('#fu'); if (sel) sel.outerHTML = urteilAuswahl(); }
+  const fuss = document.getElementById('sm-fuss');
+  if (fuss && spaltenMenue.col === c.id) fuss.innerHTML = spaltenmenueFuss(c);
+}
+
+/** Eingaben im Menü; true, wenn das Ereignis hierher gehörte. */
+function spaltenEingabe(t, art) {
+  const m = t.closest?.('#spaltenmenue');
+  if (!m || !spaltenMenue.col) return false;
+  const c = spalteMit(spaltenMenue.col), F = RK.tabellenfilter, sf = t.dataset.sf;
+  if (!sf) return true;
+  if (c.filter === 'zahl' || c.filter === 'datum') {
+    const [u, o] = c.filter === 'zahl' ? ['min', 'max'] : ['von', 'bis'];
+    const text = k => m.querySelector(`[data-sf="${k}"]`)?.value ?? '';
+    const werte = m.querySelector('[data-sf="werte"]:checked')?.value || 'alle';
+    m.querySelectorAll(`[data-sf="${u}"], [data-sf="${o}"]`).forEach(x => { x.disabled = werte === 'ohne'; });
+    spaltenMenue.roh = { [u]: text(u), [o]: text(o) };
+    if (c.filter === 'datum') {
+      spaltenBedingungSetzen(c, { von: text(u) || null, bis: text(o) || null, werte });
+      return true;
+    }
+    const unten = F.zahlLesen(text(u)), oben = F.zahlLesen(text(o));
+    spaltenMenue.fehler = { min: Number.isNaN(unten), max: Number.isNaN(oben) };
+    for (const k of [u, o]) m.querySelector(`[data-sf="${k}"]`)?.toggleAttribute('aria-invalid', !!spaltenMenue.fehler[k]);
+    const hinweis = document.getElementById('sm-fehler');
+    if (hinweis) hinweis.hidden = !(spaltenMenue.fehler.min || spaltenMenue.fehler.max);
+    if (spaltenMenue.fehler.min || spaltenMenue.fehler.max) return true;
+    spaltenBedingungSetzen(c, { min: unten, max: oben, werte });
+    return true;
+  }
+  if (c.filter === 'auswahl') {
+    if (art !== 'change') return true;
+    const b = state.filter.spalten[c.id], erlaubt = b ? new Set(b.werte) : null;
+    const angezeigt = new Map([...m.querySelectorAll('[data-sf="wert"]')].map(x => [x.value, x.checked]));
+    // Nicht angezeigte Werte (gerade ohne Treffer) behalten ihren bisherigen Zustand
+    const werte = c.optionen().map(([k]) => k).filter(k => (angezeigt.has(k) ? angezeigt.get(k) : !erlaubt || erlaubt.has(k)));
+    spaltenBedingungSetzen(c, werte.length === c.optionen().length ? null : { werte });
+    return true;
+  }
+  spaltenMenue.roh = { text: t.value };
+  spaltenBedingungSetzen(c, { text: t.value });
+  return true;
+}
+
+/* ---------- Aktionen ---------- */
+function spaltenAktion(action, el) {
+  const c = el.dataset.col ? spalteMit(el.dataset.col) : null;
+  switch (action) {
+    case 'spaltenmenue':
+      if (!c) break;
+      if (spaltenMenue.col === c.id) spaltenmenueSchliessen();
+      else spaltenmenueOeffnen(c, !!el.closest('.sf-leiste'));
+      break;
+    case 'spaltenmenue-zu': spaltenmenueSchliessen(); break;
+    case 'spalte-sort':
+      if (!c) break;
+      state.sort = { col: c.id, dir: Number(el.dataset.dir) === -1 ? -1 : 1 };
+      renderResults();
+      spaltenmenueZeichnen();
+      break;
+    case 'spaltenfilter-weg':
+      if (!c) break;
+      spaltenBedingungSetzen(c, null);
+      if (spaltenMenue.col === c.id) { spaltenMenue.roh = {}; spaltenMenue.fehler = {}; spaltenmenueZeichnen(); }
+      break;
+    case 'spaltenfilter-alle-weg':
+      state.filter.spalten = {};
+      spaltenmenueSchliessen({ fokus: false });
+      render();
+      break;
+    case 'spaltenfilter-alle': if (c) { spaltenBedingungSetzen(c, null); spaltenmenueZeichnen(); } break;
+    case 'spaltenfilter-keine': if (c) { spaltenBedingungSetzen(c, { werte: [] }); spaltenmenueZeichnen(); } break;
+    default: return false;
+  }
+  return true;
+}
+
+document.addEventListener('pointerdown', e => {
+  if (!spaltenMenue.col || e.target.closest?.('#spaltenmenue, [data-action="spaltenmenue"]')) return;
+  spaltenmenueSchliessen({ fokus: false });
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && spaltenMenue.col) { e.preventDefault(); spaltenmenueSchliessen(); }
+});
+let spaltenmenueRahmen = 0;
+const spaltenmenueNachziehen = () => { cancelAnimationFrame(spaltenmenueRahmen); spaltenmenueRahmen = requestAnimationFrame(spaltenmenueAusrichten); };
+addEventListener('scroll', e => { if (spaltenMenue.col && !e.target.closest?.('#spaltenmenue')) spaltenmenueNachziehen(); }, { capture: true, passive: true });
+addEventListener('resize', spaltenmenueNachziehen);
+</script>
 <script>
 'use strict';
 
@@ -5763,7 +6157,8 @@ const state = {
   selected: new Set(),
   selectionTouched: false,
   sort: { col: 'num', dir: 1 },
-  filter: { q: '', urteil: '', showOld: false, orte: new Set() },
+  // spalten: Spaltenfilter der Vergleichstabelle je Spalten-ID (Bedingungen siehe src/rechenkern/tabellenfilter.js)
+  filter: { q: '', showOld: false, orte: new Set(), spalten: {} },
   cmpTab: 'tabelle',
   diffOnly: false,
   persist: true,
@@ -6453,6 +6848,7 @@ function render() {
   main.innerHTML = `<div class="view view-${state.view}">${state.view === 'start' ? viewStart() : state.view === 'compare' ? viewCompare() : state.view === 'profile' ? viewProfile() : viewDetail(getDoc(state.current))}</div>`;
   drawCharts();
   karteEinhaengen();
+  spaltenmenueAusrichten();
 }
 
 function renderSidebar() {
@@ -6862,36 +7258,47 @@ function secRoh(doc) {
 }
 
 /* ---------- Vergleich ---------- */
+// Spalten der Vergleichstabelle. sv = Sortierwert, filter = Typ des Spaltenfilters (src/oberflaeche/spaltenfilter.js),
+// fv = Filterwert (sonst Sortierwert), optionen = Auswahlwerte mit Beschriftung, einheit = Anzeige im Zahlenfilter.
+const nurZahl = v => (isNum(v) ? v : null);
+const nurKey = (v, liste) => (liste.includes(v) ? v : '');
 const COLS = [
-  { id: 'num', label: '#', sv: d => d.num },
-  { id: 'objekt', label: 'Objekt', sv: d => docTitle(d).toLowerCase() },
-  { id: 'urteil', label: 'Gesamturteil', sv: d => { const i = VERDICT_ORDER.indexOf(urteilOf(d)); return i < 0 ? null : i; } },
-  { id: 'sicherheit', label: 'Beleg­sicherheit', sv: d => { const i = SICHERHEIT.indexOf(obj(d.data.bewertung).belegsicherheit); return i < 0 ? null : i; } },
-  { id: 'kaufpreis', label: 'Kaufpreis', path: '/objekt/kaufpreis_eur', num: true },
-  { id: 'flaeche', label: 'Wohnfläche', path: '/objekt/wohnflaeche_m2', num: true },
-  { id: 'qm', label: '€/m²', path: '/kennzahlen/kaufpreis_pro_m2_eur', num: true },
-  { id: 'miete', label: 'Kaltmiete / Monat', path: '/ist_kosten_und_ertraege/nettokaltmiete_monat_eur', num: true },
-  { id: 'rendite', label: 'Brutto­rendite', path: '/kennzahlen/bruttomietrendite_prozent', num: true },
-  { id: 'faktor', label: 'Faktor', path: '/kennzahlen/kaufpreisfaktor_jahre', num: true },
-  { id: 'energie', label: 'Energie', sv: d => { const e = obj(d.data.energie); return isNum(e.kennwert_kwh_m2_a) ? e.kennwert_kwh_m2_a : null; } },
-  { id: 'baujahr', label: 'Baujahr', path: '/objekt/baujahr', num: true },
-  { id: 'offen', label: 'Offene Wider­sprüche', sv: d => d.ctx.conflicts.size },
-  { id: 'risiken', label: 'Risiken hoch', sv: d => d.ctx.list('risiken').filter(r => r.schwere === 'hoch').length },
-  { id: 'pruefdatum', label: 'Prüfdatum', path: '/metadaten/pruefdatum' },
-  { id: 'export', label: 'Export­prüfung', sv: d => { const c = countIssues(d); return c.error * 1000 + c.warn; } },
+  { id: 'num', label: '#', titel: 'Nummer', sv: d => d.num, filter: 'zahl' },
+  { id: 'objekt', label: 'Objekt', sv: d => docTitle(d).toLowerCase(), filter: 'text', fv: d => { const a = obj(d.data.angebot); return [docTitle(d), docPlace(d), platLabel(a.plattform), a.plattform_id, a.objektart].filter(v => v != null).join(' '); } },
+  { id: 'urteil', label: 'Gesamturteil', sv: d => { const i = VERDICT_ORDER.indexOf(urteilOf(d)); return i < 0 ? null : i; }, filter: 'auswahl', fv: d => nurKey(urteilOf(d), VERDICT_ORDER), optionen: () => [...VERDICT_ORDER.map(v => [v, L(v)]), ['', 'Kein Urteil']] },
+  { id: 'sicherheit', label: 'Beleg­sicherheit', sv: d => { const i = SICHERHEIT.indexOf(obj(d.data.bewertung).belegsicherheit); return i < 0 ? null : i; }, filter: 'auswahl', fv: d => nurKey(obj(d.data.bewertung).belegsicherheit, SICHERHEIT), optionen: () => [...SICHERHEIT.map(v => [v, L(v)]), ['', 'Keine Angabe']] },
+  { id: 'kaufpreis', label: 'Kaufpreis', path: '/objekt/kaufpreis_eur', num: true, filter: 'zahl', einheit: '€' },
+  { id: 'flaeche', label: 'Wohnfläche', path: '/objekt/wohnflaeche_m2', num: true, filter: 'zahl', einheit: 'm²' },
+  { id: 'qm', label: '€/m²', titel: 'Kaufpreis pro m²', path: '/kennzahlen/kaufpreis_pro_m2_eur', num: true, filter: 'zahl', einheit: '€/m²' },
+  { id: 'miete', label: 'Kaltmiete / Monat', path: '/ist_kosten_und_ertraege/nettokaltmiete_monat_eur', num: true, filter: 'zahl', einheit: '€' },
+  { id: 'rendite', label: 'Brutto­rendite', path: '/kennzahlen/bruttomietrendite_prozent', num: true, filter: 'zahl', einheit: '%' },
+  { id: 'faktor', label: 'Faktor', titel: 'Kaufpreisfaktor', path: '/kennzahlen/kaufpreisfaktor_jahre', num: true, filter: 'zahl', einheit: 'Jahre' },
+  { id: 'energie', label: 'Energie', titel: 'Energieeffizienzklasse', sv: d => { const e = obj(d.data.energie); return isNum(e.kennwert_kwh_m2_a) ? e.kennwert_kwh_m2_a : null; }, filter: 'auswahl', fv: d => nurKey(obj(d.data.energie).effizienzklasse, ENERGY_CLASSES), optionen: () => [...ENERGY_CLASSES.map(k => [k, `Klasse ${k}`]), ['', 'Ohne Klasse']] },
+  { id: 'baujahr', label: 'Baujahr', path: '/objekt/baujahr', num: true, filter: 'zahl' },
+  { id: 'offen', label: 'Offene Wider­sprüche', sv: d => d.ctx.conflicts.size, filter: 'zahl' },
+  { id: 'risiken', label: 'Risiken hoch', sv: d => d.ctx.list('risiken').filter(r => r.schwere === 'hoch').length, filter: 'zahl' },
+  { id: 'pruefdatum', label: 'Prüfdatum', path: '/metadaten/pruefdatum', filter: 'datum', fv: d => { const v = obj(d.data.metadaten).pruefdatum; return isValidDate(v) ? v : null; } },
+  { id: 'export', label: 'Export­prüfung', sv: d => { const c = countIssues(d); return c.error * 1000 + c.warn; }, filter: 'auswahl', fv: d => { const c = countIssues(d); return c.error ? 'fehler' : c.warn ? 'warnung' : 'ok'; }, optionen: () => [['ok', '✓ Ohne Befund'], ['warnung', '⚠ Warnungen'], ['fehler', '✕ Fehler']] },
 ];
 const colValue = (c, d) => (c.sv ? c.sv(d) : (() => { const r = resolvePointer(d.data, c.path); return r.found ? r.value : null; })());
+/** Wert für den Spaltenfilter: eigener Filterwert, sonst Sortierwert; Zahlenfilter sehen nur echte Zahlen (null = ohne Wert). */
+const colFilterValue = (c, d) => { const v = c.fv ? c.fv(d) : colValue(c, d); return c.filter === 'zahl' ? nurZahl(v) : v; };
+const colTitel = c => c.titel || c.label.replace(/\u00ad/g, '');
 
 const CMP_TABS = [['tabelle', 'Tabelle'], ['preis', 'Kaufpreis/m² &amp; Rendite'], ['karte', 'Karte'], ['gegenueberstellung', 'Gegen&shy;über&shy;stellung'], ['persoenlich', 'Mit meinem Profil']];
 const ortKey = d => String(obj(obj(d.data).standort).ort ?? '').trim();
 const inOrtFilter = d => !state.filter.orte.size || state.filter.orte.has(ortKey(d));
 
-function filteredDocs() {
+/** Objekte vor den Spaltenfiltern: Revisionen, Ort, Suche. */
+function basisDocs() {
   const q = state.filter.q.trim().toLowerCase();
-  const list = immoDocs().filter(d => (state.filter.showOld || d.rev?.latest)
+  return immoDocs().filter(d => (state.filter.showOld || d.rev?.latest)
     && inOrtFilter(d)
-    && (!state.filter.urteil || urteilOf(d) === state.filter.urteil)
     && (!q || [docTitle(d), docPlace(d), obj(d.data.angebot).plattform, obj(d.data.angebot).plattform_id, obj(d.data.angebot).objektart, d.fileName].join(' ').toLowerCase().includes(q)));
+}
+
+function filteredDocs() {
+  const list = RK.tabellenfilter.anwenden(basisDocs(), COLS.map(c => ({ id: c.id, typ: c.filter })), state.filter.spalten, (s, d) => colFilterValue(COLS.find(c => c.id === s.id), d));
   const col = COLS.find(c => c.id === state.sort.col) || COLS[0];
   return list.sort((a, b) => {
     const va = colValue(col, a), vb = colValue(col, b);
@@ -6935,7 +7342,7 @@ function compareFilters(hasRevs) {
     </div>` : '';
   return `<div class="filters">
       <input type="search" id="fq" placeholder="Suchen: Titel, Ort, Plattform-ID, Datei …" value="${esc(state.filter.q)}" aria-label="Suchen">
-      <select id="fu" aria-label="Nach Gesamturteil filtern"><option value="">Alle Urteile</option>${VERDICT_ORDER.map(v => `<option value="${v}"${state.filter.urteil === v ? ' selected' : ''}>${esc(L(v))}</option>`).join('')}</select>
+      ${urteilAuswahl()}
       ${hasRevs ? `<label class="check"><input type="checkbox" id="fold"${state.filter.showOld ? ' checked' : ''}> Ältere Revisionen zeigen</label>` : ''}
     </div>${chips}`;
 }
@@ -6943,16 +7350,17 @@ function compareFilters(hasRevs) {
 function compareResults() {
   if (state.cmpTab === 'gegenueberstellung') return selectionPicker() + matrixCard();
   const rows = filteredDocs();
-  if (state.cmpTab === 'persoenlich') return vergleichPersoenlich(rows);
-  if (state.cmpTab === 'karte') return karteAnsicht(rows);
-  return state.cmpTab === 'preis' ? priceOverview(rows) : compareTable(rows);
+  const leiste = spaltenfilterLeiste(rows);
+  if (state.cmpTab === 'persoenlich') return leiste + vergleichPersoenlich(rows);
+  if (state.cmpTab === 'karte') return leiste + karteAnsicht(rows);
+  return leiste + (state.cmpTab === 'preis' ? priceOverview(rows) : compareTable(rows));
 }
 
 function compareTable(rows) {
   const allSel = rows.length > 0 && rows.every(d => state.selected.has(d.uid));
   const head = COLS.map(c => {
     const active = state.sort.col === c.id;
-    return `<th class="sortable${c.num || ['num', 'offen', 'risiken'].includes(c.id) ? ' num' : ''}" data-action="sort" data-col="${c.id}" aria-sort="${active ? (state.sort.dir > 0 ? 'ascending' : 'descending') : 'none'}">${c.label}${active ? ` <span class="arrow">${state.sort.dir > 0 ? '▲' : '▼'}</span>` : ''}</th>`;
+    return `<th class="sortable${c.num || ['num', 'offen', 'risiken'].includes(c.id) ? ' num' : ''}${state.filter.spalten[c.id] ? ' gefiltert' : ''}" aria-sort="${active ? (state.sort.dir > 0 ? 'ascending' : 'descending') : 'none'}">${spaltenKopf(c, active)}</th>`;
   }).join('');
   const body = rows.map(d => {
     const e = obj(d.data.energie), m = obj(d.data.metadaten), a = obj(d.data.angebot), b = obj(d.data.bewertung);
@@ -6971,8 +7379,8 @@ function compareTable(rows) {
     return `<tr class="clickable" data-action="open" data-uid="${d.uid}"><td><input type="checkbox" data-select="${d.uid}" ${state.selected.has(d.uid) ? 'checked' : ''} aria-label="Für Gegenüberstellung auswählen"></td>${COLS.map(cell).join('')}</tr>`;
   }).join('');
 
-  return `<div class="card flush"><div class="table-wrap"><table class="t cmp-table"><thead><tr><th><input type="checkbox" id="selAll" ${allSel ? 'checked' : ''} aria-label="Alle sichtbaren auswählen"></th>${head}</tr></thead><tbody>${body || `<tr><td colspan="${COLS.length + 1}" class="muted">Keine Treffer.</td></tr>`}</tbody></table></div></div>
-    <p class="chart-note">„—“ = null im Export (nicht verlässlich bestimmbar). Kursive Werte stammen nur aus Szenarien. Farbige Punkte zeigen den Belegstatus – anklicken für Details. Häkchen wählen Objekte für die Gegenüberstellung.</p>`;
+  return `<div class="card flush"><div class="table-wrap"><table class="t cmp-table"><thead><tr><th><input type="checkbox" id="selAll" ${allSel ? 'checked' : ''} aria-label="Alle sichtbaren auswählen"></th>${head}</tr></thead><tbody>${body || `<tr><td colspan="${COLS.length + 1}" class="muted">Keine Treffer.${Object.keys(state.filter.spalten).length ? ' <button class="linkbtn" data-action="spaltenfilter-alle-weg">Spaltenfilter löschen</button>' : ''}</td></tr>`}</tbody></table></div></div>
+    <p class="chart-note">Überschrift anklicken = sortieren, Trichter daneben = sortieren und filtern. „—“ = null im Export (nicht verlässlich bestimmbar); Zahlenfilter zeigen solche Objekte standardmäßig weiter an. Kursive Werte stammen nur aus Szenarien und zählen beim Sortieren und Filtern nicht. Farbige Punkte zeigen den Belegstatus – anklicken für Details. Häkchen wählen Objekte für die Gegenüberstellung.</p>`;
 }
 
 /** Streudiagramm Kaufpreis/m² gegen Bruttomietrendite mit Werteliste daneben. */
@@ -7306,7 +7714,7 @@ document.addEventListener('click', e => {
     case 'ordner-freigeben': ordnerFreigeben(); break;
     case 'ordner-einlesen': ordnerEinlesen({ manuell: true }); break;
     case 'ordner-trennen': ordnerTrennen(); break;
-    default: if (!karteAktion(action, el)) pAktion(action, el);
+    default: if (!karteAktion(action, el) && !spaltenAktion(action, el)) pAktion(action, el);
   }
 });
 document.addEventListener('keydown', e => {
@@ -7319,20 +7727,23 @@ function renderResults() {
   box.innerHTML = compareResults();
   drawCharts();
   karteEinhaengen();
+  spaltenmenueAusrichten();
 }
 document.addEventListener('change', e => {
   const t = e.target;
   if (t.id === 'fileInput' || t.id === 'dirInput') { addFiles([...t.files]); t.value = ''; return; }
+  if (spaltenEingabe(t, 'change')) return;
   if (pAenderung(t)) return;
   if (t.id === 'ordner-auto') { state.ordner.auto = t.checked; lsSet(LS_ORDNER_AUTO, t.checked ? '1' : '0'); return; }
   if (t.dataset.select) { state.selectionTouched = true; t.checked ? state.selected.add(t.dataset.select) : state.selected.delete(t.dataset.select); render(); return; }
   if (t.id === 'selAll') { state.selectionTouched = true; for (const d of filteredDocs()) t.checked ? state.selected.add(d.uid) : state.selected.delete(d.uid); render(); return; }
-  if (t.id === 'fu') { state.filter.urteil = t.value; renderResults(); return; }
+  if (t.id === 'fu') { urteilAuswahlSetzen(t.value); return; }
   if (t.id === 'fold') { state.filter.showOld = t.checked; render(); return; }
   if (t.id === 'fdiff') { state.diffOnly = t.checked; renderResults(); return; }
   if (t.id === 'persist') { state.persist = t.checked; lsSet(LS.persist, t.checked ? '1' : '0'); save(); renderSidebar(); }
 });
 document.addEventListener('input', e => {
+  if (spaltenEingabe(e.target, 'input')) return;
   if (e.target.id === 'fq') { state.filter.q = e.target.value; renderResults(); return; }
   pEingabeLaeuft(e.target);
 });
