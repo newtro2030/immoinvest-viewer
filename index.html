@@ -1246,6 +1246,13 @@ body.dragging .drop-overlay { display: grid; }
 .drop-overlay div { padding: 28px 40px; border: 2px dashed var(--accent); border-radius: 16px; background: var(--surface); font-weight: 600; font-size: 18px; pointer-events: none; }
 .tooltip { position: fixed; z-index: 300; pointer-events: none; background: var(--ink); color: var(--surface); font-size: 12px; line-height: 1.45; padding: 7px 10px; border-radius: 7px; max-width: 340px; white-space: pre-line; opacity: 0; transition: opacity .08s; }
 .tooltip.show { opacity: 1; }
+.ladeanzeige:not([hidden]) { position: fixed; top: calc(60px + env(safe-area-inset-top, 0px)); left: 50%; transform: translateX(-50%); z-index: 260; width: min(360px, calc(100vw - 32px)); display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line-2); background: var(--surface); box-shadow: 0 8px 28px rgba(0, 0, 0, .18); font-size: 13px; }
+.lade-text { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
+.lade-spur { position: relative; height: 6px; border-radius: 999px; background: var(--surface-3); overflow: hidden; }
+.lade-spur i { position: absolute; inset: 0 auto 0 0; width: 0; border-radius: inherit; background: var(--accent); transition: width .15s ease-out; }
+.lade-spur.unbestimmt i { width: 35%; animation: lade-lauf 1.1s ease-in-out infinite; }
+@keyframes lade-lauf { from { left: -35%; } to { left: 100%; } }
+@media (prefers-reduced-motion: reduce) { .lade-spur.unbestimmt i { animation: none; width: 100%; opacity: .5; } }
 .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 300; background: var(--ink); color: var(--surface); padding: 9px 16px; border-radius: 9px; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; }
 .toast.show { opacity: 1; }
 dialog { border: 1px solid var(--line); border-radius: 14px; padding: 0; background: var(--surface); color: var(--ink); width: min(680px, calc(100vw - 32px)); max-height: min(84vh, 800px); box-shadow: 0 24px 70px rgba(0, 0, 0, .28); }
@@ -1509,6 +1516,7 @@ a.btn { color: inherit; text-decoration: none; }
 <div class="tooltip" id="tooltip" role="tooltip"></div>
 <div class="spaltenmenue" id="spaltenmenue" role="dialog" hidden></div>
 <div class="toast" id="toast" role="status"></div>
+<div class="ladeanzeige" id="ladeanzeige" role="status" aria-live="polite" hidden><div class="lade-text">Wird geladen …</div><div class="lade-spur" role="progressbar" aria-label="Ladefortschritt" aria-valuemin="0" aria-valuemax="100"><i></i></div></div>
 
 <!-- Einzeldatei, erzeugt mit tools/viewer_bauen.py aus immobilien-viewer.html und src/ – nicht direkt bearbeiten -->
 <script>/* src/rechenkern/basis.js */
@@ -4985,10 +4993,14 @@ async function ordnerEinlesen({ erst = false, manuell = false } = {}) {
   const o = state.ordner;
   if (!o.handle || o.laeuft || o.status !== 'verbunden') return;
   o.laeuft = true;
+  // Sichtbar beim Öffnen und auf Knopfdruck; das stille Nachsehen alle 30 Sekunden zeigt nur das Prüfen neuer Dateien
+  const sichtbar = erst || manuell;
+  if (sichtbar) ladeStart(`Ordner „${o.name}“ wird durchsucht`);
   try {
     const liste = await ordnerDateien(o.handle, '', 1, []);
     const gesehen = new Set(), neu = [], geaendert = [];
-    for (const { pfad, eintrag } of liste) {
+    for (const [nr, { pfad, eintrag }] of liste.entries()) {
+      if (sichtbar) ladeSchritt(nr, liste.length, `Ordner „${o.name}“: Datei ${nr + 1} von ${liste.length} wird gelesen`);
       gesehen.add(pfad);
       let datei;
       try { datei = await eintrag.getFile(); } catch { continue; }
@@ -5012,7 +5024,7 @@ async function ordnerEinlesen({ erst = false, manuell = false } = {}) {
     const leerVorher = !immoDocs().length;
     if (weg.size) { state.docs = state.docs.filter(d => !weg.has(d.uid)); for (const u of weg) state.selected.delete(u); }
     if (items.length) {
-      addTexts(items.map(x => ({ name: x.name, text: x.text })), { silent: true });
+      await addTexts(items.map(x => ({ name: x.name, text: x.text })), { silent: true, titel: `Ordner „${o.name}“: Bewertungen werden geprüft` });
       for (const x of items) { const h = hashStr(x.text); const d = state.docs.find(doc => doc.hash === h); if (d) d.ordnerPfad = x.pfad; }
     }
     // Beim ersten Einlesen: früher aus dem Ordner gemerkte Dateien entfernen, die dort nicht mehr liegen
@@ -5058,6 +5070,7 @@ async function ordnerEinlesen({ erst = false, manuell = false } = {}) {
     renderSidebar();
   } finally {
     o.laeuft = false;
+    if (sichtbar) ladeEnde();
   }
 }
 
@@ -6231,19 +6244,30 @@ function objectKey(data) {
    ===================================================================== */
 async function addFiles(files) {
   const items = [];
-  for (const f of files) {
-    if (!/\.json$/i.test(f.name) && f.type !== 'application/json') continue;
-    try { items.push({ name: f.name, text: await f.text() }); }
-    catch (e) { items.push({ name: f.name, text: '', error: 'Datei konnte nicht gelesen werden: ' + e.message }); }
-  }
-  if (!items.length) { toast('Keine JSON-Dateien gefunden.'); return; }
-  addTexts(items);
+  const json = files.filter(f => /\.json$/i.test(f.name) || f.type === 'application/json');
+  if (!json.length) { toast('Keine JSON-Dateien gefunden.'); return; }
+  ladeStart('Dateien werden gelesen', json.length);
+  try {
+    for (const [i, f] of json.entries()) {
+      ladeSchritt(i, json.length, `Datei ${i + 1} von ${json.length} wird gelesen`);
+      try { items.push({ name: f.name, text: await f.text() }); }
+      catch (e) { items.push({ name: f.name, text: '', error: 'Datei konnte nicht gelesen werden: ' + e.message }); }
+    }
+    await addTexts(items);
+  } finally { ladeEnde(); }
 }
 
-function addTexts(items, { silent = false } = {}) {
+/**
+ * Texte prüfen und als Dokumente aufnehmen. Arbeitet in Abschnitten und gibt dazwischen den Browser frei,
+ * damit die Ladeanzeige weiterläuft; deshalb asynchron – Aufrufer warten mit await auf das Ergebnis.
+ */
+async function addTexts(items, { silent = false, titel = 'Bewertungen werden geprüft' } = {}) {
   const added = [];
   let persoenlich = 0;
-  for (const it of items) {
+  ladeStart(titel, items.length);
+  try {
+  for (const [nr, it] of items.entries()) {
+    await ladeAtmen(nr, items.length, `${titel}: ${nr + 1} von ${items.length}`);
     if (it.error) { added.push(addDoc(it.name, it.text, null, it.error)); continue; }
     let parsed, err = null;
     try { parsed = JSON.parse(it.text.replace(/^﻿/, '')); } catch (e) { err = 'JSON-Syntaxfehler: ' + e.message; }
@@ -6255,6 +6279,7 @@ function addTexts(items, { silent = false } = {}) {
     }
     added.push(addDoc(it.name, it.text, parsed, err));
   }
+  } finally { ladeEnde(); }
   const fresh = added.filter(Boolean);
   computeGroups();
   if (!silent) {
@@ -6330,7 +6355,7 @@ function save() {
   karteSpeichern();
 }
 
-function restore() {
+async function restore() {
   state.persist = lsGet(LS.persist) !== '0';
   // Beim Öffnen immer der Vergleich mit der Tabelle; der zuletzt gewählte Reiter gilt nur innerhalb der Sitzung
   state.cmpTab = 'tabelle';
@@ -6342,7 +6367,7 @@ function restore() {
   try {
     const items = JSON.parse(raw);
     if (Array.isArray(items) && items.length) {
-      addTexts(items.filter(x => x && typeof x.text === 'string'), { silent: true });
+      await addTexts(items.filter(x => x && typeof x.text === 'string'), { silent: true, titel: 'Gemerkte Bewertungen werden geladen' });
       state.view = immoDocs().length ? 'compare' : 'detail';
       state.current = (immoDocs()[0] || state.docs[0] || {}).uid;
       if (!state.docs.length) state.view = 'start';
@@ -6354,7 +6379,13 @@ async function loadFromQuery() {
   const srcs = new URLSearchParams(location.search).getAll('src');
   if (!srcs.length || location.protocol === 'file:') return;
   const items = [];
-  for (const s of srcs) {
+  ladeStart('Dateien werden geladen', srcs.length);
+  try { await quellenHolen(srcs, items); } finally { ladeEnde(); }
+  await addTexts(items);
+}
+async function quellenHolen(srcs, items) {
+  for (const [i, s] of srcs.entries()) {
+    ladeSchritt(i, srcs.length, `Datei ${i + 1} von ${srcs.length} wird geladen`);
     const name = decodeURIComponent(s.split('/').pop() || s);
     try {
       const r = await fetch(s);
@@ -6362,7 +6393,6 @@ async function loadFromQuery() {
       items.push({ name, text: await r.text() });
     } catch (e) { items.push({ name, text: '', error: `Laden von ${s} fehlgeschlagen: ${e.message}` }); }
   }
-  addTexts(items);
 }
 
 const SAMPLE_FILES = [
@@ -6375,6 +6405,12 @@ const SAMPLE_FILES = [
 /** Lädt die fiktiven Beispiele aus beispiele/ (nur über http, nicht bei file://). */
 async function loadSamples() {
   const items = [];
+  ladeStart('Beispiele werden geladen');
+  try { await beispieleHolen(items); } finally { ladeEnde(); }
+  if (!items.length) { toast('Beispiele nicht erreichbar. Dateien aus dem Ordner beispiele/ hineinziehen.'); return; }
+  await addTexts(items);
+}
+async function beispieleHolen(items) {
   for (const name of SAMPLE_FILES) {
     try {
       const r = await fetch('beispiele/' + name);
@@ -6382,8 +6418,6 @@ async function loadSamples() {
       items.push({ name, text: await r.text() });
     } catch { /* fehlende Datei überspringen */ }
   }
-  if (!items.length) { toast('Beispiele nicht erreichbar. Dateien aus dem Ordner beispiele/ hineinziehen.'); return; }
-  addTexts(items);
 }
 
 async function filesFromDataTransfer(dt) {
@@ -7687,6 +7721,39 @@ async function download(name, content, type) {
   a.click();
   setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
 }
+/* ---------- Ladeanzeige ----------
+   ladeStart/ladeEnde dürfen verschachtelt werden (Ordner → Prüfen); die Anzeige erscheint erst nach kurzer
+   Verzögerung, damit schnelle Vorgänge nicht flackern. Ohne Gesamtzahl läuft der Balken unbestimmt. */
+const LADE_VERZOEGERUNG_MS = 200;
+const lade = { tiefe: 0, timer: null, letztePause: 0 };
+function ladeStart(text, gesamt = 0) {
+  lade.tiefe++;
+  ladeSchritt(0, gesamt, text);
+  if (lade.tiefe === 1) { clearTimeout(lade.timer); lade.timer = setTimeout(() => { $('#ladeanzeige').hidden = false; }, LADE_VERZOEGERUNG_MS); }
+}
+function ladeSchritt(erledigt, gesamt, text) {
+  const box = $('#ladeanzeige'), spur = box.querySelector('.lade-spur');
+  if (text) box.querySelector('.lade-text').textContent = text;
+  const bestimmt = gesamt > 0;
+  spur.classList.toggle('unbestimmt', !bestimmt);
+  const prozent = bestimmt ? Math.round(Math.min(1, erledigt / gesamt) * 100) : 0;
+  spur.querySelector('i').style.width = bestimmt ? `${prozent}%` : '';
+  if (bestimmt) spur.setAttribute('aria-valuenow', String(prozent)); else spur.removeAttribute('aria-valuenow');
+}
+function ladeEnde() {
+  lade.tiefe = Math.max(0, lade.tiefe - 1);
+  if (lade.tiefe) return;
+  clearTimeout(lade.timer);
+  $('#ladeanzeige').hidden = true;
+}
+/** Fortschritt melden und alle ~40 ms den Browser kurz freigeben, damit Anzeige und Seite reagieren. */
+async function ladeAtmen(erledigt, gesamt, text) {
+  if (performance.now() - lade.letztePause < 40) return;
+  ladeSchritt(erledigt, gesamt, text);
+  await new Promise(res => setTimeout(res, 0));
+  lade.letztePause = performance.now();
+}
+
 let toastTimer;
 function toast(msg) {
   const t = $('#toast');
@@ -7847,7 +7914,8 @@ addEventListener('drop', async e => {
   e.preventDefault();
   dragDepth = 0;
   document.body.classList.remove('dragging');
-  addFiles(await filesFromDataTransfer(e.dataTransfer));
+  ladeStart('Abgelegte Dateien werden gesucht');
+  try { await addFiles(await filesFromDataTransfer(e.dataTransfer)); } finally { ladeEnde(); }
 });
 
 addEventListener('beforeprint', () => document.querySelectorAll('details.item').forEach(el => { el.open = true; }));
@@ -7859,10 +7927,12 @@ addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setT
 // Eingebettet bestimmt die Plattform das Farbschema (data-theme am Wurzelelement)
 if (!HOSTED) applyTheme(lsGet(LS.theme) || 'auto');
 updateHostClasses();
-restore();
-render();
-loadFromQuery();
-ordnerStart();
+(async () => {
+  await restore();
+  render();
+  await loadFromQuery();
+  ordnerStart();
+})();
 </script>
 </body>
 </html>
