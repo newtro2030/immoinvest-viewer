@@ -1105,6 +1105,27 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 .cmp-table th:first-child, .cmp-table td:first-child { width: 34px; padding-right: 0; }
 .cmp-table thead th, .cmp-table thead th.num { white-space: normal; vertical-align: bottom; line-height: 1.3; }
 .cmp-table td.cell-urteil { min-width: 0; white-space: nowrap; }
+/* Mein Status: Auswahl in der Tabelle, Kurzform auf Karten, Karte „Mein Stand“ in der Einzelansicht */
+.status-zelle { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+.status-wahl { height: 28px; max-width: 150px; padding: 0 6px; border-radius: 7px; border: 1px solid var(--line-2); background: var(--surface); color: var(--ink); font-size: 12.5px; cursor: pointer; }
+.status-wahl:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.status-wahl:not(.s-interessant):not(.s-angefragt):not(.s-besichtigung):not(.s-angebot):not(.s-gekauft):not(.s-abgesagt) { color: var(--muted); }
+.status-wahl[class*=" s-"], .status-chip { border-color: var(--sc); background: color-mix(in srgb, var(--sc) 12%, var(--surface)); }
+.s-interessant { --sc: var(--c-blue); } .s-angefragt { --sc: var(--c-violet); } .s-besichtigung { --sc: var(--c-orange); }
+.s-angebot { --sc: var(--c-yellow); } .s-gekauft { --sc: var(--s-good); } .s-abgesagt { --sc: var(--muted); }
+.status-termin { font-size: 12px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.status-notiz { color: var(--accent-ink); cursor: help; }
+.status-chip { display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 999px; border: 1px solid; font-size: 12.5px; font-weight: 500; }
+.mein-stand { margin-top: 16px; padding: 14px 18px; display: flex; flex-direction: column; gap: 10px; }
+.ms-kopf { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; }
+.ms-kopf h3 { margin: 0; }
+.ms-felder { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 10px 16px; }
+.mein-stand select, .mein-stand input[type="date"], .mein-stand textarea { width: 100%; min-width: 0; border-radius: 8px; border: 1px solid var(--line-2); background: var(--surface); color: var(--ink); font-size: 13.5px; }
+.mein-stand select, .mein-stand input[type="date"] { height: 34px; padding: 0 8px; }
+.mein-stand textarea { padding: 8px 10px; resize: vertical; min-height: 64px; font: inherit; font-size: 13.5px; line-height: 1.45; }
+.mein-stand :is(select, input, textarea):focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+.side-sicherung { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding-top: 10px; border-top: 1px solid var(--line); }
+.side-sicherung .btn:disabled { opacity: .5; cursor: default; }
 /* Feste Auswahlleiste für die Gegenüberstellung */
 .auswahl-leiste { position: sticky; bottom: 12px; z-index: 40; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; width: fit-content; max-width: 100%; margin: 16px auto 0; padding: 8px 10px 8px 16px; border-radius: 16px; border: 1px solid var(--line-2); background: var(--surface); box-shadow: 0 6px 24px rgba(0, 0, 0, .2); font-size: 13.5px; }
 .auswahl-leiste .btn:disabled { opacity: .5; cursor: default; }
@@ -3580,6 +3601,112 @@ a.btn { color: inherit; text-decoration: none; }
   else (root.ImmoRechenkern = root.ImmoRechenkern || {}).tabellenfilter = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);
 </script>
+<script>/* src/rechenkern/eingaben.js */
+/*
+ * ImmoInvest Rechenkern – eigene Eingaben je Objekt: Status, Termin, Notiz und die Sicherungsdatei
+ * Prüft und vereinheitlicht die Eingaben, erstellt die Sicherungsdatei (zusammen mit Adressnachträgen und
+ * Kartenpunkten) und führt eine importierte Sicherung mit dem Bestand zusammen. Ohne DOM und ohne Netz.
+ * Schlüssel ist der Objektschlüssel des Viewers (Plattform|ID bzw. Objektnummer/URL), damit Eingaben auch
+ * für neue Revisionen desselben Objekts gelten.
+ */
+(function (root) {
+  'use strict';
+
+  const nodeModul = typeof module === 'object' && module.exports;
+  const St = nodeModul ? require('./standort.js') : root.ImmoRechenkern.standort;
+
+  const FORMAT = { typ: 'viewer_eingaben', version: '1.0', major: 1 };
+  // Reihenfolge = Arbeitsablauf; danach wird sortiert. „Ohne Status“ ist kein Eintrag, sondern das Fehlen.
+  const STATUS = [
+    ['interessant', 'Interessant'], ['angefragt', 'Angefragt'], ['besichtigung', 'Besichtigung'],
+    ['angebot', 'Angebot abgegeben'], ['gekauft', 'Gekauft'], ['abgesagt', 'Abgesagt'],
+  ];
+  const STATUS_IDS = STATUS.map(s => s[0]);
+  const NOTIZ_MAX = 5000;
+  const SCHLUESSEL_MAX = 300;
+  const DATUM = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
+  const ZEIT = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:\d{2})$/;
+
+  const gueltigerSchluessel = k => typeof k === 'string' && k.length > 0 && k.length <= SCHLUESSEL_MAX;
+
+  /** Eingaben eines Objekts vereinheitlichen; null, wenn nichts eingetragen ist. */
+  function pruefeNotiz(roh) {
+    if (!roh || typeof roh !== 'object') return null;
+    const status = STATUS_IDS.includes(roh.status) ? roh.status : null;
+    const termin = typeof roh.termin === 'string' && DATUM.test(roh.termin) ? roh.termin : null;
+    const notiz = typeof roh.notiz === 'string' ? roh.notiz.replace(/\r\n?/g, '\n').trim().slice(0, NOTIZ_MAX) : '';
+    if (!status && !termin && !notiz) return null;
+    const geaendert = typeof roh.geaendert === 'string' && ZEIT.test(roh.geaendert) ? roh.geaendert : null;
+    return { status, termin, notiz, geaendert };
+  }
+
+  const statusName = id => (STATUS.find(s => s[0] === id) || [null, ''])[1];
+  /** Sortierwert: Position im Arbeitsablauf, ohne Status = null (ans Ende). */
+  const statusRang = id => { const i = STATUS_IDS.indexOf(id); return i < 0 ? null : i; };
+
+  function bereinigeSammlung(roh, pruefe) {
+    const aus = {};
+    let verworfen = 0;
+    if (!roh || typeof roh !== 'object' || Array.isArray(roh)) return { werte: aus, verworfen };
+    for (const [k, v] of Object.entries(roh)) {
+      const w = gueltigerSchluessel(k) ? pruefe(v) : null;
+      if (w) aus[k] = w; else verworfen++;
+    }
+    return { werte: aus, verworfen };
+  }
+
+  /** Adressnachtrag und/oder Kartenpunkt (Format wie in src/oberflaeche/karte.js). */
+  function pruefeAdresseintrag(v) {
+    if (!v || typeof v !== 'object') return null;
+    const adresse = v.adresse ? St.pruefeNachtrag(v.adresse).nachtrag : null;
+    const punkt = v.punkt ? St.pruefePunkt(v.punkt) : null;
+    return adresse || punkt ? { adresse, punkt } : null;
+  }
+
+  /** Sicherungsdatei mit allen eigenen Eingaben. */
+  function exportiere({ notizen = {}, adressen = {} } = {}, jetzt = new Date().toISOString()) {
+    return {
+      dokumenttyp: FORMAT.typ, formatversion: FORMAT.version, erstellt_am: jetzt,
+      hinweis: 'Eigene Eingaben aus dem ImmoInvest-Viewer (Status, Termine, Notizen, Adressnachträge, Kartenpunkte). Enthält keine Profil- oder Finanzdaten.',
+      notizen: bereinigeSammlung(notizen, pruefeNotiz).werte,
+      adressen: bereinigeSammlung(adressen, pruefeAdresseintrag).werte,
+    };
+  }
+
+  /** Sicherungsdatei prüfen. Liefert { ok, fehler, notizen, adressen, verworfen }. */
+  function importiere(dok) {
+    if (!dok || typeof dok !== 'object' || dok.dokumenttyp !== FORMAT.typ) return { ok: false, fehler: ['Keine Sicherungsdatei des Viewers.'] };
+    const major = Number(String(dok.formatversion || '').split('.')[0]);
+    if (major !== FORMAT.major) return { ok: false, fehler: [`Formatversion ${dok.formatversion ?? '–'} wird nicht unterstützt (erwartet ${FORMAT.version}).`] };
+    const n = bereinigeSammlung(dok.notizen, pruefeNotiz), a = bereinigeSammlung(dok.adressen, pruefeAdresseintrag);
+    return { ok: true, fehler: [], notizen: n.werte, adressen: a.werte, verworfen: n.verworfen + a.verworfen };
+  }
+
+  const gleich = (x, y) => JSON.stringify(x) === JSON.stringify(y);
+
+  /**
+   * Import mit dem Bestand zusammenführen. Neue Objekte kommen hinzu; bei Notizen gewinnt die jüngere Änderung
+   * (ohne Zeitstempel die importierte), Adressen aus der Sicherung ersetzen den Bestand. Nichts wird gelöscht.
+   */
+  function zusammenfuehren(bestand, neu, art) {
+    const ergebnis = { ...bestand }, zahl = { neu: 0, ersetzt: 0, gleich: 0, behalten: 0 };
+    for (const [k, v] of Object.entries(neu || {})) {
+      const alt = bestand[k];
+      if (!alt) { ergebnis[k] = v; zahl.neu++; continue; }
+      const vergleich = art === 'notizen' ? { ...alt, geaendert: null } : alt, kandidat = art === 'notizen' ? { ...v, geaendert: null } : v;
+      if (gleich(vergleich, kandidat)) { zahl.gleich++; continue; }
+      if (art === 'notizen' && alt.geaendert && v.geaendert && alt.geaendert > v.geaendert) { zahl.behalten++; continue; }
+      ergebnis[k] = v;
+      zahl.ersetzt++;
+    }
+    return { werte: ergebnis, zahl };
+  }
+
+  const api = { FORMAT, STATUS, STATUS_IDS, NOTIZ_MAX, pruefeNotiz, statusName, statusRang, pruefeAdresseintrag, exportiere, importiere, zusammenfuehren };
+  if (nodeModul) module.exports = api;
+  else (root.ImmoRechenkern = root.ImmoRechenkern || {}).eingaben = api;
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+</script>
 <script>/* src/oberflaeche/persoenlich.js */
 /*
  * ImmoInvest Viewer – Oberfläche für persönliche Profile und die Berechnung mit dem Profil
@@ -4961,13 +5088,16 @@ const ORDNER_MAX_DATEIEN = 1000;
 const ORDNER_TIEFE = 3;
 const LS_ORDNER_AUTO = 'immoviewer.v1.ordner_auto';
 const LS_ORDNER_HASHES = 'immoviewer.v1.ordner_hashes';
+// Zuletzt gelesener Stand je Datei (Änderungszeit|Größe und Prüfsumme): unveränderte Dateien müssen beim Öffnen nicht neu gelesen werden
+const LS_ORDNER_BEKANNT = 'immoviewer.v1.ordner_bekannt';
 
 function ordnerZustand() {
   return { handle: null, name: null, status: ORDNER_UNTERSTUETZT ? 'getrennt' : 'nicht_unterstuetzt', auto: true, bekannt: {}, letzte: null, dateien: 0, uebersprungen: 0, fehler: null, laeuft: false };
 }
 
-/* ---------- Ordner-Handle in IndexedDB (localStorage kann keine Handles speichern) ---------- */
-function ordnerIdb(modus, aktion) {
+/* ---------- IndexedDB „immoviewer“/„kv“: Ordner-Handle (localStorage kann keine Handles speichern) und – im
+   Hauptskript – die gemerkten Bewertungsdateien. Liefert das Ergebnis der Anfrage oder undefined bei Fehlern. ---------- */
+function idbKv(modus, aktion) {
   return new Promise(resolve => {
     try {
       const req = indexedDB.open('immoviewer', 1);
@@ -4985,9 +5115,9 @@ function ordnerIdb(modus, aktion) {
     } catch { resolve(undefined); }
   });
 }
-const ordnerHandleLesen = () => ordnerIdb('readonly', st => st.get('ordner'));
-const ordnerHandleSpeichern = h => ordnerIdb('readwrite', st => st.put(h, 'ordner'));
-const ordnerHandleLoeschen = () => ordnerIdb('readwrite', st => st.delete('ordner'));
+const ordnerHandleLesen = () => idbKv('readonly', st => st.get('ordner'));
+const ordnerHandleSpeichern = h => idbKv('readwrite', st => st.put(h, 'ordner'));
+const ordnerHandleLoeschen = () => idbKv('readwrite', st => st.delete('ordner'));
 
 /* ---------- Start, Verbinden, Freigeben, Trennen ---------- */
 async function ordnerStart() {
@@ -5028,6 +5158,7 @@ async function ordnerTrennen() {
   await ordnerHandleLoeschen();
   for (const d of state.docs) delete d.ordnerPfad;
   lsDel(LS_ORDNER_HASHES);
+  lsDel(LS_ORDNER_BEKANNT);
   const name = state.ordner.name;
   state.ordner = Object.assign(ordnerZustand(), { auto: state.ordner.auto });
   renderSidebar();
@@ -5046,10 +5177,22 @@ async function ordnerDateien(verzeichnis, pfad, tiefe, out) {
   return out;
 }
 
+/** Gemerkten Dateistand übernehmen, soweit die Dateien bereits als Dokumente geladen sind (oder persönlich und übersprungen). */
+function ordnerBekanntUebernehmen(o) {
+  let gemerkt = {};
+  try { gemerkt = JSON.parse(lsGet(LS_ORDNER_BEKANNT) || '{}') || {}; } catch { /* leer */ }
+  for (const [pfad, b] of Object.entries(gemerkt)) {
+    if (!b || typeof b.stempel !== 'string' || o.bekannt[pfad]) continue;
+    const doc = b.hash && state.docs.find(d => d.hash === b.hash);
+    if (doc) { doc.ordnerPfad = pfad; o.bekannt[pfad] = { stempel: b.stempel, persoenlich: false, hash: b.hash }; }
+    else if (b.persoenlich) o.bekannt[pfad] = { stempel: b.stempel, persoenlich: true };
+  }
+}
+
 function ordnerIstPersoenlich(text) {
   try {
     const j = JSON.parse(text.replace(/^﻿/, ''));
-    return !!j && (j.dokumenttyp === 'household_profile' || j.dokumenttyp === 'investment_scenario');
+    return !!j && (j.dokumenttyp === 'household_profile' || j.dokumenttyp === 'investment_scenario' || j.dokumenttyp === 'viewer_eingaben');
   } catch { return false; }
 }
 
@@ -5067,6 +5210,8 @@ async function ordnerEinlesen({ erst = false, manuell = false } = {}) {
   try {
     const liste = await ordnerDateien(o.handle, '', 1, []);
     const gesehen = new Set(), neu = [], geaendert = [];
+    // Beim ersten Einlesen: Dateien, deren Inhalt schon aus dem Browser-Speicher geladen ist, nur noch auf Änderungen prüfen
+    if (erst) ordnerBekanntUebernehmen(o);
     for (const [nr, { pfad, eintrag }] of liste.entries()) {
       if (sichtbar) ladeSchritt(nr, liste.length, `Ordner „${o.name}“: Datei ${nr + 1} von ${liste.length} wird gelesen`);
       gesehen.add(pfad);
@@ -5078,7 +5223,7 @@ async function ordnerEinlesen({ erst = false, manuell = false } = {}) {
       let text;
       try { text = await datei.text(); } catch { continue; }
       const persoenlich = ordnerIstPersoenlich(text);
-      o.bekannt[pfad] = { stempel, persoenlich };
+      o.bekannt[pfad] = { stempel, persoenlich, hash: hashStr(text) };
       if (!persoenlich) (alt && !alt.persoenlich ? geaendert : neu).push({ pfad, name: eintrag.name, text });
     }
     const entfernt = Object.keys(o.bekannt).filter(p => !gesehen.has(p));
@@ -5106,6 +5251,7 @@ async function ordnerEinlesen({ erst = false, manuell = false } = {}) {
       altEntfernt = vorher - state.docs.length;
     }
     lsSet(LS_ORDNER_HASHES, JSON.stringify(state.docs.filter(d => d.ordnerPfad).map(d => d.hash)));
+    lsSet(LS_ORDNER_BEKANNT, JSON.stringify(o.bekannt));
     computeGroups();
 
     o.letzte = new Date();
@@ -5226,8 +5372,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * Kartenbilder von tile.openstreetmap.org und die Adresssuche über nominatim.openstreetmap.org (höchstens
  * eine Anfrage pro Sekunde, jedes Ergebnis wird gemerkt). Übertragen werden nur Kartenausschnitt und
  * Objektadressen – nie Profil- oder Finanzdaten. Die Zahlen am Pin kommen aus der Analyse bzw. dem Rechenkern.
- * Nachgetragene Adressen, selbst gesetzte Punkte und Suchergebnisse bleiben in diesem Browser, sofern
- * „Dateien in diesem Browser merken“ eingeschaltet ist; die Analyse-Dateien bleiben unverändert.
+ * Nachgetragene Adressen, selbst gesetzte Punkte und Suchergebnisse bleiben in diesem Browser (immer, auch ohne
+ * „Dateien merken“; Sicherung über „Eigene Eingaben sichern“); die Analyse-Dateien bleiben unverändert.
  *
  * Klassisches Skript; nutzt state, render, filteredDocs … des Hauptskripts erst zur Laufzeit.
  */
@@ -5270,7 +5416,6 @@ function karteBereinigt(feld, roh) {
 }
 
 function karteLaden() {
-  if (!state.persist) return;
   for (const [feld, schl] of [['adressen', LS_ADRESSEN], ['geo', LS_GEO]]) {
     try {
       const v = JSON.parse(lsGet(schl) || '{}');
@@ -5279,8 +5424,8 @@ function karteLaden() {
   }
 }
 
+/** Eigene Eingaben werden immer gemerkt (unabhängig von „Dateien merken“) und lassen sich als Sicherung exportieren. */
 function karteSpeichern() {
-  if (!state.persist) { lsDel(LS_ADRESSEN); lsDel(LS_GEO); return; }
   const geo = state.karte.geo;
   if (Object.keys(geo).length > KARTE_MAX_GEMERKT) {
     // Nur Suchergebnisse der geladenen Objekte behalten
@@ -5433,7 +5578,7 @@ function karteListen(objekte) {
     + abschnitt('Ohne Straße und Hausnummer', ohne, o => zeile(o, `${esc([o.adr.strasse, o.adr.grob].filter(Boolean).join(', ') || 'Keine Ortsangabe')} · <span class="muted">fehlt: ${esc(o.adr.fehlt.join(', '))}</span>`,
       `<button class="btn sm" data-action="karte-adresse" data-uid="${o.d.uid}">Adresse nachtragen</button>${google(o)}`),
       '<p class="card-sub">Diese Objekte erscheinen erst auf der Karte, wenn Straße und Hausnummer bekannt sind – etwa vom Makler oder aus der Besichtigung.</p>')
-    + `<p class="chart-note">Kartenbilder und Adresssuche kommen von OpenStreetMap. Übertragen werden nur der Kartenausschnitt und die Objektadressen, keine Profil- oder Finanzdaten. Zum Zoomen mit dem Mausrad erst in die Karte klicken. Gefundene Punkte, nachgetragene Adressen und selbst gesetzte Punkte bleiben in diesem Browser (mit „Dateien in diesem Browser merken“); die Analyse-Dateien ändern sich nicht.</p>`;
+    + `<p class="chart-note">Kartenbilder und Adresssuche kommen von OpenStreetMap. Übertragen werden nur der Kartenausschnitt und die Objektadressen, keine Profil- oder Finanzdaten. Zum Zoomen mit dem Mausrad erst in die Karte klicken. Gefundene Punkte, nachgetragene Adressen und selbst gesetzte Punkte bleiben in diesem Browser (sicherbar über „Eigene Eingaben sichern“); die Analyse-Dateien ändern sich nicht.</p>`;
 }
 
 /** Nach jedem Rendern: Karte in den Platzhalter hängen (sie wird nur einmal erzeugt), Pins abgleichen, offene Adressen suchen. */
@@ -5965,6 +6110,128 @@ const spaltenmenueNachziehen = () => { cancelAnimationFrame(spaltenmenueRahmen);
 addEventListener('scroll', e => { if (spaltenMenue.col && !e.target.closest?.('#spaltenmenue')) spaltenmenueNachziehen(); }, { capture: true, passive: true });
 addEventListener('resize', spaltenmenueNachziehen);
 </script>
+<script>/* src/oberflaeche/eingaben.js */
+/*
+ * ImmoInvest Viewer – eigene Eingaben je Objekt: Status, Termin, Notiz; Sicherung aller eigenen Eingaben
+ *
+ * Status, Termin und Notiz gelten je Objektschlüssel, also auch für neue Revisionen desselben Inserats. Sie
+ * werden immer in diesem Browser gemerkt (localStorage), unabhängig von „Dateien merken“, und ändern die
+ * Analyse-Dateien nicht. Die Sicherungsdatei enthält zusätzlich Adressnachträge und Kartenpunkte und lässt sich
+ * über „+ Dateien“ wieder einlesen; vorhandene Eingaben werden dabei zusammengeführt, nie gelöscht.
+ * Prüfung und Zusammenführen: Rechenkern-Modul eingaben.js.
+ *
+ * Klassisches Skript; nutzt state, render, download … des Hauptskripts erst zur Laufzeit.
+ */
+'use strict';
+
+const LS_NOTIZEN = 'immoviewer.v1.notizen';
+let notizTimer = null;
+
+function notizenLaden() {
+  try {
+    const roh = JSON.parse(lsGet(LS_NOTIZEN) || '{}');
+    state.notizen = RK.eingaben.importiere({ dokumenttyp: RK.eingaben.FORMAT.typ, formatversion: RK.eingaben.FORMAT.version, notizen: roh }).notizen || {};
+  } catch { state.notizen = {}; }
+}
+const notizenSpeichern = () => {
+  if (!lsSet(LS_NOTIZEN, JSON.stringify(state.notizen))) toast('Notizen konnten im Browser nicht gespeichert werden.');
+};
+const notizVon = d => (d && d.key ? state.notizen[d.key] || null : null);
+
+/** Felder eines Objekts ändern; leere Einträge verschwinden. */
+function notizSetzen(d, felder) {
+  const alt = notizVon(d) || {};
+  const neu = RK.eingaben.pruefeNotiz({ ...alt, ...felder, geaendert: new Date().toISOString() });
+  if (neu) state.notizen[d.key] = neu; else delete state.notizen[d.key];
+  notizenSpeichern();
+  return neu;
+}
+
+const STATUS_FARBE = { interessant: 's-interessant', angefragt: 's-angefragt', besichtigung: 's-besichtigung', angebot: 's-angebot', gekauft: 's-gekauft', abgesagt: 's-abgesagt' };
+const statusOptionen = gewaehlt => `<option value="">Ohne Status</option>${RK.eingaben.STATUS.map(([id, t]) => `<option value="${id}"${gewaehlt === id ? ' selected' : ''}>${esc(t)}</option>`).join('')}`;
+const kurzDatum = iso => `${iso.slice(8, 10)}.${iso.slice(5, 7)}.`;
+
+/** Zelle in der Vergleichstabelle: Status direkt wählbar, Termin und Notiz als Hinweis. */
+function statusZelle(d) {
+  const n = notizVon(d), st = n?.status || '';
+  return `<td class="cell-status"><div class="status-zelle"><select class="status-wahl ${STATUS_FARBE[st] || ''}" data-status="${d.uid}" aria-label="Mein Status für #${d.num}">${statusOptionen(st)}</select>
+    ${n?.termin ? `<span class="status-termin" title="Termin am ${esc(fmtDate(n.termin))}">${esc(kurzDatum(n.termin))}</span>` : ''}${n?.notiz ? `<span class="status-notiz" data-tip="${esc(n.notiz.slice(0, 400))}" aria-label="Notiz vorhanden">✎</span>` : ''}</div></td>`;
+}
+
+/** Kurzform für Karten (Handy) und Listen. */
+function statusChip(d) {
+  const n = notizVon(d);
+  if (!n?.status && !n?.termin) return '';
+  return `<span class="status-chip ${STATUS_FARBE[n.status] || ''}">${esc(n.status ? RK.eingaben.statusName(n.status) : 'Termin')}${n.termin ? ` · ${esc(kurzDatum(n.termin))}` : ''}</span>`;
+}
+
+/** Karte „Mein Stand“ in der Einzelansicht. */
+function meinStand(doc) {
+  if (!doc.isImmo) return '';
+  const n = notizVon(doc) || {};
+  return `<section class="card mein-stand no-print" aria-labelledby="ms-titel">
+    <div class="ms-kopf"><h3 id="ms-titel">Mein Stand</h3><span class="fine">nur in diesem Browser · gilt für alle Revisionen dieses Objekts</span></div>
+    <div class="ms-felder">
+      <div class="feld"><label for="ms-status">Status</label><select id="ms-status" data-notiz-feld="status" data-uid="${doc.uid}">${statusOptionen(n.status || '')}</select></div>
+      <div class="feld"><label for="ms-termin">Termin</label><input type="date" id="ms-termin" data-notiz-feld="termin" data-uid="${doc.uid}" value="${esc(n.termin || '')}"></div>
+    </div>
+    <div class="feld"><label for="ms-notiz">Notiz</label><textarea id="ms-notiz" data-notiz-feld="notiz" data-uid="${doc.uid}" rows="3" maxlength="${RK.eingaben.NOTIZ_MAX}" placeholder="z. B. Makler schickt Hausgeldabrechnung bis Freitag · Besichtigung 14 Uhr, Keller ansehen">${esc(n.notiz || '')}</textarea></div>
+    <div class="fine" id="ms-stand">${n.geaendert ? `Zuletzt geändert: ${esc(new Date(n.geaendert).toLocaleString('de-DE', { dateStyle: 'medium', timeStyle: 'short' }))}` : 'Noch nichts eingetragen.'}</div>
+  </section>`;
+}
+
+/** Eingaben aus Tabelle und Einzelansicht; true, wenn das Ereignis hierher gehörte. */
+function notizEingabe(t, art) {
+  if (t.dataset.status) {
+    if (art !== 'change') return true;
+    const d = getDoc(t.dataset.status);
+    if (d) { notizSetzen(d, { status: t.value || null }); renderResults(); }
+    return true;
+  }
+  const feld = t.dataset.notizFeld;
+  if (!feld) return false;
+  const d = getDoc(t.dataset.uid);
+  if (!d) return true;
+  const anwenden = () => {
+    const n = notizSetzen(d, { [feld]: t.value || null });
+    const stand = document.getElementById('ms-stand');
+    if (stand) stand.textContent = n ? `Gespeichert: ${new Date(n.geaendert).toLocaleString('de-DE', { dateStyle: 'medium', timeStyle: 'short' })}` : 'Noch nichts eingetragen.';
+    if (feld !== 'notiz') renderSidebar();
+  };
+  // Notiztext während des Tippens gebündelt speichern, ohne die Ansicht neu zu zeichnen
+  if (feld === 'notiz' && art === 'input') { clearTimeout(notizTimer); notizTimer = setTimeout(anwenden, 400); return true; }
+  if (feld === 'notiz' || art === 'change') { clearTimeout(notizTimer); anwenden(); }
+  return true;
+}
+
+/* ---------- Sicherung ---------- */
+function eingabenZahl() {
+  return Object.keys(state.notizen).length + Object.keys(state.karte.adressen).length;
+}
+function eingabenSichern() {
+  const dok = RK.eingaben.exportiere({ notizen: state.notizen, adressen: state.karte.adressen });
+  download(`immoviewer_eingaben_${today()}.json`, JSON.stringify(dok, null, 2), 'application/json');
+}
+
+/** Sicherungsdatei aus addTexts(); true, wenn es eine war. */
+function eingabenImportDokument(parsed, name) {
+  if (!parsed || typeof parsed !== 'object' || parsed.dokumenttyp !== RK.eingaben.FORMAT.typ) return false;
+  const imp = RK.eingaben.importiere(parsed);
+  if (!imp.ok) { openDialog(dlgHead('Sicherung nicht übernommen') + `<p style="margin-top:0"><code>${esc(name)}</code>: ${esc(imp.fehler.join(' '))}</p>`); return true; }
+  const n = RK.eingaben.zusammenfuehren(state.notizen, imp.notizen, 'notizen');
+  const a = RK.eingaben.zusammenfuehren(state.karte.adressen, imp.adressen, 'adressen');
+  state.notizen = n.werte;
+  state.karte.adressen = a.werte;
+  notizenSpeichern();
+  karteSpeichern();
+  const zeile = (t, z) => `<li>${t}: ${z.neu} neu, ${z.ersetzt} aktualisiert, ${z.gleich} unverändert${z.behalten ? `, ${z.behalten} hier jünger und behalten` : ''}</li>`;
+  openDialog(dlgHead('Sicherung übernommen') + `<p style="margin-top:0"><code>${esc(name)}</code> wurde mit den Eingaben in diesem Browser zusammengeführt. Nichts wurde gelöscht.</p>
+    <ul>${zeile('Status und Notizen', n.zahl)}${zeile('Adressen und Kartenpunkte', a.zahl)}</ul>${imp.verworfen ? `<p class="fine">${imp.verworfen} ungültige Einträge wurden übersprungen.</p>` : ''}
+    <div class="btn-row" style="justify-content:flex-end;margin-bottom:0"><button class="btn primary" data-action="close-dlg">OK</button></div>`);
+  render();
+  return true;
+}
+</script>
 <script>
 'use strict';
 
@@ -6292,6 +6559,8 @@ const state = {
   ordner: ordnerZustand(),
   // Kartenansicht: Adressnachträge, gesetzte Punkte, gemerkte Suchergebnisse (siehe src/oberflaeche/karte.js)
   karte: karteZustand(),
+  // Eigene Eingaben je Objektschlüssel: Status, Termin, Notiz (src/oberflaeche/eingaben.js)
+  notizen: {},
   // Ausgeblendete Spalten der Vergleichstabelle (gemerkt mit der Ansicht)
   ausgeblendet: new Set(),
   // Menü links: ganz zugeklappt (nur breite Bildschirme, gemerkt) und offene Gruppen
@@ -6358,7 +6627,7 @@ async function addTexts(items, { silent = false, titel = 'Bewertungen werden gep
     let parsed, err = null;
     try { parsed = JSON.parse(it.text.replace(/^﻿/, '')); } catch (e) { err = 'JSON-Syntaxfehler: ' + e.message; }
     // Profile und Berechnungspakete sind keine Immobiliendateien: eigener Import, nie in der Dateiliste gespeichert
-    if (!err && pImportiereDokument(parsed, it.name)) { persoenlich++; continue; }
+    if (!err && (eingabenImportDokument(parsed, it.name) || pImportiereDokument(parsed, it.name))) { persoenlich++; continue; }
     if (!err && Array.isArray(parsed) && parsed.length && parsed.every(x => isObj(x) && ('schema_version' in x || 'metadaten' in x))) {
       parsed.forEach((x, i) => added.push(addDoc(`${it.name} [${i + 1}]`, JSON.stringify(x, null, 2), x, null)));
       continue;
@@ -6432,13 +6701,26 @@ function removeDoc(uid) {
   render();
 }
 
+/* Bewertungsdateien merken: in IndexedDB (fasst ein Vielfaches von localStorage). Schreibvorgänge laufen
+   nacheinander; ein Aufruf während des Schreibens wird danach mit dem neuesten Stand nachgeholt. */
+const speichern = { laeuft: false, nochmal: false };
 function save() {
-  if (!state.persist) { lsDel(LS.docs); state.saveError = null; return; }
-  const ok = lsSet(LS.docs, JSON.stringify(state.docs.filter(d => d.text).map(d => ({ name: d.fileName, text: d.text }))));
-  // Passt nicht alles in den Speicher, wird der alte Stand gelöscht, damit beim nächsten Öffnen kein veralteter Ausschnitt erscheint
-  if (!ok) lsDel(LS.docs);
-  state.saveError = ok ? null : (state.ordner.handle ? 'Zu viele Dateien für den Browser-Speicher – sie kommen beim Öffnen aus dem Ablageordner.' : 'Speichern im Browser nicht möglich (Speicher voll oder gesperrt).');
   karteSpeichern();
+  if (!state.persist) { lsDel(LS.docs); idbKv('readwrite', st => st.delete('docs')); state.saveError = null; return; }
+  if (speichern.laeuft) { speichern.nochmal = true; return; }
+  docsSchreiben();
+}
+async function docsSchreiben() {
+  speichern.laeuft = true;
+  do {
+    speichern.nochmal = false;
+    const daten = state.docs.filter(d => d.text).map(d => ({ name: d.fileName, text: d.text }));
+    const ok = (await idbKv('readwrite', st => st.put(daten, 'docs'))) === 'docs';
+    const fehler = ok ? null : 'Speichern im Browser nicht möglich (Speicher voll oder gesperrt).';
+    if (ok) lsDel(LS.docs); // alter Speicherort (bis 02.11.2026)
+    if (fehler !== state.saveError) { state.saveError = fehler; renderSidebar(); }
+  } while (speichern.nochmal && state.persist);
+  speichern.laeuft = false;
 }
 
 async function restore() {
@@ -6449,15 +6731,19 @@ async function restore() {
   ansichtLaden();
   pLadenAusBrowser();
   karteLaden();
-  const raw = lsGet(LS.docs);
-  if (!raw || !state.persist) return;
+  notizenLaden();
+  if (!state.persist) return;
   try {
-    const items = JSON.parse(raw);
+    // IndexedDB; ältere Fassungen hatten die Dateien in localStorage – dann von dort übernehmen und umziehen
+    let items = await idbKv('readonly', st => st.get('docs'));
+    const ausLs = !Array.isArray(items);
+    if (ausLs) { const raw = lsGet(LS.docs); items = raw ? JSON.parse(raw) : null; }
     if (Array.isArray(items) && items.length) {
       await addTexts(items.filter(x => x && typeof x.text === 'string'), { silent: true, titel: 'Gemerkte Bewertungen werden geladen' });
       state.view = immoDocs().length ? 'compare' : 'detail';
       state.current = (immoDocs()[0] || state.docs[0] || {}).uid;
       if (!state.docs.length) state.view = 'start';
+      if (ausLs) save();
     }
   } catch { /* defekter Speicherinhalt wird ignoriert */ }
 }
@@ -7113,6 +7399,10 @@ function renderSidebar() {
     </div>
     ${sidebarOrdner()}
     ${kaputt.length ? `<div class="menue-label">Nicht lesbar</div>${kaputt.map(d => `<button class="navitem sub${state.current === d.uid && state.view === 'detail' ? ' active' : ''}" data-action="open" data-uid="${d.uid}"><span class="vdot v-crit"></span><span class="menue-text">${esc(d.fileName)}</span></button>`).join('')}` : ''}
+    <div class="side-sicherung">
+      <button class="btn sm" data-action="eingaben-sichern"${eingabenZahl() ? '' : ' disabled'}>Eigene Eingaben sichern${eingabenZahl() ? ` <span class="count">${eingabenZahl()}</span>` : ''}</button>
+      <span class="fine">Status, Notizen, Adressen und Kartenpunkte als Datei. Zurückholen: die Datei über „+ Dateien“ laden.</span>
+    </div>
     <div class="side-foot">
       <label class="check"><input type="checkbox" id="persist" ${state.persist ? 'checked' : ''}> Dateien in diesem Browser merken</label>
       ${state.saveError ? `<span class="notice">${esc(state.saveError)}</span>` : ''}
@@ -7162,12 +7452,12 @@ function viewDetail(doc) {
   if (!doc.isImmo) return viewErrorDoc(doc);
   if (state.detailModus === 'persoenlich') {
     const pnav = [['p-kennzahlen', 'Kennzahlen'], ['p-eingaben', 'Eingaben'], ['p-konditionen', 'Konditionen'], ['p-haushalt', 'Haushalt'], ['p-steuer', 'Steuer'], ['p-verlauf', 'Jahresverlauf'], ['p-szenarien', 'Szenarien'], ['p-export', 'Export']];
-    return detailHead(doc) + pModusSchalter()
+    return detailHead(doc) + meinStand(doc) + pModusSchalter()
       + (aktivesProfil() ? `<nav class="subnav" aria-label="Abschnitte">${pnav.map(([id, t]) => `<button data-action="jump" data-target="${id}">${t}</button>`).join('')}</nav>` : '')
       + viewPersoenlich(doc);
   }
   const nav = [['sec-ueberblick', 'Überblick'], ['sec-steckbrief', 'A · Steckbrief'], ['sec-widersprueche', 'B · Widersprüche'], ['sec-lage', 'C · Lage & Energie'], ['sec-preis', 'D · Preis & Vergleich'], ['sec-kosten', 'E · Kosten & Szenarien'], ['sec-weg', 'F · WEG & Risiken'], ['sec-schritte', 'H · Nächste Schritte'], ['sec-quellen', 'Quellen & Belege'], ['sec-pruefung', 'Exportprüfung'], ['sec-roh', 'Rohdaten']];
-  return detailHead(doc) + pModusSchalter()
+  return detailHead(doc) + meinStand(doc) + pModusSchalter()
     + `<nav class="subnav" aria-label="Abschnitte">${nav.map(([id, t]) => `<button data-action="jump" data-target="${id}">${t}</button>`).join('')}</nav>`
     + secOverview(doc) + secSteckbrief(doc) + secWidersprueche(doc) + secLage(doc) + secPreis(doc) + secKosten(doc) + secWeg(doc) + secSchritte(doc) + secQuellen(doc) + secPruefung(doc) + secRoh(doc);
 }
@@ -7226,7 +7516,7 @@ function vergleichKarten(rows, sp) {
     return `<li class="cmp-karte" data-action="open" data-uid="${d.uid}">
       <div class="ck-kopf"><input type="checkbox" data-select="${d.uid}" ${state.selected.has(d.uid) ? 'checked' : ''} aria-label="Für Gegenüberstellung auswählen"><span class="num">#${d.num}</span><b class="ck-titel">${esc(docTitle(d))}</b></div>
       <div class="obj-sub">${esc([docPlace(d), platLabel(obj(d.data.angebot).plattform)].filter(Boolean).join(' · '))}</div>
-      <div class="ck-urteile">${urteilKurz(urteilOf(d))}${ein ? `<span class="verdict sm ${ein[1]}"><span class="vi" aria-hidden="true">${ein[0]}</span><span>${esc(ein[2].replace(' zum persönlichen Budget', ''))}</span></span>` : ''}</div>
+      <div class="ck-urteile">${statusChip(d)}${urteilKurz(urteilOf(d))}${ein ? `<span class="verdict sm ${ein[1]}"><span class="vi" aria-hidden="true">${ein[0]}</span><span>${esc(ein[2].replace(' zum persönlichen Budget', ''))}</span></span>` : ''}</div>
       ${zeigen.length ? `<dl class="ck-werte">${zeigen.map(e).join('')}</dl>` : ''}
     </li>`;
   }).join('');
@@ -7539,6 +7829,7 @@ const nurKey = (v, liste) => (liste.includes(v) ? v : '');
 const COLS = [
   { id: 'num', label: '#', titel: 'Nummer', sv: d => d.num, filter: 'zahl' },
   { id: 'objekt', label: 'Objekt', sv: d => docTitle(d).toLowerCase(), filter: 'text', fv: d => { const a = obj(d.data.angebot); return [docTitle(d), docPlace(d), platLabel(a.plattform), a.plattform_id, a.objektart].filter(v => v != null).join(' '); } },
+  { id: 'status', label: 'Mein Status', titel: 'Mein Status', sv: d => RK.eingaben.statusRang(notizVon(d)?.status), filter: 'auswahl', fv: d => notizVon(d)?.status || '', optionen: () => [...RK.eingaben.STATUS, ['', 'Ohne Status']] },
   { id: 'urteil', label: 'Gesamturteil', sv: d => { const i = VERDICT_ORDER.indexOf(urteilOf(d)); return i < 0 ? null : i; }, filter: 'auswahl', fv: d => nurKey(urteilOf(d), VERDICT_ORDER), optionen: () => [...VERDICT_ORDER.map(v => [v, L(v)]), ['', 'Kein Urteil']] },
   { id: 'sicherheit', label: 'Beleg­sicherheit', sv: d => { const i = SICHERHEIT.indexOf(obj(d.data.bewertung).belegsicherheit); return i < 0 ? null : i; }, filter: 'auswahl', fv: d => nurKey(obj(d.data.bewertung).belegsicherheit, SICHERHEIT), optionen: () => [...SICHERHEIT.map(v => [v, L(v)]), ['', 'Keine Angabe']] },
   { id: 'kaufpreis', label: 'Kaufpreis', path: '/objekt/kaufpreis_eur', num: true, filter: 'zahl', einheit: '€' },
@@ -7696,6 +7987,7 @@ function compareTable(rows) {
       if (c.id === 'num') return `<td class="num"><span class="num">#${d.num}</span></td>`;
       if (c.id === 'objekt') { const unter = [docPlace(d), platLabel(a.plattform), a.plattform_id].filter(Boolean).join(' · ') + (d.rev && d.rev.total > 1 ? ` · Rev. ${d.rev.index}/${d.rev.total}` : ''); return `<td class="cell-obj"><div class="obj-title" title="${esc(docTitle(d))}">${esc(docTitle(d))}</div><div class="obj-sub" title="${esc(unter)}">${offerTag(d.data)}<span class="obj-sub-text">${esc(unter)}</span></div></td>`; }
       if (c.id === 'urteil') return `<td class="cell-urteil">${urteilKurz(b.gesamturteil)}</td>`;
+      if (c.id === 'status') return statusZelle(d);
       if (c.profil) {
         const r = profilErgebnis(d), ok = r && r.anwendbar && r.status.cashflow === 'vollstaendig';
         const leer = `<span class="null" title="${esc(!r || !r.anwendbar ? 'Mit dem Profil nicht anwendbar' : 'Mit dem Profil noch nicht berechenbar – was fehlt, zeigt der Reiter „Mit meinem Profil“')}">—</span>`;
@@ -7861,6 +8153,7 @@ function exportCSV() {
     ['Offene Widersprüche', d => d.ctx.conflicts.size], ['Risiken hoch', d => d.ctx.list('risiken').filter(r => r.schwere === 'hoch').length],
     ['Prüfdatum', d => g(d, '/metadaten/pruefdatum')], ['Exportdatum', d => g(d, '/metadaten/exportdatum')], ['Analysestatus', d => g(d, '/metadaten/analysestatus')],
     ['Prüffehler', d => countIssues(d).error], ['Prüfwarnungen', d => countIssues(d).warn],
+    ['Mein Status', d => RK.eingaben.statusName(notizVon(d)?.status) || null], ['Termin', d => notizVon(d)?.termin ?? null], ['Notiz', d => notizVon(d)?.notiz || null],
     ...(aktivesProfil() && !state.ausgeblendet.has('p_zuzahlung') ? [['Zuzahlung vor Steuer Monat EUR (Profil)', d => profilKpi(d, 'zuzahlung_vor_steuer_monat')], ['Zuzahlung nach Steuer Monat EUR (Profil)', d => profilKpi(d, 'zuzahlung_nach_steuer_monat')], ['Einordnung (Profil)', d => profilEinordnung(d)]] : []),
   ];
   const fmt = v => (v === null || v === undefined ? '' : typeof v === 'number' ? String(v).replace('.', ',') : String(v));
@@ -8020,7 +8313,7 @@ function applyTheme(t) {
    Ereignisse
    ===================================================================== */
 document.addEventListener('click', e => {
-  if (e.target.closest('a[href]') || e.target.matches('input')) return;
+  if (e.target.closest('a[href], select, textarea') || e.target.matches('input')) return;
   const el = e.target.closest('[data-action]');
   if (!el) return;
   const { action, uid } = el.dataset;
@@ -8061,6 +8354,7 @@ document.addEventListener('click', e => {
     }
     case 'ansicht-zuruecksetzen': ansichtZuruecksetzen(); break;
     case 'spalten-dialog': spaltenDialog(); break;
+    case 'eingaben-sichern': eingabenSichern(); break;
     case 'spalten-alle': state.ausgeblendet.clear(); spaltenDialog(); render(); break;
     case 'tastenhilfe': tastenHilfe(); break;
     case 'meta-mehr': state.metaMehr = !state.metaMehr; renderMitFokus(); break;
@@ -8153,6 +8447,7 @@ document.addEventListener('change', e => {
   const t = e.target;
   if (t.id === 'fileInput' || t.id === 'dirInput') { addFiles([...t.files]); t.value = ''; return; }
   if (spaltenEingabe(t, 'change')) return;
+  if (notizEingabe(t, 'change')) return;
   if (t.dataset.spalteAn) { t.checked ? state.ausgeblendet.delete(t.dataset.spalteAn) : state.ausgeblendet.add(t.dataset.spalteAn); render(); return; }
   if (t.id === 'karten-sort') { const [col, dir] = t.value.split('|'); state.sort = { col, dir: Number(dir) === -1 ? -1 : 1 }; renderResults(); return; }
   if (t.id === 'karten-filter') { const c = spalteMit(t.value); t.value = ''; if (c) spaltenmenueOeffnen(c, 'karten'); return; }
@@ -8167,6 +8462,7 @@ document.addEventListener('change', e => {
 });
 document.addEventListener('input', e => {
   if (spaltenEingabe(e.target, 'input')) return;
+  if (notizEingabe(e.target, 'input')) return;
   if (e.target.id === 'fq') { state.filter.q = e.target.value; renderResults(); return; }
   pEingabeLaeuft(e.target);
 });
