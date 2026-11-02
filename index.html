@@ -1105,6 +1105,9 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13px; }
 .cmp-table th:first-child, .cmp-table td:first-child { width: 34px; padding-right: 0; }
 .cmp-table thead th, .cmp-table thead th.num { white-space: normal; vertical-align: bottom; line-height: 1.3; }
 .cmp-table td.cell-urteil { min-width: 0; white-space: nowrap; }
+/* Spalten mit dem aktiven Profil, leicht blau hinterlegt */
+.cmp-table td.profilspalte { background: color-mix(in srgb, var(--accent) 5%, transparent); }
+.table-wrap .cmp-table thead th.profilspalte { background: color-mix(in srgb, var(--accent) 12%, var(--surface-2)); color: var(--accent-ink); }
 .cmp-table th, .cmp-table td { padding-left: 8px; padding-right: 8px; }
 /* Zusätze wie „strittig · W1“ oder Szenariowerte brechen in eine zweite Zeile um, statt die Spalte zu verbreitern */
 .cmp-table td.num { white-space: nowrap; }
@@ -5653,7 +5656,7 @@ document.addEventListener('visibilitychange', () => { if (document.visibilitySta
  * ImmoInvest Viewer – Sortieren und Filtern an jeder Spaltenüberschrift der Vergleichstabelle
  *
  * Jede Überschrift hat zwei Knöpfe: die Beschriftung sortiert (wie bisher), der Trichter öffnet ein Menü zum
- * Sortieren und Filtern. Filtertyp und Werte kommen aus COLS im Hauptskript (filter, fv, optionen, einheit),
+ * Sortieren und Filtern. Filtertyp und Werte kommen aus spalten() im Hauptskript (COLS, mit aktivem Profil plus PROFIL_COLS) (filter, fv, optionen, einheit),
  * die Prüfung aus dem Rechenkern-Modul tabellenfilter.js. Die Filter wirken über filteredDocs() in allen
  * gefilterten Reitern (Tabelle, Kaufpreis/m² & Rendite, Karte, Mit meinem Profil) und im CSV-Export; aktive
  * Filter stehen deshalb in jedem dieser Reiter als Leiste über den Ergebnissen.
@@ -5670,8 +5673,8 @@ const WERTE_TEXTE = [['alle', 'zeigen'], ['mit', 'ausblenden'], ['ohne', 'nur di
 // Offenes Menü: Spalte, Art des Ankers (Überschrift oder Filterleiste), Rohtext der Eingaben, Eingabefehler
 let spaltenMenue = { col: null, anker: 'kopf', roh: {}, fehler: {} };
 
-const spalteMit = id => COLS.find(c => c.id === id);
-const spaltenTypen = () => COLS.map(c => ({ id: c.id, typ: c.filter }));
+const spalteMit = id => spalten().find(c => c.id === id);
+const spaltenTypen = () => spalten().map(c => ({ id: c.id, typ: c.filter }));
 const spaltenWert = (s, d) => colFilterValue(spalteMit(s.id), d);
 const spaltenZahl = (c, v) => `${nfA.format(v)}${c.einheit ? NB + c.einheit : ''}`;
 
@@ -5713,7 +5716,7 @@ function spaltenBeschreibung(c, b) {
 }
 
 function spaltenfilterLeiste(rows) {
-  const aktiv = COLS.filter(c => state.filter.spalten[c.id]);
+  const aktiv = spalten().filter(c => state.filter.spalten[c.id]);
   if (!aktiv.length) return '';
   return `<div class="sf-leiste" role="group" aria-label="Aktive Spaltenfilter"><span class="lbl">Spaltenfilter · ${rows.length} von ${basisDocs().length}</span>
     ${aktiv.map(c => `<span class="sf-chip"><button class="sf-chip-text" data-action="spaltenmenue" data-col="${c.id}" aria-haspopup="dialog" title="Filter ändern">${esc(colTitel(c))}: ${esc(spaltenBeschreibung(c, state.filter.spalten[c.id]))}</button><button class="sf-chip-x" data-action="spaltenfilter-weg" data-col="${c.id}" aria-label="Filter „${esc(colTitel(c))}“ entfernen">×</button></span>`).join('')}
@@ -6946,12 +6949,12 @@ const ANSICHT_STANDARD = { sort: { col: 'num', dir: 1 } };
 function ansichtLaden() {
   try {
     const a = JSON.parse(lsGet(LS.ansicht) || '{}');
-    if (a.sort && COLS.some(c => c.id === a.sort.col)) state.sort = { col: a.sort.col, dir: a.sort.dir === -1 ? -1 : 1 };
+    if (a.sort && alleSpalten().some(c => c.id === a.sort.col)) state.sort = { col: a.sort.col, dir: a.sort.dir === -1 ? -1 : 1 };
     if (typeof a.q === 'string') state.filter.q = a.q.slice(0, 200);
     if (typeof a.showOld === 'boolean') state.filter.showOld = a.showOld;
     if (Array.isArray(a.orte)) state.filter.orte = new Set(a.orte.filter(o => typeof o === 'string'));
     if (a.spalten && typeof a.spalten === 'object') {
-      for (const c of COLS) { const b = a.spalten[c.id] && RK.tabellenfilter.bereinige(c.filter, a.spalten[c.id]); if (b) state.filter.spalten[c.id] = b; }
+      for (const c of alleSpalten()) { const b = a.spalten[c.id] && RK.tabellenfilter.bereinige(c.filter, a.spalten[c.id]); if (b) state.filter.spalten[c.id] = b; }
     }
   } catch { /* defekter Speicherinhalt wird ignoriert */ }
 }
@@ -7443,6 +7446,34 @@ const COLS = [
   { id: 'pruefdatum', label: 'Prüfdatum', path: '/metadaten/pruefdatum', filter: 'datum', fv: d => { const v = obj(d.data.metadaten).pruefdatum; return isValidDate(v) ? v : null; } },
   { id: 'export', label: 'Export­prüfung', sv: d => { const c = countIssues(d); return c.error * 1000 + c.warn; }, filter: 'auswahl', fv: d => { const c = countIssues(d); return c.error ? 'fehler' : c.warn ? 'warnung' : 'ok'; }, optionen: () => [['ok', '✓ Ohne Befund'], ['warnung', '⚠ Warnungen'], ['fehler', '✕ Fehler']] },
 ];
+/* Spalten mit dem aktiven Profil: erscheinen nur, wenn ein Profil aktiv ist, direkt hinter „Gesamturteil“.
+   Alle Werte kommen aus dem Rechenkern (RK.szenario.berechne), je Objekt zwischengespeichert. */
+const profilErgebnisse = new Map();
+function profilErgebnis(d) {
+  const p = aktivesProfil();
+  if (!p || !d.isImmo) return null;
+  const os = pOS(d), schl = JSON.stringify(p) + '|' + JSON.stringify(os);
+  const alt = profilErgebnisse.get(d.uid);
+  if (alt && alt.schl === schl) return alt.r;
+  const r = RK.szenario.berechne({ immobilie: d.data, profil: p, objektszenario: os });
+  profilErgebnisse.set(d.uid, { schl, r });
+  return r;
+}
+const profilKpi = (d, feld) => { const r = profilErgebnis(d); return r && r.anwendbar && r.status.cashflow === 'vollstaendig' && isNum(r.kpi?.[feld]) ? r.kpi[feld] : null; };
+const profilEinordnung = d => { const r = profilErgebnis(d); return r && r.anwendbar && r.status.cashflow === 'vollstaendig' && r.einordnung ? r.einordnung.gesamt : ''; };
+const PROFIL_COLS = [
+  { id: 'p_zuzahlung', label: 'Zuzahlung / Monat', titel: 'Zuzahlung vor Steuer (Profil)', profil: true, num: true, sv: d => profilKpi(d, 'zuzahlung_vor_steuer_monat'), filter: 'zahl', einheit: '€' },
+  { id: 'p_nach_steuer', label: 'Ø nach Steuer', titel: 'Zuzahlung nach Steuer (Profil)', profil: true, num: true, sv: d => profilKpi(d, 'zuzahlung_nach_steuer_monat'), filter: 'zahl', einheit: '€' },
+  { id: 'p_einordnung', label: 'Einordnung', titel: 'Einordnung zum Budget (Profil)', profil: true, sv: d => { const i = ['passt', 'nicht_beurteilbar', 'passt_nicht'].indexOf(profilEinordnung(d)); return i < 0 ? null : i; }, filter: 'auswahl', fv: profilEinordnung, optionen: () => [['passt', 'Passt'], ['nicht_beurteilbar', 'Nicht beurteilbar'], ['passt_nicht', 'Passt nicht'], ['', 'Nicht berechenbar']] },
+];
+/** Sichtbare Spalten: mit aktivem Profil zusätzlich die Profilspalten hinter „Gesamturteil“. */
+function spalten() {
+  if (!aktivesProfil()) return COLS;
+  const i = COLS.findIndex(c => c.id === 'urteil') + 1;
+  return [...COLS.slice(0, i), ...PROFIL_COLS, ...COLS.slice(i)];
+}
+const alleSpalten = () => [...COLS, ...PROFIL_COLS];
+
 const colValue = (c, d) => (c.sv ? c.sv(d) : (() => { const r = resolvePointer(d.data, c.path); return r.found ? r.value : null; })());
 /** Wert für den Spaltenfilter: eigener Filterwert, sonst Sortierwert; Zahlenfilter sehen nur echte Zahlen (null = ohne Wert). */
 const colFilterValue = (c, d) => { const v = c.fv ? c.fv(d) : colValue(c, d); return c.filter === 'zahl' ? nurZahl(v) : v; };
@@ -7461,8 +7492,9 @@ function basisDocs() {
 }
 
 function filteredDocs() {
-  const list = RK.tabellenfilter.anwenden(basisDocs(), COLS.map(c => ({ id: c.id, typ: c.filter })), state.filter.spalten, (s, d) => colFilterValue(COLS.find(c => c.id === s.id), d));
-  const col = COLS.find(c => c.id === state.sort.col) || COLS[0];
+  const sp = spalten();
+  const list = RK.tabellenfilter.anwenden(basisDocs(), sp.map(c => ({ id: c.id, typ: c.filter })), state.filter.spalten, (s, d) => colFilterValue(sp.find(c => c.id === s.id), d));
+  const col = sp.find(c => c.id === state.sort.col) || COLS[0];
   return list.sort((a, b) => {
     const va = colValue(col, a), vb = colValue(col, b);
     const na = va === null || va === undefined || va === '', nb = vb === null || vb === undefined || vb === '';
@@ -7525,9 +7557,10 @@ function compareResults() {
 
 function compareTable(rows) {
   const allSel = rows.length > 0 && rows.every(d => state.selected.has(d.uid));
-  const head = COLS.map(c => {
+  const sp = spalten();
+  const head = sp.map(c => {
     const active = state.sort.col === c.id;
-    return `<th class="sortable${c.num || ['num', 'offen', 'risiken'].includes(c.id) ? ' num' : ''}${state.filter.spalten[c.id] ? ' gefiltert' : ''}" aria-sort="${active ? (state.sort.dir > 0 ? 'ascending' : 'descending') : 'none'}">${spaltenKopf(c, active)}</th>`;
+    return `<th class="sortable${c.num || ['num', 'offen', 'risiken'].includes(c.id) ? ' num' : ''}${c.profil ? ' profilspalte' : ''}${state.filter.spalten[c.id] ? ' gefiltert' : ''}" aria-sort="${active ? (state.sort.dir > 0 ? 'ascending' : 'descending') : 'none'}">${spaltenKopf(c, active)}</th>`;
   }).join('');
   const body = rows.map(d => {
     const e = obj(d.data.energie), m = obj(d.data.metadaten), a = obj(d.data.angebot), b = obj(d.data.bewertung);
@@ -7535,6 +7568,13 @@ function compareTable(rows) {
       if (c.id === 'num') return `<td class="num"><span class="num">#${d.num}</span></td>`;
       if (c.id === 'objekt') { const unter = [docPlace(d), platLabel(a.plattform), a.plattform_id].filter(Boolean).join(' · ') + (d.rev && d.rev.total > 1 ? ` · Rev. ${d.rev.index}/${d.rev.total}` : ''); return `<td class="cell-obj"><div class="obj-title" title="${esc(docTitle(d))}">${esc(docTitle(d))}</div><div class="obj-sub" title="${esc(unter)}">${offerTag(d.data)}<span class="obj-sub-text">${esc(unter)}</span></div></td>`; }
       if (c.id === 'urteil') return `<td class="cell-urteil">${urteilKurz(b.gesamturteil)}</td>`;
+      if (c.profil) {
+        const r = profilErgebnis(d), ok = r && r.anwendbar && r.status.cashflow === 'vollstaendig';
+        const leer = `<span class="null" title="${esc(!r || !r.anwendbar ? 'Mit dem Profil nicht anwendbar' : 'Mit dem Profil noch nicht berechenbar – was fehlt, zeigt der Reiter „Mit meinem Profil“')}">—</span>`;
+        if (!ok) return `<td class="${c.num ? 'num ' : ''}profilspalte">${leer}</td>`;
+        if (c.id === 'p_einordnung') { const e = EINORDNUNG[r.einordnung?.gesamt]; return `<td class="profilspalte nowrap">${e ? `<span class="verdict sm ${e[1]}" title="${esc(e[2])}"><span class="vi" aria-hidden="true">${e[0]}</span><span>${esc({ passt: 'Passt', passt_nicht: 'Passt nicht', nicht_beurteilbar: 'Nicht beurteilbar' }[r.einordnung.gesamt])}</span></span>` : leer}</td>`; }
+        return `<td class="num profilspalte">${pZuzahlung(colValue(c, d))}</td>`;
+      }
       if (c.id === 'sicherheit') return `<td>${meter(b.belegsicherheit)}</td>`;
       if (c.id === 'energie') return `<td class="nowrap">${e.effizienzklasse ? `<b>${esc(e.effizienzklasse)}</b> ` : ''}${isNum(e.kennwert_kwh_m2_a) ? `<span class="muted small">${esc(nfA.format(e.kennwert_kwh_m2_a))}</span>` : (!e.effizienzklasse ? '<span class="null">—</span>' : '')}</td>`;
       if (c.id === 'offen') return `<td class="num">${d.ctx.conflicts.size ? `<span class="tag tag-crit">${d.ctx.conflicts.size}</span>` : '0'}</td>`;
@@ -7543,11 +7583,11 @@ function compareTable(rows) {
       if (c.id === 'export') return `<td class="nowrap">${issueTags(d)}</td>`;
       return `<td class="num">${valueCell(d, c.path, { compact: true })}</td>`;
     };
-    return `<tr class="clickable" data-action="open" data-uid="${d.uid}"><td><input type="checkbox" data-select="${d.uid}" ${state.selected.has(d.uid) ? 'checked' : ''} aria-label="Für Gegenüberstellung auswählen"></td>${COLS.map(cell).join('')}</tr>`;
+    return `<tr class="clickable" data-action="open" data-uid="${d.uid}"><td><input type="checkbox" data-select="${d.uid}" ${state.selected.has(d.uid) ? 'checked' : ''} aria-label="Für Gegenüberstellung auswählen"></td>${sp.map(cell).join('')}</tr>`;
   }).join('');
 
-  return `<div class="card flush"><div class="table-wrap fest"><table class="t cmp-table"><thead><tr><th><input type="checkbox" id="selAll" ${allSel ? 'checked' : ''} aria-label="Alle sichtbaren auswählen"></th>${head}</tr></thead><tbody>${body || `<tr><td colspan="${COLS.length + 1}" class="muted">Keine Treffer.${Object.keys(state.filter.spalten).length ? ' <button class="linkbtn" data-action="spaltenfilter-alle-weg">Spaltenfilter löschen</button>' : ''}</td></tr>`}</tbody></table></div></div>
-    <p class="chart-note">Überschrift anklicken = sortieren, Trichter daneben = sortieren und filtern. „—“ = null im Export (nicht verlässlich bestimmbar); Zahlenfilter zeigen solche Objekte standardmäßig weiter an. Kursive Werte stammen nur aus Szenarien und zählen beim Sortieren und Filtern nicht. Farbige Punkte zeigen den Belegstatus – anklicken für Details. Häkchen wählen Objekte für die Gegenüberstellung.</p>`;
+  return `<div class="card flush"><div class="table-wrap fest"><table class="t cmp-table"><thead><tr><th><input type="checkbox" id="selAll" ${allSel ? 'checked' : ''} aria-label="Alle sichtbaren auswählen"></th>${head}</tr></thead><tbody>${body || `<tr><td colspan="${sp.length + 1}" class="muted">Keine Treffer.${Object.keys(state.filter.spalten).length ? ' <button class="linkbtn" data-action="spaltenfilter-alle-weg">Spaltenfilter löschen</button>' : ''}</td></tr>`}</tbody></table></div></div>
+    <p class="chart-note">${aktivesProfil() ? `Blau hinterlegte Spalten rechnen mit dem Profil „${esc(aktivesProfil().bezeichnung)}“ (Zuzahlung je Monat; „Überschuss“ = es bleibt etwas übrig). ` : 'Mit einem aktiven persönlichen Profil erscheinen hier zusätzlich Zuzahlung vor und nach Steuer und die Einordnung zum Budget. '}Überschrift anklicken = sortieren, Trichter daneben = sortieren und filtern. „—“ = null im Export (nicht verlässlich bestimmbar); Zahlenfilter zeigen solche Objekte standardmäßig weiter an. Kursive Werte stammen nur aus Szenarien und zählen beim Sortieren und Filtern nicht. Farbige Punkte zeigen den Belegstatus – anklicken für Details. Häkchen wählen Objekte für die Gegenüberstellung.</p>`;
 }
 
 /** Streudiagramm Kaufpreis/m² gegen Bruttomietrendite mit Werteliste daneben. */
@@ -7693,6 +7733,7 @@ function exportCSV() {
     ['Offene Widersprüche', d => d.ctx.conflicts.size], ['Risiken hoch', d => d.ctx.list('risiken').filter(r => r.schwere === 'hoch').length],
     ['Prüfdatum', d => g(d, '/metadaten/pruefdatum')], ['Exportdatum', d => g(d, '/metadaten/exportdatum')], ['Analysestatus', d => g(d, '/metadaten/analysestatus')],
     ['Prüffehler', d => countIssues(d).error], ['Prüfwarnungen', d => countIssues(d).warn],
+    ...(aktivesProfil() ? [['Zuzahlung vor Steuer Monat EUR (Profil)', d => profilKpi(d, 'zuzahlung_vor_steuer_monat')], ['Zuzahlung nach Steuer Monat EUR (Profil)', d => profilKpi(d, 'zuzahlung_nach_steuer_monat')], ['Einordnung (Profil)', d => profilEinordnung(d)]] : []),
   ];
   const fmt = v => (v === null || v === undefined ? '' : typeof v === 'number' ? String(v).replace('.', ',') : String(v));
   const q = s => (/[;"\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s);
