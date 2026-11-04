@@ -1051,6 +1051,21 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 .t th .arrow { color: var(--accent); }
 /* Tabellen mit festem Kopf: eigener Scrollbereich in Fensterhöhe, Kopfzeile bleibt oben stehen */
 .table-wrap.fest { max-height: calc(100vh - 52px - 32px); overflow: auto; overscroll-behavior: contain; }
+/* Reiter „Tabelle“ auf großen Bildschirmen: die Seite füllt genau das Fenster, Kopfbereich steht fest,
+   nur die Tabelle scrollt – es gibt keinen zweiten Scrollbereich der Seite */
+@media (min-width: 761px) and (min-height: 600px) {
+  body.ansicht-fest { overflow: hidden; }
+  body.ansicht-fest .layout { height: calc(100vh - 52px - env(safe-area-inset-top, 0px)); min-height: 0; }
+  body.ansicht-fest .main { display: flex; flex-direction: column; min-height: 0; overflow: hidden; padding-bottom: 12px; }
+  body.ansicht-fest .view-compare { flex: 1; min-height: 0; min-width: 0; width: 100%; display: flex; flex-direction: column; }
+  body.ansicht-fest .view-compare > * { flex: none; min-width: 0; }
+  body.ansicht-fest #cmpResults { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+  body.ansicht-fest #cmpResults > * { flex: none; min-width: 0; }
+  body.ansicht-fest #cmpResults > .cmp-tabelle-karte { flex: 1 1 auto; min-height: 120px; display: flex; flex-direction: column; }
+  body.ansicht-fest .cmp-tabelle-karte .table-wrap.fest { flex: 1 1 auto; min-height: 0; max-height: none; }
+  body.ansicht-fest .tabellen-hinweise[open] { max-height: 30vh; overflow: auto; }
+  body.ansicht-fest .auswahl-leiste { position: static; margin-top: 8px; }
+}
 .table-wrap.fest .t thead th { position: sticky; top: 0; z-index: 2; box-shadow: inset 0 -1px 0 var(--line); }
 .table-wrap.fest .cmp-table thead th:nth-child(3) { z-index: 3; box-shadow: inset 0 -1px 0 var(--line), 1px 0 0 var(--line); }
 /* Überschriften der Vergleichstabelle: Beschriftung sortiert, Trichter öffnet das Spaltenmenü (src/oberflaeche/spaltenfilter.js) */
@@ -1105,6 +1120,9 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 .cmp-table th:first-child, .cmp-table td:first-child { width: 34px; padding-right: 0; }
 .cmp-table thead th, .cmp-table thead th.num { white-space: normal; vertical-align: bottom; line-height: 1.3; }
 .cmp-table td.cell-urteil { min-width: 0; white-space: nowrap; }
+.tabellen-hinweise { margin-top: 8px; font-size: 12.5px; color: var(--ink-2); }
+.tabellen-hinweise > summary { cursor: pointer; width: fit-content; color: var(--accent-ink); }
+.tabellen-hinweise .chart-note { margin-top: 6px; }
 /* Mein Status: Auswahl in der Tabelle, Kurzform auf Karten, Karte „Mein Stand“ in der Einzelansicht */
 .status-zelle { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
 .status-wahl { height: 28px; max-width: 150px; padding: 0 6px; border-radius: 7px; border: 1px solid var(--line-2); background: var(--surface); color: var(--ink); font-size: 12.5px; cursor: pointer; }
@@ -3748,6 +3766,10 @@ a.btn { color: inherit; text-decoration: none; }
   'use strict';
 
   const VERLAUF = [
+    { version: '2.11.1', datum: '2026-11-04', titel: 'Tabelle füllt das Fenster', punkte: [
+      'Im Reiter „Tabelle“ scrollt nur noch die Tabelle, nicht zusätzlich die Seite; Kopfbereich und Filter bleiben stehen',
+      'Erklärungen unter der Tabelle unter „Hinweise zur Tabelle“ zusammengeklappt',
+    ] },
     { version: '2.11.0', datum: '2026-11-04', titel: 'Hilfe, Anleitung und Master-Prompt', punkte: [
       'Versionsnummer oben in der Kopfzeile, ein Klick zeigt diesen Verlauf',
       'Knopf „Hilfe“ statt des unklaren Tastatur-Symbols: Anleitung, Master-Prompt, Tastaturkürzel, Versionen',
@@ -8341,6 +8363,10 @@ function render() {
   if (state.view === 'detail' && !getDoc(state.current)) state.view = state.docs.length ? 'compare' : 'start';
   if (state.view === 'compare' && !immoDocs().length) { state.view = state.docs.length ? 'detail' : 'start'; state.current = state.docs[0]?.uid; }
   menueKlassen();
+  // Reiter „Tabelle“: Seite passt sich der Fensterhöhe an, nur die Tabelle scrollt (CSS .ansicht-fest)
+  const fest = state.view === 'compare' && state.cmpTab === 'tabelle';
+  if (fest && !document.body.classList.contains('ansicht-fest')) window.scrollTo(0, 0);
+  document.body.classList.toggle('ansicht-fest', fest);
   // Feldfehler gelten nur für die Ansicht, in der sie entstanden sind
   const kontext = `${state.view}|${state.current}|${state.profile.aktivId}|${state.detailModus}`;
   if (kontext !== state.feldKontext) { state.feldFehler = {}; state.feldRoh = {}; state.feldKontext = kontext; }
@@ -9051,7 +9077,7 @@ function compareTable(rows) {
   }).join('');
 
   return `${vergleichKarten(rows, sp)}<div class="card flush cmp-tabelle-karte"><div class="table-wrap fest"><table class="t cmp-table"><thead><tr><th><input type="checkbox" id="selAll" ${allSel ? 'checked' : ''} aria-label="Alle sichtbaren auswählen"></th>${head}</tr></thead><tbody>${body || `<tr><td colspan="${sp.length + 1}" class="muted">Keine Treffer.${Object.keys(state.filter.spalten).length ? ' <button class="linkbtn" data-action="spaltenfilter-alle-weg">Spaltenfilter löschen</button>' : ''}</td></tr>`}</tbody></table></div></div>
-    <p class="chart-note">${aktivesProfil() ? `Blau hinterlegte Spalten rechnen mit dem Profil „${esc(aktivesProfil().bezeichnung)}“ (Zuzahlung je Monat; „Überschuss“ = es bleibt etwas übrig). ` : 'Mit einem aktiven persönlichen Profil erscheinen hier zusätzlich Zuzahlung vor und nach Steuer und die Einordnung zum Budget. '}Überschrift anklicken = sortieren, Trichter daneben = sortieren und filtern, „Spalten“ blendet Spalten ein und aus. Zahlenfilter zeigen unbekannte Werte standardmäßig weiter an; Szenariowerte zählen beim Sortieren und Filtern nicht. Häkchen wählen Objekte für die Gegenüberstellung.</p>${WERTE_LEGENDE}`;
+    <details class="tabellen-hinweise"><summary>Hinweise zur Tabelle</summary><p class="chart-note">${aktivesProfil() ? `Blau hinterlegte Spalten rechnen mit dem Profil „${esc(aktivesProfil().bezeichnung)}“ (Zuzahlung je Monat; „Überschuss“ = es bleibt etwas übrig). ` : 'Mit einem aktiven persönlichen Profil erscheinen hier zusätzlich Zuzahlung vor und nach Steuer und die Einordnung zum Budget. '}Überschrift anklicken = sortieren, Trichter daneben = sortieren und filtern, „Spalten“ blendet Spalten ein und aus. Zahlenfilter zeigen unbekannte Werte standardmäßig weiter an; Szenariowerte zählen beim Sortieren und Filtern nicht. Häkchen wählen Objekte für die Gegenüberstellung.</p>${WERTE_LEGENDE}</details>`;
 }
 
 /** Streudiagramm Kaufpreis/m² gegen Bruttomietrendite mit Werteliste daneben. */
