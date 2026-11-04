@@ -5753,7 +5753,8 @@ function karteAdresseDialog(doc, werte, fehler = {}) {
       <button class="btn" data-action="close-dlg">Abbrechen</button>
       <button class="btn primary" data-action="karte-adresse-ok" data-uid="${doc.uid}">Speichern</button>
     </div>`);
-  setTimeout(() => document.getElementById(`ka-${Object.keys(fehler)[0] || 'strasse'}`)?.focus(), 30);
+  // Sofort fokussieren: ein verzögerter Fokus könnte Eingaben in ein anderes Feld umlenken
+  document.getElementById(`ka-${Object.keys(fehler)[0] || 'strasse'}`)?.focus();
 }
 
 /** Nachtrag übernehmen (oder mit null entfernen). Ein selbst gesetzter Punkt bleibt nur, wenn die Adresse gleich bleibt. */
@@ -6047,6 +6048,7 @@ function spaltenEingabe(t, art) {
     for (const k of [u, o]) m.querySelector(`[data-sf="${k}"]`)?.toggleAttribute('aria-invalid', !!spaltenMenue.fehler[k]);
     const hinweis = document.getElementById('sm-fehler');
     if (hinweis) hinweis.hidden = !(spaltenMenue.fehler.min || spaltenMenue.fehler.max);
+    if (werte === 'ohne') { spaltenBedingungSetzen(c, { werte }); return true; }
     if (spaltenMenue.fehler.min || spaltenMenue.fehler.max) return true;
     spaltenBedingungSetzen(c, { min: unten, max: oben, werte });
     return true;
@@ -6185,7 +6187,7 @@ function notizEingabe(t, art) {
   if (t.dataset.status) {
     if (art !== 'change') return true;
     const d = getDoc(t.dataset.status);
-    if (d) { notizSetzen(d, { status: t.value || null }); renderResults(); }
+    if (d) { notizSetzen(d, { status: t.value || null }); renderResults(); renderSidebar(); }
     return true;
   }
   const feld = t.dataset.notizFeld;
@@ -6199,10 +6201,15 @@ function notizEingabe(t, art) {
     if (feld !== 'notiz') renderSidebar();
   };
   // Notiztext während des Tippens gebündelt speichern, ohne die Ansicht neu zu zeichnen
-  if (feld === 'notiz' && art === 'input') { clearTimeout(notizTimer); notizTimer = setTimeout(anwenden, 400); return true; }
-  if (feld === 'notiz' || art === 'change') { clearTimeout(notizTimer); anwenden(); }
+  if (feld === 'notiz' && art === 'input') { clearTimeout(notizTimer); notizOffen = anwenden; notizTimer = setTimeout(notizJetztSichern, 400); return true; }
+  if (feld === 'notiz' || art === 'change') { clearTimeout(notizTimer); notizOffen = null; anwenden(); }
   return true;
 }
+let notizOffen = null;
+function notizJetztSichern() { clearTimeout(notizTimer); const f = notizOffen; notizOffen = null; if (f) f(); }
+// Wer die Seite verlässt oder neu lädt, während die Notiz noch nicht gespeichert ist, verliert nichts
+addEventListener('pagehide', notizJetztSichern);
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') notizJetztSichern(); });
 
 /* ---------- Sicherung ---------- */
 function eingabenZahl() {
