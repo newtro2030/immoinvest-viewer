@@ -1063,7 +1063,6 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
   body.ansicht-fest #cmpResults > * { flex: none; min-width: 0; }
   body.ansicht-fest #cmpResults > .cmp-tabelle-karte { flex: 1 1 auto; min-height: 120px; display: flex; flex-direction: column; }
   body.ansicht-fest .cmp-tabelle-karte .table-wrap.fest { flex: 1 1 auto; min-height: 0; max-height: none; }
-  body.ansicht-fest .tabellen-hinweise[open] { max-height: 30vh; overflow: auto; }
   body.ansicht-fest .auswahl-leiste { position: static; margin-top: 8px; }
 }
 .table-wrap.fest .t thead th { position: sticky; top: 0; z-index: 2; box-shadow: inset 0 -1px 0 var(--line); }
@@ -1120,9 +1119,21 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 .cmp-table th:first-child, .cmp-table td:first-child { width: 34px; padding-right: 0; }
 .cmp-table thead th, .cmp-table thead th.num { white-space: normal; vertical-align: bottom; line-height: 1.3; }
 .cmp-table td.cell-urteil { min-width: 0; white-space: nowrap; }
-.tabellen-hinweise { margin-top: 8px; font-size: 12.5px; color: var(--ink-2); }
-.tabellen-hinweise > summary { cursor: pointer; width: fit-content; color: var(--accent-ink); }
-.tabellen-hinweise .chart-note { margin-top: 6px; }
+/* Info-Symbol (ⓘ) mit Hinweis beim Darüberfahren, Fokussieren oder Antippen (src/oberflaeche/info.js) */
+.info { display: inline-flex; vertical-align: middle; margin-left: 4px; line-height: 1; }
+.info-i { all: unset; box-sizing: border-box; display: inline-grid; place-items: center; width: 17px; height: 17px; border-radius: 50%; border: 1.5px solid var(--line-2); color: var(--ink-2); background: var(--surface); font: 700 11px/1 Georgia, 'Times New Roman', serif; font-style: italic; cursor: help; flex: none; }
+.info-i:hover, .info-i[aria-expanded="true"] { border-color: var(--accent); color: var(--accent-ink); background: var(--accent-wash); }
+.info-i:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (pointer: coarse) { .info-i { width: 22px; height: 22px; font-size: 13px; } }
+.info-blase { position: fixed; inset: auto; left: 0; top: 0; margin: 0; z-index: 1000; display: none; box-sizing: border-box; max-width: min(360px, calc(100vw - 16px)); padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line-2); background: var(--surface); color: var(--ink); box-shadow: 0 6px 24px rgba(0, 0, 0, .16); font-size: 13px; font-weight: 400; font-style: normal; line-height: 1.45; text-align: left; white-space: normal; letter-spacing: normal; text-transform: none; overflow: visible; }
+.info-blase.an { display: block; }
+.info-blase.fest { border-color: var(--accent); }
+.info-blase .info-zeile { display: block; }
+.info-blase .info-zeile + .info-zeile { margin-top: 6px; }
+.info-blase .info-zeile b { font-weight: 600; }
+.info-blase .info-zeile > b:first-child { color: var(--muted); }
+.info-blase .st-punkt { display: inline-block; width: 8px; height: 8px; margin-right: 2px; border-radius: 50%; background: var(--s-warn); vertical-align: 1px; }
+.legende-zeile { display: flex; justify-content: flex-end; align-items: center; gap: 2px; margin: 8px 0 0; font-size: 12.5px; color: var(--ink-2); }
 /* Mein Status: Auswahl in der Tabelle, Kurzform auf Karten, Karte „Mein Stand“ in der Einzelansicht */
 .status-zelle { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
 .status-wahl { height: 28px; max-width: 150px; padding: 0 6px; border-radius: 7px; border: 1px solid var(--line-2); background: var(--surface); color: var(--ink); font-size: 12.5px; cursor: pointer; }
@@ -1170,10 +1181,6 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
   .cmp-tabelle-karte { display: none; }
 }
 /* Einheitliche Legende für unbekannte und abgeleitete Werte */
-.werte-legende { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 10px 0 0; font-size: 12.5px; color: var(--ink-2); }
-.werte-legende b { color: var(--muted); }
-.werte-legende i { font-style: italic; }
-.werte-legende .st-punkt { display: inline-block; width: 8px; height: 8px; margin-right: 2px; border-radius: 50%; background: var(--s-warn); vertical-align: 1px; }
 /* Einzelansicht: weitere Angaben eingeklappt, aktiver Abschnitt in der Navigation */
 .meta-mehr { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 8px; border: 1px dashed var(--line-2); background: transparent; font-size: 12.5px; color: var(--ink-2); cursor: pointer; }
 .meta-mehr:hover { background: var(--surface-2); color: var(--ink); }
@@ -1400,6 +1407,7 @@ dialog::backdrop { background: rgba(10, 10, 10, .38); }
 .side-ordner { display: flex; flex-direction: column; gap: 6px; padding: 8px 0; border-bottom: 1px solid var(--line); }
 .side-ordner > .btn { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; }
 .side-ordner .fine { margin: 0; }
+.side-zeile { display: flex; align-items: center; gap: 2px; }
 .side-ordner-kopf { display: flex; align-items: center; gap: 6px; font-size: 13.5px; min-width: 0; }
 .side-ordner-kopf b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .side-ordner-aktionen { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
@@ -1408,7 +1416,8 @@ dialog::backdrop { background: rgba(10, 10, 10, .38); }
 .feld-raster { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 12px 16px; margin: 12px 0; }
 .feld { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .feld.breit { grid-column: 1 / -1; }
-.feld > label { font-size: 12.5px; font-weight: 600; color: var(--ink-2); }
+.feld > label, .feld-kopf > label:not(.check) { font-size: 12.5px; font-weight: 600; color: var(--ink-2); }
+.feld-kopf { display: flex; align-items: center; gap: 2px; min-width: 0; }
 .feld input[type="text"], .feld select, .p-inline select, .p-anp input, .p-begr, .p-var-name, .p-inline input {
   height: 34px; border-radius: 8px; border: 1px solid var(--line-2); background: var(--surface); padding: 0 10px; font-size: 13.5px; min-width: 0; width: 100%; }
 .feld input:focus-visible, .feld select:focus-visible, .p-anp input:focus-visible, .p-inline input:focus-visible, .p-inline select:focus-visible, .p-begr:focus-visible, .p-var-name:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
@@ -3766,6 +3775,11 @@ a.btn { color: inherit; text-decoration: none; }
   'use strict';
 
   const VERLAUF = [
+    { version: '2.12.0', datum: '2026-11-04', titel: 'Hinweise am Info-Symbol', punkte: [
+      'Erklärtexte stehen nicht mehr als Fließtext auf der Seite, sondern am Info-Symbol ⓘ genau dort, wo sie gelten',
+      'Darüberfahren zeigt den Hinweis, ein Klick oder Antippen hält ihn fest, Esc oder ein Klick daneben schließt ihn',
+      'Gilt für Tabelle, Objektansicht, Karte, Menü, Dialoge und alle Profilfelder',
+    ] },
     { version: '2.11.1', datum: '2026-11-04', titel: 'Tabelle füllt das Fenster', punkte: [
       'Im Reiter „Tabelle“ scrollt nur noch die Tabelle, nicht zusätzlich die Seite; Kopfbereich und Filter bleiben stehen',
       'Erklärungen unter der Tabelle unter „Hinweise zur Tabelle“ zusammengeklappt',
@@ -3989,13 +4003,15 @@ function pFeldHtml({ key, label, wert, vorhanden, typ = 'zahl', einheit, hilfe, 
   if (typ === 'wahl' || typ === 'wahlzahl') {
     input = `<select id="${id}" ${attrs} data-fkey="${esc(key)}"${fehler ? ' aria-invalid="true"' : ''}>${optionen.map(([v, t]) => `<option value="${esc(v)}"${String(wert ?? '') === String(v) ? ' selected' : ''}>${esc(t)}</option>`).join('')}</select>`;
   } else if (typ === 'bool') {
-    return `<div class="feld${breit ? ' breit' : ''}"><label class="check"><input type="checkbox" id="${id}" ${attrs} data-fkey="${esc(key)}"${wert === true ? ' checked' : ''}> ${esc(label)}</label>${hilfe ? `<div class="feld-hilfe">${esc(hilfe)}</div>` : ''}</div>`;
+    return `<div class="feld${breit ? ' breit' : ''}"><div class="feld-kopf"><label class="check"><input type="checkbox" id="${id}" ${attrs} data-fkey="${esc(key)}"${wert === true ? ' checked' : ''}${hilfe ? ` aria-describedby="${id}_h"` : ''}> ${esc(label)}</label>${hilfe ? info(esc(hilfe), label, `${id}_h`) : ''}</div></div>`;
   } else {
     const ph = platzhalter || (vorhanden && wert === null ? 'unbekannt' : 'nicht angegeben');
-    input = `<div class="inp-wrap"><input id="${id}" type="text" inputmode="${typ === 'text' ? 'text' : typ === 'monat' ? 'numeric' : 'decimal'}" ${attrs} data-fkey="${esc(key)}" value="${esc(anzeige)}" placeholder="${esc(ph)}" aria-describedby="${id}_h"${fehler ? ' aria-invalid="true"' : ''}${einheit ? ' class="mit-einheit"' : ''}>${einheit ? `<span class="inp-einheit" aria-hidden="true">${esc(einheit)}</span>` : ''}</div>`;
+    input = `<div class="inp-wrap"><input id="${id}" type="text" inputmode="${typ === 'text' ? 'text' : typ === 'monat' ? 'numeric' : 'decimal'}" ${attrs} data-fkey="${esc(key)}" value="${esc(anzeige)}" placeholder="${esc(ph)}" ${fehler || hilfe ? `aria-describedby="${id}_h"` : ''}${fehler ? ' aria-invalid="true"' : ''}${einheit ? ' class="mit-einheit"' : ''}>${einheit ? `<span class="inp-einheit" aria-hidden="true">${esc(einheit)}</span>` : ''}</div>`;
   }
-  const unten = fehler ? `<div class="feld-fehler" id="${id}_h" role="alert">${esc(fehler)}</div>` : hilfe ? `<div class="feld-hilfe" id="${id}_h">${esc(hilfe)}</div>` : '';
-  return `<div class="feld${breit ? ' breit' : ''}${fehler ? ' hat-fehler' : ''}"><label for="${id}">${esc(label)}</label>${input}${unten}</div>`;
+  const unten = fehler ? `<div class="feld-fehler" id="${id}_h" role="alert">${esc(fehler)}</div>` : '';
+  // Hilfetext als ⓘ neben der Beschriftung; bei einem Fehler beschreibt die Fehlermeldung das Feld
+  const kopf = hilfe ? `<div class="feld-kopf"><label for="${id}">${esc(label)}</label>${info(esc(hilfe), label, fehler ? undefined : `${id}_h`)}</div>` : `<label for="${id}">${esc(label)}</label>`;
+  return `<div class="feld${breit ? ' breit' : ''}${fehler ? ' hat-fehler' : ''}">${kopf}${input}${unten}</div>`;
 }
 
 /** Profilfeld: data-pfad verweist auf die Stelle im Profil. */
@@ -4058,8 +4074,7 @@ function pLoeschen(id) {
 function pExportFragen(id) {
   const p = state.profile.liste.find(x => x.id === id);
   if (!p) return;
-  openDialog(dlgHead('Profil exportieren') + `<p style="margin-top:0">Die Datei enthält alle Angaben dieses Profils: Haushalt, Einkommen je Person, Steuerangaben, Ausgaben, Kapital, Zuzahlungsgrenze und Finanzierungskonditionen. Sie enthält <b>keine</b> Immobiliendaten und keine Objektszenarien.</p>
-    <p class="fine">Format household_profile ${esc(RK.formate.FORMAT_PROFIL.version)}. Bewahre die Datei sicher auf – sie enthält persönliche Finanzdaten.</p>
+  openDialog(dlgHead('Profil exportieren' + info(`Format household_profile ${esc(RK.formate.FORMAT_PROFIL.version)}. Bewahre die Datei sicher auf – sie enthält persönliche Finanzdaten.`, 'Profil exportieren')) + `<p style="margin-top:0">Die Datei enthält alle Angaben dieses Profils: Haushalt, Einkommen je Person, Steuerangaben, Ausgaben, Kapital, Zuzahlungsgrenze und Finanzierungskonditionen. Sie enthält <b>keine</b> Immobiliendaten und keine Objektszenarien.</p>
     <div class="btn-row" style="justify-content:flex-end;margin-bottom:0"><button class="btn" data-action="close-dlg">Abbrechen</button><button class="btn primary" data-action="p-export-ok" data-pid="${esc(id)}">Profil-Datei speichern</button></div>`);
 }
 function pRevisionFestschreiben(p) {
@@ -4538,9 +4553,8 @@ function pProfilListe() {
 }
 
 function pPersistenzBox() {
-  return `<div class="card p-persistenz"><h3>Profile im Browser merken</h3>
+  return `<div class="card p-persistenz"><h3>Profile im Browser merken${info('Standardmäßig aus. Gilt nur für diesen Browser auf diesem Gerät – keine geräteübergreifende Synchronisierung und kein Ersatz für den Datei-Export. Getrennt von den gemerkten Immobiliendateien.', 'Profile im Browser merken')}</h3>
     <label class="check"><input type="checkbox" id="p-merken"${state.profile.merken ? ' checked' : ''}> Profile und Objektszenarien in diesem Browser speichern</label>
-    <p class="fine">Standardmäßig aus. Gilt nur für diesen Browser auf diesem Gerät – keine geräteübergreifende Synchronisierung und kein Ersatz für den Datei-Export. Getrennt von den gemerkten Immobiliendateien.</p>
     <button class="btn sm" data-action="p-browser-loeschen">Im Browser gespeicherte Profile löschen</button></div>`;
 }
 
@@ -4589,18 +4603,18 @@ function pTabSteuer(p) {
   let details = '';
   if (modus === 'manuell') {
     const saetze = p.steuer.manuelle_saetze_prozent || [];
-    details = `<p class="fine">Trage deinen persönlichen Grenzsteuersatz ein (es gibt keine Voreinstellung). Weitere Sätze werden nebeneinander gerechnet; der erste bestimmt die Hauptkennzahlen. Ein geleertes Feld entfernt den Satz.</p><div class="feld-raster">${saetze.map((s, i) => `<div class="feld-mit-aktion">${pf(`steuer.manuelle_saetze_prozent.${i}`, `Grenzsteuersatz ${i + 1}${i === 0 ? ' (Hauptwert)' : ''}`, { einheit: '%' })}<button class="icon-btn" data-action="p-satz-weg" data-i="${i}" aria-label="Satz ${i + 1} entfernen">×</button></div>`).join('')}
-      ${saetze.length < 5 ? pf(`steuer.manuelle_saetze_prozent.${saetze.length}`, saetze.length ? `Weiterer Vergleichssatz (optional)` : 'Grenzsteuersatz', { einheit: '%', platzhalter: 'z. B. 35' }) : ''}</div>`;
+    const satzHilfe = 'Trage deinen persönlichen Grenzsteuersatz ein (es gibt keine Voreinstellung). Weitere Sätze werden nebeneinander gerechnet; der erste bestimmt die Hauptkennzahlen. Ein geleertes Feld entfernt den Satz.';
+    details = `<div class="feld-raster">${saetze.map((s, i) => `<div class="feld-mit-aktion">${pf(`steuer.manuelle_saetze_prozent.${i}`, `Grenzsteuersatz ${i + 1}${i === 0 ? ' (Hauptwert)' : ''}`, { einheit: '%', hilfe: i === 0 ? satzHilfe : undefined })}<button class="icon-btn" data-action="p-satz-weg" data-i="${i}" aria-label="Satz ${i + 1} entfernen">×</button></div>`).join('')}
+      ${saetze.length < 5 ? pf(`steuer.manuelle_saetze_prozent.${saetze.length}`, saetze.length ? `Weiterer Vergleichssatz (optional)` : 'Grenzsteuersatz', { einheit: '%', platzhalter: 'z. B. 35', hilfe: saetze.length ? undefined : satzHilfe }) : ''}</div>`;
   } else if (modus === 'zve') {
-    details = `<p class="fine">Trage das zu versteuernde Einkommen <b>ohne</b> diese neue Wohnung ein. Bereits vorhandene Vermietungsergebnisse gehören hinein, die betrachtete Wohnung nicht – sonst würde sie doppelt gezählt.</p>
-      <div class="feld-raster">${ver === 'einzeln_getrennt' ? (p.personen || []).map(pers => pf(`steuer.zve_personen_eur.${pers.id}`, `zvE ${pers.bezeichnung || pers.id}`, { einheit: '€' })).join('') : pf('steuer.zve_ohne_investition_eur', ver === 'zusammen' ? 'Gemeinsames zvE (Zusammenveranlagung)' : 'zvE', { einheit: '€' })}</div>`;
+    const zveHilfe = 'Zu versteuerndes Einkommen OHNE diese neue Wohnung. Bereits vorhandene Vermietungsergebnisse gehören hinein, die betrachtete Wohnung nicht – sonst würde sie doppelt gezählt.';
+    details = `<div class="feld-raster">${ver === 'einzeln_getrennt' ? (p.personen || []).map(pers => pf(`steuer.zve_personen_eur.${pers.id}`, `zvE ${pers.bezeichnung || pers.id} (ohne diese Wohnung)`, { einheit: '€', hilfe: zveHilfe })).join('') : pf('steuer.zve_ohne_investition_eur', ver === 'zusammen' ? 'Gemeinsames zvE ohne diese Wohnung (Zusammenveranlagung)' : 'zvE ohne diese Wohnung', { einheit: '€', hilfe: zveHilfe })}</div>`;
   } else if (modus === 'brutto_schaetzung') {
-    details = `<p class="fine">Leere Werbungskosten bedeuten den gesetzlichen Arbeitnehmer-Pauschbetrag (1.230 €), leere Sonderausgaben den Pauschbetrag (36 € bzw. 72 €). Vorsorgeaufwendungen müssen eingetragen werden – es gibt keinen pauschalen Abschlag.</p>
-      ${(p.personen || []).map(pers => `<fieldset class="p-person"><legend>${esc(pers.bezeichnung || pers.id)}</legend><div class="feld-raster">
-        ${pers.beschaeftigung === 'selbststaendig' ? '' : pf(`steuer.schaetzung.werbungskosten_eur.${pers.id}`, 'Werbungskosten pro Jahr', { einheit: '€', platzhalter: 'Pauschbetrag 1.230 €' })}
-        ${pf(`steuer.schaetzung.vorsorgeaufwendungen_eur.${pers.id}`, 'Abzugsfähige Vorsorgeaufwendungen pro Jahr', { einheit: '€', hilfe: 'Renten-, Kranken-, Pflegeversicherung u. a., soweit abzugsfähig. 0 ist zulässig.' })}
+    details = `      ${(p.personen || []).map(pers => `<fieldset class="p-person"><legend>${esc(pers.bezeichnung || pers.id)}</legend><div class="feld-raster">
+        ${pers.beschaeftigung === 'selbststaendig' ? '' : pf(`steuer.schaetzung.werbungskosten_eur.${pers.id}`, 'Werbungskosten pro Jahr', { einheit: '€', platzhalter: 'Pauschbetrag 1.230 €', hilfe: 'Leer = gesetzlicher Arbeitnehmer-Pauschbetrag (1.230 €).' })}
+        ${pf(`steuer.schaetzung.vorsorgeaufwendungen_eur.${pers.id}`, 'Abzugsfähige Vorsorgeaufwendungen pro Jahr', { einheit: '€', hilfe: 'Renten-, Kranken-, Pflegeversicherung u. a., soweit abzugsfähig. Muss eingetragen werden – es gibt keinen pauschalen Abschlag. 0 ist zulässig.' })}
       </div></fieldset>`).join('')}
-      <div class="feld-raster">${pf('steuer.schaetzung.sonderausgaben_eur', 'Sonderausgaben pro Jahr (gesamt)', { einheit: '€', platzhalter: 'Pauschbetrag' })}${pf('steuer.schaetzung.weitere_abzuege_eur', 'Weitere Abzüge pro Jahr', { einheit: '€', hilfe: 'z. B. außergewöhnliche Belastungen; leer = keine.' })}</div>`;
+      <div class="feld-raster">${pf('steuer.schaetzung.sonderausgaben_eur', 'Sonderausgaben pro Jahr (gesamt)', { einheit: '€', platzhalter: 'Pauschbetrag', hilfe: 'Leer = Sonderausgaben-Pauschbetrag (36 € bzw. 72 € bei Zusammenveranlagung).' })}${pf('steuer.schaetzung.weitere_abzuege_eur', 'Weitere Abzüge pro Jahr', { einheit: '€', hilfe: 'z. B. außergewöhnliche Belastungen; leer = keine.' })}</div>`;
   }
   return `<div class="modus-karten" role="radiogroup" aria-label="Steuermodus">${karten}</div>${details}
     <div class="feld-raster">${pf('steuer.fortschreibung_tarif', 'Tarif 2026 für spätere Steuerjahre fortschreiben (Annahme)', { typ: 'bool', hilfe: 'Ohne Fortschreibung wird für Jahre ohne hinterlegten Tarif keine Steuerwirkung gerechnet.' })}</div>
@@ -4617,8 +4631,7 @@ function pTabBudget(p) {
       <div class="feld"><label>&nbsp;</label><button class="btn sm ghost" data-action="p-einnahme-weg" data-i="${i}">Entfernen</button></div>
     </div>`).join('')}
     <button class="btn sm" data-action="p-einnahme-neu">Einnahme hinzufügen (z. B. Kindergeld)</button>
-    <h3 class="p-zwischentitel">Monatliche Ausgaben und Verpflichtungen</h3>
-    <p class="fine">Nur Beträge eintragen, die nicht schon vom Netto abgezogen sind. Miete und Rate der betrachteten Wohnung gehören nicht hierher – sie kommen aus der Objektrechnung. Leere Felder machen den Haushalt unvollständig.</p>
+    <h3 class="p-zwischentitel">Monatliche Ausgaben und Verpflichtungen${info('Nur Beträge eintragen, die nicht schon vom Netto abgezogen sind. Miete und Rate der betrachteten Wohnung gehören nicht hierher – sie kommen aus der Objektrechnung. Leere Felder machen den Haushalt unvollständig.', 'Ausgaben und Verpflichtungen')}</h3>
     <div class="feld-raster">${RK.haushalt.AUSGABEN.map(([feld, text]) => pf(`budget.${feld}`, text, { einheit: '€' })).join('')}</div>`;
 }
 
@@ -4641,8 +4654,7 @@ function pTabFinanzierung(p) {
       ${pf('finanzierung.notar_grundbuch_prozent', 'Annahme Notar und Grundbuch', { einheit: '%', hilfe: 'Vom Kaufpreis. Ein in der Analyse belegter Betrag geht vor.' })}
       ${pf('finanzierung.standard_kondition_id', 'Standardkondition', { typ: 'wahl', optionen: [['', '– keine –']].concat(kond.map(k => [k.id, k.bezeichnung || k.id])) })}
     </div>
-    <h3 class="p-zwischentitel">Allgemeine Konditionen</h3>
-    <p class="fine">Ausgangswerte für alle Objekte. Ein konkretes Objektangebot ersetzt sie in der Objektrechnung. Sollzins ist nicht der Effektivzins.</p>
+    <h3 class="p-zwischentitel">Allgemeine Konditionen${info('Ausgangswerte für alle Objekte. Ein konkretes Objektangebot ersetzt sie in der Objektrechnung. Sollzins ist nicht der Effektivzins.', 'Allgemeine Konditionen')}</h3>
     ${kond.map(k => pKonditionEditor(k, 'profil')).join('') || '<div class="empty">Noch keine Kondition. Ohne Kondition lässt sich ein Darlehen nicht rechnen.</div>'}
     <button class="btn sm" data-action="p-kond-neu" data-quelle="profil">Kondition hinzufügen</button>`;
 }
@@ -4713,7 +4725,7 @@ function pModusSchalter() {
 }
 
 function pKeinProfil() {
-  return `<div class="card p-kein-profil"><h3>Für die persönliche Berechnung fehlt ein Profil</h3><p class="card-sub">Ein Profil enthält Haushalt, Einkommen, Steuermodus, Eigenkapital und Konditionen. Alles bleibt in diesem Browser.</p>
+  return `<div class="card p-kein-profil"><h3>Für die persönliche Berechnung fehlt ein Profil${info('Ein Profil enthält Haushalt, Einkommen, Steuermodus, Eigenkapital und Konditionen. Alles bleibt in diesem Browser.', 'Profil')}</h3>
     <div class="btn-row" style="justify-content:flex-start"><button class="btn primary" data-action="p-neu">Neues Profil anlegen</button><button class="btn" data-action="pick-files">Profil-Datei importieren</button>${location.protocol !== 'file:' ? '<button class="btn" data-action="p-beispiele">Fiktive Beispielprofile laden</button>' : ''}</div></div>`;
 }
 
@@ -4746,10 +4758,9 @@ function pBanner(p, r, os) {
       ${meta.geaendert ? '<span class="tag tag-warn">Profil nicht exportiert</span>' : ''}
       <span class="meta"><span class="muted">Steuermodus</span>${esc((MODI[(p.steuer || {}).modus] || {}).kurz || 'keiner')}</span>
       <label class="p-inline">Konditionssatz <select data-os="aktive_kondition_id" data-ostyp="wahl" data-fkey="os:aktive_kondition_id">${kond.length ? kond.map(x => `<option value="${esc(x.id)}"${k && x.id === k.id ? ' selected' : ''}>${esc(x.bezeichnung || x.id)} (${x.art === 'angebot' ? 'Angebot' : 'Annahme'}, ${x.quelle === 'objekt' ? 'Objekt' : 'Profil'})</option>`).join('') : '<option value="">keine Kondition</option>'}</select></label>
-      <button class="btn sm" data-action="profile">Profil bearbeiten</button>
+      <button class="btn sm" data-action="profile">Profil bearbeiten</button>${info('Die importierte Analyse, ihre Belege und Urteile bleiben unverändert. Diese Rechnung nutzt dein aktives Profil und die Anpassungen unten; die Budget-Einordnung sagt nichts über Objektqualität, Zustand, Rechtsrisiken oder Preisangemessenheit.', 'Rechnung mit Profil')}
     </div>
     <div class="meta-chips">${status}</div>
-    <p class="fine" style="margin:8px 0 0">Die importierte Analyse, ihre Belege und Urteile bleiben unverändert. Diese Rechnung nutzt dein aktives Profil und die Anpassungen unten; die Budget-Einordnung sagt nichts über Objektqualität, Zustand, Rechtsrisiken oder Preisangemessenheit.</p>
   </div>`;
 }
 
@@ -4833,8 +4844,7 @@ function pEingaben(doc, r, os, p) {
   const zwei = (p.personen || []).length === 2;
   const eig = os.eigentum || {};
   const osf = (pfad, label, o = {}) => { const key = 'os:' + pfad; return pFeldHtml({ key, label, wert: pGet(os, pfad), vorhanden: pHat(os, pfad), fehler: state.feldFehler[key], attrs: `data-os="${esc(pfad)}" data-ostyp="${o.typ || 'zahl'}" data-einheit="${esc(o.einheit || '')}"`, ...o }); };
-  return `<section class="sec" id="p-eingaben"><h2>Eingaben und Herkunft</h2>
-    <p class="card-sub">Priorität: Anpassung für dieses Objekt &gt; belegter Analysewert &gt; Profilwert &gt; Standardannahme. Ein leeres Anpassungsfeld nutzt wieder den Ausgangswert.</p>
+  return `<section class="sec" id="p-eingaben"><h2>Eingaben und Herkunft${info('Priorität: Anpassung für dieses Objekt &gt; belegter Analysewert &gt; Profilwert &gt; Standardannahme. Ein leeres Anpassungsfeld nutzt wieder den Ausgangswert.', 'Eingaben und Herkunft')}</h2>
     ${gruppen.map(([g, t]) => `<div class="card flush" style="margin-top:12px"><div class="card-pad"><h3>${t}</h3></div><div class="table-wrap"><table class="t p-tabelle"><thead><tr><th>Angabe</th><th class="num">Wirksamer Wert</th><th>Herkunft</th><th>Anpassung für dieses Objekt</th><th></th></tr></thead><tbody>${Object.values(e).filter(x => x.gruppe === g).map(zeile).join('')}</tbody></table></div></div>`).join('')}
     ${schnell.length ? `<div class="btn-row p-schnell" style="justify-content:flex-start">${schnell.join('')}</div>` : ''}
     <div class="card" style="margin-top:12px"><h3>Szenario-Einstellungen</h3>
@@ -4881,8 +4891,7 @@ function pKonditionen(doc, eingang, r, os) {
       <td>${x.status.finanzierung === 'vollstaendig' ? '' : '<span class="tag tag-crit">unvollständig</span>'}</td></tr>`;
   }).join('');
   const objektKond = os.konditionen_objekt || [];
-  return `<section class="sec p-ergebnis" id="p-konditionen"><h2>Konditionen im Vergleich</h2>
-    <p class="card-sub">Gleiche Immobilie, gleiches Profil. Zinsen und Tilgung bis zum Ende der jeweiligen Zinsbindung. Modellannahmen sind keine erhältlichen Finanzierungen.</p>
+  return `<section class="sec p-ergebnis" id="p-konditionen"><h2>Konditionen im Vergleich${info('Gleiche Immobilie, gleiches Profil. Zinsen und Tilgung bis zum Ende der jeweiligen Zinsbindung. Modellannahmen sind keine erhältlichen Finanzierungen.', 'Konditionen im Vergleich')}</h2>
     ${vergleich.length ? `<div class="card flush"><div class="table-wrap"><table class="t p-kond-tabelle"><thead><tr><th>Kondition</th><th class="num">Darlehen</th><th class="num">Rate</th><th class="num">Zinsen Bindung</th><th class="num">Tilgung Bindung</th><th class="num">Restschuld</th><th class="num">Gebühren</th><th class="num">Zuzahlung vor Steuer</th><th class="num">Ø nach Steuer</th><th></th></tr></thead><tbody>${zeilen}</tbody></table></div></div>` : '<div class="empty"><b>Keine Kondition vorhanden.</b> Lege im Profil allgemeine Konditionen an oder hier ein Objektangebot.</div>'}
     <h3 class="p-zwischentitel">Angebote nur für dieses Objekt</h3>
     ${objektKond.map(k => pKonditionEditor(k, 'objekt')).join('')}
@@ -4905,7 +4914,7 @@ function pHaushalt(r, p) {
       ${box('Verbleibender Haushaltsüberschuss', cfOk && pIstZahl(k.verbleibendes_haushaltsbudget) ? `<span class="${k.verbleibendes_haushaltsbudget < 0 ? 'neg' : ''}">${pEur(k.verbleibendes_haushaltsbudget)}</span>` : '—', 'nach Zuzahlung vor Steuer')}
       ${box('Liquidität für unregelmäßige Ausgaben', pIstZahl(kap.notfallreserve_eur) ? `Reserve ${pEur(kap.notfallreserve_eur)}` : '<span class="null">Reserve unbekannt</span>', cfOk ? esc(`Bis zur Steuerentlastung vorzufinanzieren: ${pEur(k.vorfinanzierung_bezugsjahr)} im Jahr ${k.bezugsjahr}`) : '')}
     </div></div>
-    ${fr ? `<div class="card" style="margin-top:12px"><h3>Rechnerischer Finanzierungsrahmen (Modell)</h3><p class="card-sub">Aus verfügbarem Budget (${pEur(fr.verfuegbar_monat)} / Monat) und der aktiven Kondition. Keine Kreditentscheidung einer Bank, keine Bonitätsbewertung.</p>
+    ${fr ? `<div class="card" style="margin-top:12px"><h3>Rechnerischer Finanzierungsrahmen (Modell)${info(`Aus verfügbarem Budget (${pEur(fr.verfuegbar_monat)} / Monat) und der aktiven Kondition. Keine Kreditentscheidung einer Bank, keine Bonitätsbewertung.`, 'Finanzierungsrahmen')}</h3>
       <div class="p-kv-raster">${box('Tragbare Rate', pEur(fr.rate_tragbar))}${box('Rechnerisches Darlehen', pEur(fr.darlehen_max))}${box('Rechnerischer Kaufpreisrahmen', pEur(fr.kaufpreis_max), 'inkl. eingesetztem Eigenkapital und Erwerbsnebenkosten')}</div>
       <ul class="small">${fr.hinweise.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>` : ''}
   </section>`;
@@ -4955,12 +4964,12 @@ function pVerlauf(r) {
   const tabelle = `<div class="table-wrap" style="max-height:70vh"><table class="t p-jahre"><thead><tr><th>Jahr</th><th class="num">Miete + Vorauszahlung</th><th class="num">Fällige Ausgaben</th><th class="num">Zinsen</th><th class="num">Tilgung</th><th class="num">AfA</th><th class="num">Steuerliches Ergebnis</th><th class="num">Steuerwirkung</th><th class="num">Cashflow vor Steuer</th><th class="num">nach Steuer</th><th class="num">Vorsorge</th><th class="num">Restschuld</th><th class="num">Tilgung kumuliert</th></tr></thead><tbody>
     ${jahre.map(j => `<tr class="${j.jahr === bindungEnde ? 'strong' : ''}"><td class="nowrap">${esc(j.jahr)}${j.teiljahr ? ` <span class="tag">${j.monate} Mon.</span>` : ''}${j.jahr === bindungEnde ? ' <span class="tag">Ende Zinsbindung</span>' : ''}</td><td class="num">${pEur(j.einnahmen)}</td><td class="num">${pEur(j.ausgaben_faellig)}</td><td class="num">${pEur(j.zins)}</td><td class="num">${pEur(j.tilgung + j.sondertilgung)}</td><td class="num">${pEur(j.afa)}</td><td class="num">${pEur(j.steuer_ergebnis)}</td><td class="num">${j.entlastung === null ? '—' : pEur(j.entlastung)}</td><td class="num ${j.cf_vor_steuer < 0 ? 'neg' : ''}">${pEur(j.cf_vor_steuer)}</td><td class="num">${j.cf_nach_steuer === null ? '—' : pEur(j.cf_nach_steuer)}</td><td class="num">${pEur(j.vorsorge)}</td><td class="num">${pEur(j.restschuld)}</td><td class="num">${pEur(j.kum_tilgung)}</td></tr>`).join('')}
   </tbody></table></div>`;
-  return `<section class="sec p-ergebnis" id="p-verlauf"><h2>Entwicklung über die Jahre</h2>
-    <p class="card-sub">Kalenderjahre (Steuerjahre); ein kürzeres erstes Jahr ist gekennzeichnet. Zinsen und Steuerwirkung werden jedes Jahr neu berechnet. Miet- und Kostensteigerung: ${pProz(r.eingaben.mietsteigerung_prozent.wert)} bzw. ${pProz(r.eingaben.kostensteigerung_prozent.wert)} pro Jahr (Annahme).${r.plan && r.plan.hinweise.length ? ' ' + esc(r.plan.hinweise.join(' ')) : ''}</p>
+  return `<section class="sec p-ergebnis" id="p-verlauf"><h2>Entwicklung über die Jahre${info(`Kalenderjahre (Steuerjahre); ein kürzeres erstes Jahr ist gekennzeichnet. Zinsen und Steuerwirkung werden jedes Jahr neu berechnet.`, 'Entwicklung über die Jahre')}</h2>
+    <p class="card-sub">Miet- und Kostensteigerung: ${pProz(r.eingaben.mietsteigerung_prozent.wert)} bzw. ${pProz(r.eingaben.kostensteigerung_prozent.wert)} pro Jahr (Annahme).${r.plan && r.plan.hinweise.length ? ' ' + esc(r.plan.hinweise.join(' ')) : ''}</p>
     <div class="grid-2">
-      <div class="card"><h3>Monatliche Zuzahlung je Jahr</h3><p class="card-sub">Durchschnitt pro Monat${vorsorgeIn ? ', inkl. eigener Vorsorge' : ''}; positive Werte = Geldbedarf.</p>${chartSlot(w => pSvgLinien(w, reihen), 'Monatliche Zuzahlung vor und nach Steuer je Jahr')}
+      <div class="card"><h3>Monatliche Zuzahlung je Jahr${info(`Durchschnitt pro Monat${vorsorgeIn ? ', inkl. eigener Vorsorge' : ''}; positive Werte = Geldbedarf.`, 'Monatliche Zuzahlung je Jahr')}</h3>${chartSlot(w => pSvgLinien(w, reihen), 'Monatliche Zuzahlung vor und nach Steuer je Jahr')}
         <div class="chart-legend"><span><svg width="18" height="10" viewBox="0 0 18 10"><line x1="1" y1="5" x2="17" y2="5" style="stroke:var(--c-blue);stroke-width:2"/></svg>vor Steuer</span><span><svg width="18" height="10" viewBox="0 0 18 10"><line x1="1" y1="5" x2="17" y2="5" style="stroke:var(--c-orange);stroke-width:2"/></svg>nach modellierter Steuerwirkung</span></div></div>
-      <div class="card"><h3>Restschuld zum Jahresende</h3><p class="card-sub">Annuitätenrechnung, keine lineare Näherung.</p>${chartSlot(w => pSvgBalken(w, reihen), 'Restschuld zum Jahresende')}</div>
+      <div class="card"><h3>Restschuld zum Jahresende${info('Annuitätenrechnung, keine lineare Näherung.', 'Restschuld')}</h3>${chartSlot(w => pSvgBalken(w, reihen), 'Restschuld zum Jahresende')}</div>
     </div>
     <div class="card flush" style="margin-top:12px">${tabelle}</div>
   </section>`;
@@ -5031,8 +5040,7 @@ function pSzenarien(doc, eingang, r, os, p) {
     return `<div class="p-variante"><span class="id">${esc(v.id)}</span><input type="text" class="p-var-name" data-var="${esc(v.id)}:bezeichnung" data-fkey="v:${esc(v.id)}:bezeichnung" value="${esc(v.bezeichnung || '')}" aria-label="Bezeichnung der Variante">${felder.map(f => vf(...f)).join('')}<button class="icon-btn" data-action="p-var-weg" data-vid="${esc(v.id)}" aria-label="Variante entfernen">×</button></div>`;
   };
   const steuerManuell = (p.steuer || {}).modus === 'manuell';
-  return `<section class="sec" id="p-szenarien"><h2>Szenarien</h2>
-    <p class="card-sub">Jede Variante ändert nur die genannten Werte gegenüber dem Ausgangsfall. Miete und Kaufpreis sind ausdrücklich hypothetisch. Die Einordnung gilt je Variante.</p>
+  return `<section class="sec" id="p-szenarien"><h2>Szenarien${info('Jede Variante ändert nur die genannten Werte gegenüber dem Ausgangsfall. Miete und Kaufpreis sind ausdrücklich hypothetisch. Die Einordnung gilt je Variante.', 'Szenarien')}</h2>
     <div class="btn-row" style="justify-content:flex-start">${VARIANTEN_VORLAGEN.filter(([typ]) => typ !== 'steuersatz' || steuerManuell).map(([typ, t]) => `<button class="btn sm" data-action="p-var-neu" data-typ="${typ}">+ ${esc(t)}</button>`).join('')}</div>
     ${varianten.map(editor).join('')}
     ${vergleich ? `<div class="card flush p-ergebnis" style="margin-top:12px"><div class="table-wrap"><table class="t"><thead><tr><th>Fall</th><th>Änderungen</th><th class="num">Rate</th><th class="num">Zuzahlung vor Steuer</th><th class="num">Ø nach Steuer</th><th class="num">Ungünstigstes Jahr (vor Steuer)</th><th class="num">Kumuliert nach Steuer</th><th class="num">Restschuld</th><th>Einordnung</th></tr></thead><tbody>
@@ -5048,10 +5056,10 @@ function pAnnahmen(r) {
 }
 
 function pExportBereich() {
-  return `<section class="sec" id="p-export"><h2>Export</h2><div class="grid-2">
-    <div class="card"><h3>Berechnungspaket</h3><p class="card-sub">Reproduzierbar: Fingerabdruck der Immobilienanalyse, vollständiges Profil, Objektanpassungen, Konditionen, Varianten, Regelversionen, Annahmen und Ergebnisse. <b>Enthält persönliche Finanzdaten.</b></p><button class="btn sm" data-action="p-paket-export" data-umfang="vollstaendig">Berechnungspaket exportieren</button></div>
-    <div class="card"><h3>Ergebniszusammenfassung</h3><p class="card-sub">Nur Kennzahlen, Status und Annahmen – ohne Einkommen, Haushaltsausgaben und Profildetails. Zum Weitergeben geeignet; nicht neu berechenbar.</p><button class="btn sm" data-action="p-paket-export" data-umfang="zusammenfassung">Ergebniszusammenfassung exportieren</button></div>
-  </div><p class="fine">Der Export der ursprünglichen Immobilienanalyse (Ansicht „Importierte Analyse“ → Rohdaten) enthält nie persönliche Daten.</p></section>`;
+  return `<section class="sec" id="p-export"><h2>Export${info('Der Export der ursprünglichen Immobilienanalyse (Ansicht „Importierte Analyse“ → Rohdaten) enthält nie persönliche Daten.', 'Export')}</h2><div class="grid-2">
+    <div class="card"><h3>Berechnungspaket${info('Reproduzierbar: Fingerabdruck der Immobilienanalyse, vollständiges Profil, Objektanpassungen, Konditionen, Varianten, Regelversionen, Annahmen und Ergebnisse.', 'Berechnungspaket')}</h3><p class="card-sub"><b>Enthält persönliche Finanzdaten.</b></p><button class="btn sm" data-action="p-paket-export" data-umfang="vollstaendig">Berechnungspaket exportieren</button></div>
+    <div class="card"><h3>Ergebniszusammenfassung${info('Nur Kennzahlen, Status und Annahmen – ohne Einkommen, Haushaltsausgaben und Profildetails. Nicht neu berechenbar.', 'Ergebniszusammenfassung')}</h3><p class="card-sub">Ohne persönliche Daten, zum Weitergeben geeignet.</p><button class="btn sm" data-action="p-paket-export" data-umfang="zusammenfassung">Ergebniszusammenfassung exportieren</button></div>
+  </div></section>`;
 }
 
 function pPaketExportFragen(doc, umfang) {
@@ -5092,8 +5100,7 @@ function vergleichPersoenlich(rows) {
   return `${pProfilLuecken(p)}
     <div class="callout"><b>Alternative Einzelkäufe mit Profil „${esc(p.bezeichnung)}“</b> – jede Zeile nutzt das volle Eigenkapital und das volle Haushaltsbudget. Werte werden nicht addiert; eine gemeinsame Portfoliorechnung ist nicht Teil dieser Ansicht.</div>
     ${mitVorschlaegen.length > 1 ? `<div class="btn-row p-schnell" style="justify-content:flex-start;margin-top:12px"><button class="btn sm" data-action="p-vorschlaege-alle">Vorschläge für alle ${mitVorschlaegen.length} Objekte prüfen und übernehmen</button></div>` : ''}
-    <div class="card flush" style="margin-top:12px"><div class="table-wrap fest"><table class="t p-vergleich-tabelle"><thead><tr><th>Objekt</th><th class="num">Kaufpreis</th><th class="num">Darlehen</th><th class="num">Rate</th><th class="num">Zuzahlung vor Steuer</th><th class="num">Ø nach Steuer</th><th class="num">Verbleibendes Budget</th><th class="num">Restschuld</th><th>Einordnung</th></tr></thead><tbody>${zeilen || `<tr><td colspan="9" class="muted">Keine Treffer.</td></tr>`}</tbody></table></div></div>
-    <p class="chart-note">Objekt anklicken, um die Berechnung mit deinem Profil zu öffnen und einzelne Werte anzupassen. Vorschläge kommen aus den Modellannahmen der jeweiligen Analyse und werden als solche gekennzeichnet.</p>`;
+    <div class="card flush" style="margin-top:12px"><div class="table-wrap fest"><table class="t p-vergleich-tabelle"><thead><tr><th>Objekt${info('Objekt anklicken, um die Berechnung mit deinem Profil zu öffnen und einzelne Werte anzupassen. Vorschläge kommen aus den Modellannahmen der jeweiligen Analyse und werden als solche gekennzeichnet.', 'Vergleich mit Profil')}</th><th class="num">Kaufpreis</th><th class="num">Darlehen</th><th class="num">Rate</th><th class="num">Zuzahlung vor Steuer</th><th class="num">Ø nach Steuer</th><th class="num">Verbleibendes Budget</th><th class="num">Restschuld</th><th>Einordnung</th></tr></thead><tbody>${zeilen || `<tr><td colspan="9" class="muted">Keine Treffer.</td></tr>`}</tbody></table></div></div>`;
 }
 
 const FEHLT_KURZ = { kaufpreis_eur: 'Kaufpreis', verpflichtende_zusatzkaeufe_eur: 'Zusatzkäufe', grunderwerbsteuer_prozent: 'Grunderwerbsteuer', kaeuferprovision_prozent: 'Provision', anfaengliche_massnahmen_eur: 'Maßnahmen', kaltmiete_monat_eur: 'Kaltmiete', bk_vorauszahlung_monat_eur: 'BK-Vorauszahlung', umlagefaehig_monat_eur: 'umlagefähige Kosten', nicht_umlagefaehig_monat_eur: 'nicht umlagefähige Kosten', ruecklage_monat_eur: 'Rücklage', gebaeudeanteil_prozent: 'Gebäudeanteil', fertigstellung_jahr: 'Baujahr', eigentum: 'Eigentumsanteile', beginn: 'Beginn' };
@@ -5126,7 +5133,7 @@ function pProfilLuecken(p, art) {
   const reihenfolge = ['finanzierung', 'steuer', 'haushalt'].filter(f => gruppen[f]).map(f => [f, gruppen[f]]);
   if (art === 'inline') return `<div class="p-luecken-raster p-luecken-inline">${reihenfolge.map(block).join('')}</div>`;
   if (kompakt) return `<div class="p-seite-block p-luecken-kompakt"><div class="eyebrow">Für die Objektrechnung fehlt noch</div>${reihenfolge.map(block).join('')}</div>`;
-  return `<div class="card p-luecken-karte"><h3>Was im Profil „${esc(p.bezeichnung)}“ noch fehlt</h3><p class="card-sub">Ohne diese Angaben bleiben die genannten Spalten bei allen Objekten leer. Ein Klick öffnet den passenden Bereich im Profil.</p><div class="p-luecken-raster">${reihenfolge.map(block).join('')}</div></div>`;
+  return `<div class="card p-luecken-karte"><h3>Was im Profil „${esc(p.bezeichnung)}“ noch fehlt${info('Ohne diese Angaben bleiben die genannten Spalten bei allen Objekten leer. Ein Klick öffnet den passenden Bereich im Profil.', 'Fehlende Angaben')}</h3><div class="p-luecken-raster">${reihenfolge.map(block).join('')}</div></div>`;
 }
 
 const EINHEIT_VON = key => (RK.szenario.EINGABEN.find(e => e.key === key) || {}).einheit;
@@ -5165,9 +5172,8 @@ function pVorschlaegeAlleDialog() {
   state.pVorschlagUids = ziel.map(x => x.d.uid);
   const arten = {};
   for (const { r } of ziel) for (const v of r.vorschlaege) arten[v.label] = (arten[v.label] || 0) + 1;
-  openDialog(dlgHead('Vorschläge für alle Objekte übernehmen?') + `<p style="margin-top:0">Für ${ziel.length} Objekte werden offene Werte aus den Modellannahmen der jeweiligen Analyse bzw. als gekennzeichnete Modellannahme übernommen. Eigene Anpassungen bleiben unverändert; jede Übernahme lässt sich je Objekt in „Eingaben und Herkunft“ ändern oder entfernen.</p>
+  openDialog(dlgHead('Vorschläge für alle Objekte übernehmen?' + info('Einzeln prüfen: „Vorschläge prüfen“ in der jeweiligen Zeile.', 'Vorschläge')) + `<p style="margin-top:0">Für ${ziel.length} Objekte werden offene Werte aus den Modellannahmen der jeweiligen Analyse bzw. als gekennzeichnete Modellannahme übernommen. Eigene Anpassungen bleiben unverändert; jede Übernahme lässt sich je Objekt in „Eingaben und Herkunft“ ändern oder entfernen.</p>
     <div class="table-wrap"><table class="t"><thead><tr><th>Vorschlag</th><th class="num">Objekte</th></tr></thead><tbody>${Object.entries(arten).map(([l, n]) => `<tr><td>${esc(l)}</td><td class="num">${n}</td></tr>`).join('')}</tbody></table></div>
-    <p class="fine">Einzeln prüfen: „Vorschläge prüfen“ in der jeweiligen Zeile.</p>
     <div class="btn-row" style="justify-content:flex-end;margin-bottom:0"><button class="btn" data-action="close-dlg">Abbrechen</button><button class="btn primary" data-action="p-vorschlaege-alle-ok">Für ${ziel.length} Objekte übernehmen</button></div>`);
 }
 </script>
@@ -5419,11 +5425,11 @@ function sidebarOrdner() {
   const o = state.ordner;
   if (o.status === 'nicht_unterstuetzt') return '';
   if (!o.handle) {
-    return `<div class="side-ordner"><button class="btn sm" data-action="ordner-verbinden">${ORDNER_ICON} Ablageordner verbinden</button><span class="fine">z. B. Google-Drive-Ordner mit den Exporten – wird dann automatisch eingelesen.</span></div>`;
+    return `<div class="side-ordner"><div class="side-zeile"><button class="btn sm" data-action="ordner-verbinden">${ORDNER_ICON} Ablageordner verbinden</button>${info('Z. B. den Google-Drive-Ordner mit den Exporten – er wird dann bei jedem Öffnen und alle 30 Sekunden automatisch eingelesen. Geht in Chrome und Edge.', 'Ablageordner')}</div></div>`;
   }
   const kopf = `<div class="side-ordner-kopf">${ORDNER_ICON}<b title="${esc(o.name)}">${esc(o.name)}</b></div>`;
   if (o.status === 'freigabe') {
-    return `<div class="side-ordner">${kopf}<button class="btn sm primary" data-action="ordner-freigeben">Ordner einlesen</button><span class="fine">Der Browser fragt nach dem Zugriff. Mit „Bei jedem Besuch zulassen“ geht es künftig ohne Klick.</span><button class="linkbtn" data-action="ordner-trennen">Verbindung trennen</button></div>`;
+    return `<div class="side-ordner">${kopf}<div class="side-zeile"><button class="btn sm primary" data-action="ordner-freigeben">Ordner einlesen</button>${info('Der Browser fragt nach dem Zugriff. Mit „Bei jedem Besuch zulassen“ geht es künftig ohne Klick.', 'Ordner einlesen')}</div><button class="linkbtn" data-action="ordner-trennen">Verbindung trennen</button></div>`;
   }
   if (o.status === 'fehlt') {
     return `<div class="side-ordner">${kopf}<span class="notice">${esc(o.fehler)}</span><div class="side-ordner-aktionen"><button class="btn sm" data-action="ordner-verbinden">Neu verbinden</button><button class="linkbtn" data-action="ordner-trennen">Trennen</button></div></div>`;
@@ -5650,7 +5656,7 @@ function karteKopf(objekte) {
   const urteile = VERDICT_ORDER.filter(v => auf.some(o => urteilOf(o.d) === v));
   const ohneUrteil = auf.some(o => !VERDICT[urteilOf(o.d)]);
   const ziel = k.setzen ? getDoc(k.setzen) : null;
-  return `<div class="karte-status" aria-live="polite"><b>${auf.length} von ${objekte.length} Objekt${objekte.length === 1 ? '' : 'en'} auf der Karte</b>
+  return `<div class="karte-status" aria-live="polite"><b>${auf.length} von ${objekte.length} Objekt${objekte.length === 1 ? '' : 'en'} auf der Karte</b>${info('<span class="info-zeile">Kartenbilder und Adresssuche kommen von OpenStreetMap. Übertragen werden nur der Kartenausschnitt und die Objektadressen, keine Profil- oder Finanzdaten.</span><span class="info-zeile">Zum Zoomen mit dem Mausrad erst in die Karte klicken. Pinfarbe = Gesamturteil.</span><span class="info-zeile">Gefundene Punkte, nachgetragene Adressen und selbst gesetzte Punkte bleiben in diesem Browser (sicherbar über „Eigene Eingaben sichern“); die Analyse-Dateien ändern sich nicht.</span>', 'Karte')}
       ${suche ? `<span>· Adresse wird gesucht (noch ${suche}) …</span>` : ''}
       ${k.fehler ? `<span class="notice">${esc(k.fehler)}</span><button class="linkbtn" data-action="karte-erneut">Erneut versuchen</button>` : ''}
       ${k.kachelFehler >= 4 ? '<span class="notice">Kartenbilder konnten nicht geladen werden (keine Verbindung zu OpenStreetMap?).</span>' : ''}</div>
@@ -5671,18 +5677,17 @@ function karteListen(objekte) {
       <div class="karte-zeile-aktionen">${aktionen}</div></li>`;
   const tags = o => (o.adr.quelle === 'nachtrag' ? ' <span class="tag">nachgetragen</span>' : '')
     + (o.genauigkeit === 'strasse' ? ' <span class="tag tag-warn">Hausnummer nicht gefunden</span>' : o.genauigkeit === 'nutzer' ? ' <span class="tag">Punkt selbst gesetzt</span>' : '');
-  const abschnitt = (titel, liste, inhalt, hinweis = '') => liste.length ? `<section class="karte-abschnitt"><h3>${titel} <span class="count">${liste.length}</span></h3>${hinweis}<ul class="karte-liste">${liste.map(inhalt).join('')}</ul></section>` : '';
+  const abschnitt = (titel, liste, inhalt, hinweis = '') => liste.length ? `<section class="karte-abschnitt"><h3>${titel} <span class="count">${liste.length}</span>${hinweis ? info(hinweis, titel) : ''}</h3><ul class="karte-liste">${liste.map(inhalt).join('')}</ul></section>` : '';
   return abschnitt('Auf der Karte', auf, o => zeile(o, esc(o.adr.zeile) + tags(o),
       `<button class="btn sm" data-action="karte-zeigen" data-uid="${o.d.uid}">Zeigen</button>${google(o)}<button class="linkbtn" data-action="karte-adresse" data-uid="${o.d.uid}">Adresse bearbeiten</button>`))
     + abschnitt('Adresse vorhanden, noch ohne Kartenpunkt', ohnePunkt, o => zeile(o, `${esc(o.adr.zeile)}${o.adr.quelle === 'nachtrag' ? ' <span class="tag">nachgetragen</span>' : ''} · <span class="${o.status === 'nicht_gefunden' ? 'karte-nicht' : 'muted'}">${KARTE_STATUS_TEXT[o.status]}</span>`,
       o.status === 'nicht_gefunden'
         ? `<button class="btn sm" data-action="karte-punkt" data-uid="${o.d.uid}">Punkt auf der Karte setzen</button><button class="linkbtn" data-action="karte-adresse" data-uid="${o.d.uid}">Adresse bearbeiten</button><button class="linkbtn" data-action="karte-neu-suchen" data-uid="${o.d.uid}">Erneut suchen</button>${google(o)}`
         : google(o)),
-      '<p class="card-sub">Findet die Adresssuche ein Haus nicht, setzt du den Punkt selbst: Klick auf „Punkt auf der Karte setzen“ und dann auf die Stelle in der Karte.</p>')
+      'Findet die Adresssuche ein Haus nicht, setzt du den Punkt selbst: Klick auf „Punkt auf der Karte setzen“ und dann auf die Stelle in der Karte.')
     + abschnitt('Ohne Straße und Hausnummer', ohne, o => zeile(o, `${esc([o.adr.strasse, o.adr.grob].filter(Boolean).join(', ') || 'Keine Ortsangabe')} · <span class="muted">fehlt: ${esc(o.adr.fehlt.join(', '))}</span>`,
       `<button class="btn sm" data-action="karte-adresse" data-uid="${o.d.uid}">Adresse nachtragen</button>${google(o)}`),
-      '<p class="card-sub">Diese Objekte erscheinen erst auf der Karte, wenn Straße und Hausnummer bekannt sind – etwa vom Makler oder aus der Besichtigung.</p>')
-    + `<p class="chart-note">Kartenbilder und Adresssuche kommen von OpenStreetMap. Übertragen werden nur der Kartenausschnitt und die Objektadressen, keine Profil- oder Finanzdaten. Zum Zoomen mit dem Mausrad erst in die Karte klicken. Gefundene Punkte, nachgetragene Adressen und selbst gesetzte Punkte bleiben in diesem Browser (sicherbar über „Eigene Eingaben sichern“); die Analyse-Dateien ändern sich nicht.</p>`;
+      'Diese Objekte erscheinen erst auf der Karte, wenn Straße und Hausnummer bekannt sind – etwa vom Makler oder aus der Besichtigung.');
 }
 
 /** Nach jedem Rendern: Karte in den Platzhalter hängen (sie wird nur einmal erzeugt), Pins abgleichen, offene Adressen suchen. */
@@ -5845,13 +5850,12 @@ function karteAdresseDialog(doc, werte, fehler = {}) {
   const w = werte || eintrag.adresse || analyse;
   const genau = obj(obj(doc.data).standort).adressgenauigkeit;
   const feld = (k, attrs = '') => `<div class="feld${fehler[k] ? ' hat-fehler' : ''}"><label for="ka-${k}">${St.FELDNAME[k]}</label><input type="text" id="ka-${k}" value="${esc(w[k] || '')}" maxlength="${St.LAENGE[k]}" autocomplete="off" ${fehler[k] ? 'aria-invalid="true"' : ''} ${attrs}>${fehler[k] ? `<span class="feld-fehler">${esc(fehler[k])}</span>` : ''}</div>`;
-  openDialog(dlgHead(eintrag.adresse ? 'Adresse bearbeiten' : 'Adresse nachtragen') + `
+  openDialog(dlgHead((eintrag.adresse ? 'Adresse bearbeiten' : 'Adresse nachtragen') + info('Der Nachtrag bleibt in diesem Browser und ändert die Analyse-Datei nicht. Für die Karte wird die Adresse an die Adresssuche von OpenStreetMap geschickt.', 'Adresse')) + `
     <p class="fine" style="margin-top:0"><b>#${doc.num} ${esc(docTitle(doc))}</b><br>Laut Analyse: ${esc(analyse.zeile || analyse.grob || 'keine Angabe')}${genau ? ` · Adressgenauigkeit: ${esc(L(genau))}` : ''}</p>
     <div class="karte-form" data-uid="${doc.uid}">
       <div class="karte-form-zeile">${feld('strasse')}${feld('hausnummer')}</div>
       <div class="karte-form-zeile plz">${feld('postleitzahl', 'inputmode="numeric"')}${feld('ort')}</div>
     </div>
-    <p class="fine">Der Nachtrag bleibt in diesem Browser und ändert die Analyse-Datei nicht. Für die Karte wird die Adresse an die Adresssuche von OpenStreetMap geschickt.</p>
     <div class="btn-row" style="justify-content:flex-end;margin-bottom:0">
       ${eintrag.adresse ? `<button class="btn" data-action="karte-adresse-weg" data-uid="${doc.uid}" style="margin-right:auto">Nachtrag entfernen</button>` : ''}
       <button class="btn" data-action="close-dlg">Abbrechen</button>
@@ -6276,7 +6280,7 @@ function meinStand(doc) {
   if (!doc.isImmo) return '';
   const n = notizVon(doc) || {};
   return `<section class="card mein-stand no-print" aria-labelledby="ms-titel">
-    <div class="ms-kopf"><h3 id="ms-titel">Mein Stand</h3><span class="fine">nur in diesem Browser · gilt für alle Revisionen dieses Objekts</span></div>
+    <div class="ms-kopf"><h3 id="ms-titel">Mein Stand${info('Bleibt nur in diesem Browser und gilt für alle Revisionen dieses Objekts. Sichern über „Eigene Eingaben sichern“ im Menü.', 'Mein Stand')}</h3></div>
     <div class="ms-felder">
       <div class="feld"><label for="ms-status">Status</label><select id="ms-status" data-notiz-feld="status" data-uid="${doc.uid}">${statusOptionen(n.status || '')}</select></div>
       <div class="feld"><label for="ms-termin">Termin</label><input type="date" id="ms-termin" data-notiz-feld="termin" data-uid="${doc.uid}" value="${esc(n.termin || '')}"></div>
@@ -6433,6 +6437,137 @@ function hilfeAktion(action, el) {
     default: return false;
   }
 }
+</script>
+<script>/* src/oberflaeche/info.js */
+/*
+ * ImmoInvest Viewer – Info-Symbol (ⓘ): Hinweise sitzen dort, wo sie gelten, und erscheinen beim Darüberfahren,
+ * beim Fokussieren mit der Tastatur oder per Klick/Tippen (dann bleiben sie stehen, bis man woanders klickt).
+ *
+ *   info(inhaltHtml, titel)  → HTML-Schnipsel: Knopf „i“ und der versteckte Hinweistext daneben.
+ *                              inhaltHtml ist bereits sicheres HTML (Werte aus Dateien vorher mit esc()).
+ *
+ * Eine einzige Blase (#infoBlase) wird bei Bedarf eingeblendet. Sie liegt als Popover in der obersten Ebene und
+ * damit auch über offenen Dialogen und wird nicht vom Scrollbereich der Tabelle abgeschnitten.
+ *
+ * Klassisches Skript; nutzt $ und esc des Hauptskripts erst zur Laufzeit.
+ */
+'use strict';
+
+let infoZaehler = 0;
+const infoZustand = { knopf: null, fest: false, zeigen: 0, weg: 0 };
+
+/** Info-Symbol mit Hinweistext. titel benennt den Bereich für Screenreader („Info: …“); id optional (z. B. für aria-describedby eines Eingabefelds). */
+function info(inhalt, titel = 'Hinweis', id = `info-${++infoZaehler}`) {
+  return `<span class="info"><button type="button" class="info-i" aria-label="Info: ${esc(titel)}" aria-describedby="${id}" aria-expanded="false">i</button><span class="info-inhalt" id="${id}" hidden>${inhalt}</span></span>`;
+}
+
+function infoBlase() {
+  let b = document.getElementById('infoBlase');
+  if (!b) {
+    b = document.createElement('div');
+    b.id = 'infoBlase';
+    b.className = 'info-blase';
+    b.setAttribute('role', 'tooltip');
+    if ('popover' in b) b.popover = 'manual';
+    document.body.appendChild(b);
+    b.addEventListener('mouseenter', () => clearTimeout(infoZustand.weg));
+    b.addEventListener('mouseleave', () => { if (!infoZustand.fest) infoSpaeterAus(); });
+  }
+  return b;
+}
+
+function infoSichtbar() {
+  const b = document.getElementById('infoBlase');
+  return !!b && b.classList.contains('an');
+}
+
+function infoZeigen(knopf, fest = false) {
+  clearTimeout(infoZustand.zeigen); clearTimeout(infoZustand.weg);
+  const inhalt = knopf.parentElement?.querySelector('.info-inhalt');
+  if (!inhalt) return;
+  if (infoZustand.knopf && infoZustand.knopf !== knopf) infoZustand.knopf.setAttribute('aria-expanded', 'false');
+  const b = infoBlase();
+  // In einem offenen (modalen) Dialog muss die Blase im Dialog liegen, sonst ist sie für Maus und Klick gesperrt
+  const ort = knopf.closest('dialog[open]') || document.body;
+  if (b.parentElement !== ort) { if (b.popover) { try { b.hidePopover(); } catch { /* schon zu */ } } ort.appendChild(b); }
+  b.innerHTML = inhalt.innerHTML;
+  b.classList.toggle('fest', fest);
+  b.classList.add('an');
+  if (b.popover) { try { if (b.matches(':popover-open')) b.hidePopover(); b.showPopover(); } catch { /* ohne Popover-Unterstützung: feste Ebene per CSS */ } }
+  infoZustand.knopf = knopf; infoZustand.fest = fest;
+  knopf.setAttribute('aria-expanded', 'true');
+  infoPlatzieren();
+}
+
+/** Blase unter (oder, wenn kein Platz, über) dem Symbol, innerhalb des Fensters. */
+function infoPlatzieren() {
+  const b = document.getElementById('infoBlase'), k = infoZustand.knopf;
+  if (!b || !k || !k.isConnected) return infoAus();
+  const r = k.getBoundingClientRect(), rand = 8, vw = document.documentElement.clientWidth, vh = window.innerHeight;
+  b.style.left = '0px'; b.style.top = '0px';
+  const bw = b.offsetWidth, bh = b.offsetHeight;
+  const left = Math.max(rand, Math.min(r.left + r.width / 2 - bw / 2, vw - bw - rand));
+  let top = r.bottom + 6;
+  if (top + bh > vh - rand && r.top - 6 - bh >= rand) top = r.top - 6 - bh;
+  b.style.left = `${Math.round(left)}px`;
+  b.style.top = `${Math.round(Math.max(rand, top))}px`;
+}
+
+function infoAus() {
+  clearTimeout(infoZustand.zeigen); clearTimeout(infoZustand.weg);
+  const b = document.getElementById('infoBlase');
+  if (b) { b.classList.remove('an', 'fest'); if (b.popover) { try { b.hidePopover(); } catch { /* schon zu */ } } }
+  infoZustand.knopf?.setAttribute('aria-expanded', 'false');
+  infoZustand.knopf = null; infoZustand.fest = false;
+}
+
+function infoSpaeterAus() {
+  clearTimeout(infoZustand.weg);
+  infoZustand.weg = setTimeout(infoAus, 180);
+}
+
+// Darüberfahren (nur echte Maus; Tippen auf dem Handy läuft über den Klick)
+document.addEventListener('pointerover', e => {
+  const k = e.target.closest?.('.info-i');
+  if (!k || e.pointerType === 'touch' || infoZustand.fest) return;
+  clearTimeout(infoZustand.weg);
+  if (infoZustand.knopf === k) return;
+  clearTimeout(infoZustand.zeigen);
+  infoZustand.zeigen = setTimeout(() => infoZeigen(k), 120);
+});
+document.addEventListener('pointerout', e => {
+  const k = e.target.closest?.('.info-i');
+  if (!k || infoZustand.fest) return;
+  clearTimeout(infoZustand.zeigen);
+  if (infoZustand.knopf === k) infoSpaeterAus();
+});
+// Tastatur: Fokus zeigt den Hinweis, Verlassen blendet ihn aus
+document.addEventListener('focusin', e => {
+  const k = e.target.closest?.('.info-i');
+  if (k && !infoZustand.fest && k.matches(':focus-visible')) infoZeigen(k);
+});
+document.addEventListener('focusout', e => {
+  if (e.target.closest?.('.info-i') && !infoZustand.fest) infoSpaeterAus();
+});
+// Klick/Tippen: Hinweis feststellen oder wieder schließen. In der Einfangphase, damit der Klick nicht zusätzlich
+// sortiert, eine Tabellenzeile öffnet oder ein Kästchen umschaltet.
+document.addEventListener('click', e => {
+  const k = e.target.closest?.('.info-i');
+  if (k) {
+    e.preventDefault(); e.stopPropagation();
+    if (infoZustand.knopf === k && infoZustand.fest) infoAus(); else infoZeigen(k, true);
+    return;
+  }
+  if (infoSichtbar() && !e.target.closest?.('#infoBlase')) infoAus();
+}, true);
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && infoSichtbar()) { e.preventDefault(); e.stopPropagation(); const k = infoZustand.knopf; infoAus(); k?.focus?.({ preventScroll: true }); }
+}, true);
+// Beim Scrollen oder Größe ändern mitwandern; verschwindet das Symbol (neu gezeichnet), schließt die Blase
+document.addEventListener('scroll', () => { if (infoSichtbar()) { if (infoZustand.fest) infoPlatzieren(); else infoAus(); } }, true);
+window.addEventListener('resize', () => { if (infoSichtbar()) infoPlatzieren(); });
+// Schließt ein Dialog, in dem die Blase gerade liegt, verschwindet sie mit
+document.addEventListener('close', e => { if (e.target.contains?.(document.getElementById('infoBlase'))) infoAus(); }, true);
 </script>
 <!-- Master-Prompt und Bewertungsschema für die Hilfe; beim Bauen eingebettet (tools/viewer_bauen.py, außer mit --ohne-prompt) -->
 <script type="text/plain" id="master-prompt">
@@ -8161,7 +8296,8 @@ function valueCell(doc, path, { unit, chip = true, compact = false, scenario = t
 }
 
 // Einheitliche Erklärung der Darstellung fehlender und abgeleiteter Werte (Einzelansicht und Tabelle)
-const WERTE_LEGENDE = '<p class="werte-legende"><span><b>—</b> unbekannt (im Export ausdrücklich offen)</span><span><i>kursiv</i> nur aus einem Szenario berechnet</span><span><i class="st-punkt"></i> Belegstatus – anklicken für Quelle und Herkunft</span></p>';
+const WERTE_LEGENDE_INHALT = '<span class="info-zeile"><b>—</b> unbekannt (im Export ausdrücklich offen)</span><span class="info-zeile"><i>kursiv</i> nur aus einem Szenario berechnet</span><span class="info-zeile"><i class="st-punkt"></i> Belegstatus – anklicken für Quelle und Herkunft</span>';
+const werteLegende = () => `<div class="legende-zeile">Zeichen erklärt${info(WERTE_LEGENDE_INHALT, 'Darstellung der Werte')}</div>`;
 const LONG_KEYS = new Set(['lageeinschaetzung', 'zustandseinschaetzung', 'sanierungsplanung', 'einschaetzung', 'nutzungsfokus_grundlage', 'einschraenkungen', 'titel']);
 function kvList(doc, sec, keys, { skip = [] } = {}) {
   const o = obj(doc.data[sec]);
@@ -8469,8 +8605,7 @@ function renderSidebar() {
     ${kaputt.length ? `<div class="menue-label">Nicht lesbar</div>${kaputt.map(d => `<button class="navitem sub${state.current === d.uid && state.view === 'detail' ? ' active' : ''}" data-action="open" data-uid="${d.uid}"><span class="vdot v-crit"></span><span class="menue-text">${esc(d.fileName)}</span></button>`).join('')}` : ''}
     <button class="linkbtn" data-action="hilfe" data-bereich="anleitung" style="align-self:flex-start">Anleitung und Master-Prompt</button>
     <div class="side-sicherung">
-      <button class="btn sm" data-action="eingaben-sichern"${eingabenZahl() ? '' : ' disabled'}>Eigene Eingaben sichern${eingabenZahl() ? ` <span class="count">${eingabenZahl()}</span>` : ''}</button>
-      <span class="fine">Status, Notizen, Adressen und Kartenpunkte als Datei. Zurückholen: die Datei über „+ Dateien“ laden.</span>
+      <div class="side-zeile"><button class="btn sm" data-action="eingaben-sichern"${eingabenZahl() ? '' : ' disabled'}>Eigene Eingaben sichern${eingabenZahl() ? ` <span class="count">${eingabenZahl()}</span>` : ''}</button>${info('Status, Notizen, Adressen und Kartenpunkte als Datei. Zurückholen: die Datei über „+ Dateien“ laden.', 'Eigene Eingaben sichern')}</div>
     </div>
     <div class="side-foot">
       <label class="check"><input type="checkbox" id="persist" ${state.persist ? 'checked' : ''}> Dateien in diesem Browser merken</label>
@@ -8499,7 +8634,7 @@ function viewStart() {
         <button class="btn" data-action="pick-dir">Ordner wählen</button>
         <button class="btn" data-action="paste">JSON einfügen</button>
       </div>
-      ${ORDNER_UNTERSTUETZT ? '<p class="fine">Oder einen <button class="linkbtn" data-action="ordner-verbinden">Ablageordner verbinden</button>, z. B. den Google-Drive-Ordner mit deinen Exporten: Er wird bei jedem Öffnen und laufend automatisch eingelesen.</p>' : '<p class="fine">Einen Ordner dauerhaft verbinden und automatisch einlesen geht in Chrome und Edge.</p>'}
+      ${ORDNER_UNTERSTUETZT ? `<p class="fine">Oder einen <button class="linkbtn" data-action="ordner-verbinden">Ablageordner verbinden</button>${info('Z. B. den Google-Drive-Ordner mit deinen Exporten: Er wird bei jedem Öffnen und laufend automatisch eingelesen.', 'Ablageordner')}</p>` : '<p class="fine">Einen Ordner dauerhaft verbinden und automatisch einlesen geht in Chrome und Edge.</p>'}
       <p class="fine">Die Dateien werden nur lokal in diesem Browser gelesen. Nichts wird hochgeladen.</p>
     </div>
     <div class="flow" aria-label="Arbeitsablauf"><span class="box">Inserat-Link</span>→<span class="box">KI-Prüfung mit Master-Prompt V3.1</span>→<span class="box">JSON-Export</span>→<span class="box">Dieser Viewer</span></div>
@@ -8642,7 +8777,7 @@ function secOverview(doc) {
       ${points.length ? `<div class="open-points"><div class="eyebrow">Entscheidende offene Punkte</div><ol>${points.map(p => `<li>${esc(p)}</li>`).join('')}</ol></div>` : ''}
     </div>
     <div class="tiles">${tiles.map(([p, t]) => tile(doc, p, t)).join('')}</div>
-    ${WERTE_LEGENDE}
+    ${werteLegende()}
     ${limits.length ? `<div class="callout"><b>Einschränkungen der Prüfung</b><ul>${limits.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>` : ''}
   </section>`;
 }
@@ -8697,7 +8832,6 @@ function energyScale(e, pruefdatum) {
     <div class="escale-bar">${ENERGY_CLASSES.map((c, i) => `<span class="${c === cls ? 'on' : ''}" style="--bg:${ramp[i]};--fg:${i < 4 ? '#0b0b0b' : '#fff'}">${c}</span>`).join('')}</div>
     ${marker}
     <div class="escale-ticks">${ENERGY_BOUNDS.slice(0, 9).map(b => `<span>${b === 0 ? '' : '≥' + b}</span>`).join('')}</div>
-    <p class="chart-note">Skala nach GEG-Klassengrenzen in kWh/(m²·a). Ein gültiger Ausweis kann einen älteren energetischen Zustand abbilden.</p>
     ${notes.length ? `<div class="meta-chips" style="margin-top:6px">${notes.join('')}</div>` : ''}
   </div>`;
 }
@@ -8706,8 +8840,8 @@ function secLage(doc) {
   const e = obj(doc.data.energie), m = obj(doc.data.metadaten);
   return `<section class="sec" id="sec-lage"><h2><span class="letter">C</span>Lage, Gebäude & Energie</h2>
     <div class="grid-2">
-      <div class="card"><h3>Standort</h3><p class="card-sub">Ohne hausgenaue Adresse keine hausgenauen Wegezeiten oder Gefahrenwerte.</p>${kvList(doc, 'standort', CORE.standort)}${karteStandortBlock(doc)}</div>
-      <div class="card"><h3>Energie</h3><p class="card-sub">Energieausweis laut Export.</p>${kvList(doc, 'energie', CORE.energie)}${energyScale(e, m.pruefdatum)}</div>
+      <div class="card"><h3>Standort${info('Ohne hausgenaue Adresse keine hausgenauen Wegezeiten oder Gefahrenwerte.', 'Standort')}</h3>${kvList(doc, 'standort', CORE.standort)}${karteStandortBlock(doc)}</div>
+      <div class="card"><h3>Energie${info('Energieausweis laut Export. Skala nach GEG-Klassengrenzen in kWh/(m²·a). Ein gültiger Ausweis kann einen älteren energetischen Zustand abbilden.', 'Energie')}</h3>${kvList(doc, 'energie', CORE.energie)}${energyScale(e, m.pruefdatum)}</div>
     </div></section>`;
 }
 
@@ -8731,7 +8865,7 @@ function secPreis(doc) {
   const rangeChart = priceRows.length > 1
     ? chartSlot(w => svgPriceMap(w, priceRows, kp), 'Kaufpreis, Wertspannen und Zahlungsgrenzen')
       + `<div class="chart-legend"><span>${legendDot('', 'diamond')}Kaufpreis</span>${hasRange ? `<span><svg width="18" height="10" viewBox="0 0 18 10"><rect x="1" y="2" width="16" height="6" rx="3" style="fill:var(--range)"/></svg>Wertspanne laut Export</span>` : ''}${hasLimit ? `<span><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="5" style="fill:var(--c-orange)"/></svg>Zahlungsgrenze (Zielrendite-Szenario)</span>` : ''}</div>`
-      + `<p class="chart-note">Angebotsspannen beruhen auf Angebotspreisen, nicht auf beurkundeten Kaufpreisen. Zahlungsgrenzen sind renditeabhängige Anlegerannahmen, kein Marktwert.${hasRange ? '' : ` Keine Wertspanne ausgewiesen (Aussagebasis: ${esc(L(pb.aussagebasis || 'unzureichend'))}).`}</p>`
+      + (hasRange ? '' : `<p class="chart-note">Keine Wertspanne ausgewiesen (Aussagebasis: ${esc(L(pb.aussagebasis || 'unzureichend'))}).</p>`)
     : `<div class="empty"><b>Keine Wertspanne und keine Zahlungsgrenze ausgewiesen.</b><br>Aussagebasis: ${esc(L(pb.aussagebasis || 'unzureichend'))}. Bei unzureichender Grundlage bleibt die Spanne null.</div>`;
   const vs = doc.ctx.list('vergleichsobjekte');
   const rows = vs.map((v, i) => {
@@ -8759,14 +8893,14 @@ function secPreis(doc) {
     const val = isNum(v.preis_pro_m2_eur) ? v.preis_pro_m2_eur : isNum(v.preis_eur) && isNum(v.wohnflaeche_m2) && v.wohnflaeche_m2 > 0 ? v.preis_eur / v.wohnflaeche_m2 : null;
     if (val != null) dotRows.push({ label: `${v.id ?? ''} · ${L(v.eignung || 'unbekannt')}`, values: [val], style: v.eignung || 'gut', tip: `${v.id}: ${fmtNum(val, 'eur_m2')}\n${L(v.preisart || 'unbekannt')} · Eignung ${L(v.eignung || 'unbekannt')}\n${v.unterschiede_und_begruendung ?? ''}` });
   }
-  const dotChart = dotRows.length > 1 ? `<div class="card"><h3>Preis pro m² im Vergleich</h3><p class="card-sub">Ausgeschlossene Vergleiche sind markiert und fließen nicht in Spannen ein.</p>${chartSlot(w => svgDots(w, dotRows), 'Preis pro m² dieses Objekts und der Vergleichsobjekte')}
+  const dotChart = dotRows.length > 1 ? `<div class="card"><h3>Preis pro m² im Vergleich${info('Ausgeschlossene Vergleiche sind markiert und fließen nicht in Spannen ein.', 'Preis pro m² im Vergleich')}</h3>${chartSlot(w => svgDots(w, dotRows), 'Preis pro m² dieses Objekts und der Vergleichsobjekte')}
     <div class="chart-legend"><span>${legendDot('', 'diamond')}Dieses Objekt${subjVals.length > 1 ? ' (Szenario-Spanne)' : ''}</span><span>${legendDot('')}Eignung gut</span><span>${legendDot('hollow')}Eingeschränkt</span><span>${legendDot('', 'x')}Ausgeschlossen</span></div></div>` : '';
 
   return `<section class="sec" id="sec-preis"><h2><span class="letter">D</span>Vergleichsobjekte & Preisurteil</h2>
     <div class="stack">
       <div class="grid-2">
-        <div class="card"><h3>Preisbewertung</h3><p class="card-sub">Angebotspreise sind keine Transaktionspreise; kein Verkehrswertgutachten.</p>${kvList(doc, 'preisbewertung', CORE.preisbewertung)}</div>
-        <div class="card"><h3>Preis-Einordnung</h3><p class="card-sub">Kaufpreis gegenüber Wertspannen und Zahlungsgrenzen aus dem Export.</p>${rangeChart}</div>
+        <div class="card"><h3>Preisbewertung${info('Angebotspreise sind keine Transaktionspreise; kein Verkehrswertgutachten.', 'Preisbewertung')}</h3>${kvList(doc, 'preisbewertung', CORE.preisbewertung)}</div>
+        <div class="card"><h3>Preis-Einordnung${info('Kaufpreis gegenüber Wertspannen und Zahlungsgrenzen aus dem Export.<span class="info-zeile">Angebotsspannen beruhen auf Angebotspreisen, nicht auf beurkundeten Kaufpreisen. Zahlungsgrenzen sind renditeabhängige Anlegerannahmen, kein Marktwert.</span>', 'Preis-Einordnung')}</h3>${rangeChart}</div>
       </div>
       ${vs.length ? `<div class="card flush"><div class="table-wrap"><table class="t"><thead><tr><th>ID</th><th>Preisart</th><th class="num">Preis</th><th class="num">Fläche</th><th class="num">€/m²</th><th>Eignung</th><th>Gl. Komplex</th><th>Unterschiede & Begründung</th><th>Quellen</th></tr></thead><tbody>${rows}</tbody></table></div></div>` : emptyNote('Keine Vergleichsobjekte erfasst.')}
       ${dotChart}
@@ -8781,12 +8915,12 @@ function secKosten(doc) {
 
   const cfRows = [];
   sz.forEach(s => { if (!isObj(s)) return; const r = arr(s.rechnung).find(x => isObj(x) && canonKz(x.kennzahl) === 'cashflow_monat_vor_steuern_eur' && isNum(x.wert)); if (r) cfRows.push({ label: `${s.id ?? ''} ${s.bezeichnung ?? ''}`.trim(), value: r.wert, tip: `${s.id ?? ''} ${s.bezeichnung ?? ''}\nCashflow vor Steuern: ${fmtNum(r.wert, 'eur')} pro Monat\n${s.einordnung ?? ''}` }); });
-  const cfChart = cfRows.length ? `<div class="card"><h3>Monatlicher Cashflow vor Steuern je Szenario</h3><p class="card-sub">Modellrechnung mit Annahmen – kein Ist-Wert. Negativer Cashflow ist nicht automatisch ein gleich hoher wirtschaftlicher Verlust (Tilgung = Vermögensaufbau).</p>${chartSlot(w => svgCashflow(w, cfRows), 'Cashflow je Szenario')}</div>` : '';
+  const cfChart = cfRows.length ? `<div class="card"><h3>Monatlicher Cashflow vor Steuern je Szenario${info('Modellrechnung mit Annahmen – kein Ist-Wert. Negativer Cashflow ist nicht automatisch ein gleich hoher wirtschaftlicher Verlust (Tilgung = Vermögensaufbau).', 'Monatlicher Cashflow vor Steuern je Szenario')}</h3>${chartSlot(w => svgCashflow(w, cfRows), 'Cashflow je Szenario')}</div>` : '';
 
   const many = sz.filter(isObj).length > 4;
-  const overview = many ? `<div class="card flush"><div class="table-wrap"><table class="t"><thead><tr><th>ID</th><th>Szenario</th><th>Typ</th><th>Kernergebnis</th><th class="num">Wert</th></tr></thead><tbody>
+  const overview = many ? `<div class="card flush"><div class="table-wrap"><table class="t"><thead><tr><th>ID</th><th>Szenario${info('Zeile anklicken, um die Rechnung des Szenarios aufzuklappen.', 'Szenarien')}</th><th>Typ</th><th>Kernergebnis</th><th class="num">Wert</th></tr></thead><tbody>
     ${sz.filter(isObj).map(s => { const r = keyResult(s); return `<tr class="clickable" data-action="ref" data-uid="${doc.uid}" data-id="${esc(s.id)}"><td><span class="id">${esc(s.id ?? '?')}</span></td><td>${esc(s.bezeichnung ?? '')}</td><td class="nowrap">${esc(L(s.typ || 'sonstiges'))}</td><td>${r ? esc(L(r.kennzahl)) : '<span class="null">—</span>'}</td><td class="num${r && r.wert < 0 ? ' neg' : ''}">${r ? esc(fmtRechnung(r)) : ''}</td></tr>`; }).join('')}
-    </tbody></table></div></div><p class="chart-note">Zeile anklicken, um die Rechnung des Szenarios aufzuklappen.</p>` : '';
+    </tbody></table></div></div>` : '';
   const scenCards = sz.length ? sz.map((s, si) => {
     if (!isObj(s)) return '';
     const kr = keyResult(s);
@@ -8812,8 +8946,8 @@ function secKosten(doc) {
   return `<section class="sec" id="sec-kosten"><h2><span class="letter">E</span>Kosten, Kennzahlen & Szenarien</h2>
     <div class="stack">
       <div class="grid-2">
-        <div class="card"><h3>Ist-Kosten und Erträge</h3><p class="card-sub">Recherchierte Angaben mit Belegstatus – keine Modellwerte.</p>${kvList(doc, 'ist_kosten_und_ertraege', CORE.ist_kosten_und_ertraege)}</div>
-        <div class="card"><h3>Kennzahlen</h3><p class="card-sub">Nur berechnet, wenn alle Eingaben belegt und konfliktfrei sind; sonst null mit Szenariowerten.</p>${kvList(doc, 'kennzahlen', CORE.kennzahlen)}</div>
+        <div class="card"><h3>Ist-Kosten und Erträge${info('Recherchierte Angaben mit Belegstatus – keine Modellwerte.', 'Ist-Kosten und Erträge')}</h3>${kvList(doc, 'ist_kosten_und_ertraege', CORE.ist_kosten_und_ertraege)}</div>
+        <div class="card"><h3>Kennzahlen${info('Nur berechnet, wenn alle Eingaben belegt und konfliktfrei sind; sonst null mit Szenariowerten.', 'Kennzahlen')}</h3>${kvList(doc, 'kennzahlen', CORE.kennzahlen)}</div>
       </div>
       <h3 style="margin:8px 0 0">Annahmen</h3>${annTable}
       ${cfChart}
@@ -8834,7 +8968,7 @@ function secWeg(doc) {
     </tbody></table></div></div>` : emptyNote('Keine fehlenden Unterlagen erfasst.');
   return `<section class="sec" id="sec-weg"><h2><span class="letter">F</span>WEG, Recht & Risiken</h2>
     <div class="stack">
-      <div class="card"><h3>Wohnungseigentümergemeinschaft</h3><p class="card-sub">Rücklagenzahlen nur mit Stichtag aussagekräftig; rechnerische Wohnungsanteile sind kein frei verfügbares Guthaben.</p>${kvList(doc, 'weg', CORE.weg)}</div>
+      <div class="card"><h3>Wohnungseigentümergemeinschaft${info('Rücklagenzahlen nur mit Stichtag aussagekräftig; rechnerische Wohnungsanteile sind kein frei verfügbares Guthaben.', 'Wohnungseigentümergemeinschaft')}</h3>${kvList(doc, 'weg', CORE.weg)}</div>
       <h3 style="margin:8px 0 0">Risiken</h3>${risks}
       <h3 style="margin:8px 0 0">Fehlende Unterlagen</h3>${docs}
     </div></section>`;
@@ -8879,9 +9013,9 @@ function secPruefung(doc) {
   const hints = arr(ep.hinweise);
   return `<section class="sec" id="sec-pruefung"><h2>Exportprüfung</h2>
     <div class="grid-2">
-      <div class="card"><h3>Selbstauskunft des Exports</h3><p class="card-sub">Angaben aus <code>exportpruefung</code>. Formatprüfung ist keine Bestätigung der Inseratsangaben.</p><div class="flags">${flags}</div>
+      <div class="card"><h3>Selbstauskunft des Exports${info('Angaben aus <code>exportpruefung</code>. Formatprüfung ist keine Bestätigung der Inseratsangaben.', 'Selbstauskunft des Exports')}</h3><div class="flags">${flags}</div>
         ${hints.length ? `<ul class="small" style="margin:12px 0 0;padding-left:18px">${hints.map(h => `<li>${esc(h)}</li>`).join('')}</ul>` : ''}</div>
-      <div class="card"><h3>Prüfung durch den Viewer</h3><p class="card-sub">${c.error} Fehler · ${c.warn} Warnungen · ${c.info} Hinweise – gegen den Datenvertrag Schema 1.0, inklusive Nachrechnen zentraler Kennzahlen.</p><ul class="issues">${issueItems(doc.issues)}</ul></div>
+      <div class="card"><h3>Prüfung durch den Viewer${info('Geprüft gegen den Datenvertrag Schema 1.0, inklusive Nachrechnen zentraler Kennzahlen.', 'Prüfung durch den Viewer')}</h3><p class="card-sub">${c.error} Fehler · ${c.warn} Warnungen · ${c.info} Hinweise</p><ul class="issues">${issueItems(doc.issues)}</ul></div>
     </div></section>`;
 }
 
@@ -8946,7 +9080,7 @@ const spalten = () => spaltenVerfuegbar().filter(c => SPALTEN_FEST.includes(c.id
 
 function spaltenDialog() {
   const liste = spaltenVerfuegbar().filter(c => !SPALTEN_FEST.includes(c.id));
-  openDialog(dlgHead('Spalten anzeigen') + `<p class="fine" style="margin-top:0">Ausgeblendete Spalten verschwinden aus Tabelle und CSV-Export; ihre Filter und ihre Sortierung ruhen so lange. „#“ und „Objekt“ bleiben immer sichtbar.</p>
+  openDialog(dlgHead('Spalten anzeigen' + info('Ausgeblendete Spalten verschwinden aus Tabelle und CSV-Export; ihre Filter und ihre Sortierung ruhen so lange. „#“ und „Objekt“ bleiben immer sichtbar.', 'Spalten anzeigen')) + `
     <div class="spalten-wahl">${liste.map(c => `<label class="check"><input type="checkbox" data-spalte-an="${c.id}"${state.ausgeblendet.has(c.id) ? '' : ' checked'}> ${esc(colTitel(c))}${c.profil ? ' <span class="tag">Profil</span>' : ''}</label>`).join('')}</div>
     <div class="btn-row" style="justify-content:flex-end;margin-bottom:0"><button class="btn" data-action="spalten-alle">Alle zeigen</button><button class="btn primary" data-action="close-dlg">Fertig</button></div>`);
 }
@@ -9030,7 +9164,7 @@ function compareFilters(hasRevs) {
       <input type="search" id="fq" placeholder="Suchen: Titel, Ort, Plattform-ID, Datei … (Taste /)" value="${esc(state.filter.q)}" aria-label="Suchen">
       ${urteilAuswahl()}
       ${hasRevs ? `<label class="check"><input type="checkbox" id="fold"${state.filter.showOld ? ' checked' : ''}> Ältere Revisionen zeigen</label>` : ''}
-      ${state.cmpTab === 'tabelle' ? `<button class="btn sm" data-action="spalten-dialog" title="Spalten ein- und ausblenden">Spalten${state.ausgeblendet.size ? ` <span class="count">${spaltenVerfuegbar().filter(c => !SPALTEN_FEST.includes(c.id) && !state.ausgeblendet.has(c.id)).length}/${spaltenVerfuegbar().length - SPALTEN_FEST.length}</span>` : ''}</button>` : ''}
+      ${state.cmpTab === 'tabelle' ? `<button class="btn sm" data-action="spalten-dialog" title="Spalten ein- und ausblenden">Spalten${state.ausgeblendet.size ? ` <span class="count">${spaltenVerfuegbar().filter(c => !SPALTEN_FEST.includes(c.id) && !state.ausgeblendet.has(c.id)).length}/${spaltenVerfuegbar().length - SPALTEN_FEST.length}</span>` : ''}</button>${tabellenInfo()}` : ''}
       ${ansichtVeraendert() ? '<button class="linkbtn" data-action="ansicht-zuruecksetzen" title="Sortierung, Suche und alle Filter zurücksetzen">Ansicht zurücksetzen</button>' : ''}
     </div>${chips}`;
 }
@@ -9076,8 +9210,12 @@ function compareTable(rows) {
     return `<tr class="clickable" data-action="open" data-uid="${d.uid}"><td><input type="checkbox" data-select="${d.uid}" ${state.selected.has(d.uid) ? 'checked' : ''} aria-label="Für Gegenüberstellung auswählen"></td>${sp.map(cell).join('')}</tr>`;
   }).join('');
 
-  return `${vergleichKarten(rows, sp)}<div class="card flush cmp-tabelle-karte"><div class="table-wrap fest"><table class="t cmp-table"><thead><tr><th><input type="checkbox" id="selAll" ${allSel ? 'checked' : ''} aria-label="Alle sichtbaren auswählen"></th>${head}</tr></thead><tbody>${body || `<tr><td colspan="${sp.length + 1}" class="muted">Keine Treffer.${Object.keys(state.filter.spalten).length ? ' <button class="linkbtn" data-action="spaltenfilter-alle-weg">Spaltenfilter löschen</button>' : ''}</td></tr>`}</tbody></table></div></div>
-    <details class="tabellen-hinweise"><summary>Hinweise zur Tabelle</summary><p class="chart-note">${aktivesProfil() ? `Blau hinterlegte Spalten rechnen mit dem Profil „${esc(aktivesProfil().bezeichnung)}“ (Zuzahlung je Monat; „Überschuss“ = es bleibt etwas übrig). ` : 'Mit einem aktiven persönlichen Profil erscheinen hier zusätzlich Zuzahlung vor und nach Steuer und die Einordnung zum Budget. '}Überschrift anklicken = sortieren, Trichter daneben = sortieren und filtern, „Spalten“ blendet Spalten ein und aus. Zahlenfilter zeigen unbekannte Werte standardmäßig weiter an; Szenariowerte zählen beim Sortieren und Filtern nicht. Häkchen wählen Objekte für die Gegenüberstellung.</p>${WERTE_LEGENDE}</details>`;
+  return `${vergleichKarten(rows, sp)}<div class="card flush cmp-tabelle-karte"><div class="table-wrap fest"><table class="t cmp-table"><thead><tr><th><input type="checkbox" id="selAll" ${allSel ? 'checked' : ''} aria-label="Alle sichtbaren auswählen"></th>${head}</tr></thead><tbody>${body || `<tr><td colspan="${sp.length + 1}" class="muted">Keine Treffer.${Object.keys(state.filter.spalten).length ? ' <button class="linkbtn" data-action="spaltenfilter-alle-weg">Spaltenfilter löschen</button>' : ''}</td></tr>`}</tbody></table></div></div>`;
+}
+
+/** Hinweise zur Vergleichstabelle (ⓘ in der Filterleiste). */
+function tabellenInfo() {
+  return info(`<span class="info-zeile">${aktivesProfil() ? `Blau hinterlegte Spalten rechnen mit dem Profil „${esc(aktivesProfil().bezeichnung)}“ (Zuzahlung je Monat; „Überschuss“ = es bleibt etwas übrig). ` : 'Mit einem aktiven persönlichen Profil erscheinen hier zusätzlich Zuzahlung vor und nach Steuer und die Einordnung zum Budget. '}</span><span class="info-zeile">Überschrift anklicken = sortieren, Trichter daneben = sortieren und filtern, „Spalten“ blendet Spalten ein und aus. Zahlenfilter zeigen unbekannte Werte standardmäßig weiter an; Szenariowerte zählen beim Sortieren und Filtern nicht. Häkchen wählen Objekte für die Gegenüberstellung.</span>${WERTE_LEGENDE_INHALT}`, 'Bedienung der Tabelle');
 }
 
 /** Streudiagramm Kaufpreis/m² gegen Bruttomietrendite mit Werteliste daneben. */
@@ -9098,14 +9236,14 @@ function priceOverview(rows) {
     + (missing.length ? `<p class="chart-note">Nicht dargestellt (Werte fehlen): ${missing.map(d => `#${d.num}`).join(', ')}</p>` : '')
     : '<div class="empty"><b>Keine Objekte mit Kaufpreis pro m² und Bruttomietrendite.</b></div>';
 
-  const valuesList = rows.length ? `<div class="card flush"><div class="card-pad"><h3>Werte im Diagramm</h3><p class="card-sub">Reihenfolge wie in der Tabelle. Zeile anklicken für Details.</p></div>
+  const valuesList = rows.length ? `<div class="card flush"><div class="card-pad"><h3>Werte im Diagramm${info('Reihenfolge wie in der Tabelle. Zeile anklicken für Details.', 'Werte im Diagramm')}</h3></div>
     <div class="table-wrap"><table class="t vals"><thead><tr><th class="num">#</th><th>Objekt</th><th class="num">€/m²</th><th class="num">Brutto&shy;rendite</th></tr></thead><tbody>
     ${rows.map(d => `<tr class="clickable" data-action="open" data-uid="${d.uid}"><td class="num"><span class="num">#${d.num}</span></td><td><div class="obj-title">${esc(trunc(docTitle(d), 44))}</div><div class="obj-sub">${esc(docPlace(d) || 'ohne Ort')}</div></td>
       <td class="num">${valueCell(d, '/kennzahlen/kaufpreis_pro_m2_eur', { chip: false })}</td><td class="num">${valueCell(d, '/kennzahlen/bruttomietrendite_prozent', { chip: false })}</td></tr>`).join('')}
     </tbody></table></div></div>` : '';
 
   return `<div class="price-grid">
-      <div class="card"><h3>Kaufpreis pro m² und Bruttomietrendite</h3><p class="card-sub">Je Objekt ein Punkt (#-Nummer wie in der Tabelle). Eine höhere Rendite ist kein Urteil über Risiko oder Objektqualität.</p>${scatter}</div>
+      <div class="card"><h3>Kaufpreis pro m² und Bruttomietrendite${info('Je Objekt ein Punkt (#-Nummer wie in der Tabelle). Eine höhere Rendite ist kein Urteil über Risiko oder Objektqualität.', 'Kaufpreis pro m² und Bruttomietrendite')}</h3>${scatter}</div>
       ${valuesList}
     </div>`;
 }
@@ -9115,7 +9253,7 @@ function selectionPicker() {
   const docs = immoDocs().filter(d => state.filter.showOld || d.rev?.latest || state.selected.has(d.uid));
   const n = state.selected.size;
   return `<div class="card pick">
-      <div class="pick-head"><div><h3>Auswahl für die Gegenüberstellung</h3><p class="card-sub" style="margin:0">${n} ausgewählt${n < 2 ? ' – mindestens zwei auswählen' : ''}. Der Ortsfilter gilt hier nicht.</p></div>
+      <div class="pick-head"><div><h3>Auswahl für die Gegenüberstellung${info('Der Ortsfilter gilt hier nicht. Häkchen in der Tabelle wählen ebenfalls aus.', 'Auswahl')}</h3><p class="card-sub" style="margin:0">${n} ausgewählt${n < 2 ? ' – mindestens zwei auswählen' : ''}</p></div>
         <div class="dh-actions"><button class="btn sm" data-action="select-all">Alle auswählen</button><button class="btn sm" data-action="select-none">Auswahl leeren</button></div></div>
       <div class="pick-list">${docs.map(d => { const on = state.selected.has(d.uid); return `<label class="pick-item${on ? ' on' : ''}"><input type="checkbox" data-select="${d.uid}"${on ? ' checked' : ''}><span class="num">#${d.num}</span><span class="pick-text"><span class="pick-title">${esc(trunc(docTitle(d), 60))}</span><span class="pick-sub">${esc(docPlace(d) || 'ohne Ort')}${d.rev && d.rev.total > 1 ? ` · Rev. ${d.rev.index}/${d.rev.total}` : ''}</span></span></label>`; }).join('')}</div>
     </div>`;
@@ -9296,7 +9434,7 @@ function openRef(uid, id) {
 }
 
 function openPaste() {
-  openDialog(dlgHead('JSON einfügen') + `<p class="fine" style="margin-top:0">Inhalt einer Exportdatei einfügen – auch ein Array mehrerer Bewertungen ist möglich.</p><textarea id="pasteArea" spellcheck="false" placeholder='{ "schema_version": "1.0", … }'></textarea><div class="btn-row" style="justify-content:flex-end;margin-bottom:0"><button class="btn" data-action="close-dlg">Abbrechen</button><button class="btn primary" data-action="paste-load">Laden</button></div>`);
+  openDialog(dlgHead('JSON einfügen' + info('Inhalt einer Exportdatei einfügen – auch ein Array mehrerer Bewertungen ist möglich.', 'JSON einfügen')) + `<textarea id="pasteArea" spellcheck="false" placeholder='{ "schema_version": "1.0", … }'></textarea><div class="btn-row" style="justify-content:flex-end;margin-bottom:0"><button class="btn" data-action="close-dlg">Abbrechen</button><button class="btn primary" data-action="paste-load">Laden</button></div>`);
   setTimeout(() => $('#pasteArea')?.focus(), 30);
 }
 
