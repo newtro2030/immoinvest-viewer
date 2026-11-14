@@ -854,7 +854,8 @@ h1, h2, h3 { letter-spacing: -.02em; }
 .btn:disabled { opacity: .45; cursor: default; }
 .linkbtn { border: 0; background: none; padding: 0; color: var(--accent-ink); cursor: pointer; font-size: 13.5px; }
 .linkbtn:hover { text-decoration: underline; }
-:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 55%, transparent); outline-offset: 1px; }
+:focus-visible { outline: 2px solid color-mix(in srgb, var(--accent) 70%, transparent); outline-offset: 2px; }
+.icon-knopf:focus-visible, .btn:focus-visible, .navitem:focus-visible { outline-offset: 0; }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 40; background: var(--surface); }
 body.hosted .needs-print, body.hosted .needs-theme, body.no-downloads .needs-download { display: none !important; }
 
@@ -1085,33 +1086,36 @@ table.t { width: 100%; border-collapse: collapse; font-size: 14px; }
   body.ansicht-fest .cmp-tabelle-karte .table-wrap.fest { flex: 1 1 auto; min-height: 0; max-height: none; }
   body.ansicht-fest .auswahl-leiste { position: static; margin-top: 8px; }
 }
-.table-wrap.fest .t thead th { position: sticky; top: 0; z-index: 2; box-shadow: inset 0 -1px 0 var(--line); }
-.table-wrap.fest .cmp-table thead th:nth-child(3) { z-index: 3; box-shadow: inset 0 -1px 0 var(--line), 1px 0 0 var(--line); }
+.table-wrap.fest .t thead th { position: sticky; top: 0; z-index: 2; border-bottom: 0; box-shadow: inset 0 -1px 0 var(--line-2); }
+.table-wrap.fest .cmp-table thead th:nth-child(3) { z-index: 3; box-shadow: inset 0 -1px 0 var(--line-2), 1px 0 0 var(--line); }
 /* Überschriften der Vergleichstabelle: Beschriftung sortiert, Trichter öffnet das Spaltenmenü (src/oberflaeche/spaltenfilter.js) */
 .cmp-table th.sortable { cursor: default; }
-.cmp-table .th-kopf { display: flex; align-items: flex-end; gap: 2px; }
+.cmp-table .th-kopf { display: flex; align-items: flex-end; gap: 3px; }
 .cmp-table th.num .th-kopf { justify-content: flex-end; }
 .th-sort { border: 0; background: none; padding: 0; font: inherit; color: inherit; text-align: inherit; line-height: inherit; cursor: pointer; }
 .th-sort:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 2px; }
-.th-filter { flex: none; display: inline-grid; place-items: center; width: 18px; height: 22px; margin: 0 0 -3px 0; border: 0; border-radius: 6px; background: none; color: var(--muted); cursor: pointer; }
-.th-filter:hover, .th-filter[aria-expanded="true"] { background: var(--surface-3); color: var(--ink); }
+.th-filter { flex: none; display: inline-grid; place-items: center; width: 22px; height: 22px; margin: 0 -3px -3px 0; border: 0; border-radius: 6px; background: none; color: var(--muted); cursor: pointer; transition: background .12s, color .12s; }
+.th-filter:hover, .th-filter[aria-expanded="true"] { background: var(--fill-2); color: var(--ink); }
+th:hover > .th-kopf .th-filter:not(.aktiv) { color: var(--ink-2); }
 .th-filter.aktiv { background: var(--accent); color: #fff; }
 .th-filter.aktiv svg path { fill: currentColor; }
 .cmp-table th.gefiltert .th-sort { color: var(--accent-ink); }
 .th-sort:focus-visible, .th-filter:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
-.spaltenmenue:not([hidden]) { position: fixed; z-index: 250; width: min(320px, calc(100vw - 16px)); max-height: calc(100vh - 16px); overflow: auto; display: flex; flex-direction: column; gap: 14px; padding: 12px 14px; border: 1px solid var(--line-2); border-radius: 12px; background: var(--surface); box-shadow: 0 8px 28px rgba(0, 0, 0, .2); font-size: 13.5px; }
+.spaltenmenue:not([hidden]) { position: fixed; z-index: 250; width: min(320px, calc(100vw - 16px)); max-height: calc(100vh - 16px); overflow: auto; display: flex; flex-direction: column; gap: 14px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--leiste); -webkit-backdrop-filter: saturate(180%) blur(24px); backdrop-filter: saturate(180%) blur(24px); box-shadow: 0 14px 44px rgba(0, 0, 0, .18), 0 2px 6px rgba(0, 0, 0, .06); font-size: 13.5px; }
+.spaltenmenue input[type="radio"], .spaltenmenue input[type="checkbox"] { margin: 0; flex: none; }
+.spaltenmenue .check { align-items: center; gap: 8px; }
 .sm-kopf { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 14px; }
 .sm-titel { margin-bottom: 6px; font-size: 11.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: .06em; }
 .sm-sort { display: flex; flex-wrap: wrap; gap: 6px; }
-.sm-sort .btn.on { border-color: var(--accent); background: var(--accent-wash); color: var(--accent-ink); }
+.sm-sort .btn.on { background: var(--accent); color: #fff; }
 .sm-bereich { display: flex; align-items: flex-end; gap: 8px; }
 .sm-feld { display: flex; flex: 1; flex-direction: column; gap: 3px; min-width: 0; font-size: 12.5px; color: var(--ink-2); }
-.sm-feld input { width: 100%; min-width: 0; height: 32px; padding: 0 8px; border-radius: 8px; border: 1px solid var(--line-2); background: var(--surface); color: var(--ink); font-size: 13.5px; }
-.sm-feld input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+.sm-feld input { width: 100%; min-width: 0; height: 34px; padding: 0 10px; border-radius: 8px; border: 0; background: var(--fill); color: var(--ink); font-size: 14px; }
+.sm-feld input:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 45%, transparent); outline-offset: 0; background: var(--surface); }
 .sm-feld input:disabled { opacity: .5; }
 .sm-einheit { padding-bottom: 7px; font-size: 12.5px; color: var(--muted); white-space: nowrap; }
 .sm-hinweis { margin: 6px 0 0; font-size: 12.5px; color: var(--ink-2); }
-.sm-werte { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 10px 0 0; padding: 0; border: 0; }
+.sm-werte { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 12px 0 0; padding: 0; border: 0; }
 .sm-werte legend { width: 100%; margin-bottom: 4px; padding: 0; font-size: 12.5px; color: var(--ink-2); }
 .sm-liste { display: flex; flex-direction: column; gap: 7px; max-height: 240px; overflow: auto; }
 .sm-liste .check { display: flex; }
@@ -1119,9 +1123,9 @@ table.t { width: 100%; border-collapse: collapse; font-size: 14px; }
 .sm-links { display: flex; gap: 14px; margin-top: 8px; }
 .sm-fuss { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 10px; border-top: 1px solid var(--line); }
 .sm-anzahl { font-size: 12.5px; color: var(--ink-2); }
-.sf-leiste { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 0 0 12px; }
+.sf-leiste { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 0 0 12px; font-size: 12.5px; }
 .sf-leiste .lbl { margin-right: 2px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); }
-.sf-chip { display: inline-flex; align-items: stretch; max-width: 100%; min-height: 30px; border-radius: 999px; border: 1px solid var(--accent); background: var(--accent-wash); color: var(--accent-ink); font-size: 12.5px; overflow: hidden; }
+.sf-chip { display: inline-flex; align-items: stretch; max-width: 100%; min-height: 28px; border-radius: 999px; border: 0; background: var(--accent-wash); color: var(--accent-ink); font-size: 12.5px; overflow: hidden; }
 .sf-chip-text { padding: 4px 4px 4px 12px; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
 .sf-chip-x { width: 28px; flex: none; border: 0; background: none; color: inherit; font-size: 15px; cursor: pointer; }
 .sf-chip-text:hover, .sf-chip-x:hover { background: color-mix(in srgb, var(--accent) 14%, transparent); }
@@ -1145,12 +1149,13 @@ table.t { width: 100%; border-collapse: collapse; font-size: 14px; }
 .t .obj-sub { font-size: 12.5px; color: var(--ink-2); }
 .t .scen { display: block; font-size: 11.5px; }
 .cmp-table th:first-child, .cmp-table td:first-child { width: 34px; padding-right: 0; }
+.cmp-table th:nth-child(2) { min-width: 68px; }
+.cmp-table th:nth-child(2) .th-kopf { flex-wrap: nowrap; }
+.cmp-table th:nth-child(2) .th-sort { white-space: nowrap; }
 /* Ruhige Tabelle: Auswahlkästchen und Filter-Trichter erscheinen erst beim Darüberfahren, per Tastatur oder wenn sie aktiv sind */
 @media (hover: hover) {
   .cmp-table :is(td, th):first-child input { opacity: 0; transition: opacity .12s; }
   .cmp-table tr:hover > :is(td, th):first-child input, .cmp-table :is(td, th):first-child input:is(:checked, :focus-visible), .cmp-table.mit-auswahl :is(td, th):first-child input { opacity: 1; }
-  .cmp-table .th-filter:not(.aktiv):not([aria-expanded="true"]) { opacity: 0; transition: opacity .12s; }
-  .cmp-table th:hover .th-filter, .cmp-table .th-filter:focus-visible { opacity: 1; }
 }
 .cmp-table thead th, .cmp-table thead th.num { white-space: normal; vertical-align: bottom; line-height: 1.3; }
 .cmp-table td.cell-urteil { min-width: 0; white-space: nowrap; }
@@ -1249,8 +1254,8 @@ dialog.breit { width: min(860px, calc(100vw - 32px)); }
 .tasten dd { margin: 0; color: var(--ink-2); }
 kbd { display: inline-block; min-width: 22px; padding: 1px 6px; border-radius: 6px; border: 1px solid var(--line-2); border-bottom-width: 2px; background: var(--surface-2); font: 600 12.5px/1.5 ui-monospace, Menlo, monospace; text-align: center; }
 /* Spalten mit dem aktiven Profil, leicht blau hinterlegt */
-.cmp-table td.profilspalte { background: color-mix(in srgb, var(--accent) 5%, transparent); }
-.table-wrap .cmp-table thead th.profilspalte { background: color-mix(in srgb, var(--accent) 12%, var(--surface-2)); color: var(--accent-ink); }
+.cmp-table td.profilspalte { background: color-mix(in srgb, var(--accent) 6%, var(--surface)); }
+.table-wrap .cmp-table thead th.profilspalte { background: color-mix(in srgb, var(--accent) 6%, var(--surface)); color: var(--accent-ink); }
 .cmp-table th, .cmp-table td { padding-left: 10px; padding-right: 10px; }
 /* Zusätze wie „strittig · W1“ oder Szenariowerte brechen in eine zweite Zeile um, statt die Spalte zu verbreitern */
 .cmp-table td.num { white-space: nowrap; }
@@ -3842,6 +3847,11 @@ a.pop-punkt:hover, a.pop-punkt:focus-visible { background: var(--fill); }
   'use strict';
 
   const VERLAUF = [
+    { version: '3.0.1', datum: '2026-11-14', titel: 'Filter sichtbar, Tabelle ruhiger', punkte: [
+      'Filter-Trichter stehen jetzt dauerhaft sichtbar (dezent grau) an jeder Spaltenüberschrift – bisher waren sie unsichtbar',
+      'Eine einzige Linie unter der Tabellenüberschrift, die Spalte „#“ bricht nicht mehr um',
+      'Profilspalten in Kopf und Zeilen im gleichen ruhigen Blau; Filtermenü im Stil der anderen Menüs',
+    ] },
     { version: '3.0.0', datum: '2026-11-14', titel: 'Aufgeräumte Oberfläche im Apple-Stil', punkte: [
       'Neue Gestaltung: ruhige Farben, Systemschrift, mehr Abstand, hell und dunkel',
       'Seitenleiste nur noch zur Navigation; Dateien, Ablageordner und Sicherung im Menü „Daten“ oben rechts',
