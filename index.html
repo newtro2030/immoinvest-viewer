@@ -809,6 +809,8 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 button, input, select, textarea { font: inherit; color: inherit; }
+/* Auswahlfelder überall mit demselben dezenten Pfeil statt des Systempfeils */
+select:not([multiple]) { appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%238e8e93' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important; background-repeat: no-repeat !important; background-position: right 10px center !important; padding-right: 28px !important; text-overflow: ellipsis; }
 a { color: var(--accent-ink); text-underline-offset: 2px; }
 code { font: 12px/1.4 ui-monospace, "SF Mono", Menlo, Consolas, monospace; background: var(--surface-2); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
 h1, h2, h3 { letter-spacing: -.02em; }
@@ -824,7 +826,7 @@ h1, h2, h3 { letter-spacing: -.02em; }
   border-bottom: 1px solid var(--line);
 }
 .brand { display: flex; align-items: center; gap: 8px; margin: 0 auto 0 6px; font-size: 15px; font-weight: 600; letter-spacing: -.01em; white-space: nowrap; min-width: 0; }
-.brand svg { width: 20px; height: 20px; color: var(--accent); flex: none; }
+.brand .marke { width: 22px; height: 22px; flex: none; border-radius: 6px; box-shadow: 0 1px 2px rgba(0, 60, 140, .28); }
 .layout { display: grid; grid-template-columns: 248px minmax(0, 1fr); min-height: calc(100vh - 52px); }
 .sidebar {
   position: sticky; top: calc(52px + env(safe-area-inset-top, 0px)); height: calc(100vh - 52px - env(safe-area-inset-top, 0px)); overflow: auto;
@@ -998,6 +1000,8 @@ button.tag { cursor: pointer; }
   background: color-mix(in srgb, var(--page) 92%, transparent); backdrop-filter: blur(6px);
   border-bottom: 1px solid var(--line);
 }
+.subnav { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 40px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 40px), transparent); }
+.subnav::after { content: ""; flex: none; width: 28px; }
 .subnav::-webkit-scrollbar { display: none; }
 .subnav button { flex: none; border: 0; background: transparent; padding: 6px 10px; border-radius: 6px; font-size: 13.5px; color: var(--ink-2); cursor: pointer; white-space: nowrap; }
 .subnav button:hover { background: var(--surface-3); color: var(--ink); }
@@ -1020,15 +1024,37 @@ button.tag { cursor: pointer; }
 /* ---------- Kennzahlen-Kacheln ---------- */
 .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 188px), 1fr)); gap: 10px; margin-top: 14px; }
 .tiles.stats { grid-template-columns: repeat(5, minmax(0, 1fr)); margin-top: 0; }
-/* Urteilsleiste im Vergleich: Anzahl je Gesamturteil, anklickbar als Filter */
+/* Filterzeile: ein Stil für alles. Aus = graue Kapsel, an = Akzentfarbe mit weißer Schrift (ein Blau, keine Mischtöne). */
 .urteil-leiste { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
-.urteil-chip { display: inline-flex; align-items: center; gap: 7px; height: 30px; padding: 0 12px 0 5px; border-radius: 999px; border: 0; background: var(--fill); font-size: 13.5px; cursor: pointer; transition: background .12s; }
+.urteil-chip { display: inline-flex; align-items: center; gap: 7px; height: 30px; padding: 0 12px 0 5px; border-radius: 999px; border: 0; background: var(--fill); color: var(--ink); font-size: 13.5px; cursor: pointer; transition: background .12s, color .12s; }
 .urteil-chip:hover { background: var(--fill-2); }
 .urteil-chip .vi { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--vc); color: #fff; font-size: 11.5px; font-weight: 700; }
 .urteil-chip.v-warn .vi { color: #3a2a00; }
 .urteil-chip b { font-weight: 500; color: var(--ink-2); font-variant-numeric: tabular-nums; }
-.urteil-chip.an { background: color-mix(in srgb, var(--vc) 16%, var(--surface)); box-shadow: inset 0 0 0 1.5px var(--vc); }
-.urteil-chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.urteil-chip:disabled { opacity: .42; cursor: default; background: var(--fill); }
+.urteil-chip.an { background: var(--accent); color: #fff; }
+/* Auch beim Darüberfahren bleibt es bei dem einen Blau */
+.urteil-chip.an:hover { background: var(--accent); }
+.urteil-chip.an b { color: inherit; opacity: .8; }
+.urteil-chip.an .vi { box-shadow: 0 0 0 1.5px #fff; }
+.filter-wahl { display: inline-flex; align-items: center; max-width: 100%; height: 30px; border-radius: 999px; background: var(--fill); color: var(--ink); font-size: 13.5px; transition: background .12s; }
+.filter-wahl:hover { background: var(--fill-2); }
+.filter-knopf { display: inline-flex; align-items: center; gap: 6px; min-width: 0; height: 100%; padding: 0 12px; border: 0; border-radius: inherit; background: none; color: inherit; font: inherit; cursor: pointer; }
+.filter-knopf .ikon { color: var(--ink-2); }
+.filter-text, .sf-chip-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.filter-wahl.an { background: var(--accent); color: #fff; }
+.filter-wahl.an:hover { background: var(--accent); }
+.filter-wahl.an .filter-knopf { padding-right: 4px; }
+.filter-wahl.an .filter-knopf .ikon { color: inherit; }
+.filter-wahl.an .filter-knopf:hover .filter-text, .filter-wahl.an .sf-chip-text:hover { text-decoration: underline; text-underline-offset: 2px; }
+.filter-x { display: inline-grid; place-items: center; flex: none; width: 20px; height: 20px; margin: 0 5px 0 2px; padding: 0 0 1px; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .22); color: inherit; font-size: 14px; line-height: 1; cursor: pointer; transition: background .12s; }
+.filter-x:hover { background: rgba(255, 255, 255, .42); }
+.sf-name { opacity: .8; }
+.filter-reset { height: 30px; padding: 0 10px; border: 0; border-radius: 999px; background: none; color: var(--ink-2); font-size: 13.5px; cursor: pointer; }
+.filter-reset:hover { background: var(--fill); color: var(--ink); }
+:is(.urteil-chip, .filter-knopf, .filter-x, .filter-reset):focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.pop-wahl .pop-haken { display: inline-grid; place-items: center; flex: none; width: 18px; height: 18px; color: var(--accent); }
+.pop-wahl .pop-haken .ikon { color: inherit; }
 /* Blättern in der Einzelansicht */
 .dh-kopfzeile { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin: -6px 0 6px; }
 .dh-werkzeuge { display: flex; align-items: center; gap: 6px; }
@@ -1087,7 +1113,7 @@ table.t { width: 100%; border-collapse: collapse; font-size: 14px; }
   body.ansicht-fest .auswahl-leiste { position: static; margin-top: 8px; }
 }
 .table-wrap.fest .t thead th { position: sticky; top: 0; z-index: 2; border-bottom: 0; box-shadow: inset 0 -1px 0 var(--line-2); }
-.table-wrap.fest .cmp-table thead th:nth-child(3) { z-index: 3; box-shadow: inset 0 -1px 0 var(--line-2), 1px 0 0 var(--line); }
+.table-wrap.fest .cmp-table thead th.sp-objekt { z-index: 3; box-shadow: inset 0 -1px 0 var(--line-2), 1px 0 0 var(--line); }
 /* Überschriften der Vergleichstabelle: Beschriftung sortiert, Trichter öffnet das Spaltenmenü (src/oberflaeche/spaltenfilter.js) */
 .cmp-table th.sortable { cursor: default; }
 .cmp-table .th-kopf { display: flex; align-items: flex-end; gap: 3px; }
@@ -1099,7 +1125,7 @@ table.t { width: 100%; border-collapse: collapse; font-size: 14px; }
 th:hover > .th-kopf .th-filter:not(.aktiv) { color: var(--ink-2); }
 .th-filter.aktiv { background: var(--accent); color: #fff; }
 .th-filter.aktiv svg path { fill: currentColor; }
-.cmp-table th.gefiltert .th-sort { color: var(--accent-ink); }
+.cmp-table th.gefiltert .th-sort { color: var(--ink); font-weight: 600; }
 .th-sort:focus-visible, .th-filter:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .spaltenmenue:not([hidden]) { position: fixed; z-index: 250; width: min(320px, calc(100vw - 16px)); max-height: calc(100vh - 16px); overflow: auto; display: flex; flex-direction: column; gap: 14px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--leiste); -webkit-backdrop-filter: saturate(180%) blur(24px); backdrop-filter: saturate(180%) blur(24px); box-shadow: 0 14px 44px rgba(0, 0, 0, .18), 0 2px 6px rgba(0, 0, 0, .06); font-size: 13.5px; }
 .spaltenmenue input[type="radio"], .spaltenmenue input[type="checkbox"] { margin: 0; flex: none; }
@@ -1123,12 +1149,7 @@ th:hover > .th-kopf .th-filter:not(.aktiv) { color: var(--ink-2); }
 .sm-links { display: flex; gap: 14px; margin-top: 8px; }
 .sm-fuss { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 10px; border-top: 1px solid var(--line); }
 .sm-anzahl { font-size: 12.5px; color: var(--ink-2); }
-.sf-leiste { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 0 0 12px; font-size: 12.5px; }
-.sf-leiste .lbl { margin-right: 2px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); }
-.sf-chip { display: inline-flex; align-items: stretch; max-width: 100%; min-height: 28px; border-radius: 999px; border: 0; background: var(--accent-wash); color: var(--accent-ink); font-size: 12.5px; overflow: hidden; }
-.sf-chip-text { padding: 4px 4px 4px 12px; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
-.sf-chip-x { width: 28px; flex: none; border: 0; background: none; color: inherit; font-size: 15px; cursor: pointer; }
-.sf-chip-text:hover, .sf-chip-x:hover { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.sf-leiste { display: contents; }
 .t td.cell-obj { min-width: 200px; }
 /* Kompakte Zeilen der Vergleichstabelle: Titel höchstens zwei Zeilen, Unterzeile eine Zeile, voller Text im Tooltip */
 .cmp-table td { padding-top: 13px; padding-bottom: 13px; vertical-align: middle; }
@@ -1139,7 +1160,7 @@ th:hover > .th-kopf .th-filter:not(.aktiv) { color: var(--ink-2); }
 .cmp-table td.num { position: relative; padding-right: 22px; }
 .cmp-table td.num .st.compact { position: absolute; right: 2px; top: 50%; transform: translateY(-50%); }
 .cmp-table th.num { padding-right: 2px; }
-.cmp-table :is(td, th):nth-child(2) { padding-right: 4px; }
+.cmp-table :is(td, th).sp-num { padding-right: 4px; }
 .cmp-table .obj-title { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .cmp-table .obj-sub { display: flex; align-items: center; gap: 4px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .cmp-table .obj-sub .tag { flex: none; }
@@ -1148,15 +1169,27 @@ th:hover > .th-kopf .th-filter:not(.aktiv) { color: var(--ink-2); }
 .cmp-table .obj-title { font-size: 15px; letter-spacing: -.01em; }
 .t .obj-sub { font-size: 12.5px; color: var(--ink-2); }
 .t .scen { display: block; font-size: 11.5px; }
-.cmp-table th:first-child, .cmp-table td:first-child { width: 34px; padding-right: 0; }
-.cmp-table th:nth-child(2) { min-width: 68px; }
-.cmp-table th:nth-child(2) .th-kopf { flex-wrap: nowrap; }
-.cmp-table th:nth-child(2) .th-sort { white-space: nowrap; }
-/* Ruhige Tabelle: Auswahlkästchen und Filter-Trichter erscheinen erst beim Darüberfahren, per Tastatur oder wenn sie aktiv sind */
+.cmp-table th.sp-num { min-width: 64px; }
+.cmp-table th.sp-num .th-kopf { flex-wrap: nowrap; }
+.cmp-table th.sp-num .th-sort { white-space: nowrap; }
+/* Auswahlkästchen sitzt in der Nummernspalte: Es erscheint beim Darüberfahren an der Stelle der Nummer; sobald
+   etwas ausgewählt ist (oder auf Geräten ohne Maus), steht es dauerhaft vor der Nummer */
+.cmp-table .zeilen-wahl { width: 16px; height: 16px; margin: 0 8px 0 0; vertical-align: -3px; accent-color: var(--accent); cursor: pointer; }
+.cmp-table thead th.sp-num.sp-num { white-space: nowrap; }
+.cmp-table th.sp-num .zeilen-wahl { vertical-align: bottom; margin: 0 8px 3px 0; }
+.cmp-table th.sp-num .th-kopf { display: inline-flex; vertical-align: bottom; }
 @media (hover: hover) {
-  .cmp-table :is(td, th):first-child input { opacity: 0; transition: opacity .12s; }
-  .cmp-table tr:hover > :is(td, th):first-child input, .cmp-table :is(td, th):first-child input:is(:checked, :focus-visible), .cmp-table.mit-auswahl :is(td, th):first-child input { opacity: 1; }
+  .cmp-table:not(.mit-auswahl) th.sp-num .zeilen-wahl { display: none; }
+  .cmp-table:not(.mit-auswahl) td.sp-num .zeilen-wahl { position: absolute; right: 4px; top: 50%; margin: -8px 0 0; opacity: 0; }
+  .cmp-table:not(.mit-auswahl) tr:hover td.sp-num .zeilen-wahl, .cmp-table:not(.mit-auswahl) td.sp-num .zeilen-wahl:focus-visible { opacity: 1; }
+  .cmp-table:not(.mit-auswahl) tr:hover td.sp-num span.num, .cmp-table:not(.mit-auswahl) td.sp-num:focus-within span.num { visibility: hidden; }
 }
+.cmp-table tr.aktiv td, .cmp-table tr.aktiv:hover td, .cmp-table tr.aktiv td.cell-obj, .cmp-table tr.aktiv:hover td.cell-obj { background: color-mix(in srgb, var(--accent) 10%, var(--surface)); }
+.cmp-table tr.aktiv td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
+.leer-zeile td { padding: 0; border: 0; }
+.leer { position: sticky; left: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; width: min(100%, 100cqw); max-width: 100%; padding: 56px 20px; text-align: center; color: var(--ink-2); font-size: 13.5px; }
+.leer b { font-size: 17px; font-weight: 600; color: var(--ink); }
+.leer .btn { margin-top: 8px; }
 .cmp-table thead th, .cmp-table thead th.num { white-space: normal; vertical-align: bottom; line-height: 1.3; }
 .cmp-table td.cell-urteil { min-width: 0; white-space: nowrap; }
 /* Info-Symbol (ⓘ) mit Hinweis beim Darüberfahren, Fokussieren oder Antippen (src/oberflaeche/info.js) */
@@ -1196,6 +1229,10 @@ th:hover > .th-kopf .th-filter:not(.aktiv) { color: var(--ink-2); }
 .mein-stand :is(select, input, textarea):focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 45%, transparent); outline-offset: 0; border-color: var(--accent); }
 @media (max-width: 1100px) { .mein-stand { grid-template-columns: repeat(2, minmax(0, 1fr)); } .mein-stand .ms-kopf, .mein-stand .ms-notiz { grid-column: 1 / -1; } }
 /* Feste Auswahlleiste für die Gegenüberstellung */
+.view-compare:has(> .auswahl-leiste) { display: flex; flex-direction: column; min-height: calc(100vh - 52px - 96px); }
+.view-compare:has(> .auswahl-leiste) > * { flex: none; }
+.view-compare > .auswahl-leiste { margin-top: auto; }
+body:has(.auswahl-leiste) .toast { bottom: 84px; }
 .auswahl-leiste { position: sticky; bottom: 12px; z-index: 40; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; width: fit-content; max-width: 100%; margin: 16px auto 0; padding: 8px 10px 8px 16px; border-radius: 16px; border: 1px solid var(--line-2); background: var(--surface); box-shadow: 0 6px 24px rgba(0, 0, 0, .2); font-size: 13.5px; }
 .auswahl-leiste .btn:disabled { opacity: .5; cursor: default; }
 /* Spaltenauswahl */
@@ -1262,9 +1299,9 @@ kbd { display: inline-block; min-width: 22px; padding: 1px 6px; border-radius: 6
 .cmp-table td.num .val { white-space: nowrap; }
 .cmp-table .scen { white-space: normal; }
 /* Objektspalte bleibt beim seitlichen Scrollen auf schmaleren Bildschirmen stehen */
-.cmp-table td.cell-obj, .cmp-table thead th:nth-child(3) { position: sticky; left: 0; z-index: 1; box-shadow: 1px 0 0 var(--line); }
+.cmp-table td.cell-obj, .cmp-table thead th.sp-objekt { position: sticky; left: 0; z-index: 1; box-shadow: 1px 0 0 var(--line); }
 .cmp-table td.cell-obj { background: var(--surface); }
-.cmp-table thead th:nth-child(3) { background: var(--surface); }
+.cmp-table thead th.sp-objekt { background: var(--surface); }
 .cmp-table tr.clickable:hover td.cell-obj { background: color-mix(in srgb, var(--ink) 4%, var(--surface)); }
 .cmp-table .verdict.sm { align-items: flex-start; }
 .cmp-table .verdict.sm .vi { margin-top: 1px; }
@@ -1342,12 +1379,6 @@ details.raw pre { margin: 12px 0 0; padding: 14px; max-height: 560px; overflow: 
 .cmp-tab:hover { background: var(--fill); }
 .cmp-tab.active { background: var(--daumen); font-weight: 600; box-shadow: 0 1px 3px rgba(0, 0, 0, .14), 0 0 0 .5px rgba(0, 0, 0, .04); }
 .cmp-tab .count { font-size: 12.5px; font-weight: 500; color: var(--ink-2); background: var(--surface-3); border-radius: 999px; padding: 0 7px; }
-.ort-filter { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
-.chip-btn { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 999px; border: 0; background: var(--fill); font-size: 13.5px; cursor: pointer; transition: background .12s; }
-.chip-btn:hover { background: var(--fill-2); }
-.chip-btn .n { font-size: 11.5px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
-.chip-btn.on { background: var(--ink); color: var(--surface); }
-.chip-btn.on .n { color: inherit; opacity: .7; }
 .price-grid { display: grid; grid-template-columns: minmax(0, 3fr) minmax(380px, 2fr); gap: 14px; align-items: start; }
 .card-pad { padding: 16px 18px 4px; }
 .t.vals td.num { white-space: normal; }
@@ -1458,7 +1489,7 @@ dialog::backdrop { background: rgba(0, 0, 0, .32); -webkit-backdrop-filter: blur
 .inp-einheit { position: absolute; right: 10px; font-size: 12.5px; color: var(--muted); pointer-events: none; white-space: nowrap; }
 .feld-hilfe { font-size: 12.5px; color: var(--ink-2); line-height: 1.4; }
 .feld-fehler { font-size: 12.5px; color: var(--crit-ink); font-weight: 600; line-height: 1.4; }
-.hat-fehler input, .hat-fehler select, input.fehlerhaft, [aria-invalid="true"] { border-color: var(--s-crit) !important; background: color-mix(in srgb, var(--s-crit) 6%, var(--surface)) !important; }
+.hat-fehler input, .hat-fehler select, input.fehlerhaft, [aria-invalid="true"] { border-color: var(--s-crit) !important; background-color: color-mix(in srgb, var(--s-crit) 6%, var(--surface)) !important; }
 .feld .check { font-weight: 500; color: var(--ink); align-items: flex-start; }
 .feld .check input { margin-top: 3px; }
 .feld-mit-aktion { display: flex; align-items: flex-end; gap: 6px; }
@@ -1635,14 +1666,13 @@ a.btn { color: inherit; text-decoration: none; }
 .ikon { flex: none; }
 .icon-knopf { display: inline-grid; place-items: center; width: 32px; height: 32px; flex: none; padding: 0; border: 0; border-radius: 8px; background: transparent; color: var(--ink-2); cursor: pointer; transition: background .12s; }
 .icon-knopf:hover, .icon-knopf[aria-haspopup][aria-expanded="true"] { background: var(--fill); color: var(--ink); }
-#themeIkon { display: inline-grid; }
 .daten-knopf { margin-right: 4px; }
 .werkzeuge { display: flex; align-items: center; gap: 6px; min-width: 0; }
 .such-feld { display: flex; align-items: center; gap: 6px; width: 250px; max-width: 100%; height: 34px; padding: 0 10px; border-radius: 10px; background: var(--fill); color: var(--muted); cursor: text; transition: box-shadow .12s, background .12s; }
 .such-feld:focus-within { background: var(--surface); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 45%, transparent); }
 .such-feld input { flex: 1; min-width: 0; height: 100%; padding: 0; border: 0; background: transparent; color: var(--ink); font-size: 14px; outline: none; }
 .such-feld input::placeholder { color: var(--muted); }
-.filter-zeile { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; margin: 0 0 14px; }
+.filter-zeile { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-height: 30px; margin: 0 0 14px; }
 .pop-menue { display: none; position: fixed; inset: auto; left: 0; top: 0; margin: 0; box-sizing: border-box; min-width: 250px; max-width: min(340px, calc(100vw - 16px)); max-height: calc(100vh - 16px); overflow: auto; padding: 6px; border: 1px solid var(--line); border-radius: 14px; background: var(--leiste); -webkit-backdrop-filter: saturate(180%) blur(24px); backdrop-filter: saturate(180%) blur(24px); color: var(--ink); box-shadow: 0 14px 44px rgba(0, 0, 0, .18), 0 2px 6px rgba(0, 0, 0, .06); font-size: 14px; }
 .pop-menue:popover-open { display: flex; flex-direction: column; }
 .pop-punkt { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 34px; padding: 6px 10px; border: 0; border-radius: 8px; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; }
@@ -1667,6 +1697,68 @@ a.pop-punkt:hover, a.pop-punkt:focus-visible { background: var(--fill); }
 .schalter:checked { background: #34c759; }
 .schalter:checked::after { transform: translateX(14px); }
 
+/* ---------- Objekt neben der Liste (src/oberflaeche/einstellungen.js) ---------- */
+body.geteilt { overflow: hidden; }
+body.geteilt .layout { height: calc(100vh - 52px - env(safe-area-inset-top, 0px)); min-height: 0; }
+body.geteilt .main { display: flex; flex-direction: row; min-height: 0; overflow: hidden; padding: 0; }
+.geteilt-rahmen { display: flex; flex: 1; min-width: 0; min-height: 0; }
+.geteilt-rahmen > .view { max-width: none; margin: 0; }
+.pane-liste { flex: 1 1 0; min-width: 0; overflow: auto; overscroll-behavior: contain; padding: 24px 20px 24px clamp(16px, 2vw, 28px); container: liste / inline-size; }
+@container liste (max-width: 900px) { .price-grid { grid-template-columns: minmax(0, 1fr); } }
+.pane-objekt { flex: 0 0 var(--bereich, 52%); min-width: 440px; max-width: calc(100% - 340px); overflow: auto; overscroll-behavior: contain; padding: 0 clamp(16px, 2vw, 28px) 72px; background: var(--page); container: objekt / inline-size; }
+.teiler { position: relative; z-index: 6; flex: none; width: 11px; margin: 0 -5px; cursor: col-resize; touch-action: none; outline: none; }
+.teiler::after { content: ""; position: absolute; inset: 0 5px; background: var(--line); transition: inset .12s, background .12s; }
+.teiler:hover::after, .teiler:focus-visible::after, .teiler-zieht .teiler::after { inset: 0 4px; background: var(--accent); }
+.teiler-zieht { cursor: col-resize; user-select: none; }
+.teiler-zieht .pane-liste, .teiler-zieht .pane-objekt { pointer-events: none; }
+@media (min-width: 761px) and (min-height: 600px) {
+  body.geteilt.ansicht-fest .pane-liste { overflow: hidden; padding-bottom: 12px; }
+}
+/* Kopfzeile des Bereichs bleibt stehen: Schließen, ganze Seite, Blättern, Menü */
+.pane-objekt .dh-kopfzeile { position: sticky; top: 0; z-index: 21; margin: 0 calc(-1 * clamp(16px, 2vw, 28px)) 10px; padding: 8px clamp(10px, 1.4vw, 20px); background: color-mix(in srgb, var(--page) 86%, transparent); -webkit-backdrop-filter: saturate(180%) blur(16px); backdrop-filter: saturate(180%) blur(16px); border-bottom: 1px solid var(--line); }
+.pane-objekt .subnav { top: 49px; margin-inline: calc(-1 * clamp(16px, 2vw, 28px)); padding-inline: clamp(16px, 2vw, 28px); }
+.pane-objekt .dh-main h1 { font-size: 23px; }
+.pane-objekt .sec { scroll-margin-top: 108px; }
+@container objekt (max-width: 1100px) {
+  .mein-stand { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mein-stand .ms-kopf, .mein-stand .ms-notiz { grid-column: 1 / -1; }
+  .p-editor-raster { grid-template-columns: minmax(0, 1fr); }
+  .p-editor-seite { position: static; }
+  .price-grid { grid-template-columns: minmax(0, 1fr); }
+}
+@container objekt (max-width: 900px) {
+  .tiles.stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@container objekt (max-width: 640px) {
+  .tiles, .tiles.stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .tiles.stats .tile:first-child { grid-column: 1 / -1; min-height: 0; }
+}
+@media print {
+  body.geteilt .layout, body.geteilt .main, .geteilt-rahmen { display: block; height: auto; overflow: visible; }
+  .pane-liste { display: none; }
+  .pane-objekt { max-width: none; min-width: 0; overflow: visible; padding: 0; }
+}
+
+/* ---------- Einstellungen ---------- */
+dialog.schmal { width: min(520px, calc(100vw - 32px)); }
+.segment { display: inline-flex; flex: none; max-width: 100%; padding: 2px; gap: 2px; border-radius: 9px; background: var(--fill); }
+.segment button { border: 0; background: transparent; padding: 5px 12px; border-radius: 7px; font-size: 13px; font-weight: 500; color: var(--ink); cursor: pointer; white-space: nowrap; }
+.segment button.aktiv { background: var(--daumen); font-weight: 600; box-shadow: 0 1px 3px rgba(0, 0, 0, .14), 0 0 0 .5px rgba(0, 0, 0, .04); }
+.segment button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.einst h4 { margin: 18px 4px 6px; font-size: 12px; font-weight: 600; letter-spacing: 0; color: var(--muted); }
+.einst h4:first-child { margin-top: 4px; }
+.einst-gruppe { border-radius: 12px; background: var(--surface-2); overflow: hidden; }
+.einst-zeile { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; width: 100%; min-height: 46px; padding: 8px 14px; border: 0; background: none; color: inherit; font: inherit; text-align: left; }
+.einst-zeile + .einst-zeile { box-shadow: inset 0 1px 0 var(--line-2); }
+.einst-text { display: flex; flex-direction: column; gap: 1px; flex: 1 1 180px; min-width: 0; font-size: 14px; }
+.einst-text small { font-size: 12px; line-height: 1.35; color: var(--ink-2); }
+label.einst-text { cursor: pointer; }
+.einst-verweis { cursor: pointer; flex-wrap: nowrap; }
+.einst-verweis:hover { background: var(--fill); }
+.einst-verweis .ikon { color: var(--muted); }
+.einst-wert { font-size: 13px; color: var(--ink-2); }
+.einst-fuss { margin: 14px 4px 0; font-size: 12px; color: var(--ink-2); }
+
 @media (max-width: 900px) {
   .layout, .menue-zu .layout { grid-template-columns: 1fr; }
   /* Schmal: Menü standardmäßig zu, der Knopf oben öffnet es über dem Inhalt */
@@ -1680,8 +1772,8 @@ a.pop-punkt:hover, a.pop-punkt:focus-visible { background: var(--fill); }
 @media (max-width: 600px) {
   .tiles, .tiles.stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
   .tiles.stats .tile:first-child { grid-column: 1 / -1; min-height: 0; }
-  .cmp-table td.cell-obj, .cmp-table thead th:nth-child(3) { position: static; box-shadow: none; }
-  .table-wrap.fest .cmp-table thead th:nth-child(3) { position: sticky; left: auto; box-shadow: inset 0 -1px 0 var(--line); }
+  .cmp-table td.cell-obj, .cmp-table thead th.sp-objekt { position: static; box-shadow: none; }
+  .table-wrap.fest .cmp-table thead th.sp-objekt { position: sticky; left: auto; box-shadow: inset 0 -1px 0 var(--line); }
   .cmp-tabs { width: 100%; }
   .modus-schalter { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
   .modus-schalter button { padding: 7px 6px; font-size: 13.5px; }
@@ -1705,13 +1797,13 @@ a.pop-punkt:hover, a.pop-punkt:focus-visible { background: var(--fill); }
 <header class="topbar">
   <button class="icon-knopf" data-action="menue" id="menueBtn" aria-controls="sidebar" aria-expanded="true" title="Seitenleiste ein- oder ausblenden" aria-label="Seitenleiste ein- oder ausblenden"><svg class="ikon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="15" rx="3"/><path d="M9 4.5v15"/></svg></button>
   <div class="brand">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9.5 21v-5.5h5V21"/></svg>
+    <svg class="marke" viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="markeVerlauf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3d9cff"/><stop offset="1" stop-color="#005fd8"/></linearGradient></defs><rect width="24" height="24" rx="6.5" fill="url(#markeVerlauf)"/><rect x="5.5" y="12.4" width="3.4" height="6.1" rx="1.2" fill="#fff" opacity=".62"/><rect x="10.3" y="9" width="3.4" height="9.5" rx="1.2" fill="#fff" opacity=".82"/><rect x="15.1" y="5.5" width="3.4" height="13" rx="1.2" fill="#fff"/></svg>
     <span>ImmoInvest</span>
     <button class="versions-knopf" data-action="hilfe" data-bereich="versionen" id="versionsKnopf" title="Versionsverlauf: was neu ist">Version</button>
   </div>
   <button class="btn sm daten-knopf" id="datenKnopf" popovertarget="menueDaten" aria-haspopup="menu" aria-expanded="false" title="Dateien laden, Ablageordner, Sicherung"><svg class="ikon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14.5V18a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3.5"/><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5"/></svg><span>Daten</span></button>
   <button class="icon-knopf hilfe-knopf" data-action="hilfe" data-bereich="anleitung" aria-label="Hilfe" title="Hilfe: Anleitung, Master-Prompt, Tastaturkürzel, Versionen (Taste ?)"><svg class="ikon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.6 2.6 0 1 1 3.7 2.4c-.7.3-1.200 1-1.200 1.800v.600"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></button>
-  <button class="icon-knopf needs-theme" data-action="theme" id="themeBtn" aria-label="Farbschema" title="Farbschema wechseln"><span id="themeIkon"></span></button>
+  <button class="icon-knopf" data-action="einstellungen" id="einstKnopf" aria-haspopup="dialog" aria-label="Einstellungen" title="Einstellungen: Farbschema, Objektansicht, Speichern im Browser"><svg class="ikon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.53 2.72L13.47 2.72L13.81 5.24A7.0 7.0 0 0 1 15.50 5.94L17.53 4.40L19.60 6.47L18.06 8.50A7.0 7.0 0 0 1 18.76 10.19L21.28 10.53L21.28 13.47L18.76 13.81A7.0 7.0 0 0 1 18.06 15.50L19.60 17.53L17.53 19.60L15.50 18.06A7.0 7.0 0 0 1 13.81 18.76L13.47 21.28L10.53 21.28L10.19 18.76A7.0 7.0 0 0 1 8.50 18.06L6.47 19.60L4.40 17.53L5.94 15.50A7.0 7.0 0 0 1 5.24 13.81L2.72 13.47L2.72 10.53L5.24 10.19A7.0 7.0 0 0 1 5.94 8.50L4.40 6.47L6.47 4.40L8.50 5.94A7.0 7.0 0 0 1 10.19 5.24Z"/><circle cx="12" cy="12" r="2.9"/></svg></button>
 </header>
 <div class="layout">
   <aside class="sidebar" id="sidebar" aria-label="Menü"></aside>
@@ -1725,6 +1817,7 @@ a.pop-punkt:hover, a.pop-punkt:focus-visible { background: var(--fill); }
 <div class="spaltenmenue" id="spaltenmenue" role="dialog" hidden></div>
 <div class="pop-menue" id="menueDaten" popover role="menu" aria-label="Daten"></div>
 <div class="pop-menue" id="menueTabelle" popover role="menu" aria-label="Weitere Aktionen"></div>
+<div class="pop-menue" id="menueOrt" popover role="menu" aria-label="Nach Ort filtern"></div>
 <div class="pop-menue" id="menueObjekt" popover role="menu" aria-label="Weitere Aktionen zum Objekt"></div>
 <div class="pop-menue" id="menueProfil" popover role="menu" aria-label="Weitere Aktionen für Profile"></div>
 <div class="pop-menue" id="menueProfilKarte" popover role="menu" aria-label="Weitere Aktionen für dieses Profil"></div>
@@ -3847,6 +3940,12 @@ a.pop-punkt:hover, a.pop-punkt:focus-visible { background: var(--fill); }
   'use strict';
 
   const VERLAUF = [
+    { version: '3.1.0', datum: '2026-11-14', titel: 'Bereiche nebeneinander, Einstellungen, ruhige Filterzeile', punkte: [
+      'Ein Klick auf ein Objekt öffnet es rechts neben der Tabelle; die Liste bleibt sichtbar, die Trennlinie lässt sich ziehen',
+      'Zahnrad oben rechts: Einstellungen für Farbschema, Objektansicht und das Merken im Browser',
+      'Filterzeile in einem Stil: aktive Filter in einem einzigen Blau, Orte als Auswahlmenü, nichts verrutscht mehr beim Filtern',
+      'Neues Markenzeichen; Auswahlkästchen sitzt an der Nummer, klare Meldung bei „Keine Treffer“',
+    ] },
     { version: '3.0.1', datum: '2026-11-14', titel: 'Filter sichtbar, Tabelle ruhiger', punkte: [
       'Filter-Trichter stehen jetzt dauerhaft sichtbar (dezent grau) an jeder Spaltenüberschrift – bisher waren sie unsichtbar',
       'Eine einzige Linie unter der Tabellenüberschrift, die Spalte „#“ bricht nicht mehr um',
@@ -4373,7 +4472,7 @@ function pNachProfilAenderung(p, pfad, wert) {
 
 const ANP_GRENZEN = { kaufpreis_eur: [0, 1e8], verpflichtende_zusatzkaeufe_eur: [0, 1e7], grunderwerbsteuer_prozent: [0, 10], kaeuferprovision_prozent: [0, 20], notar_grundbuch_prozent: [0, 10], anfaengliche_massnahmen_eur: [0, 1e7], eigenkapital_einsatz_eur: [0, 1e8], kaltmiete_monat_eur: [0, 1e6], bk_vorauszahlung_monat_eur: [0, 1e5], umlagefaehig_monat_eur: [0, 1e5], nicht_umlagefaehig_monat_eur: [0, 1e5], ruecklage_monat_eur: [0, 1e5], vorsorge_monat_eur: [0, 1e5], mietausfall_prozent: [0, 100], mietsteigerung_prozent: [-20, 20], kostensteigerung_prozent: [-20, 20], gebaeudeanteil_prozent: [0, 100], fertigstellung_jahr: [1500, 2100] };
 
-function pDoc() { return state.view === 'detail' ? getDoc(state.current) : null; }
+function pDoc() { return objektOffen() ? getDoc(state.current) : null; }
 function pOSKey(doc) { const p = aktivesProfil(); return p && doc && doc.key ? `${p.id}::${doc.key}` : null; }
 function pOS(doc) { return state.objektszenarien[pOSKey(doc)] || { objekt_schluessel: doc.key }; }
 function pOSAendern(doc, fn) {
@@ -4523,7 +4622,7 @@ function pAktion(action, el) {
     case 'p-export': return pExportFragen(el.dataset.pid);
     case 'p-export-ok': return pExport(el.dataset.pid);
     case 'p-tab': state.profilTab = el.dataset.tab; return renderMitFokus();
-    case 'p-oeffnen': state.view = 'detail'; state.current = el.dataset.uid; state.detailModus = 'persoenlich'; render(); return window.scrollTo(0, 0);
+    case 'p-oeffnen': return objektOeffnen(el.dataset.uid, { modus: 'persoenlich' });
     case 'p-beispiele': return pBeispieleLaden();
     case 'p-imp-ersetzen': return pImportErsetzen(false);
     case 'p-imp-kopie': return pImportErsetzen(true);
@@ -5436,7 +5535,7 @@ async function ordnerEinlesen({ erst = false, manuell = false } = {}) {
 
     // Ersetzte und gelöschte Dateien aus der Ansicht nehmen; eine offene Einzelansicht folgt der neuen Fassung
     const wegPfade = new Set(entfernt.concat(geaendert.map(x => x.pfad)));
-    const offenerPfad = state.view === 'detail' ? (getDoc(state.current) || {}).ordnerPfad : null;
+    const offenerPfad = objektOffen() ? (getDoc(state.current) || {}).ordnerPfad : null;
     const weg = new Set(state.docs.filter(d => d.ordnerPfad && wegPfade.has(d.ordnerPfad)).map(d => d.uid));
     const items = neu.concat(geaendert);
     const leerVorher = !immoDocs().length;
@@ -6104,7 +6203,7 @@ function spaltenBeschreibung(c, b) {
     const [u, o] = c.filter === 'zahl' ? [b.min, b.max] : [b.von, b.bis];
     const bereich = u !== null && o !== null ? `${f(u)} bis ${f(o)}` : u !== null ? `ab ${f(u)}` : o !== null ? `bis ${f(o)}` : '';
     if (!bereich) return 'nur mit Wert';
-    return `${bereich}${b.werte === 'mit' ? ' · ohne Wert ausgeblendet' : ' · ohne Wert sichtbar'}`;
+    return `${bereich}${b.werte === 'mit' ? ' · nur mit Wert' : ''}`;
   }
   if (c.filter === 'auswahl') {
     const namen = new Map(c.optionen()), l = b.werte.map(k => namen.get(k) ?? k);
@@ -6116,12 +6215,12 @@ function spaltenBeschreibung(c, b) {
   return `enthält „${b.text}“`;
 }
 
-function spaltenfilterLeiste(rows) {
-  const aktiv = spalten().filter(c => state.filter.spalten[c.id]);
+function spaltenfilterLeiste() {
+  // Ein einzelnes Gesamturteil zeigt schon der Urteils-Chip an – keine zweite Marke dafür
+  const ub = state.filter.spalten.urteil;
+  const aktiv = spalten().filter(c => state.filter.spalten[c.id] && !(c.id === 'urteil' && ub.werte.length === 1));
   if (!aktiv.length) return '';
-  return `<div class="sf-leiste" role="group" aria-label="Aktive Spaltenfilter"><span class="lbl">Spaltenfilter · ${rows.length} von ${basisDocs().length}</span>
-    ${aktiv.map(c => `<span class="sf-chip"><button class="sf-chip-text" data-action="spaltenmenue" data-col="${c.id}" aria-haspopup="dialog" title="Filter ändern">${esc(colTitel(c))}: ${esc(spaltenBeschreibung(c, state.filter.spalten[c.id]))}</button><button class="sf-chip-x" data-action="spaltenfilter-weg" data-col="${c.id}" aria-label="Filter „${esc(colTitel(c))}“ entfernen">×</button></span>`).join('')}
-    <button class="linkbtn" data-action="spaltenfilter-alle-weg">Alle Spaltenfilter löschen</button></div>`;
+  return `<div class="sf-leiste" role="group" aria-label="Aktive Spaltenfilter">${aktiv.map(c => `<span class="sf-chip filter-wahl an"><button class="sf-chip-text filter-knopf" data-action="spaltenmenue" data-col="${c.id}" aria-haspopup="dialog" title="Filter ändern"><span><span class="sf-name">${esc(colTitel(c))}:</span> ${esc(spaltenBeschreibung(c, state.filter.spalten[c.id]))}</span></button><button class="sf-chip-x filter-x" data-action="spaltenfilter-weg" data-col="${c.id}" aria-label="Filter „${esc(colTitel(c))}“ entfernen" title="Filter entfernen">×</button></span>`).join('')}</div>`;
 }
 
 /* ---------- Menü ---------- */
@@ -6221,7 +6320,6 @@ function spaltenBedingungSetzen(c, roh) {
   if (b) state.filter.spalten[c.id] = b;
   else delete state.filter.spalten[c.id];
   renderResults();
-  if (c.id === 'urteil') { const leiste = $('.urteil-leiste'); if (leiste) leiste.innerHTML = urteilChips(); }
   const fuss = document.getElementById('sm-fuss');
   if (fuss && spaltenMenue.col === c.id) fuss.innerHTML = spaltenmenueFuss(c);
 }
@@ -6492,8 +6590,8 @@ async function hilfePrompt() {
 function hilfeKuerzel() {
   return `<dl class="tasten">
     <dt><kbd>/</kbd></dt><dd>In die Suche des Vergleichs springen</dd>
-    <dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>In der Einzelansicht zum vorherigen bzw. nächsten Objekt der Tabelle</dd>
-    <dt><kbd>Esc</kbd></dt><dd>Dialog, Spaltenmenü oder Punkt-Setzen auf der Karte schließen</dd>
+    <dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>Bei geöffnetem Objekt zum vorherigen bzw. nächsten Objekt der Tabelle</dd>
+    <dt><kbd>Esc</kbd></dt><dd>Dialog, Menü, Spaltenmenü, den Objektbereich neben der Liste oder Punkt-Setzen auf der Karte schließen</dd>
     <dt><kbd>?</kbd></dt><dd>Diese Hilfe</dd></dl>`;
 }
 
@@ -6666,6 +6764,7 @@ document.addEventListener('close', e => { if (e.target.contains?.(document.getEl
  * Selten gebrauchte Aktionen stehen nicht als Knöpfe auf der Seite, sondern in Menüs:
  *   #menueDaten    Knopf „Daten“ oben rechts: Dateien laden, Ablageordner, Sicherung, Browser-Speicher
  *   #menueTabelle  Knopf „⋯“ über dem Vergleich: Spalten, ältere Revisionen, CSV-Export
+ *   #menueOrt      Knopf „Ort“ in der Filterzeile: Orte ankreuzen (bleibt beim Ankreuzen offen)
  *   #menueObjekt   Knopf „⋯“ in der Objektansicht: Inserat, Exportprüfung, Drucken, Entfernen
  *   #menueProfil, #menueProfilKarte  Knöpfe „⋯“ auf der Profilseite: Importieren, Merken im Browser, Duplizieren, Löschen
  *
@@ -6709,6 +6808,12 @@ const IKON_PFAD = {
   hell: '<circle cx="12" cy="12" r="4"/><path d="M12 2.500v2.500M12 19v2.500M2.500 12H5M19 12h2.500M5.300 5.300 7 7M17 17l1.700 1.700M5.300 18.700 7 17M17 7l1.700-1.700"/>',
   dunkel: '<path d="M20 14.500A8.500 8.500 0 1 1 9.500 4a7 7 0 0 0 10.500 10.500z"/>',
   auto: '<circle cx="12" cy="12" r="9"/><path d="M12 3v18a9 9 0 0 0 0-18z" fill="currentColor"/>',
+  ort: '<path d="M12 21s-6.500-5.800-6.500-11a6.500 6.500 0 0 1 13 0c0 5.200-6.500 11-6.500 11z"/><circle cx="12" cy="10" r="2.300"/>',
+  auswahl: '<path d="m7 10 5 5 5-5"/>',
+  haken: '<path d="m5.500 12.500 4.200 4.200L18.500 7.500"/>',
+  schliessen: '<path d="M6.500 6.500l11 11M17.500 6.500l-11 11"/>',
+  vollbild: '<path d="M14 4.500h5.500V10M19.500 4.500l-6 6M10 19.500H4.500V14M4.500 19.500l6-6"/>',
+  neben: '<rect x="3" y="4.500" width="18" height="15" rx="3"/><path d="M13.500 4.500v15"/>',
 };
 const ikon = (name, groesse = 18) => `<svg class="ikon" viewBox="0 0 24 24" width="${groesse}" height="${groesse}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IKON_PFAD[name] || ''}</svg>`;
 
@@ -6769,7 +6874,7 @@ function objektMenue() {
 
 /* ---------- Öffnen, Ausrichten, Auffrischen ---------- */
 // profilMenue und profilKartenMenue stehen in src/oberflaeche/persoenlich.js; die Funktion bekommt den öffnenden Knopf
-const POP_MENUES = { menueDaten: () => datenMenue(), menueTabelle: () => tabellenMenue(), menueObjekt: () => objektMenue(), menueProfil: () => profilMenue(), menueProfilKarte: anker => profilKartenMenue(anker) };
+const POP_MENUES = { menueDaten: () => datenMenue(), menueTabelle: () => tabellenMenue(), menueOrt: () => ortMenue(), menueObjekt: () => objektMenue(), menueProfil: () => profilMenue(), menueProfilKarte: anker => profilKartenMenue(anker) };
 const popAnker = {};
 
 function popMenueFuellen(el) { el.innerHTML = POP_MENUES[el.id](popAnker[el.id]); }
@@ -6816,10 +6921,179 @@ document.addEventListener('toggle', e => {
 // Ein gewählter Menüpunkt schließt das Menü; Schalter und Info-Symbole lassen es offen
 document.addEventListener('click', e => {
   const m = e.target.closest?.('.pop-menue');
-  if (!m || !e.target.closest('.pop-punkt[data-action], a.pop-punkt')) return;
+  if (!m || !e.target.closest('.pop-punkt[data-action]:not(.pop-wahl), a.pop-punkt')) return;
   try { m.hidePopover(); } catch { /* schon zu */ }
 });
 addEventListener('resize', () => { for (const id of Object.keys(POP_MENUES)) { const el = document.getElementById(id); try { if (el?.matches(':popover-open')) popMenueAusrichten(el); } catch { /* ohne Popover */ } } });
+</script>
+<script>/* src/oberflaeche/einstellungen.js */
+/*
+ * ImmoInvest Viewer – Einstellungen (Zahnrad oben rechts) und Objektbereich neben der Liste
+ *
+ * Einstellungen: Farbschema, wie Objekte geöffnet werden, was sich der Browser merkt. Alles bleibt in diesem Browser.
+ *
+ * Objektbereich: Auf breiten Fenstern öffnet ein Klick auf ein Objekt es rechts neben der Liste (Tabelle, Karte …),
+ * statt die Seite zu wechseln. Die Liste bleibt bedienbar, die Trennlinie lässt sich ziehen, der Bereich lässt sich
+ * schließen oder auf die ganze Seite vergrößern. Zustand dafür:
+ *   state.einst  { objektNeben, breite }  gemerkte Einstellung und Breite des Bereichs (Anteil 0–1)
+ *   state.neben  true, solange ein Objekt neben der Liste offen ist (state.view bleibt dann 'compare')
+ *
+ * Klassisches Skript; nutzt state, render, lsGet … des Hauptskripts erst zur Laufzeit.
+ */
+'use strict';
+
+const LS_EINST = 'immoviewer.v1.einstellungen';
+const NEBEN_AB = 1180;        // ab dieser Fensterbreite (px) kann ein Objekt neben der Liste stehen
+const NEBEN_STANDARD = 0.52;  // Anteil des Objektbereichs an der Breite
+const NEBEN_MIN = { liste: 340, objekt: 440 };
+
+function einstZustand() { return { objektNeben: true, breite: NEBEN_STANDARD }; }
+function einstLaden() {
+  try {
+    const e = JSON.parse(lsGet(LS_EINST) || '{}');
+    if (typeof e.objektNeben === 'boolean') state.einst.objektNeben = e.objektNeben;
+    if (typeof e.breite === 'number' && e.breite > 0.2 && e.breite < 0.8) state.einst.breite = e.breite;
+  } catch { /* defekter Speicherinhalt wird ignoriert */ }
+}
+const einstSpeichern = () => lsSet(LS_EINST, JSON.stringify(state.einst));
+
+const nebenBreitGenug = () => matchMedia(`(min-width: ${NEBEN_AB}px)`).matches;
+/** Darf ein Objekt neben der Liste geöffnet werden? (Einstellung an, Fenster breit genug, mehr als ein Objekt) */
+const nebenMoeglich = () => state.einst.objektNeben && nebenBreitGenug() && immoDocs().length > 1;
+/** Steht gerade ein Objekt neben der Liste? */
+const objektNeben = () => state.view === 'compare' && state.neben && !!getDoc(state.current);
+/** Ist ein Objekt zu sehen – auf ganzer Seite oder neben der Liste? */
+const objektOffen = () => state.view === 'detail' || objektNeben();
+
+/** Objekt öffnen: aus dem Vergleich heraus neben der Liste (wenn möglich), sonst auf ganzer Seite. */
+function objektOeffnen(uid, { modus = null, ganz = false } = {}) {
+  const doc = getDoc(uid);
+  if (!doc) return;
+  const neben = !ganz && doc.isImmo && state.view === 'compare' && nebenMoeglich();
+  state.current = uid;
+  state.menue.mobilAuf = false;
+  if (modus) state.detailModus = modus;
+  state.neben = neben;
+  state.view = neben ? 'compare' : 'detail';
+  render();
+  if (neben) { const b = document.getElementById('bereich'); if (b) b.scrollTop = 0; }
+  else window.scrollTo(0, 0);
+}
+
+/* ---------- Dialog „Einstellungen“ ---------- */
+function einstellungenInhalt() {
+  const thema = lsGet(LS.theme) || 'auto';
+  const segment = (name, id, wahl, aktiv) => `<div class="segment" role="radiogroup" aria-label="${name}">${wahl.map(([wert, text]) => `<button type="button" role="radio" aria-checked="${wert === aktiv}"${wert === aktiv ? ' class="aktiv"' : ''} data-action="einst-setzen" data-einst="${id}" data-wert="${wert}">${text}</button>`).join('')}</div>`;
+  const zeile = (titel, steuer, hinweis = '') => `<div class="einst-zeile"><div class="einst-text"><span>${titel}</span>${hinweis ? `<small>${hinweis}</small>` : ''}</div>${steuer}</div>`;
+  const schalter = (id, titel, an, hinweis) => `<div class="einst-zeile"><label class="einst-text" for="${id}"><span>${titel}</span><small>${hinweis}</small></label><input type="checkbox" class="schalter" role="switch" id="${id}"${an ? ' checked' : ''}></div>`;
+  const verweis = (bereich, text, zusatz = '') => `<button type="button" class="einst-zeile einst-verweis" data-action="hilfe" data-bereich="${bereich}"><span class="einst-text"><span>${text}</span></span>${zusatz ? `<span class="einst-wert">${zusatz}</span>` : ''}${ikon('pfeil', 16)}</button>`;
+  const version = esc(window.ImmoVersionen?.VERSION || '');
+  return dlgHead('Einstellungen')
+    + `<div class="einst">
+      <h4>Darstellung</h4>
+      <div class="einst-gruppe">
+        ${HOSTED ? '' : zeile('Farbschema', segment('Farbschema', 'thema', [['auto', 'Automatisch'], ['light', 'Hell'], ['dark', 'Dunkel']], thema))}
+        ${zeile('Objekt öffnen', segment('Objekt öffnen', 'objekt', [['neben', 'Neben der Liste'], ['ganz', 'Ganze Seite']], state.einst.objektNeben ? 'neben' : 'ganz'), 'Neben der Liste bleibt die Tabelle sichtbar; die Trennlinie lässt sich ziehen. Gilt auf breiten Fenstern.')}
+      </div>
+      <h4>In diesem Browser merken</h4>
+      <div class="einst-gruppe">
+        ${schalter('einst-dateien', 'Geladene Bewertungen', state.persist, 'Die Dateien sind beim nächsten Öffnen wieder da.')}
+        ${schalter('einst-profile', 'Persönliche Profile', state.profile.merken, 'Zunächst aus. Profile bleiben sonst nur bis zum Schließen der Seite – dann als Datei exportieren.')}
+      </div>
+      <h4>Hilfe</h4>
+      <div class="einst-gruppe">
+        ${verweis('anleitung', 'Anleitung und Master-Prompt')}
+        ${verweis('kuerzel', 'Tastaturkürzel')}
+        ${verweis('versionen', 'Was ist neu', version ? `Version ${version}` : '')}
+      </div>
+      <p class="einst-fuss">Alle Einstellungen und Daten bleiben auf diesem Gerät. Nichts wird hochgeladen.</p>
+    </div>`;
+}
+function einstellungenOeffnen() { openDialog(einstellungenInhalt()); document.getElementById('dlg').classList.add('schmal'); }
+const einstellungenOffen = () => document.getElementById('dlg').open && !!document.querySelector('#dlgBody .einst');
+
+/** Klicks auf Einstellungen und auf die Knöpfe des Objektbereichs; true = behandelt. */
+function einstAktion(action, el) {
+  switch (action) {
+    case 'einstellungen': einstellungenOeffnen(); return true;
+    case 'einst-setzen': {
+      const { einst, wert } = el.dataset;
+      if (einst === 'thema') { lsSet(LS.theme, wert); applyTheme(wert); drawCharts(); }
+      if (einst === 'objekt') {
+        state.einst.objektNeben = wert === 'neben'; einstSpeichern();
+        if (!state.einst.objektNeben && objektNeben()) { state.neben = false; state.view = 'detail'; }
+        render();
+      }
+      document.getElementById('dlgBody').innerHTML = einstellungenInhalt();
+      document.querySelector(`#dlgBody [data-einst="${einst}"][data-wert="${wert}"]`)?.focus();
+      return true;
+    }
+    case 'neben-zu': state.neben = false; render(); document.querySelector(`.cmp-table tr[data-uid="${state.current}"]`)?.focus?.(); return true;
+    case 'neben-voll': objektOeffnen(state.current, { ganz: true }); return true;
+    case 'neben-auf': state.view = 'compare'; state.neben = true; render(); return true;
+    default: return false;
+  }
+}
+/** Schalter im Dialog; true = behandelt. */
+function einstAenderung(t) {
+  if (t.id === 'einst-dateien') { state.persist = t.checked; lsSet(LS.persist, t.checked ? '1' : '0'); save(); renderSidebar(); return true; }
+  if (t.id === 'einst-profile') {
+    state.profile.merken = t.checked;
+    if (t.checked) { lsSet(LS_PROFILE_MERKEN, '1'); pSpeichern(); toast('Profile werden in diesem Browser gemerkt.'); }
+    else { lsDel(LS_PROFILE_MERKEN); lsDel(LS_PROFILE); toast('Profile werden nicht mehr im Browser gespeichert.'); }
+    render();
+    return true;
+  }
+  return false;
+}
+
+/* ---------- Trennlinie zwischen Liste und Objektbereich ---------- */
+function nebenBreiteSetzen(anteil, { merken = true } = {}) {
+  const rahmen = document.querySelector('.geteilt-rahmen');
+  if (!rahmen) return;
+  const w = rahmen.clientWidth || 1;
+  const min = NEBEN_MIN.objekt / w, max = Math.max(min, 1 - NEBEN_MIN.liste / w);
+  state.einst.breite = Math.min(max, Math.max(min, anteil));
+  rahmen.style.setProperty('--bereich', `${(state.einst.breite * 100).toFixed(2)}%`);
+  if (merken) { einstSpeichern(); nebenNachBreite(); }
+}
+/** Nach einer Breitenänderung: Diagramme und Karte passen sich an. */
+function nebenNachBreite() {
+  drawCharts();
+  if (typeof karteKarte !== 'undefined' && karteKarte) karteKarte.map.invalidateSize();
+  spaltenmenueAusrichten();
+}
+document.addEventListener('pointerdown', e => {
+  const t = e.target.closest?.('.teiler');
+  if (!t || e.button !== 0) return;
+  e.preventDefault();
+  const rahmen = t.closest('.geteilt-rahmen'), r = rahmen.getBoundingClientRect();
+  t.setPointerCapture(e.pointerId);
+  document.body.classList.add('teiler-zieht');
+  const zieh = ev => nebenBreiteSetzen((r.right - ev.clientX) / r.width, { merken: false });
+  const ende = () => {
+    t.removeEventListener('pointermove', zieh); t.removeEventListener('pointerup', ende); t.removeEventListener('pointercancel', ende);
+    document.body.classList.remove('teiler-zieht');
+    einstSpeichern(); nebenNachBreite();
+  };
+  t.addEventListener('pointermove', zieh); t.addEventListener('pointerup', ende); t.addEventListener('pointercancel', ende);
+});
+document.addEventListener('dblclick', e => { if (e.target.closest?.('.teiler')) nebenBreiteSetzen(NEBEN_STANDARD); });
+document.addEventListener('keydown', e => {
+  if (e.target.closest?.('.teiler') && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) { e.preventDefault(); e.stopPropagation(); nebenBreiteSetzen(state.einst.breite + (e.key === 'ArrowLeft' ? 0.03 : -0.03)); return; }
+  // Esc schließt den Objektbereich, wenn sonst nichts offen ist
+  if (e.key !== 'Escape' || e.defaultPrevented || !objektNeben() || document.getElementById('dlg').open) return;
+  if (e.target.closest?.('input, select, textarea, [contenteditable]') || document.querySelector(':popover-open')) return;
+  e.preventDefault();
+  einstAktion('neben-zu');
+}, true);
+// Wird das Fenster zu schmal (oder wieder breit genug), passt sich die Ansicht an
+let nebenBreit = nebenBreitGenug();
+addEventListener('resize', () => {
+  const breit = nebenBreitGenug();
+  if (breit !== nebenBreit && (state.neben || state.view === 'detail')) render();
+  nebenBreit = breit;
+});
 </script>
 <!-- Master-Prompt und Bewertungsschema für die Hilfe; beim Bauen eingebettet (tools/viewer_bauen.py, außer mit --ohne-prompt) -->
 <script type="text/plain" id="master-prompt">
@@ -8016,6 +8290,9 @@ const state = {
   ausgeblendet: new Set(), // Startwert SPALTEN_STANDARD_AUS, gesetzt in ansichtLaden()
   // Menü links: ganz zugeklappt (nur breite Bildschirme, gemerkt) und offene Gruppen
   menue: { zu: false, mobilAuf: false, gruppen: { ansicht: true, offen: true, profil: true } },
+  // Einstellungen (Zahnrad) und Objektbereich neben der Liste (src/oberflaeche/einstellungen.js)
+  einst: einstZustand(),
+  neben: false,
 };
 let uidCounter = 0;
 let numCounter = 0;
@@ -8732,15 +9009,34 @@ function abschnittBeobachten() {
   abschnittBeobachter?.disconnect();
   abschnittBeobachter = null;
   const knoepfe = [...document.querySelectorAll('.subnav [data-target]')];
-  if (state.view !== 'detail' || !knoepfe.length || typeof IntersectionObserver !== 'function') return;
+  if (!objektOffen() || !knoepfe.length || typeof IntersectionObserver !== 'function') return;
   const sichtbar = new Map();
   abschnittBeobachter = new IntersectionObserver(eintraege => {
     for (const e of eintraege) sichtbar.set(e.target.id, e.isIntersecting ? e.boundingClientRect.top : null);
     const oben = knoepfe.map(k => k.dataset.target).find(id => sichtbar.get(id) != null);
     knoepfe.forEach(k => { const an = k.dataset.target === oben; k.classList.toggle('aktiv', an); if (an) k.setAttribute('aria-current', 'location'); else k.removeAttribute('aria-current'); });
     document.querySelector('.subnav .aktiv')?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
-  }, { rootMargin: '-110px 0px -55% 0px' });
+  }, { root: objektNeben() ? $('#bereich') : null, rootMargin: '-110px 0px -55% 0px' });
   for (const k of knoepfe) { const el = document.getElementById(k.dataset.target); if (el) abschnittBeobachter.observe(el); }
+}
+
+/* Scrollpositionen über ein Neuzeichnen hinweg: Tabelle (eigener Scrollbereich), Liste und Objektbereich */
+let scrollStand = null;
+function scrollMerken() {
+  const tw = $('#main .cmp-tabelle-karte .table-wrap'), li = $('#main .pane-liste'), ob = $('#bereich');
+  return { stand: scrollStand, tw: tw ? [tw.scrollLeft, tw.scrollTop] : null, li: li ? li.scrollTop : null, ob: ob ? ob.scrollTop : null };
+}
+function scrollWiederherstellen(alt) {
+  const jetzt = { ansicht: `${state.view}|${state.cmpTab}`, objekt: objektNeben() ? `${state.current}|${state.detailModus}` : null };
+  scrollStand = jetzt;
+  if (!alt.stand) return;
+  if (alt.stand.ansicht === jetzt.ansicht) {
+    const tw = $('#main .cmp-tabelle-karte .table-wrap'), li = $('#main .pane-liste');
+    if (tw && alt.tw) { tw.scrollLeft = alt.tw[0]; tw.scrollTop = alt.tw[1]; }
+    if (li && alt.li != null) li.scrollTop = alt.li;
+  }
+  const ob = $('#bereich');
+  if (ob && alt.ob != null && jetzt.objekt && alt.stand.objekt === jetzt.objekt) ob.scrollTop = alt.ob;
 }
 
 function render() {
@@ -8750,15 +9046,25 @@ function render() {
   if (!state.docs.length && state.view !== 'profile') state.view = 'start';
   if (state.view === 'detail' && !getDoc(state.current)) state.view = state.docs.length ? 'compare' : 'start';
   if (state.view === 'compare' && !immoDocs().length) { state.view = state.docs.length ? 'detail' : 'start'; state.current = state.docs[0]?.uid; }
+  // Objekt neben der Liste: nur im Vergleich und nur, solange das Fenster breit genug ist – sonst ganze Seite
+  if (state.neben && (state.view !== 'compare' || !getDoc(state.current))) state.neben = false;
+  if (state.neben && !nebenMoeglich()) { state.neben = false; state.view = 'detail'; }
+  const neben = objektNeben();
   menueKlassen();
   // Reiter „Tabelle“: Seite passt sich der Fensterhöhe an, nur die Tabelle scrollt (CSS .ansicht-fest)
   const fest = state.view === 'compare' && state.cmpTab === 'tabelle';
-  if (fest && !document.body.classList.contains('ansicht-fest')) window.scrollTo(0, 0);
+  if ((fest || neben) && !document.body.classList.contains('ansicht-fest') && !document.body.classList.contains('geteilt')) window.scrollTo(0, 0);
   document.body.classList.toggle('ansicht-fest', fest);
+  document.body.classList.toggle('geteilt', neben);
   // Feldfehler gelten nur für die Ansicht, in der sie entstanden sind
   const kontext = `${state.view}|${state.current}|${state.profile.aktivId}|${state.detailModus}`;
   if (kontext !== state.feldKontext) { state.feldFehler = {}; state.feldRoh = {}; state.feldKontext = kontext; }
-  main.innerHTML = `<div class="view view-${state.view}">${state.view === 'start' ? viewStart() : state.view === 'compare' ? viewCompare() : state.view === 'profile' ? viewProfile() : viewDetail(getDoc(state.current))}</div>`;
+  const scroll = scrollMerken();
+  const seite = () => (state.view === 'start' ? viewStart() : state.view === 'compare' ? viewCompare() : state.view === 'profile' ? viewProfile() : viewDetail(getDoc(state.current)));
+  main.innerHTML = neben
+    ? `<div class="geteilt-rahmen" style="--bereich:${(state.einst.breite * 100).toFixed(2)}%"><div class="view view-compare pane-liste">${viewCompare()}</div><div class="teiler no-print" role="separator" aria-orientation="vertical" tabindex="0" aria-label="Breite des Objektbereichs ändern" title="Ziehen ändert die Breite, Doppelklick setzt sie zurück"></div><section class="view view-detail pane-objekt" id="bereich" aria-label="Geöffnetes Objekt">${viewDetail(getDoc(state.current))}</section></div>`
+    : `<div class="view view-${state.view}">${seite()}</div>`;
+  scrollWiederherstellen(scroll);
   drawCharts();
   karteEinhaengen();
   spaltenmenueAusrichten();
@@ -8921,12 +9227,13 @@ function detailHead(doc) {
     rev = `<div class="revnote no-print"><b>${doc.rev.latest ? `Neueste von ${doc.rev.total} Revisionen.` : `Ältere Revision (${doc.rev.index} von ${doc.rev.total}).`}</b>${others.map(o => `<button class="linkbtn" data-action="open" data-uid="${o.uid}">Rev. ${o.rev.index} vom ${esc(fmtDate(obj(o.data.metadaten).exportdatum || obj(o.data.metadaten).pruefdatum || ''))} öffnen</button>`).join(' · ')}</div>`;
   }
   // Der Prüfstatus steht nur dann als Knopf im Kopf, wenn es etwas zu tun gibt; sonst genügt der Punkt im Menü „⋯“
-  const c = countIssues(doc), problem = c.error || c.warn;
-  return `<div class="detail-head">
-    <div class="dh-kopfzeile no-print">
-      ${immoDocs().length > 1 ? `<button class="zurueck-knopf" data-action="compare" title="Zurück zum Vergleich">${ikon('zurueck', 18)}<span>Vergleich</span></button>` : '<span></span>'}
-      <div class="dh-werkzeuge">${objektBlaettern(doc)}<button class="icon-knopf" popovertarget="menueObjekt" aria-haspopup="menu" aria-expanded="false" aria-label="Weitere Aktionen" title="Weitere Aktionen: Inserat, Exportprüfung, Drucken, Entfernen">${ikon('mehr', 22)}</button></div>
+  const c = countIssues(doc), problem = c.error || c.warn, neben = objektNeben();
+  return `<div class="dh-kopfzeile no-print">
+      ${neben ? `<div class="dh-werkzeuge"><button class="icon-knopf" data-action="neben-zu" aria-label="Bereich schließen" title="Bereich schließen (Esc)">${ikon('schliessen', 20)}</button><button class="icon-knopf" data-action="neben-voll" aria-label="Auf ganzer Seite öffnen" title="Auf ganzer Seite öffnen">${ikon('vollbild', 19)}</button></div>`
+    : immoDocs().length > 1 ? `<button class="zurueck-knopf" data-action="compare" title="Zurück zum Vergleich">${ikon('zurueck', 18)}<span>Vergleich</span></button>` : '<span></span>'}
+      <div class="dh-werkzeuge">${objektBlaettern(doc)}${!neben && nebenMoeglich() ? `<button class="icon-knopf" data-action="neben-auf" aria-label="Neben der Liste öffnen" title="Neben der Liste öffnen">${ikon('neben', 20)}</button>` : ''}<button class="icon-knopf" popovertarget="menueObjekt" aria-haspopup="menu" aria-expanded="false" aria-label="Weitere Aktionen" title="Weitere Aktionen: Inserat, Exportprüfung, Drucken, Entfernen">${ikon('mehr', 22)}</button></div>
     </div>
+  <div class="detail-head">
     <div class="dh-row">
       <div class="dh-main">
         <h1><span class="num">#${doc.num}</span> ${esc(docTitle(doc))}</h1>
@@ -9361,11 +9668,6 @@ function viewCompare() {
   if (!state.selectionTouched && !state.selected.size) latest.slice(0, 4).forEach(d => state.selected.add(d.uid));
   if (!CMP_TABS.some(([id]) => id === state.cmpTab)) state.cmpTab = 'tabelle';
   const filtered = state.cmpTab !== 'gegenueberstellung';
-  const hasRevs = docs.length !== latest.length;
-  const bad = state.docs.filter(d => !d.isImmo).length;
-  // Kacheln zählen Objekte (neueste Revision); der Ortsfilter gilt überall außer in der Gegenüberstellung
-  const scope = filtered ? latest.filter(inOrtFilter) : latest;
-  const orte = filtered ? [...state.filter.orte] : [];
   const titel = (CMP_TABS.find(([id]) => id === state.cmpTab) || CMP_TABS[0])[1].replace(/&shy;/g, '');
   // Werkzeuge rechts: Suche und das Menü „⋯“ (Spalten, ältere Revisionen, CSV). Die Reiter erscheinen nur, wenn die Seitenleiste zu ist.
   const werkzeuge = filtered ? `<div class="werkzeuge">
@@ -9373,13 +9675,9 @@ function viewCompare() {
         ${state.cmpTab === 'tabelle' ? tabellenInfo() : ''}
         <button class="icon-knopf" popovertarget="menueTabelle" aria-haspopup="menu" aria-expanded="false" aria-label="Weitere Aktionen" title="Weitere Aktionen: Spalten, Revisionen, CSV-Export">${ikon('mehr', 22)}</button>
       </div>` : '';
-  return `<div class="page-head"><div><h1>${titel}</h1><p class="sub">${latest.length} Objekt${latest.length === 1 ? '' : 'e'}${hasRevs ? ` · ${docs.length} Bewertungen inkl. älterer Revisionen` : ''}${bad ? ` · ${bad} Datei${bad === 1 ? '' : 'en'} nicht lesbar` : ''}${orte.length ? ` · ${scope.length} im Ortsfilter` : ''}</p></div>${werkzeuge}</div>
+  return `<div class="page-head"><div><h1>${titel}</h1><p class="sub" id="cmpStand">${vergleichStand()}</p></div>${werkzeuge}</div>
     <div class="cmp-tabs" role="tablist" aria-label="Bereiche des Vergleichs">${CMP_TABS.map(([id, label]) => `<button class="cmp-tab${state.cmpTab === id ? ' active' : ''}" role="tab" aria-selected="${state.cmpTab === id}" data-action="cmp-tab" data-tab="${id}">${label}${id === 'gegenueberstellung' && state.selectionTouched && state.selected.size ? ` <span class="count">${state.selected.size}</span>` : ''}</button>`).join('')}</div>
-    ${filtered ? `<div class="filter-zeile">
-      <div class="urteil-leiste" role="group" aria-label="Nach Gesamturteil filtern">${urteilChips()}</div>
-      ${ortFilter()}
-      ${ansichtVeraendert() ? '<button class="linkbtn" data-action="ansicht-zuruecksetzen" title="Sortierung, Suche und alle Filter zurücksetzen">Zurücksetzen</button>' : ''}
-    </div>` : ''}
+    ${filtered ? `<div class="filter-zeile" id="filterZeile">${filterZeile()}</div>` : ''}
     <div id="cmpResults">${compareResults()}</div>
     ${auswahlLeiste()}`;
 }
@@ -9393,35 +9691,69 @@ function auswahlLeiste() {
     <button class="btn sm" data-action="select-none">Auswahl aufheben</button></div>`;
 }
 
-/** Urteils-Chips: Anzahl je Gesamturteil; ein Klick filtert (derselbe Filter wie die Spalte „Gesamturteil“). */
+/** Zeile unter der Überschrift: Anzahl der Objekte; sobald gesucht oder gefiltert wird „2 von 4 Objekten“. */
+function vergleichStand() {
+  const docs = immoDocs(), latest = docs.filter(d => d.rev?.latest), bad = state.docs.filter(d => !d.isImmo).length;
+  const alle = state.filter.showOld ? docs : latest, wort = state.filter.showOld ? 'Bewertungen' : 'Objekten';
+  const gefiltert = state.cmpTab !== 'gegenueberstellung' && (state.filter.q.trim() || state.filter.orte.size || Object.keys(state.filter.spalten).length);
+  const zahl = gefiltert ? `<b>${filteredDocs().length}</b> von ${alle.length} ${wort}`
+    : `${latest.length} Objekt${latest.length === 1 ? '' : 'e'}${docs.length !== latest.length ? ` · ${docs.length} Bewertungen inkl. älterer Revisionen` : ''}`;
+  return `${zahl}${bad ? ` · ${bad} Datei${bad === 1 ? '' : 'en'} nicht lesbar` : ''}`;
+}
+
+/** Filterzeile über den Ergebnissen: Gesamturteil, Ort, aktive Spaltenfilter – alles in einer Zeile und in einem Stil. */
+function filterZeile() {
+  return `<div class="urteil-leiste" role="group" aria-label="Nach Gesamturteil filtern">${urteilChips()}</div>${ortFilter()}${spaltenfilterLeiste()}${ansichtVeraendert() ? '<button class="filter-reset" data-action="ansicht-zuruecksetzen" title="Sortierung, Suche und alle Filter zurücksetzen">Zurücksetzen</button>' : ''}`;
+}
+function filterZeileAuffrischen() {
+  const z = $('#filterZeile'), st = $('#cmpStand');
+  if (z) z.innerHTML = filterZeile();
+  if (st) st.innerHTML = vergleichStand();
+  popMenuesAuffrischen();
+}
+
+/** Urteils-Chips: Anzahl je Gesamturteil; ein Klick filtert (derselbe Filter wie die Spalte „Gesamturteil“).
+    Die Chips bleiben an ihrem Platz: ein Urteil ohne Treffer im aktuellen Ort wird blass, verschwindet aber nicht. */
 function urteilChips() {
-  const scope = immoDocs().filter(d => d.rev?.latest).filter(inOrtFilter);
+  const alle = immoDocs().filter(d => d.rev?.latest), scope = alle.filter(inOrtFilter);
   const ub = state.filter.spalten.urteil, nurEins = ub && ub.werte.length === 1 ? ub.werte[0] : null;
   return VERDICT_ORDER.map(v => {
     const n = scope.filter(d => urteilOf(d) === v).length, an = nurEins === v;
-    return n || an ? `<button class="urteil-chip ${vcls(v)}${an ? ' an' : ''}" data-action="urteil-kachel" data-v="${v}" aria-pressed="${an}" title="${an ? 'Filter aufheben' : `Nur „${esc(L(v))}“ zeigen`}"><span class="vi" aria-hidden="true">${(VERDICT[v] || ['?'])[0]}</span><span class="urteil-chip-text">${esc(L(v))}</span><b>${n}</b></button>` : '';
+    if (!an && !alle.some(d => urteilOf(d) === v)) return '';
+    return `<button class="urteil-chip ${vcls(v)}${an ? ' an' : ''}" data-action="urteil-kachel" data-v="${v}" aria-pressed="${an}"${!n && !an ? ' disabled' : ''} title="${an ? 'Filter aufheben' : `Nur „${esc(L(v))}“ zeigen`}"><span class="vi" aria-hidden="true">${(VERDICT[v] || ['?'])[0]}</span><span class="urteil-chip-text">${esc(URTEIL_KURZ[v] || L(v))}</span><b>${n}</b></button>`;
   }).join('');
 }
 
-/** Schnellfilter nach Ort (gilt überall außer in der Gegenüberstellung). */
-function ortFilter() {
-  const base = immoDocs().filter(d => state.filter.showOld || d.rev?.latest);
+/** Orte der geladenen Objekte mit Anzahl, alphabetisch; „ohne Ortsangabe“ zuletzt. */
+function ortListe() {
   const counts = new Map();
-  for (const d of base) counts.set(ortKey(d), (counts.get(ortKey(d)) || 0) + 1);
-  const orte = [...counts].sort((a, b) => (a[0] === '') - (b[0] === '') || a[0].localeCompare(b[0], 'de'));
-  return orte.length > 1 ? `<div class="ort-filter" role="group" aria-label="Nach Ort filtern">
-      <button class="chip-btn${state.filter.orte.size ? '' : ' on'}" data-action="filter-ort-all" aria-pressed="${!state.filter.orte.size}">Alle Orte</button>
-      ${orte.map(([o, n]) => { const on = state.filter.orte.has(o); return `<button class="chip-btn${on ? ' on' : ''}" data-action="filter-ort" data-ort="${esc(o)}" aria-pressed="${on}">${esc(o || 'Ohne Ortsangabe')} <span class="n">${n}</span></button>`; }).join('')}
-    </div>` : '';
+  for (const d of immoDocs().filter(d => state.filter.showOld || d.rev?.latest)) counts.set(ortKey(d), (counts.get(ortKey(d)) || 0) + 1);
+  return [...counts].sort((a, b) => (a[0] === '') - (b[0] === '') || a[0].localeCompare(b[0], 'de'));
+}
+const ortName = o => o || 'Ohne Ortsangabe';
+
+/** Ortsfilter als ein Knopf mit Auswahlmenü (gilt überall außer in der Gegenüberstellung). */
+function ortFilter() {
+  const gew = [...state.filter.orte];
+  if (ortListe().length < 2 && !gew.length) return '';
+  const text = !gew.length ? 'Ort' : gew.length === 1 ? ortName(gew[0]) : `${gew.length} Orte`;
+  return `<span class="filter-wahl ort-filter${gew.length ? ' an' : ''}"><button class="filter-knopf" popovertarget="menueOrt" aria-haspopup="menu" aria-expanded="false" title="Nach Ort filtern">${ikon('ort', 15)}<span class="filter-text">${esc(text)}</span>${gew.length ? '' : ikon('auswahl', 13)}</button>${gew.length ? '<button class="filter-x" data-action="filter-ort-all" aria-label="Ortsfilter entfernen" title="Ortsfilter entfernen">×</button>' : ''}</span>`;
+}
+
+/** Menü am Knopf „Ort“: mehrere Orte lassen sich ankreuzen, das Menü bleibt dabei offen. */
+function ortMenue() {
+  const orte = ortListe(), gesamt = orte.reduce((s, [, n]) => s + n, 0);
+  const punkt = (aktion, an, text, n, attrs = '') => `<button type="button" class="pop-punkt pop-wahl" role="menuitemcheckbox" aria-checked="${an}" data-action="${aktion}" ${attrs}><span class="pop-haken" aria-hidden="true">${an ? ikon('haken', 16) : ''}</span><span class="pop-text">${text}</span><span class="count">${n}</span></button>`;
+  return punkt('filter-ort-all', !state.filter.orte.size, 'Alle Orte', gesamt) + POP_TRENNER
+    + orte.map(([o, n]) => punkt('filter-ort', state.filter.orte.has(o), esc(ortName(o)), n, `data-ort="${esc(o)}"`)).join('');
 }
 
 function compareResults() {
   if (state.cmpTab === 'gegenueberstellung') return selectionPicker() + matrixCard();
   const rows = filteredDocs();
-  const leiste = spaltenfilterLeiste(rows);
-  if (state.cmpTab === 'persoenlich') return leiste + vergleichPersoenlich(rows);
-  if (state.cmpTab === 'karte') return leiste + karteAnsicht(rows);
-  return leiste + (state.cmpTab === 'preis' ? priceOverview(rows) : compareTable(rows));
+  if (state.cmpTab === 'persoenlich') return vergleichPersoenlich(rows);
+  if (state.cmpTab === 'karte') return karteAnsicht(rows);
+  return state.cmpTab === 'preis' ? priceOverview(rows) : compareTable(rows);
 }
 
 function compareTable(rows) {
@@ -9429,12 +9761,12 @@ function compareTable(rows) {
   const sp = spalten();
   const head = sp.map(c => {
     const active = state.sort.col === c.id;
-    return `<th class="sortable${c.num || ['num', 'offen', 'risiken'].includes(c.id) ? ' num' : ''}${c.profil ? ' profilspalte' : ''}${state.filter.spalten[c.id] ? ' gefiltert' : ''}" aria-sort="${active ? (state.sort.dir > 0 ? 'ascending' : 'descending') : 'none'}">${spaltenKopf(c, active)}</th>`;
+    return `<th class="sortable sp-${c.id}${c.num || ['num', 'offen', 'risiken'].includes(c.id) ? ' num' : ''}${c.profil ? ' profilspalte' : ''}${state.filter.spalten[c.id] ? ' gefiltert' : ''}" aria-sort="${active ? (state.sort.dir > 0 ? 'ascending' : 'descending') : 'none'}">${c.id === 'num' ? `<input type="checkbox" id="selAll" class="zeilen-wahl" ${allSel ? 'checked' : ''} aria-label="Alle sichtbaren auswählen">` : ''}${spaltenKopf(c, active)}</th>`;
   }).join('');
   const body = rows.map(d => {
     const e = obj(d.data.energie), m = obj(d.data.metadaten), a = obj(d.data.angebot), b = obj(d.data.bewertung);
     const cell = c => {
-      if (c.id === 'num') return `<td class="num"><span class="num">#${d.num}</span></td>`;
+      if (c.id === 'num') return `<td class="num sp-num"><input type="checkbox" class="zeilen-wahl" data-select="${d.uid}" ${state.selectionTouched && state.selected.has(d.uid) ? 'checked' : ''} aria-label="Für Gegenüberstellung auswählen"><span class="num">#${d.num}</span></td>`;
       if (c.id === 'objekt') { const unter = [docPlace(d), platLabel(a.plattform), a.plattform_id].filter(Boolean).join(' · ') + (d.rev && d.rev.total > 1 ? ` · Rev. ${d.rev.index}/${d.rev.total}` : ''); return `<td class="cell-obj"><div class="obj-title" title="${esc(docTitle(d))}">${esc(docTitle(d))}</div><div class="obj-sub" title="${esc(unter)}">${offerTag(d.data)}${state.ausgeblendet.has('export') && countIssues(d).error ? '<span class="tag tag-crit" title="Die Exportprüfung meldet Fehler – Einzelheiten in der Objektansicht unter „Exportprüfung“">Exportfehler</span>' : ''}<span class="obj-sub-text">${esc(unter)}</span></div></td>`; }
       if (c.id === 'urteil') return `<td class="cell-urteil">${urteilKurz(b.gesamturteil)}</td>`;
       if (c.id === 'status') return statusZelle(d);
@@ -9453,15 +9785,15 @@ function compareTable(rows) {
       if (c.id === 'export') return `<td class="nowrap">${issueTags(d)}</td>`;
       return `<td class="num">${valueCell(d, c.path, { compact: true })}</td>`;
     };
-    return `<tr class="clickable" data-action="open" data-uid="${d.uid}"><td><input type="checkbox" data-select="${d.uid}" ${state.selectionTouched && state.selected.has(d.uid) ? 'checked' : ''} aria-label="Für Gegenüberstellung auswählen"></td>${sp.map(cell).join('')}</tr>`;
+    return `<tr class="clickable${objektNeben() && state.current === d.uid ? ' aktiv' : ''}" data-action="open" data-uid="${d.uid}">${sp.map(cell).join('')}</tr>`;
   }).join('');
 
-  return `${vergleichKarten(rows, sp)}<div class="card flush cmp-tabelle-karte"><div class="table-wrap fest"><table class="t cmp-table${state.selectionTouched && state.selected.size ? ' mit-auswahl' : ''}"><thead><tr><th><input type="checkbox" id="selAll" ${allSel ? 'checked' : ''} aria-label="Alle sichtbaren auswählen"></th>${head}</tr></thead><tbody>${body || `<tr><td colspan="${sp.length + 1}" class="muted">Keine Treffer.${Object.keys(state.filter.spalten).length ? ' <button class="linkbtn" data-action="spaltenfilter-alle-weg">Spaltenfilter löschen</button>' : ''}</td></tr>`}</tbody></table></div></div>`;
+  return `${vergleichKarten(rows, sp)}<div class="card flush cmp-tabelle-karte"><div class="table-wrap fest"><table class="t cmp-table${state.selectionTouched && state.selected.size ? ' mit-auswahl' : ''}"><thead><tr>${head}</tr></thead><tbody>${body || `<tr class="leer-zeile"><td colspan="${sp.length}"><div class="leer"><b>Keine Treffer</b><span>Kein Objekt passt zur Suche und zu den Filtern.</span><button class="btn sm" data-action="filter-leeren">Filter aufheben</button></div></td></tr>`}</tbody></table></div></div>`;
 }
 
 /** Hinweise zur Vergleichstabelle (ⓘ in der Filterleiste). */
 function tabellenInfo() {
-  return info(`<span class="info-zeile">${aktivesProfil() ? `Blau hinterlegte Spalten rechnen mit dem Profil „${esc(aktivesProfil().bezeichnung)}“ (Zuzahlung je Monat; „Überschuss“ = es bleibt etwas übrig). ` : 'Mit einem aktiven persönlichen Profil erscheinen hier zusätzlich Zuzahlung vor und nach Steuer und die Einordnung zum Budget. '}</span><span class="info-zeile">Überschrift anklicken = sortieren. Der Trichter daneben (erscheint beim Darüberfahren) sortiert und filtert. Weitere Spalten: Menü „⋯“ → „Spalten wählen“.</span><span class="info-zeile">Zahlenfilter zeigen unbekannte Werte standardmäßig weiter an; Szenariowerte zählen beim Sortieren und Filtern nicht. Die Kästchen links (erscheinen beim Darüberfahren) wählen Objekte für die Gegenüberstellung.</span>${WERTE_LEGENDE_INHALT}`, 'Bedienung der Tabelle');
+  return info(`<span class="info-zeile">${aktivesProfil() ? `Blau hinterlegte Spalten rechnen mit dem Profil „${esc(aktivesProfil().bezeichnung)}“ (Zuzahlung je Monat; „Überschuss“ = es bleibt etwas übrig). ` : 'Mit einem aktiven persönlichen Profil erscheinen hier zusätzlich Zuzahlung vor und nach Steuer und die Einordnung zum Budget. '}</span><span class="info-zeile">Überschrift anklicken = sortieren. Der Trichter daneben sortiert und filtert; aktive Filter stehen als blaue Marken über der Tabelle. Weitere Spalten: Menü „⋯“ → „Spalten wählen“.</span><span class="info-zeile">Zahlenfilter zeigen unbekannte Werte standardmäßig weiter an; Szenariowerte zählen beim Sortieren und Filtern nicht. Das Kästchen an der Nummer (erscheint beim Darüberfahren) wählt Objekte für die Gegenüberstellung.</span>${WERTE_LEGENDE_INHALT}`, 'Bedienung der Tabelle');
 }
 
 /** Streudiagramm Kaufpreis/m² gegen Bruttomietrendite mit Werteliste daneben. */
@@ -9622,7 +9954,7 @@ function exportCSV() {
 function openDialog(html) {
   $('#dlgBody').innerHTML = html;
   const dlg = $('#dlg');
-  dlg.classList.remove('breit');
+  dlg.classList.remove('breit', 'schmal');
   if (!dlg.open) dlg.showModal();
 }
 const dlgHead = title => `<div class="dlg-head"><h3>${title}</h3><button class="icon-btn" data-action="close-dlg" aria-label="Schließen">×</button></div>`;
@@ -9675,7 +10007,7 @@ function openRef(uid, id) {
     el.scrollIntoView({ behavior: 'smooth', block: 'center' });
     el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
   };
-  if (state.view !== 'detail' || state.current !== uid) { state.view = 'detail'; state.current = uid; render(); requestAnimationFrame(show); }
+  if (!objektOffen() || state.current !== uid) { objektOeffnen(uid); requestAnimationFrame(show); }
   else show();
 }
 
@@ -9757,14 +10089,9 @@ function toast(msg) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
 }
-const THEMES = ['auto', 'light', 'dark'];
 function applyTheme(t) {
   if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
   else delete document.documentElement.dataset.theme;
-  const name = { auto: 'Automatisch', light: 'Hell', dark: 'Dunkel' }[t] || 'Automatisch';
-  $('#themeIkon').innerHTML = ikon({ light: 'hell', dark: 'dunkel' }[t] || 'auto', 20);
-  $('#themeBtn').setAttribute('aria-label', `Farbschema: ${name}`);
-  $('#themeBtn').title = `Farbschema: ${name} – anklicken zum Wechseln`;
 }
 
 /* =====================================================================
@@ -9787,8 +10114,8 @@ document.addEventListener('click', e => {
       break;
     }
     case 'close-dlg': $('#dlg').close(); break;
-    case 'compare': state.view = 'compare'; render(); window.scrollTo(0, 0); break;
-    case 'open': if ($('#dlg').open) $('#dlg').close(); state.view = 'detail'; state.current = uid; state.menue.mobilAuf = false; render(); window.scrollTo(0, 0); break;
+    case 'compare': state.view = 'compare'; state.neben = false; render(); window.scrollTo(0, 0); break;
+    case 'open': if ($('#dlg').open) $('#dlg').close(); objektOeffnen(uid); break;
     case 'remove': e.stopPropagation(); removeDoc(uid); break;
     case 'clear-all':
       openDialog(dlgHead('Alle Dateien entfernen?') + `<p style="margin:0">Alle ${state.docs.length} geladenen Dateien werden aus der Ansicht entfernt. Die Dateien auf deinem Rechner bleiben unverändert.</p><div class="btn-row" style="justify-content:flex-end;margin-bottom:0"><button class="btn" data-action="close-dlg">Abbrechen</button><button class="btn primary" data-action="clear-all-confirm">Alle entfernen</button></div>`);
@@ -9828,6 +10155,7 @@ document.addEventListener('click', e => {
       break;
     }
     case 'filter-ort-all': state.filter.orte.clear(); render(); break;
+    case 'filter-leeren': state.filter.q = ''; state.filter.orte.clear(); state.filter.spalten = {}; spaltenmenueSchliessen({ fokus: false }); render(); break;
     case 'select-all': state.selectionTouched = true; immoDocs().filter(d => state.filter.showOld || d.rev?.latest).forEach(d => state.selected.add(d.uid)); render(); break;
     case 'select-none': state.selectionTouched = true; state.selected.clear(); render(); break;
     case 'beleg': e.stopPropagation(); openBeleg(uid, el.dataset.path); break;
@@ -9840,20 +10168,12 @@ document.addEventListener('click', e => {
       break;
     }
     case 'download-json': { const d = getDoc(uid); download(d.fileName.replace(/[^\w.\-äöüÄÖÜß]+/g, '_').replace(/(\.json)?$/i, '.json'), JSON.stringify(d.data, null, 2), 'application/json'); break; }
-    case 'theme': {
-      const cur = lsGet(LS.theme) || 'auto';
-      const next = THEMES[(THEMES.indexOf(cur) + 1) % THEMES.length];
-      lsSet(LS.theme, next);
-      applyTheme(next);
-      drawCharts();
-      break;
-    }
     case 'print': window.print(); break;
     case 'ordner-verbinden': ordnerVerbinden(); break;
     case 'ordner-freigeben': ordnerFreigeben(); break;
     case 'ordner-einlesen': ordnerEinlesen({ manuell: true }); break;
     case 'ordner-trennen': ordnerTrennen(); break;
-    default: if (!karteAktion(action, el) && !spaltenAktion(action, el) && !hilfeAktion(action, el)) pAktion(action, el);
+    default: if (!karteAktion(action, el) && !spaltenAktion(action, el) && !hilfeAktion(action, el) && !einstAktion(action, el)) pAktion(action, el);
   }
 });
 // Tastaturkürzel: „/“ springt in die Suche, „?“ zeigt die Übersicht der Kürzel
@@ -9867,14 +10187,15 @@ document.addEventListener('keydown', e => {
 });
 // Pfeiltasten blättern in der Einzelansicht durch die Objekte der Tabelle (nicht in Eingabefeldern oder Dialogen)
 document.addEventListener('keydown', e => {
-  if (state.view !== 'detail' || (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
-  if (e.target.closest?.('input, select, textarea, [contenteditable], .leaflet-container') || $('#dlg').open) return;
+  if (!objektOffen() || (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+  if (e.target.closest?.('input, select, textarea, [contenteditable], .leaflet-container, .teiler') || $('#dlg').open) return;
   const doc = getDoc(state.current), n = doc && objektNachbarn(doc), ziel = n && (e.key === 'ArrowLeft' ? n.vor : n.nach);
   if (!ziel) return;
   e.preventDefault();
   state.current = ziel.uid;
   render();
-  window.scrollTo(0, 0);
+  if (objektNeben()) { $('#bereich').scrollTop = 0; $(`.cmp-table tr[data-uid="${ziel.uid}"]`)?.scrollIntoView({ block: 'nearest' }); }
+  else window.scrollTo(0, 0);
 });
 // Auf- und Zuklappen der Menügruppen merken (toggle steigt nicht auf, daher in der Einfangphase)
 document.addEventListener('toggle', e => {
@@ -9889,6 +10210,7 @@ function renderResults() {
   if (!box) return render();
   chartFns.clear();
   box.innerHTML = compareResults();
+  filterZeileAuffrischen();
   drawCharts();
   karteEinhaengen();
   spaltenmenueAusrichten();
@@ -9903,6 +10225,7 @@ document.addEventListener('change', e => {
   if (t.id === 'karten-sort') { const [col, dir] = t.value.split('|'); state.sort = { col, dir: Number(dir) === -1 ? -1 : 1 }; renderResults(); return; }
   if (t.id === 'karten-filter') { const c = spalteMit(t.value); t.value = ''; if (c) spaltenmenueOeffnen(c, 'karten'); return; }
   if (pAenderung(t)) return;
+  if (einstAenderung(t)) return;
   if (t.id === 'ordner-auto') { state.ordner.auto = t.checked; lsSet(LS_ORDNER_AUTO, t.checked ? '1' : '0'); return; }
   if (t.dataset.select) {
     // Die Vorauswahl (erste vier Objekte) gilt nur, bis in Tabelle oder Karten das erste Häkchen gesetzt wird
@@ -9966,6 +10289,7 @@ addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setT
 // Start
 // Eingebettet bestimmt die Plattform das Farbschema (data-theme am Wurzelelement)
 if (!HOSTED) applyTheme(lsGet(LS.theme) || 'auto');
+einstLaden();
 updateHostClasses();
 $('#versionsKnopf').textContent = `Version ${window.ImmoVersionen.VERSION}`;
 (async () => {
