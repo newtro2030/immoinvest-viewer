@@ -1715,10 +1715,10 @@ body.geteilt .main { display: flex; flex-direction: row; min-height: 0; overflow
   body.geteilt.ansicht-fest .pane-liste { overflow: hidden; padding-bottom: 12px; }
 }
 /* Kopfzeile des Bereichs bleibt stehen: Schließen, ganze Seite, Blättern, Menü */
-.pane-objekt .dh-kopfzeile { position: sticky; top: 0; z-index: 21; margin: 0 calc(-1 * clamp(16px, 2vw, 28px)) 10px; padding: 8px clamp(10px, 1.4vw, 20px); background: color-mix(in srgb, var(--page) 86%, transparent); -webkit-backdrop-filter: saturate(180%) blur(16px); backdrop-filter: saturate(180%) blur(16px); border-bottom: 1px solid var(--line); }
-.pane-objekt .subnav { top: 49px; margin-inline: calc(-1 * clamp(16px, 2vw, 28px)); padding-inline: clamp(16px, 2vw, 28px); }
+.pane-objekt .dh-kopfzeile { margin: 0 0 2px; }
+.pane-objekt .subnav { top: 43px; margin-inline: calc(-1 * clamp(16px, 2vw, 28px)); padding-inline: clamp(16px, 2vw, 28px); }
 .pane-objekt .dh-main h1 { font-size: 23px; }
-.pane-objekt .sec { scroll-margin-top: 108px; }
+.pane-objekt .sec { scroll-margin-top: 104px; }
 @container objekt (max-width: 1100px) {
   .mein-stand { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .mein-stand .ms-kopf, .mein-stand .ms-notiz { grid-column: 1 / -1; }
@@ -1738,6 +1738,45 @@ body.geteilt .main { display: flex; flex-direction: row; min-height: 0; overflow
   .pane-liste { display: none; }
   .pane-objekt { max-width: none; min-width: 0; overflow: visible; padding: 0; }
 }
+
+/* ---------- Tabs der geöffneten Objekte ---------- */
+.tab-leiste { position: sticky; top: 0; z-index: 22; display: flex; align-items: center; gap: 8px; height: 43px; margin: 0 calc(-1 * clamp(16px, 2vw, 28px)) 10px; padding: 0 clamp(8px, 1vw, 14px); background: color-mix(in srgb, var(--page) 86%, transparent); -webkit-backdrop-filter: saturate(180%) blur(16px); backdrop-filter: saturate(180%) blur(16px); border-bottom: 1px solid var(--line); }
+.tab-reihe { display: flex; align-items: center; gap: 2px; flex: 1; min-width: 0; height: 100%; overflow-x: auto; scrollbar-width: none; }
+.tab-reihe::-webkit-scrollbar { display: none; }
+.tab { display: flex; align-items: center; flex: 0 1 190px; min-width: 96px; height: 30px; border-radius: 8px; color: var(--ink-2); transition: background .12s; }
+.tab:hover { background: var(--fill); color: var(--ink); }
+.tab.aktiv { background: var(--surface); color: var(--ink); box-shadow: 0 0 0 1px var(--line-2), 0 1px 2px rgba(0, 0, 0, .06); }
+.tab-knopf { display: flex; align-items: center; gap: 7px; flex: 1; min-width: 0; height: 100%; padding: 0 4px 0 10px; border: 0; border-radius: inherit; background: none; color: inherit; font-size: 13px; font-weight: 500; text-align: left; cursor: pointer; }
+.tab.aktiv .tab-knopf { font-weight: 600; }
+.tab-knopf .vdot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--vc); }
+.tab-knopf .ikon { color: var(--accent); }
+.tab-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tab-x, .nav-x { display: inline-grid; place-items: center; flex: none; width: 20px; height: 20px; margin-right: 5px; padding: 0 0 1px; border: 0; border-radius: 6px; background: none; color: var(--ink-2); font-size: 15px; line-height: 1; cursor: pointer; }
+.tab-x:hover, .nav-x:hover { background: var(--fill-2); color: var(--ink); }
+.tab-liste { flex: none; min-width: 0; }
+.tab-liste .tab-knopf { padding-right: 12px; }
+.tab-werkzeuge { display: flex; align-items: center; gap: 2px; flex: none; }
+:is(.tab-knopf, .tab-x, .nav-x):focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+@media (hover: hover) {
+  .tab:not(.aktiv):not(:hover):not(:focus-within) .tab-x, .navzeile:not(:hover):not(:focus-within) .nav-x { opacity: 0; }
+}
+/* Ganze Seite: Tabs stehen oben im Inhaltsbereich, der erste Tab führt zur Liste */
+.main > .tab-leiste { top: calc(52px + env(safe-area-inset-top, 0px)); margin: -24px calc(-1 * clamp(16px, 3vw, 36px)) 18px; padding-inline: clamp(10px, 2vw, 28px); }
+body.mit-tabs .subnav { top: calc(95px + env(safe-area-inset-top, 0px)); }
+body.mit-tabs .sec { scroll-margin-top: 152px; }
+/* Füllt die Tabelle das Fenster, scrollt die Seite nicht – die Tabs stehen dann einfach oben */
+@media (min-width: 761px) and (min-height: 600px) { body.ansicht-fest .main > .tab-leiste { position: static; flex: none; } }
+/* Seitenleiste: geöffnete Objekte mit „×“, Einstellungen unten */
+.navzeile { position: relative; display: flex; align-items: center; }
+.navzeile .navitem { min-width: 0; padding-right: 30px; }
+.navzeile .nav-x { position: absolute; right: 4px; margin: 0; }
+.einst-knopf { margin-top: 4px; color: var(--ink); }
+.einst-knopf .ikon { color: var(--ink-2); }
+.side-fuss { display: flex; flex-direction: column; gap: 2px; padding-top: 8px; border-top: 1px solid var(--line); }
+.icon-knopf[hidden] { display: none; }
+.bereich-knopf[aria-pressed="true"] { color: var(--accent); }
+@media (max-width: 1179px) { .bereich-knopf { display: none; } }
+@media print { .tab-leiste { display: none !important; } }
 
 /* ---------- Einstellungen ---------- */
 dialog.schmal { width: min(520px, calc(100vw - 32px)); }
@@ -1803,7 +1842,7 @@ label.einst-text { cursor: pointer; }
   </div>
   <button class="btn sm daten-knopf" id="datenKnopf" popovertarget="menueDaten" aria-haspopup="menu" aria-expanded="false" title="Dateien laden, Ablageordner, Sicherung"><svg class="ikon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14.5V18a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3.5"/><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5"/></svg><span>Daten</span></button>
   <button class="icon-knopf hilfe-knopf" data-action="hilfe" data-bereich="anleitung" aria-label="Hilfe" title="Hilfe: Anleitung, Master-Prompt, Tastaturkürzel, Versionen (Taste ?)"><svg class="ikon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.6 2.6 0 1 1 3.7 2.4c-.7.3-1.200 1-1.200 1.800v.600"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></button>
-  <button class="icon-knopf" data-action="einstellungen" id="einstKnopf" aria-haspopup="dialog" aria-label="Einstellungen" title="Einstellungen: Farbschema, Objektansicht, Speichern im Browser"><svg class="ikon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.53 2.72L13.47 2.72L13.81 5.24A7.0 7.0 0 0 1 15.50 5.94L17.53 4.40L19.60 6.47L18.06 8.50A7.0 7.0 0 0 1 18.76 10.19L21.28 10.53L21.28 13.47L18.76 13.81A7.0 7.0 0 0 1 18.06 15.50L19.60 17.53L17.53 19.60L15.50 18.06A7.0 7.0 0 0 1 13.81 18.76L13.47 21.28L10.53 21.28L10.19 18.76A7.0 7.0 0 0 1 8.50 18.06L6.47 19.60L4.40 17.53L5.94 15.50A7.0 7.0 0 0 1 5.24 13.81L2.72 13.47L2.72 10.53L5.24 10.19A7.0 7.0 0 0 1 5.94 8.50L4.40 6.47L6.47 4.40L8.50 5.94A7.0 7.0 0 0 1 10.19 5.24Z"/><circle cx="12" cy="12" r="2.9"/></svg></button>
+  <button class="icon-knopf bereich-knopf" data-action="neben-umschalten" id="bereichKnopf" aria-pressed="false" aria-label="Objektbereich ein- oder ausblenden" title="Objektbereich ein- oder ausblenden" hidden><svg class="ikon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="15" rx="3"/><path d="M15 4.5v15"/></svg></button>
 </header>
 <div class="layout">
   <aside class="sidebar" id="sidebar" aria-label="Menü"></aside>
@@ -3940,6 +3979,12 @@ label.einst-text { cursor: pointer; }
   'use strict';
 
   const VERLAUF = [
+    { version: '3.2.0', datum: '2026-11-14', titel: 'Tabs für geöffnete Objekte, Einstellungen unten links', punkte: [
+      'Jedes geöffnete Objekt bekommt einen Tab: wechseln per Klick, schließen mit „×“, Blättern bleibt im Tab',
+      'Die geöffneten Objekte stehen auch links unter „Geöffnet“',
+      'Knopf oben rechts blendet den Objektbereich aus und wieder ein – die Tabs bleiben erhalten',
+      'Einstellungen (Zahnrad) sitzen jetzt unten links in der Seitenleiste',
+    ] },
     { version: '3.1.0', datum: '2026-11-14', titel: 'Bereiche nebeneinander, Einstellungen, ruhige Filterzeile', punkte: [
       'Ein Klick auf ein Objekt öffnet es rechts neben der Tabelle; die Liste bleibt sichtbar, die Trennlinie lässt sich ziehen',
       'Zahnrad oben rechts: Einstellungen für Farbschema, Objektansicht und das Merken im Browser',
@@ -6811,6 +6856,7 @@ const IKON_PFAD = {
   ort: '<path d="M12 21s-6.500-5.800-6.500-11a6.500 6.500 0 0 1 13 0c0 5.200-6.500 11-6.500 11z"/><circle cx="12" cy="10" r="2.300"/>',
   auswahl: '<path d="m7 10 5 5 5-5"/>',
   haken: '<path d="m5.500 12.500 4.200 4.200L18.500 7.500"/>',
+  zahnrad: '<path d="M10.53 2.72L13.47 2.72L13.81 5.24A7.0 7.0 0 0 1 15.50 5.94L17.53 4.40L19.60 6.47L18.06 8.50A7.0 7.0 0 0 1 18.76 10.19L21.28 10.53L21.28 13.47L18.76 13.81A7.0 7.0 0 0 1 18.06 15.50L19.60 17.53L17.53 19.60L15.50 18.06A7.0 7.0 0 0 1 13.81 18.76L13.47 21.28L10.53 21.28L10.19 18.76A7.0 7.0 0 0 1 8.50 18.06L6.47 19.60L4.40 17.53L5.94 15.50A7.0 7.0 0 0 1 5.24 13.81L2.72 13.47L2.72 10.53L5.24 10.19A7.0 7.0 0 0 1 5.94 8.50L4.40 6.47L6.47 4.40L8.50 5.94A7.0 7.0 0 0 1 10.19 5.24Z"/><circle cx="12" cy="12" r="2.9"/>',
   schliessen: '<path d="M6.500 6.500l11 11M17.500 6.500l-11 11"/>',
   vollbild: '<path d="M14 4.500h5.500V10M19.500 4.500l-6 6M10 19.500H4.500V14M4.500 19.500l6-6"/>',
   neben: '<rect x="3" y="4.500" width="18" height="15" rx="3"/><path d="M13.500 4.500v15"/>',
@@ -6842,7 +6888,8 @@ function datenMenue() {
     + (state.docs.length ? popPunkt('clear-all', 'entfernen', `Alle ${state.docs.length} Dateien entfernen …`, { klasse: 'gefahr' }) : '')
     + (kaputt.length ? POP_TRENNER + popKopf('Nicht lesbar') + kaputt.map(d => popPunkt('open', 'datei', esc(d.fileName), { attrs: `data-uid="${d.uid}"`, klasse: 'gefahr' })).join('') : '')
     + POP_TRENNER
-    + popPunkt('hilfe', 'hilfe', 'Anleitung und Master-Prompt', { attrs: 'data-bereich="anleitung"' });
+    + popPunkt('hilfe', 'hilfe', 'Anleitung und Master-Prompt', { attrs: 'data-bereich="anleitung"' })
+    + popPunkt('einstellungen', 'zahnrad', 'Einstellungen …');
 }
 
 /** Menü „⋯“ über dem Vergleich: Aktionen, die man selten braucht. */
@@ -6928,7 +6975,7 @@ addEventListener('resize', () => { for (const id of Object.keys(POP_MENUES)) { c
 </script>
 <script>/* src/oberflaeche/einstellungen.js */
 /*
- * ImmoInvest Viewer – Einstellungen (Zahnrad oben rechts) und Objektbereich neben der Liste
+ * ImmoInvest Viewer – Einstellungen (Zahnrad unten links in der Seitenleiste), Tabs und Objektbereich neben der Liste
  *
  * Einstellungen: Farbschema, wie Objekte geöffnet werden, was sich der Browser merkt. Alles bleibt in diesem Browser.
  *
@@ -6937,6 +6984,8 @@ addEventListener('resize', () => { for (const id of Object.keys(POP_MENUES)) { c
  * schließen oder auf die ganze Seite vergrößern. Zustand dafür:
  *   state.einst  { objektNeben, breite }  gemerkte Einstellung und Breite des Bereichs (Anteil 0–1)
  *   state.neben  true, solange ein Objekt neben der Liste offen ist (state.view bleibt dann 'compare')
+ *   state.tabs   geöffnete Objekte als Tabs; state.current ist der aktive Tab. Die Tabs stehen oben im Bereich,
+ *                auf ganzer Seite oben im Inhalt (mit einem Tab für die Liste) und als „Geöffnet“ in der Seitenleiste
  *
  * Klassisches Skript; nutzt state, render, lsGet … des Hauptskripts erst zur Laufzeit.
  */
@@ -6966,10 +7015,15 @@ const objektNeben = () => state.view === 'compare' && state.neben && !!getDoc(st
 const objektOffen = () => state.view === 'detail' || objektNeben();
 
 /** Objekt öffnen: aus dem Vergleich heraus neben der Liste (wenn möglich), sonst auf ganzer Seite. */
-function objektOeffnen(uid, { modus = null, ganz = false } = {}) {
+function objektOeffnen(uid, { modus = null, ganz = false, ersetzen = false } = {}) {
   const doc = getDoc(uid);
   if (!doc) return;
   const neben = !ganz && doc.isImmo && state.view === 'compare' && nebenMoeglich();
+  // Tabs: ein neues Objekt bekommt einen eigenen Tab; Blättern (ersetzen) wechselt das Objekt im aktiven Tab
+  if (doc.isImmo && !state.tabs.includes(uid)) {
+    const i = ersetzen ? state.tabs.indexOf(state.current) : -1;
+    if (i >= 0) state.tabs[i] = uid; else state.tabs.push(uid);
+  }
   state.current = uid;
   state.menue.mobilAuf = false;
   if (modus) state.detailModus = modus;
@@ -6979,6 +7033,61 @@ function objektOeffnen(uid, { modus = null, ganz = false } = {}) {
   if (neben) { const b = document.getElementById('bereich'); if (b) b.scrollTop = 0; }
   else window.scrollTo(0, 0);
 }
+
+/* ---------- Tabs der geöffneten Objekte ---------- */
+/** Stehen die Tabs oben im Inhaltsbereich? (ganze Seite: Objekt auf ganzer Seite, oder Liste ohne Bereich daneben) */
+const tabsGanzeSeite = () => !objektNeben() && state.tabs.length > 0 && immoDocs().length > 1
+  && (state.view === 'detail' || (state.view === 'compare' && !nebenMoeglich()));
+
+/** Tab-Leiste: im Bereich neben der Liste nur die Objekte; auf ganzer Seite steht davor ein Tab für die Liste. */
+function tabLeiste() {
+  const neben = objektNeben(), offen = objektOffen();
+  const tab = d => {
+    const an = offen && d.uid === state.current, name = `#${d.num} ${esc(docTitle(d))}`;
+    return `<div class="tab${an ? ' aktiv' : ''}"><button class="tab-knopf" role="tab" aria-selected="${an}" data-action="open" data-uid="${d.uid}" title="${name}"><span class="vdot ${vcls(urteilOf(d))}"></span><span class="tab-text">${name}</span></button><button class="tab-x" data-action="tab-zu" data-uid="${d.uid}" aria-label="Tab ${name} schließen" title="Tab schließen">×</button></div>`;
+  };
+  const listenTitel = (CMP_TABS.find(([id]) => id === state.cmpTab) || CMP_TABS[0])[1].replace(/&shy;/g, '');
+  const liste = neben ? '' : `<div class="tab tab-liste${state.view === 'compare' ? ' aktiv' : ''}"><button class="tab-knopf" role="tab" aria-selected="${state.view === 'compare'}" data-action="compare" title="Zur Liste: ${listenTitel}">${ikon(state.cmpTab, 16)}<span class="tab-text">${listenTitel}</span></button></div>`;
+  const werkzeuge = neben ? `<div class="tab-werkzeuge"><button class="icon-knopf" data-action="neben-voll" aria-label="Auf ganzer Seite öffnen" title="Auf ganzer Seite öffnen">${ikon('vollbild', 18)}</button><button class="icon-knopf" data-action="neben-zu" aria-label="Bereich schließen" title="Bereich schließen (Esc) – die Tabs bleiben erhalten">${ikon('schliessen', 19)}</button></div>` : '';
+  return `<div class="tab-leiste no-print"><div class="tab-reihe" role="tablist" aria-label="Geöffnete Objekte">${liste}${state.tabs.map(getDoc).filter(Boolean).map(tab).join('')}</div>${werkzeuge}</div>`;
+}
+
+/** Tab schließen; war er aktiv, rückt der Nachbar nach. Ohne Tabs schließt der Bereich bzw. es geht zurück zur Liste. */
+function tabSchliessen(uid) {
+  const i = state.tabs.indexOf(uid);
+  if (i < 0) return;
+  state.tabs.splice(i, 1);
+  if (state.current === uid) {
+    const nachbar = state.tabs[i] || state.tabs[i - 1];
+    if (nachbar) state.current = nachbar;
+    else if (objektOffen()) { state.neben = false; if (state.view === 'detail') state.view = 'compare'; }
+  }
+  render();
+}
+
+/** Knopf oben rechts: Objektbereich neben der Liste ein- oder ausblenden. */
+function nebenUmschalten() {
+  if (objektNeben()) { state.neben = false; return render(); }
+  if (!nebenMoeglich() || !state.tabs.length) return;
+  if (!state.tabs.includes(state.current)) state.current = state.tabs[state.tabs.length - 1];
+  state.view = 'compare'; state.neben = true;
+  render();
+}
+function bereichKnopfAuffrischen() {
+  const k = document.getElementById('bereichKnopf');
+  if (!k) return;
+  const offen = objektNeben();
+  k.hidden = !(state.einst.objektNeben && immoDocs().length > 1);
+  k.disabled = !offen && !(state.tabs.length && nebenMoeglich() && (state.view === 'compare' || state.view === 'detail'));
+  k.setAttribute('aria-pressed', String(offen));
+  k.title = offen ? 'Objektbereich ausblenden (Esc) – die Tabs bleiben erhalten' : state.tabs.length ? 'Objektbereich neben der Liste einblenden' : 'Objektbereich: erst ein Objekt in der Liste anklicken';
+}
+// Mittlere Maustaste schließt einen Tab
+document.addEventListener('auxclick', e => {
+  const t = e.button === 1 && e.target.closest?.('.tab:not(.tab-liste), .navzeile');
+  const uid = t && t.querySelector('[data-action="tab-zu"]')?.dataset.uid;
+  if (uid) { e.preventDefault(); tabSchliessen(uid); }
+});
 
 /* ---------- Dialog „Einstellungen“ ---------- */
 function einstellungenInhalt() {
@@ -7030,7 +7139,9 @@ function einstAktion(action, el) {
     }
     case 'neben-zu': state.neben = false; render(); document.querySelector(`.cmp-table tr[data-uid="${state.current}"]`)?.focus?.(); return true;
     case 'neben-voll': objektOeffnen(state.current, { ganz: true }); return true;
-    case 'neben-auf': state.view = 'compare'; state.neben = true; render(); return true;
+    case 'neben-umschalten': nebenUmschalten(); return true;
+    case 'tab-zu': tabSchliessen(el.dataset.uid); return true;
+    case 'blaettern': objektOeffnen(el.dataset.uid, { ersetzen: true }); return true;
     default: return false;
   }
 }
@@ -8293,6 +8404,8 @@ const state = {
   // Einstellungen (Zahnrad) und Objektbereich neben der Liste (src/oberflaeche/einstellungen.js)
   einst: einstZustand(),
   neben: false,
+  // Geöffnete Objekte als Tabs (uids in der Reihenfolge des Öffnens); state.current ist der aktive Tab
+  tabs: [],
 };
 let uidCounter = 0;
 let numCounter = 0;
@@ -9046,10 +9159,15 @@ function render() {
   if (!state.docs.length && state.view !== 'profile') state.view = 'start';
   if (state.view === 'detail' && !getDoc(state.current)) state.view = state.docs.length ? 'compare' : 'start';
   if (state.view === 'compare' && !immoDocs().length) { state.view = state.docs.length ? 'detail' : 'start'; state.current = state.docs[0]?.uid; }
+  // Tabs: nur vorhandene Objekte; ein sichtbares Objekt hat immer einen Tab
+  state.tabs = state.tabs.filter(u => getDoc(u));
   // Objekt neben der Liste: nur im Vergleich und nur, solange das Fenster breit genug ist – sonst ganze Seite
   if (state.neben && (state.view !== 'compare' || !getDoc(state.current))) state.neben = false;
   if (state.neben && !nebenMoeglich()) { state.neben = false; state.view = 'detail'; }
   const neben = objektNeben();
+  if (objektOffen() && getDoc(state.current)?.isImmo && !state.tabs.includes(state.current)) state.tabs.push(state.current);
+  const tabsOben = tabsGanzeSeite();
+  document.body.classList.toggle('mit-tabs', tabsOben);
   menueKlassen();
   // Reiter „Tabelle“: Seite passt sich der Fensterhöhe an, nur die Tabelle scrollt (CSS .ansicht-fest)
   const fest = state.view === 'compare' && state.cmpTab === 'tabelle';
@@ -9062,8 +9180,8 @@ function render() {
   const scroll = scrollMerken();
   const seite = () => (state.view === 'start' ? viewStart() : state.view === 'compare' ? viewCompare() : state.view === 'profile' ? viewProfile() : viewDetail(getDoc(state.current)));
   main.innerHTML = neben
-    ? `<div class="geteilt-rahmen" style="--bereich:${(state.einst.breite * 100).toFixed(2)}%"><div class="view view-compare pane-liste">${viewCompare()}</div><div class="teiler no-print" role="separator" aria-orientation="vertical" tabindex="0" aria-label="Breite des Objektbereichs ändern" title="Ziehen ändert die Breite, Doppelklick setzt sie zurück"></div><section class="view view-detail pane-objekt" id="bereich" aria-label="Geöffnetes Objekt">${viewDetail(getDoc(state.current))}</section></div>`
-    : `<div class="view view-${state.view}">${seite()}</div>`;
+    ? `<div class="geteilt-rahmen" style="--bereich:${(state.einst.breite * 100).toFixed(2)}%"><div class="view view-compare pane-liste">${viewCompare()}</div><div class="teiler no-print" role="separator" aria-orientation="vertical" tabindex="0" aria-label="Breite des Objektbereichs ändern" title="Ziehen ändert die Breite, Doppelklick setzt sie zurück"></div><section class="view view-detail pane-objekt" id="bereich" aria-label="Geöffnetes Objekt">${tabLeiste()}${viewDetail(getDoc(state.current))}</section></div>`
+    : `${tabsOben ? tabLeiste() : ''}<div class="view view-${state.view}">${seite()}</div>`;
   scrollWiederherstellen(scroll);
   drawCharts();
   karteEinhaengen();
@@ -9150,12 +9268,16 @@ function renderSidebar() {
   const ansicht = immo.length
     ? `<nav class="menue-nav" aria-label="Ansichten">${CMP_TABS.map(punkt).join('')}</nav>`
     : '<p class="menue-leer">Noch keine Bewertungen geladen.</p>';
-  const offen = aktuell ? `<nav class="menue-nav" aria-label="Geöffnetes Objekt"><button class="navitem active" data-action="open" data-uid="${aktuell.uid}" aria-current="page"><span class="vdot ${aktuell.isImmo ? vcls(urteilOf(aktuell)) : 'v-crit'}"></span><span class="menue-text">${aktuell.isImmo ? `#${aktuell.num} ${esc(docTitle(aktuell))}` : esc(aktuell.fileName)}</span></button></nav>` : '';
+  // Geöffnete Objekte: dieselben wie die Tabs; „×“ schließt eines
+  const offenListe = state.tabs.map(getDoc).filter(Boolean);
+  if (aktuell && !offenListe.includes(aktuell)) offenListe.push(aktuell);
+  const offen = offenListe.length ? `<nav class="menue-nav" aria-label="Geöffnete Objekte">${offenListe.map(d => { const an = objektOffen() && d.uid === state.current; const name = d.isImmo ? `#${d.num} ${esc(docTitle(d))}` : esc(d.fileName); return `<div class="navzeile"><button class="navitem${an ? ' active' : ''}" data-action="open" data-uid="${d.uid}"${an ? ' aria-current="page"' : ''} title="${name}"><span class="vdot ${d.isImmo ? vcls(urteilOf(d)) : 'v-crit'}"></span><span class="menue-text">${name}</span></button>${state.tabs.includes(d.uid) ? `<button class="nav-x" data-action="tab-zu" data-uid="${d.uid}" aria-label="${name} schließen" title="Schließen">×</button>` : ''}</div>`; }).join('')}</nav>` : '';
   sb.innerHTML = menueGruppe('ansicht', 'Vergleich', ansicht)
     + (offen ? menueGruppe('offen', 'Geöffnet', offen) : '')
     + menueGruppe('profil', 'Profil', sidebarProfil())
-    + `<div class="side-fuss">${sidebarOrdner()}</div>`;
+    + `<div class="side-fuss">${sidebarOrdner()}<button class="navitem einst-knopf" data-action="einstellungen" id="einstKnopf" aria-haspopup="dialog" title="Einstellungen: Farbschema, Objektansicht, Speichern im Browser">${ikon('zahnrad')}<span class="menue-text">Einstellungen</span></button></div>`;
   $('#datenKnopf')?.classList.toggle('primary', !state.docs.length && state.view !== 'start');
+  bereichKnopfAuffrischen();
   popMenuesAuffrischen();
 }
 
@@ -9229,9 +9351,8 @@ function detailHead(doc) {
   // Der Prüfstatus steht nur dann als Knopf im Kopf, wenn es etwas zu tun gibt; sonst genügt der Punkt im Menü „⋯“
   const c = countIssues(doc), problem = c.error || c.warn, neben = objektNeben();
   return `<div class="dh-kopfzeile no-print">
-      ${neben ? `<div class="dh-werkzeuge"><button class="icon-knopf" data-action="neben-zu" aria-label="Bereich schließen" title="Bereich schließen (Esc)">${ikon('schliessen', 20)}</button><button class="icon-knopf" data-action="neben-voll" aria-label="Auf ganzer Seite öffnen" title="Auf ganzer Seite öffnen">${ikon('vollbild', 19)}</button></div>`
-    : immoDocs().length > 1 ? `<button class="zurueck-knopf" data-action="compare" title="Zurück zum Vergleich">${ikon('zurueck', 18)}<span>Vergleich</span></button>` : '<span></span>'}
-      <div class="dh-werkzeuge">${objektBlaettern(doc)}${!neben && nebenMoeglich() ? `<button class="icon-knopf" data-action="neben-auf" aria-label="Neben der Liste öffnen" title="Neben der Liste öffnen">${ikon('neben', 20)}</button>` : ''}<button class="icon-knopf" popovertarget="menueObjekt" aria-haspopup="menu" aria-expanded="false" aria-label="Weitere Aktionen" title="Weitere Aktionen: Inserat, Exportprüfung, Drucken, Entfernen">${ikon('mehr', 22)}</button></div>
+      ${!neben && !tabsGanzeSeite() && immoDocs().length > 1 ? `<button class="zurueck-knopf" data-action="compare" title="Zurück zum Vergleich">${ikon('zurueck', 18)}<span>Vergleich</span></button>` : '<span></span>'}
+      <div class="dh-werkzeuge">${objektBlaettern(doc)}<button class="icon-knopf" popovertarget="menueObjekt" aria-haspopup="menu" aria-expanded="false" aria-label="Weitere Aktionen" title="Weitere Aktionen: Inserat, Exportprüfung, Drucken, Entfernen">${ikon('mehr', 22)}</button></div>
     </div>
   <div class="detail-head">
     <div class="dh-row">
@@ -9284,7 +9405,7 @@ function objektNachbarn(doc) {
 function objektBlaettern(doc) {
   const n = objektNachbarn(doc);
   if (!n || n.liste.length < 2) return '';
-  const knopf = (ziel, richtung, text, symbol) => `<button class="icon-knopf" data-action="open" data-uid="${ziel ? ziel.uid : ''}"${ziel ? '' : ' disabled'} title="${ziel ? `${text}: #${ziel.num} ${esc(docTitle(ziel))} (Taste ${richtung})` : `Kein ${text.toLowerCase()}`}" aria-label="${text}">${ikon(symbol, 20)}</button>`;
+  const knopf = (ziel, richtung, text, symbol) => `<button class="icon-knopf" data-action="blaettern" data-uid="${ziel ? ziel.uid : ''}"${ziel ? '' : ' disabled'} title="${ziel ? `${text}: #${ziel.num} ${esc(docTitle(ziel))} (Taste ${richtung})` : `Kein ${text.toLowerCase()}`}" aria-label="${text}">${ikon(symbol, 20)}</button>`;
   return `<div class="dh-blaettern no-print" role="group" aria-label="Zwischen Objekten blättern">${knopf(n.vor, '←', 'Vorheriges Objekt', 'zurueck')}<span class="dh-position">${n.i + 1} von ${n.liste.length}</span>${knopf(n.nach, '→', 'Nächstes Objekt', 'pfeil')}</div>`;
 }
 
@@ -10192,10 +10313,8 @@ document.addEventListener('keydown', e => {
   const doc = getDoc(state.current), n = doc && objektNachbarn(doc), ziel = n && (e.key === 'ArrowLeft' ? n.vor : n.nach);
   if (!ziel) return;
   e.preventDefault();
-  state.current = ziel.uid;
-  render();
-  if (objektNeben()) { $('#bereich').scrollTop = 0; $(`.cmp-table tr[data-uid="${ziel.uid}"]`)?.scrollIntoView({ block: 'nearest' }); }
-  else window.scrollTo(0, 0);
+  objektOeffnen(ziel.uid, { ersetzen: true });
+  if (objektNeben()) $(`.cmp-table tr[data-uid="${ziel.uid}"]`)?.scrollIntoView({ block: 'nearest' });
 });
 // Auf- und Zuklappen der Menügruppen merken (toggle steigt nicht auf, daher in der Einfangphase)
 document.addEventListener('toggle', e => {
