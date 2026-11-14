@@ -700,18 +700,18 @@ svg.leaflet-image-layer.leaflet-interactive path {
 <style>
 :root {
   color-scheme: light;
-  --page: #f4f3ef;
-  --surface: #fcfcfb;
-  --surface-2: #f0efec;
-  --surface-3: #e6e5df;
-  --ink: #0b0b0b;
-  --ink-2: #52514e;
-  --muted: #898781;
-  --line: #e1e0d9;
-  --line-2: #c3c2b7;
-  --accent: #2a78d6;
-  --accent-ink: #1c5cab;
-  --accent-wash: rgba(42, 120, 214, .10);
+  --page: #f5f5f7;
+  --surface: #ffffff;
+  --surface-2: #f2f2f5;
+  --surface-3: #e8e8ed;
+  --ink: #1d1d1f;
+  --ink-2: #6e6e73;
+  --muted: #8e8e93;
+  --line: #e5e5ea;
+  --line-2: #d2d2d7;
+  --accent: #0071e3;
+  --accent-ink: #0066cc;
+  --accent-wash: rgba(0, 113, 227, .10);
   --s-good: #0ca30c;
   --s-warn: #fab219;
   --s-serious: #ec835a;
@@ -727,24 +727,29 @@ svg.leaflet-image-layer.leaflet-interactive path {
   --pos: #2a78d6;
   --neg: #e34948;
   --range: #86b6ef;
-  --shadow: 0 1px 2px rgba(0, 0, 0, .04), 0 2px 10px rgba(0, 0, 0, .035);
-  --radius: 12px;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .04), 0 4px 18px rgba(0, 0, 0, .04);
+  --radius: 16px;
+  /* Füllfarben für Knöpfe und Felder (Apple: „fill“), Seitenleiste */
+  --fill: rgba(118, 118, 128, .12);
+  --fill-2: rgba(118, 118, 128, .20);
+  --leiste: rgba(255, 255, 255, .78);
+  --daumen: #ffffff;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
-    --page: #0d0d0d;
-    --surface: #1a1a19;
-    --surface-2: #232321;
-    --surface-3: #2e2e2b;
-    --ink: #f0efec;
-    --ink-2: #c3c2b7;
-    --muted: #898781;
-    --line: #2c2c2a;
-    --line-2: #44443f;
-    --accent: #3987e5;
-    --accent-ink: #86b6ef;
-    --accent-wash: rgba(57, 135, 229, .16);
+    --page: #000000;
+    --surface: #1c1c1e;
+    --surface-2: #2c2c2e;
+    --surface-3: #3a3a3c;
+    --ink: #f5f5f7;
+    --ink-2: #a1a1a6;
+    --muted: #8e8e93;
+    --line: #2c2c2e;
+    --line-2: #48484a;
+    --accent: #0a84ff;
+    --accent-ink: #4da3ff;
+    --accent-wash: rgba(10, 132, 255, .20);
     --crit-ink: #f08a8a;
     --good-ink: #4cc44c;
     --warn-ink: #f5c04a;
@@ -757,22 +762,26 @@ svg.leaflet-image-layer.leaflet-interactive path {
     --neg: #e66767;
     --range: #1c5cab;
     --shadow: none;
+    --fill: rgba(118, 118, 128, .24);
+    --fill-2: rgba(118, 118, 128, .36);
+    --leiste: rgba(28, 28, 30, .78);
+    --daumen: #636366;
   }
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --page: #0d0d0d;
-  --surface: #1a1a19;
-  --surface-2: #232321;
-  --surface-3: #2e2e2b;
-  --ink: #f0efec;
-  --ink-2: #c3c2b7;
-  --muted: #898781;
-  --line: #2c2c2a;
-  --line-2: #44443f;
-  --accent: #3987e5;
-  --accent-ink: #86b6ef;
-  --accent-wash: rgba(57, 135, 229, .16);
+  --page: #000000;
+  --surface: #1c1c1e;
+  --surface-2: #2c2c2e;
+  --surface-3: #3a3a3c;
+  --ink: #f5f5f7;
+  --ink-2: #a1a1a6;
+  --muted: #8e8e93;
+  --line: #2c2c2e;
+  --line-2: #48484a;
+  --accent: #0a84ff;
+  --accent-ink: #4da3ff;
+  --accent-wash: rgba(10, 132, 255, .20);
   --crit-ink: #f08a8a;
   --good-ink: #4cc44c;
   --warn-ink: #f5c04a;
@@ -785,6 +794,10 @@ svg.leaflet-image-layer.leaflet-interactive path {
   --neg: #e66767;
   --range: #1c5cab;
   --shadow: none;
+  --fill: rgba(118, 118, 128, .24);
+  --fill-2: rgba(118, 118, 128, .36);
+  --leiste: rgba(28, 28, 30, .78);
+  --daumen: #636366;
 }
 
 * { box-sizing: border-box; }
@@ -792,31 +805,31 @@ html, body { margin: 0; }
 body {
   background: var(--page);
   color: var(--ink);
-  font: 14.5px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font: 15px/1.47 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 button, input, select, textarea { font: inherit; color: inherit; }
 a { color: var(--accent-ink); text-underline-offset: 2px; }
 code { font: 12px/1.4 ui-monospace, "SF Mono", Menlo, Consolas, monospace; background: var(--surface-2); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
-h1, h2, h3 { letter-spacing: -.01em; }
+h1, h2, h3 { letter-spacing: -.02em; }
 .muted { color: var(--ink-2); }
 .small { font-size: 12.5px; }
 
 /* ---------- Grundlayout ---------- */
 .topbar {
   position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30;
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  height: 52px; padding: 0 16px;
-  background: var(--surface); border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: space-between; gap: 6px;
+  height: 52px; padding: 0 14px 0 10px;
+  background: var(--leiste); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--line);
 }
-.brand { display: flex; align-items: center; gap: 10px; margin-right: auto; font-weight: 600; white-space: nowrap; min-width: 0; }
-.brand svg { width: 22px; height: 22px; color: var(--accent); flex: none; }
-.brand .light { font-weight: 500; color: var(--ink-2); }
-.layout { display: grid; grid-template-columns: 300px minmax(0, 1fr); min-height: calc(100vh - 52px); }
+.brand { display: flex; align-items: center; gap: 8px; margin: 0 auto 0 6px; font-size: 15px; font-weight: 600; letter-spacing: -.01em; white-space: nowrap; min-width: 0; }
+.brand svg { width: 20px; height: 20px; color: var(--accent); flex: none; }
+.layout { display: grid; grid-template-columns: 248px minmax(0, 1fr); min-height: calc(100vh - 52px); }
 .sidebar {
   position: sticky; top: calc(52px + env(safe-area-inset-top, 0px)); height: calc(100vh - 52px - env(safe-area-inset-top, 0px)); overflow: auto;
-  display: flex; flex-direction: column; gap: 12px; padding: 14px;
-  background: var(--surface); border-right: 1px solid var(--line);
+  display: flex; flex-direction: column; gap: 14px; padding: 14px 10px 10px;
+  background: var(--page); border-right: 1px solid var(--line);
 }
 .main { padding: 24px clamp(16px, 3vw, 36px) 72px; min-width: 0; }
 /* Vergleich nutzt die volle Breite (breite Tabelle), Einzelansicht bleibt lesbar begrenzt und mittig */
@@ -826,55 +839,62 @@ h1, h2, h3 { letter-spacing: -.01em; }
 /* ---------- Buttons ---------- */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-  height: 32px; padding: 0 12px; border-radius: 8px;
-  border: 1px solid var(--line-2); background: var(--surface);
+  height: 32px; padding: 0 14px; border-radius: 8px;
+  border: 1px solid transparent; background: var(--fill);
   font-size: 13.5px; font-weight: 500; white-space: nowrap; cursor: pointer;
+  transition: background .12s;
 }
-.btn:hover { background: var(--surface-2); }
-.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-.btn.primary:hover { filter: brightness(1.07); }
-.btn.ghost { background: transparent; border-color: transparent; }
-.btn.ghost:hover { background: var(--surface-2); }
-.btn.sm { height: 28px; padding: 0 10px; font-size: 12.5px; }
+.btn:hover { background: var(--fill-2); }
+.btn:active { filter: brightness(.96); }
+.btn.primary { background: var(--accent); color: #fff; }
+.btn.primary:hover { background: var(--accent); filter: brightness(1.08); }
+.btn.ghost { background: transparent; }
+.btn.ghost:hover { background: var(--fill); }
+.btn.sm { height: 28px; padding: 0 11px; border-radius: 7px; font-size: 12.5px; }
+.btn:disabled { opacity: .45; cursor: default; }
 .linkbtn { border: 0; background: none; padding: 0; color: var(--accent-ink); cursor: pointer; font-size: 13.5px; }
 .linkbtn:hover { text-decoration: underline; }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 55%, transparent); outline-offset: 1px; }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 40; background: var(--surface); }
 body.hosted .needs-print, body.hosted .needs-theme, body.no-downloads .needs-download { display: none !important; }
 
 /* ---------- Sidebar ---------- */
-.side-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-.side-actions .btn { padding: 0 6px; }
 .navitem {
-  display: flex; align-items: center; gap: 10px; width: 100%;
-  padding: 8px 10px; border-radius: 8px; border: 0; background: transparent;
-  text-align: left; cursor: pointer; font-weight: 600;
+  display: flex; align-items: center; gap: 9px; width: 100%;
+  padding: 7px 10px; border-radius: 8px; border: 0; background: transparent;
+  text-align: left; cursor: pointer; font-size: 14px; font-weight: 500; color: var(--ink);
 }
-.navitem .count { margin-left: auto; font-size: 12.5px; font-weight: 500; color: var(--ink-2); background: var(--surface-3); border-radius: 999px; padding: 0 8px; }
-.navitem:hover { background: var(--surface-2); }
-.navitem.active { background: var(--accent-wash); color: var(--accent-ink); }
-.navitem.sub { padding: 6px 10px; font-weight: 500; font-size: 13.5px; }
-.navitem .vdot { flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--vc); }
+.navitem .ikon { color: var(--accent); }
+.navitem .count { margin-left: auto; font-size: 12px; font-weight: 500; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.navitem:hover { background: var(--fill); }
+.navitem.active { background: var(--fill-2); font-weight: 600; }
+.navitem .vdot { flex: none; width: 9px; height: 9px; margin: 0 4px; border-radius: 50%; background: var(--vc); }
 .menue-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-/* Menü links: Gruppen zum Auf- und Zuklappen */
-.menue-gruppe { border-bottom: 1px solid var(--line); padding-bottom: 8px; }
-.menue-gruppe:last-child { border-bottom: 0; }
-.menue-gruppe > summary { display: flex; align-items: center; gap: 8px; padding: 8px 6px; border-radius: 8px; font-size: 13.5px; font-weight: 650; cursor: pointer; list-style: none; user-select: none; }
+/* Seitenleiste: Gruppen mit kleiner grauer Überschrift, zum Auf- und Zuklappen (Pfeil erscheint beim Darüberfahren) */
+.menue-gruppe > summary { display: flex; align-items: center; gap: 6px; padding: 2px 10px 5px; font-size: 12px; font-weight: 600; color: var(--muted); cursor: pointer; list-style: none; user-select: none; border-radius: 6px; }
 .menue-gruppe > summary::-webkit-details-marker { display: none; }
-.menue-gruppe > summary svg { width: 17px; height: 17px; flex: none; color: var(--accent); }
-.menue-gruppe > summary::after { content: ""; margin-left: auto; width: 7px; height: 7px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(-45deg); transition: transform .15s; }
+.menue-gruppe > summary::after { content: ""; margin-left: auto; width: 6px; height: 6px; border-right: 1.5px solid var(--muted); border-bottom: 1.5px solid var(--muted); transform: rotate(-45deg); transition: transform .15s, opacity .15s; opacity: 0; }
 .menue-gruppe[open] > summary::after { transform: rotate(45deg); }
-.menue-gruppe > summary:hover { background: var(--surface-2); }
-.menue-gruppe > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
-.menue-inhalt { display: flex; flex-direction: column; gap: 8px; padding: 2px 0 0 4px; }
+.menue-gruppe > summary:hover::after, .menue-gruppe:not([open]) > summary::after, .menue-gruppe > summary:focus-visible::after { opacity: 1; }
+.menue-gruppe > summary:hover { color: var(--ink-2); }
+.menue-inhalt { display: flex; flex-direction: column; gap: 4px; }
 .menue-nav { display: flex; flex-direction: column; gap: 1px; }
-.menue-label { margin: 6px 10px 2px; font-size: 11.5px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
-.menue-knopf { padding: 0 8px; margin-left: -6px; }
+.menue-leer { margin: 2px 10px; font-size: 12.5px; color: var(--ink-2); }
+.side-fuss { margin-top: auto; }
+.side-ordner { display: flex; align-items: center; gap: 9px; width: 100%; padding: 8px 10px; border: 0; border-radius: 10px; background: transparent; color: var(--ink-2); text-align: left; font: inherit; }
+button.side-ordner { cursor: pointer; }
+/* Braucht der Ordner eine Handlung (Zugriff erlauben, neu verbinden), steht der Knopf in einer zweiten Zeile */
+div.side-ordner { flex-wrap: wrap; row-gap: 6px; }
+div.side-ordner .side-ordner-text { flex: 1 1 calc(100% - 30px); }
+div.side-ordner .btn { margin-left: 26px; }
+button.side-ordner:hover, button.side-ordner[aria-expanded="true"] { background: var(--fill); }
+.side-ordner .ikon { color: var(--accent); }
+.side-ordner-text { display: flex; flex-direction: column; flex: 1; min-width: 0; font-size: 12px; line-height: 1.35; }
+.side-ordner-name { color: var(--ink); font-size: 13.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .menue-zu .layout { grid-template-columns: minmax(0, 1fr); }
 .menue-zu .sidebar { display: none; }
 .icon-btn { flex: none; width: 24px; height: 24px; border-radius: 6px; border: 0; background: transparent; color: var(--muted); cursor: pointer; font-size: 16px; line-height: 1; }
 .icon-btn:hover { background: var(--surface-3); color: var(--ink); }
-.side-foot { padding-top: 10px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 8px; font-size: 12.5px; color: var(--ink-2); }
 .check { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13.5px; }
 .notice { font-size: 12.5px; color: var(--crit-ink); }
 
@@ -947,12 +967,13 @@ button.tag { cursor: pointer; }
 .card .card-sub { margin: 0 0 14px; font-size: 12.5px; color: var(--ink-2); }
 .sec { margin-top: 32px; scroll-margin-top: 112px; }
 .sec > h2 { font-size: 18px; margin: 0 0 12px; display: flex; align-items: center; gap: 10px; }
-.letter { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 7px; background: var(--ink); color: var(--surface); font-size: 13.5px; font-weight: 700; }
+.letter { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 8px; background: var(--fill-2); color: var(--ink); font-size: 13.5px; font-weight: 700; }
 .stack { display: flex; flex-direction: column; gap: 14px; }
 .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 14px; }
-.page-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
-.page-head h1 { margin: 0; font-size: 26px; }
-.sub { margin: 2px 0 0; color: var(--ink-2); }
+.page-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 20px; margin-bottom: 16px; }
+.page-head h1 .info, .dh-main h1 .info { vertical-align: 4px; }
+.page-head h1 { margin: 0; font-size: 30px; font-weight: 700; letter-spacing: -.028em; line-height: 1.15; }
+.sub { margin: 4px 0 0; color: var(--ink-2); font-size: 14px; }
 .eyebrow { font-size: 11.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: .06em; }
 .callout { margin-top: 14px; padding: 12px 16px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--line); font-size: 13.5px; }
 .callout ul { margin: 4px 0 0; padding-left: 18px; }
@@ -960,17 +981,15 @@ button.tag { cursor: pointer; }
 .empty b { color: var(--ink); font-weight: 600; }
 
 /* ---------- Detail-Kopf ---------- */
-.crumbs { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--ink-2); min-width: 0; }
-.crumbs .file { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; }
 .dh-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px; margin-top: 8px; }
 .dh-main { min-width: 0; flex: 1 1 520px; }
-.dh-main h1 { margin: 0; font-size: 25px; line-height: 1.25; }
+.dh-main h1 { margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -.026em; line-height: 1.18; }
 .num { color: var(--muted); font-weight: 500; }
 .dh-actions { display: flex; gap: 6px; flex-wrap: wrap; }
 .meta-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
-.meta { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 8px; background: var(--surface); border: 1px solid var(--line); font-size: 12.5px; }
+.meta { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: var(--fill); font-size: 12.5px; }
 .meta .muted { font-size: 11.5px; }
-.revnote { margin-top: 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 10px; font-size: 13.5px; background: var(--accent-wash); border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); }
+.revnote { margin-top: 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 12px; font-size: 13.5px; background: var(--accent-wash); }
 .subnav {
   position: sticky; top: calc(52px + env(safe-area-inset-top, 0px)); z-index: 20;
   display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none;
@@ -1001,21 +1020,22 @@ button.tag { cursor: pointer; }
 .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 188px), 1fr)); gap: 10px; margin-top: 14px; }
 .tiles.stats { grid-template-columns: repeat(5, minmax(0, 1fr)); margin-top: 0; }
 /* Urteilsleiste im Vergleich: Anzahl je Gesamturteil, anklickbar als Filter */
-.urteil-leiste { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 4px 0 0; }
-.urteil-gesamt { margin-right: 6px; font-size: 13.5px; color: var(--ink-2); }
-.urteil-gesamt b { font-size: 20px; color: var(--ink); margin-right: 2px; font-variant-numeric: tabular-nums; }
-.urteil-chip { display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 12px 0 6px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--surface); font-size: 13.5px; cursor: pointer; }
-.urteil-chip:hover { background: var(--surface-2); }
+.urteil-leiste { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.urteil-chip { display: inline-flex; align-items: center; gap: 7px; height: 30px; padding: 0 12px 0 5px; border-radius: 999px; border: 0; background: var(--fill); font-size: 13.5px; cursor: pointer; transition: background .12s; }
+.urteil-chip:hover { background: var(--fill-2); }
 .urteil-chip .vi { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--vc); color: #fff; font-size: 11.5px; font-weight: 700; }
 .urteil-chip.v-warn .vi { color: #3a2a00; }
-.urteil-chip b { font-variant-numeric: tabular-nums; }
-.urteil-chip.an { border-color: var(--vc); background: color-mix(in srgb, var(--vc) 14%, var(--surface)); box-shadow: 0 0 0 1px var(--vc); }
+.urteil-chip b { font-weight: 500; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.urteil-chip.an { background: color-mix(in srgb, var(--vc) 16%, var(--surface)); box-shadow: inset 0 0 0 1.5px var(--vc); }
 .urteil-chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 /* Blättern in der Einzelansicht */
-.dh-kopfzeile { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
-.dh-blaettern { display: flex; align-items: center; gap: 6px; flex: none; }
-.dh-position { min-width: 64px; text-align: center; font-size: 12.5px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
-.dh-blaettern .btn:disabled { opacity: .4; cursor: default; }
+.dh-kopfzeile { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin: -6px 0 6px; }
+.dh-werkzeuge { display: flex; align-items: center; gap: 6px; }
+.zurueck-knopf { display: inline-flex; align-items: center; gap: 1px; height: 32px; margin-left: -8px; padding: 0 10px 0 4px; border: 0; border-radius: 8px; background: transparent; color: var(--accent-ink); font-size: 15px; cursor: pointer; }
+.zurueck-knopf:hover { background: var(--fill); }
+.dh-blaettern { display: flex; align-items: center; gap: 2px; flex: none; }
+.dh-position { min-width: 58px; text-align: center; font-size: 12.5px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.icon-knopf:disabled { opacity: .3; cursor: default; background: transparent; }
 .tile { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 3px; min-height: 98px; box-shadow: var(--shadow); }
 .tile-label { font-size: 12.5px; color: var(--ink-2); }
 .tile-value { font-size: 21px; font-weight: 600; letter-spacing: -.01em; line-height: 1.25; }
@@ -1036,14 +1056,14 @@ button.tag { cursor: pointer; }
 
 /* ---------- Tabellen ---------- */
 .table-wrap { overflow-x: auto; }
-table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
-.t th, .t td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
-.t thead th { font-weight: 600; color: var(--ink-2); font-size: 12.5px; background: var(--surface-2); white-space: nowrap; }
+table.t { width: 100%; border-collapse: collapse; font-size: 14px; }
+.t th, .t td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.t thead th { font-weight: 500; color: var(--ink-2); font-size: 12.5px; background: var(--surface); white-space: nowrap; }
 .t tbody tr:last-child td { border-bottom: 0; }
 .t .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .t .nowrap { white-space: nowrap; }
 .t tr.clickable { cursor: pointer; }
-.t tr.clickable:hover td { background: var(--accent-wash); }
+.t tr.clickable:hover td { background: color-mix(in srgb, var(--ink) 4%, var(--surface)); }
 .t tr.excluded td { color: var(--muted); }
 .t tr.strong td { font-weight: 600; }
 .t th.sortable { cursor: pointer; user-select: none; }
@@ -1069,11 +1089,11 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 .table-wrap.fest .cmp-table thead th:nth-child(3) { z-index: 3; box-shadow: inset 0 -1px 0 var(--line), 1px 0 0 var(--line); }
 /* Überschriften der Vergleichstabelle: Beschriftung sortiert, Trichter öffnet das Spaltenmenü (src/oberflaeche/spaltenfilter.js) */
 .cmp-table th.sortable { cursor: default; }
-.cmp-table .th-kopf { display: flex; align-items: flex-end; gap: 3px; }
+.cmp-table .th-kopf { display: flex; align-items: flex-end; gap: 2px; }
 .cmp-table th.num .th-kopf { justify-content: flex-end; }
 .th-sort { border: 0; background: none; padding: 0; font: inherit; color: inherit; text-align: inherit; line-height: inherit; cursor: pointer; }
 .th-sort:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 2px; }
-.th-filter { flex: none; display: inline-grid; place-items: center; width: 22px; height: 22px; margin: 0 -2px -3px 0; border: 0; border-radius: 6px; background: none; color: var(--muted); cursor: pointer; }
+.th-filter { flex: none; display: inline-grid; place-items: center; width: 18px; height: 22px; margin: 0 0 -3px 0; border: 0; border-radius: 6px; background: none; color: var(--muted); cursor: pointer; }
 .th-filter:hover, .th-filter[aria-expanded="true"] { background: var(--surface-3); color: var(--ink); }
 .th-filter.aktiv { background: var(--accent); color: #fff; }
 .th-filter.aktiv svg path { fill: currentColor; }
@@ -1107,22 +1127,37 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 .sf-chip-text:hover, .sf-chip-x:hover { background: color-mix(in srgb, var(--accent) 14%, transparent); }
 .t td.cell-obj { min-width: 200px; }
 /* Kompakte Zeilen der Vergleichstabelle: Titel höchstens zwei Zeilen, Unterzeile eine Zeile, voller Text im Tooltip */
-.cmp-table td { padding-top: 6px; padding-bottom: 6px; }
-.cmp-table td.cell-obj { min-width: 220px; max-width: 320px; }
+.cmp-table td { padding-top: 13px; padding-bottom: 13px; vertical-align: middle; }
+.cmp-table td.cell-obj { min-width: 220px; max-width: 340px; }
+/* Unterzeile bestimmt die Spaltenbreite nicht mit: die Objektspalte darf schrumpfen, wenn der Platz knapp ist */
+.cmp-table .obj-sub { width: 0; min-width: 100%; }
+/* Belegstatus-Punkt sitzt im rechten Rand der Zahlenzelle, damit die Zahlen bündig unter der Überschrift stehen */
+.cmp-table td.num { position: relative; padding-right: 22px; }
+.cmp-table td.num .st.compact { position: absolute; right: 2px; top: 50%; transform: translateY(-50%); }
+.cmp-table th.num { padding-right: 2px; }
+.cmp-table :is(td, th):nth-child(2) { padding-right: 4px; }
 .cmp-table .obj-title { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .cmp-table .obj-sub { display: flex; align-items: center; gap: 4px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .cmp-table .obj-sub .tag { flex: none; }
 .cmp-table .obj-sub-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .t .obj-title { font-weight: 600; line-height: 1.35; }
+.cmp-table .obj-title { font-size: 15px; letter-spacing: -.01em; }
 .t .obj-sub { font-size: 12.5px; color: var(--ink-2); }
 .t .scen { display: block; font-size: 11.5px; }
 .cmp-table th:first-child, .cmp-table td:first-child { width: 34px; padding-right: 0; }
+/* Ruhige Tabelle: Auswahlkästchen und Filter-Trichter erscheinen erst beim Darüberfahren, per Tastatur oder wenn sie aktiv sind */
+@media (hover: hover) {
+  .cmp-table :is(td, th):first-child input { opacity: 0; transition: opacity .12s; }
+  .cmp-table tr:hover > :is(td, th):first-child input, .cmp-table :is(td, th):first-child input:is(:checked, :focus-visible), .cmp-table.mit-auswahl :is(td, th):first-child input { opacity: 1; }
+  .cmp-table .th-filter:not(.aktiv):not([aria-expanded="true"]) { opacity: 0; transition: opacity .12s; }
+  .cmp-table th:hover .th-filter, .cmp-table .th-filter:focus-visible { opacity: 1; }
+}
 .cmp-table thead th, .cmp-table thead th.num { white-space: normal; vertical-align: bottom; line-height: 1.3; }
 .cmp-table td.cell-urteil { min-width: 0; white-space: nowrap; }
 /* Info-Symbol (ⓘ) mit Hinweis beim Darüberfahren, Fokussieren oder Antippen (src/oberflaeche/info.js) */
 .info { display: inline-flex; vertical-align: middle; margin-left: 4px; line-height: 1; }
-.info-i { all: unset; box-sizing: border-box; display: inline-grid; place-items: center; width: 17px; height: 17px; border-radius: 50%; border: 1.5px solid var(--line-2); color: var(--ink-2); background: var(--surface); font: 700 11px/1 Georgia, 'Times New Roman', serif; font-style: italic; cursor: help; flex: none; }
-.info-i:hover, .info-i[aria-expanded="true"] { border-color: var(--accent); color: var(--accent-ink); background: var(--accent-wash); }
+.info-i { all: unset; box-sizing: border-box; display: inline-grid; place-items: center; width: 17px; height: 17px; border-radius: 50%; border: 1.5px solid currentColor; color: var(--muted); font: 700 11px/1 -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; cursor: help; flex: none; }
+.info-i:hover, .info-i[aria-expanded="true"] { color: var(--accent); background: var(--accent-wash); }
 .info-i:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 @media (pointer: coarse) { .info-i { width: 22px; height: 22px; font-size: 13px; } }
 .info-blase { position: fixed; inset: auto; left: 0; top: 0; margin: 0; z-index: 1000; display: none; box-sizing: border-box; max-width: min(360px, calc(100vw - 16px)); padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line-2); background: var(--surface); color: var(--ink); box-shadow: 0 6px 24px rgba(0, 0, 0, .16); font-size: 13px; font-weight: 400; font-style: normal; line-height: 1.45; text-align: left; white-space: normal; letter-spacing: normal; text-transform: none; overflow: visible; }
@@ -1136,25 +1171,25 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 .legende-zeile { display: flex; justify-content: flex-end; align-items: center; gap: 2px; margin: 8px 0 0; font-size: 12.5px; color: var(--ink-2); }
 /* Mein Status: Auswahl in der Tabelle, Kurzform auf Karten, Karte „Mein Stand“ in der Einzelansicht */
 .status-zelle { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
-.status-wahl { height: 28px; max-width: 150px; padding: 0 6px; border-radius: 7px; border: 1px solid var(--line-2); background: var(--surface); color: var(--ink); font-size: 12.5px; cursor: pointer; }
+.status-wahl { appearance: none; -webkit-appearance: none; height: 28px; max-width: 136px; padding: 0 24px 0 11px; border-radius: 999px; border: 0; background: var(--fill) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%238e8e93' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 10px center; color: var(--ink); font-size: 13px; font-weight: 500; cursor: pointer; }
 .status-wahl:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
-.status-wahl:not(.s-interessant):not(.s-angefragt):not(.s-besichtigung):not(.s-angebot):not(.s-gekauft):not(.s-abgesagt) { color: var(--muted); }
-.status-wahl[class*=" s-"], .status-chip { border-color: var(--sc); background: color-mix(in srgb, var(--sc) 12%, var(--surface)); }
+.status-wahl:not(.s-interessant):not(.s-angefragt):not(.s-besichtigung):not(.s-angebot):not(.s-gekauft):not(.s-abgesagt) { color: var(--ink-2); font-weight: 400; }
+.status-wahl[class*=" s-"] { background-color: color-mix(in srgb, var(--sc) 16%, var(--surface)); }
+.status-chip { border-color: transparent; background: color-mix(in srgb, var(--sc) 16%, var(--surface)); }
 .s-interessant { --sc: var(--c-blue); } .s-angefragt { --sc: var(--c-violet); } .s-besichtigung { --sc: var(--c-orange); }
 .s-angebot { --sc: var(--c-yellow); } .s-gekauft { --sc: var(--s-good); } .s-abgesagt { --sc: var(--muted); }
 .status-termin { font-size: 12px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
 .status-notiz { color: var(--accent-ink); cursor: help; }
 .status-chip { display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 999px; border: 1px solid; font-size: 12.5px; font-weight: 500; }
-.mein-stand { margin-top: 16px; padding: 14px 18px; display: flex; flex-direction: column; gap: 10px; }
-.ms-kopf { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; }
+.mein-stand { margin-top: 16px; padding: 14px 18px; display: grid; grid-template-columns: minmax(130px, auto) minmax(150px, 190px) minmax(140px, 170px) minmax(200px, 1fr); gap: 10px 16px; align-items: start; }
+.ms-kopf { display: flex; flex-direction: column; gap: 2px; padding-top: 2px; }
 .ms-kopf h3 { margin: 0; }
-.ms-felder { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 10px 16px; }
+.ms-kopf .fine { font-size: 12px; }
 .mein-stand select, .mein-stand input[type="date"], .mein-stand textarea { width: 100%; min-width: 0; border-radius: 8px; border: 1px solid var(--line-2); background: var(--surface); color: var(--ink); font-size: 13.5px; }
 .mein-stand select, .mein-stand input[type="date"] { height: 34px; padding: 0 8px; }
-.mein-stand textarea { padding: 8px 10px; resize: vertical; min-height: 64px; font: inherit; font-size: 13.5px; line-height: 1.45; }
-.mein-stand :is(select, input, textarea):focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
-.side-sicherung { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding-top: 10px; border-top: 1px solid var(--line); }
-.side-sicherung .btn:disabled { opacity: .5; cursor: default; }
+.mein-stand textarea { display: block; padding: 7px 10px; resize: vertical; min-height: 34px; height: 34px; font: inherit; font-size: 13.5px; line-height: 1.4; field-sizing: content; max-height: 40vh; }
+.mein-stand :is(select, input, textarea):focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 45%, transparent); outline-offset: 0; border-color: var(--accent); }
+@media (max-width: 1100px) { .mein-stand { grid-template-columns: repeat(2, minmax(0, 1fr)); } .mein-stand .ms-kopf, .mein-stand .ms-notiz { grid-column: 1 / -1; } }
 /* Feste Auswahlleiste für die Gegenüberstellung */
 .auswahl-leiste { position: sticky; bottom: 12px; z-index: 40; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; width: fit-content; max-width: 100%; margin: 16px auto 0; padding: 8px 10px 8px 16px; border-radius: 16px; border: 1px solid var(--line-2); background: var(--surface); box-shadow: 0 6px 24px rgba(0, 0, 0, .2); font-size: 13.5px; }
 .auswahl-leiste .btn:disabled { opacity: .5; cursor: default; }
@@ -1182,17 +1217,16 @@ table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 }
 /* Einheitliche Legende für unbekannte und abgeleitete Werte */
 /* Einzelansicht: weitere Angaben eingeklappt, aktiver Abschnitt in der Navigation */
-.meta-mehr { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 8px; border: 1px dashed var(--line-2); background: transparent; font-size: 12.5px; color: var(--ink-2); cursor: pointer; }
-.meta-mehr:hover { background: var(--surface-2); color: var(--ink); }
+.meta-mehr { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; border: 0; background: transparent; font-size: 12.5px; color: var(--accent-ink); cursor: pointer; }
+.meta-mehr:hover { background: var(--fill); }
 .subnav button.aktiv { background: var(--accent-wash); color: var(--accent-ink); font-weight: 600; }
 /* Kopfzeile: Version und Hilfe */
-.versions-knopf { margin-left: 6px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--surface-2); color: var(--ink-2); font-size: 11.5px; font-weight: 500; cursor: pointer; white-space: nowrap; }
-.versions-knopf:hover { color: var(--ink); background: var(--surface-3); }
-.hilfe-knopf { gap: 6px; }
-@media (max-width: 520px) { .hilfe-knopf span { display: none; } .versions-knopf { margin-left: 2px; } }
+.versions-knopf { margin-left: 2px; padding: 2px 6px; border-radius: 6px; border: 0; background: none; color: var(--muted); font-size: 12px; font-weight: 400; cursor: pointer; white-space: nowrap; }
+.versions-knopf:hover { color: var(--ink); background: var(--fill); }
+@media (max-width: 520px) { .daten-knopf span, .versions-knopf { display: none; } .daten-knopf { padding: 0 9px; } .such-feld { width: auto; flex: 1; } .werkzeuge { flex: 1 1 100%; } }
 /* Hilfe */
 dialog.breit { width: min(860px, calc(100vw - 32px)); }
-.hilfe-reiter { display: flex; flex-wrap: wrap; gap: 2px; margin: -4px 0 14px; border-bottom: 1px solid var(--line); }
+.hilfe-reiter { display: flex; flex-wrap: wrap; width: fit-content; max-width: 100%; gap: 2px; margin: 0 0 16px; padding: 2px; border-radius: 10px; background: var(--fill); }
 .hilfe-inhalt { font-size: 13.5px; }
 .hilfe-einleitung { margin: 0 0 12px; }
 .hilfe-schritte { list-style: none; margin: 0 0 12px; padding: 0; display: flex; flex-direction: column; gap: 10px; }
@@ -1217,7 +1251,7 @@ kbd { display: inline-block; min-width: 22px; padding: 1px 6px; border-radius: 6
 /* Spalten mit dem aktiven Profil, leicht blau hinterlegt */
 .cmp-table td.profilspalte { background: color-mix(in srgb, var(--accent) 5%, transparent); }
 .table-wrap .cmp-table thead th.profilspalte { background: color-mix(in srgb, var(--accent) 12%, var(--surface-2)); color: var(--accent-ink); }
-.cmp-table th, .cmp-table td { padding-left: 8px; padding-right: 8px; }
+.cmp-table th, .cmp-table td { padding-left: 10px; padding-right: 10px; }
 /* Zusätze wie „strittig · W1“ oder Szenariowerte brechen in eine zweite Zeile um, statt die Spalte zu verbreitern */
 .cmp-table td.num { white-space: nowrap; }
 .cmp-table td.num .val { white-space: nowrap; }
@@ -1225,8 +1259,8 @@ kbd { display: inline-block; min-width: 22px; padding: 1px 6px; border-radius: 6
 /* Objektspalte bleibt beim seitlichen Scrollen auf schmaleren Bildschirmen stehen */
 .cmp-table td.cell-obj, .cmp-table thead th:nth-child(3) { position: sticky; left: 0; z-index: 1; box-shadow: 1px 0 0 var(--line); }
 .cmp-table td.cell-obj { background: var(--surface); }
-.cmp-table thead th:nth-child(3) { background: var(--surface-2); }
-.cmp-table tr.clickable:hover td.cell-obj { background: color-mix(in srgb, var(--accent) 10%, var(--surface)); }
+.cmp-table thead th:nth-child(3) { background: var(--surface); }
+.cmp-table tr.clickable:hover td.cell-obj { background: color-mix(in srgb, var(--ink) 4%, var(--surface)); }
 .cmp-table .verdict.sm { align-items: flex-start; }
 .cmp-table .verdict.sm .vi { margin-top: 1px; }
 
@@ -1296,19 +1330,19 @@ details.raw summary { cursor: pointer; font-weight: 600; }
 details.raw pre { margin: 12px 0 0; padding: 14px; max-height: 560px; overflow: auto; background: var(--surface-2); border-radius: 8px; font: 12px/1.5 ui-monospace, "SF Mono", Menlo, monospace; white-space: pre; }
 
 /* Vergleich: Reiter, Ortsfilter, Preisübersicht, Auswahl */
-.cmp-tabs { display: flex; gap: 2px; margin-top: 20px; border-bottom: 1px solid var(--line); overflow-x: auto; scrollbar-width: none; }
+.cmp-tabs { display: none; width: fit-content; max-width: 100%; gap: 2px; margin: 0 0 14px; padding: 2px; border-radius: 10px; background: var(--fill); overflow-x: auto; scrollbar-width: none; }
+.menue-zu .cmp-tabs { display: flex; }
 .cmp-tabs::-webkit-scrollbar { display: none; }
-.cmp-tab { flex: none; display: inline-flex; align-items: center; gap: 7px; padding: 10px 16px; border: 0; border-bottom: 2px solid transparent; margin-bottom: -1px; background: none; font-size: 14px; font-weight: 600; color: var(--ink-2); cursor: pointer; white-space: nowrap; }
-.cmp-tab:hover { color: var(--ink); }
-.cmp-tab.active { color: var(--ink); border-bottom-color: var(--accent); }
+.cmp-tab { flex: none; display: inline-flex; align-items: center; gap: 7px; padding: 6px 14px; border: 0; border-radius: 8px; background: none; font-size: 13.5px; font-weight: 500; color: var(--ink); cursor: pointer; white-space: nowrap; }
+.cmp-tab:hover { background: var(--fill); }
+.cmp-tab.active { background: var(--daumen); font-weight: 600; box-shadow: 0 1px 3px rgba(0, 0, 0, .14), 0 0 0 .5px rgba(0, 0, 0, .04); }
 .cmp-tab .count { font-size: 12.5px; font-weight: 500; color: var(--ink-2); background: var(--surface-3); border-radius: 999px; padding: 0 7px; }
-.ort-filter { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: -2px 0 14px; }
-.ort-filter .lbl { font-size: 12.5px; font-weight: 600; color: var(--ink-2); margin-right: 4px; }
-.chip-btn { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--surface); font-size: 13.5px; cursor: pointer; }
-.chip-btn:hover { background: var(--surface-2); }
+.ort-filter { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.chip-btn { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 999px; border: 0; background: var(--fill); font-size: 13.5px; cursor: pointer; transition: background .12s; }
+.chip-btn:hover { background: var(--fill-2); }
 .chip-btn .n { font-size: 11.5px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
-.chip-btn.on { background: var(--accent); border-color: var(--accent); color: #fff; }
-.chip-btn.on .n { color: rgba(255, 255, 255, .8); }
+.chip-btn.on { background: var(--ink); color: var(--surface); }
+.chip-btn.on .n { color: inherit; opacity: .7; }
 .price-grid { display: grid; grid-template-columns: minmax(0, 3fr) minmax(380px, 2fr); gap: 14px; align-items: start; }
 .card-pad { padding: 16px 18px 4px; }
 .t.vals td.num { white-space: normal; }
@@ -1326,9 +1360,6 @@ details.raw pre { margin: 12px 0 0; padding: 14px; max-height: 560px; overflow: 
 @media (max-width: 1300px) { .price-grid { grid-template-columns: minmax(0, 1fr); } }
 
 /* Filter */
-.filters { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 18px 0 12px; }
-.filters input[type="search"], .filters select { height: 34px; border-radius: 8px; border: 1px solid var(--line-2); background: var(--surface); padding: 0 10px; font-size: 13.5px; }
-.filters input[type="search"] { flex: 1 1 260px; min-width: 0; }
 
 /* ---------- Diagramme ---------- */
 .chart { width: 100%; position: relative; }
@@ -1360,20 +1391,22 @@ details.raw pre { margin: 12px 0 0; padding: 14px; max-height: 560px; overflow: 
 .chart-note { font-size: 12.5px; color: var(--ink-2); margin: 8px 0 0; }
 
 /* ---------- Startseite ---------- */
-.start { max-width: 920px; margin: 4vh auto 0; }
-.drop { text-align: center; padding: 44px 24px; border: 2px dashed var(--line-2); border-radius: 18px; background: var(--surface); cursor: pointer; }
+.start { max-width: 860px; margin: 5vh auto 0; }
+.drop { text-align: center; padding: 48px 24px 36px; border: 1.5px dashed var(--line-2); border-radius: 22px; background: var(--surface); cursor: pointer; transition: border-color .15s; }
 .drop:hover { border-color: var(--accent); }
-.drop svg { width: 46px; height: 46px; color: var(--accent); }
-.drop h1 { font-size: 24px; margin: 12px 0 6px; }
+.drop > svg { width: 44px; height: 44px; color: var(--accent); }
+.drop h1 { font-size: 28px; font-weight: 700; letter-spacing: -.026em; margin: 14px 0 6px; }
 .drop p { margin: 0 auto; max-width: 60ch; color: var(--ink-2); }
+.btn.gross { height: 40px; padding: 0 22px; border-radius: 999px; font-size: 15px; }
+.start-mehr { font-size: 13.5px; margin-bottom: 14px !important; }
+.start-einstieg { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; margin: 22px 0 6px; font-size: 13.5px; color: var(--ink-2); }
+.start-einstieg span { margin-right: 4px; }
 .btn-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 20px 0 14px; }
 .fine { font-size: 12.5px; color: var(--ink-2); }
-.features { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 12px; margin-top: 18px; }
-.feature { padding: 16px 18px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); }
+.features { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 12px; margin-top: 22px; }
+.feature { padding: 18px 20px; border-radius: 16px; background: var(--surface); }
 .feature b { display: block; margin-bottom: 4px; }
 .feature p { margin: 0; font-size: 13.5px; color: var(--ink-2); }
-.flow { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; margin-top: 22px; font-size: 13.5px; color: var(--ink-2); }
-.flow span.box { padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--surface); color: var(--ink); }
 
 /* ---------- Overlays ---------- */
 .drop-overlay { position: fixed; inset: 0; z-index: 200; display: none; place-items: center; background: color-mix(in srgb, var(--accent) 12%, transparent); backdrop-filter: blur(2px); }
@@ -1388,10 +1421,10 @@ body.dragging .drop-overlay { display: grid; }
 .lade-spur.unbestimmt i { width: 35%; animation: lade-lauf 1.1s ease-in-out infinite; }
 @keyframes lade-lauf { from { left: -35%; } to { left: 100%; } }
 @media (prefers-reduced-motion: reduce) { .lade-spur.unbestimmt i { animation: none; width: 100%; opacity: .5; } }
-.toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 300; background: var(--ink); color: var(--surface); padding: 9px 16px; border-radius: 9px; font-size: 13.5px; opacity: 0; transition: opacity .2s; pointer-events: none; }
+.toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 300; background: color-mix(in srgb, var(--ink) 88%, transparent); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); color: var(--surface); padding: 10px 18px; border-radius: 999px; font-size: 13.5px; font-weight: 500; opacity: 0; transition: opacity .2s; pointer-events: none; }
 .toast.show { opacity: 1; }
-dialog { border: 1px solid var(--line); border-radius: 14px; padding: 0; background: var(--surface); color: var(--ink); width: min(680px, calc(100vw - 32px)); max-height: min(84vh, 800px); box-shadow: 0 24px 70px rgba(0, 0, 0, .28); }
-dialog::backdrop { background: rgba(10, 10, 10, .38); }
+dialog { border: 1px solid var(--line); border-radius: 18px; padding: 0; background: var(--surface); color: var(--ink); width: min(680px, calc(100vw - 32px)); max-height: min(84vh, 800px); box-shadow: 0 24px 70px rgba(0, 0, 0, .28); }
+dialog::backdrop { background: rgba(0, 0, 0, .32); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
 .dlg { padding: 20px 22px 22px; }
 .dlg-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
 .dlg-head h3 { margin: 0; font-size: 17px; }
@@ -1404,15 +1437,9 @@ dialog::backdrop { background: rgba(10, 10, 10, .38); }
 @keyframes flash { 0% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
 
 /* ---------- Persönliche Profile und Berechnung mit dem Profil ---------- */
-.side-ordner { display: flex; flex-direction: column; gap: 6px; padding: 8px 0; border-bottom: 1px solid var(--line); }
-.side-ordner > .btn { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; }
-.side-ordner .fine { margin: 0; }
-.side-zeile { display: flex; align-items: center; gap: 2px; }
-.side-ordner-kopf { display: flex; align-items: center; gap: 6px; font-size: 13.5px; min-width: 0; }
-.side-ordner-kopf b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.side-ordner-aktionen { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
-.side-profil { display: flex; flex-direction: column; gap: 4px; padding: 8px 0 4px; border-bottom: 1px solid var(--line); }
-.side-profil-aktiv { font-size: 12.5px; color: var(--ink-2); margin: 0 10px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.side-profil-aktiv { margin: 0 10px 0 37px; font-size: 12.5px; line-height: 1.4; color: var(--ink-2); }
+.side-profil-aktiv b { font-weight: 500; color: var(--ink); }
+.side-profil-aktiv .tag { margin-left: 4px; }
 .feld-raster { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 12px 16px; margin: 12px 0; }
 .feld { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .feld.breit { grid-column: 1 / -1; }
@@ -1433,12 +1460,13 @@ dialog::backdrop { background: rgba(10, 10, 10, .38); }
 .feld-mit-aktion .feld { flex: 1; }
 .feld-mit-aktion .icon-btn { margin-bottom: 4px; }
 .p-liste { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 10px; margin-bottom: 16px; }
-.p-karte { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; box-shadow: var(--shadow); }
+.p-karte { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; box-shadow: var(--shadow); }
 .p-karte.aktiv { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
 .p-karte-kopf { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
 .p-karte-sub { font-size: 12.5px; color: var(--ink-2); min-height: 0; }
 .p-karte-sub:empty { display: none; }
-.p-karte-aktionen { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.p-karte-aktionen { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 4px; }
+.p-karte-aktionen .icon-knopf { margin-left: auto; width: 28px; height: 28px; }
 .p-editor-kopf { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; }
 .p-editor-kopf > .feld { flex: 1 1 320px; max-width: 520px; }
 .p-editor-status { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
@@ -1464,11 +1492,9 @@ dialog::backdrop { background: rgba(10, 10, 10, .38); }
 .modus-karte.aktiv { border-color: var(--accent); background: var(--accent-wash); }
 .modus-karte input { margin-top: 3px; flex: none; }
 .modus-karte > span { display: flex; flex-direction: column; gap: 4px; font-size: 13.5px; }
-.p-persistenz { margin-top: 16px; }
-.p-persistenz .fine { margin: 6px 0 10px; }
-.modus-schalter { display: inline-flex; margin: 14px 0 4px; padding: 3px; gap: 2px; border-radius: 10px; background: var(--surface-3); border: 1px solid var(--line); max-width: 100%; }
-.modus-schalter button { border: 0; background: transparent; padding: 7px 14px; border-radius: 8px; font-size: 13.5px; font-weight: 600; color: var(--ink-2); cursor: pointer; }
-.modus-schalter button.aktiv { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
+.modus-schalter { display: inline-flex; margin: 16px 0 4px; padding: 2px; gap: 2px; border-radius: 10px; background: var(--fill); max-width: 100%; }
+.modus-schalter button { border: 0; background: transparent; padding: 6px 14px; border-radius: 8px; font-size: 13.5px; font-weight: 500; color: var(--ink); cursor: pointer; }
+.modus-schalter button.aktiv { background: var(--daumen); font-weight: 600; box-shadow: 0 1px 3px rgba(0, 0, 0, .14), 0 0 0 .5px rgba(0, 0, 0, .04); }
 .modus-schalter button:focus-visible, .modus-karte:focus-within { outline: 2px solid var(--accent); outline-offset: 1px; }
 .p-banner { margin-top: 12px; border-left: 3px solid var(--accent); }
 .p-banner-zeile { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; margin: 8px 0 10px; }
@@ -1600,12 +1626,48 @@ a.btn { color: inherit; text-decoration: none; }
   .karte-form-zeile.plz { grid-template-columns: 6.5em minmax(0, 1fr); }
 }
 
+/* ---------- Symbolknöpfe, Suche, Filterzeile, aufklappende Menüs (src/oberflaeche/menues.js) ---------- */
+.ikon { flex: none; }
+.icon-knopf { display: inline-grid; place-items: center; width: 32px; height: 32px; flex: none; padding: 0; border: 0; border-radius: 8px; background: transparent; color: var(--ink-2); cursor: pointer; transition: background .12s; }
+.icon-knopf:hover, .icon-knopf[aria-haspopup][aria-expanded="true"] { background: var(--fill); color: var(--ink); }
+#themeIkon { display: inline-grid; }
+.daten-knopf { margin-right: 4px; }
+.werkzeuge { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.such-feld { display: flex; align-items: center; gap: 6px; width: 250px; max-width: 100%; height: 34px; padding: 0 10px; border-radius: 10px; background: var(--fill); color: var(--muted); cursor: text; transition: box-shadow .12s, background .12s; }
+.such-feld:focus-within { background: var(--surface); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 45%, transparent); }
+.such-feld input { flex: 1; min-width: 0; height: 100%; padding: 0; border: 0; background: transparent; color: var(--ink); font-size: 14px; outline: none; }
+.such-feld input::placeholder { color: var(--muted); }
+.filter-zeile { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; margin: 0 0 14px; }
+.pop-menue { display: none; position: fixed; inset: auto; left: 0; top: 0; margin: 0; box-sizing: border-box; min-width: 250px; max-width: min(340px, calc(100vw - 16px)); max-height: calc(100vh - 16px); overflow: auto; padding: 6px; border: 1px solid var(--line); border-radius: 14px; background: var(--leiste); -webkit-backdrop-filter: saturate(180%) blur(24px); backdrop-filter: saturate(180%) blur(24px); color: var(--ink); box-shadow: 0 14px 44px rgba(0, 0, 0, .18), 0 2px 6px rgba(0, 0, 0, .06); font-size: 14px; }
+.pop-menue:popover-open { display: flex; flex-direction: column; }
+.pop-punkt { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 34px; padding: 6px 10px; border: 0; border-radius: 8px; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+button.pop-punkt:hover:not(:disabled), button.pop-punkt:focus-visible { background: var(--fill); }
+.pop-punkt:disabled { opacity: .45; cursor: default; }
+.pop-punkt .ikon { color: var(--ink-2); }
+.pop-punkt.gefahr, .pop-punkt.gefahr .ikon { color: var(--crit-ink); }
+.pop-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pop-punkt .count { font-size: 12px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.pop-schalter { cursor: default; }
+.pop-schalter label { cursor: pointer; }
+.pop-kopf { display: flex; align-items: center; padding: 8px 10px 3px; font-size: 12px; font-weight: 600; color: var(--muted); }
+.pop-trenner { width: auto; height: 0; border: 0; border-top: 1px solid var(--line); margin: 6px 10px; }
+.pop-hinweis { display: flex; flex-direction: column; gap: 1px; padding: 2px 10px 6px; font-size: 12.5px; color: var(--ink-2); }
+.pop-datei { font: 11.5px/1.4 ui-monospace, "SF Mono", Menlo, monospace; overflow-wrap: anywhere; }
+a.pop-punkt { text-decoration: none; box-sizing: border-box; }
+a.pop-punkt:hover, a.pop-punkt:focus-visible { background: var(--fill); }
+.pop-hinweis b { color: var(--ink); font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Schalter im Stil von iOS/macOS */
+.schalter { appearance: none; -webkit-appearance: none; position: relative; flex: none; width: 36px; height: 22px; margin: 0; border-radius: 999px; background: var(--fill-2); cursor: pointer; transition: background .15s; }
+.schalter::after { content: ""; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .28); transition: transform .15s; }
+.schalter:checked { background: #34c759; }
+.schalter:checked::after { transform: translateX(14px); }
+
 @media (max-width: 900px) {
   .layout, .menue-zu .layout { grid-template-columns: 1fr; }
   /* Schmal: Menü standardmäßig zu, der Knopf oben öffnet es über dem Inhalt */
   .sidebar, .menue-zu .sidebar { display: none; position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); }
   .menue-mobil-auf .sidebar { display: flex; }
-  .brand .light { display: none; }
+  .cmp-tabs { display: flex; }
 }
 @media (max-width: 1000px) {
   .tiles.stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -1615,11 +1677,10 @@ a.btn { color: inherit; text-decoration: none; }
   .tiles.stats .tile:first-child { grid-column: 1 / -1; min-height: 0; }
   .cmp-table td.cell-obj, .cmp-table thead th:nth-child(3) { position: static; box-shadow: none; }
   .table-wrap.fest .cmp-table thead th:nth-child(3) { position: sticky; left: auto; box-shadow: inset 0 -1px 0 var(--line); }
-  .cmp-tabs { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); }
+  .cmp-tabs { width: 100%; }
   .modus-schalter { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
   .modus-schalter button { padding: 7px 6px; font-size: 13.5px; }
   .p-tabelle td.p-anp { width: auto; min-width: 140px; }
-  .cmp-tab { justify-content: center; text-align: center; white-space: normal; padding: 9px 6px; font-size: 13.5px; line-height: 1.25; }
   .tile { min-height: 84px; padding: 10px 12px; }
   .tile-value { font-size: 17px; }
   .stat .tile-value { font-size: 24px; }
@@ -1637,14 +1698,15 @@ a.btn { color: inherit; text-decoration: none; }
 </head>
 <body>
 <header class="topbar">
-  <button class="btn ghost sm menue-knopf" data-action="menue" id="menueBtn" aria-controls="sidebar" aria-expanded="true" title="Menü ein- oder ausblenden" aria-label="Menü ein- oder ausblenden"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  <button class="icon-knopf" data-action="menue" id="menueBtn" aria-controls="sidebar" aria-expanded="true" title="Seitenleiste ein- oder ausblenden" aria-label="Seitenleiste ein- oder ausblenden"><svg class="ikon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="15" rx="3"/><path d="M9 4.5v15"/></svg></button>
   <div class="brand">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-5.5h6V21"/></svg>
-    <span>Immobilienbewertung <span class="light">Viewer</span></span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9.5 21v-5.5h5V21"/></svg>
+    <span>ImmoInvest</span>
     <button class="versions-knopf" data-action="hilfe" data-bereich="versionen" id="versionsKnopf" title="Versionsverlauf: was neu ist">Version</button>
   </div>
-  <button class="btn ghost sm hilfe-knopf" data-action="hilfe" data-bereich="anleitung" title="Hilfe: Anleitung, Master-Prompt, Tastaturkürzel, Versionen (Taste ?)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14"/><path d="M12 17h.01"/></svg><span>Hilfe</span></button>
-  <button class="btn ghost sm needs-theme" data-action="theme" id="themeBtn" title="Farbschema wechseln">◐ <span id="themeLabel">Auto</span></button>
+  <button class="btn sm daten-knopf" id="datenKnopf" popovertarget="menueDaten" aria-haspopup="menu" aria-expanded="false" title="Dateien laden, Ablageordner, Sicherung"><svg class="ikon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14.5V18a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3.5"/><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5"/></svg><span>Daten</span></button>
+  <button class="icon-knopf hilfe-knopf" data-action="hilfe" data-bereich="anleitung" aria-label="Hilfe" title="Hilfe: Anleitung, Master-Prompt, Tastaturkürzel, Versionen (Taste ?)"><svg class="ikon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.6 2.6 0 1 1 3.7 2.4c-.7.3-1.200 1-1.200 1.800v.600"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></button>
+  <button class="icon-knopf needs-theme" data-action="theme" id="themeBtn" aria-label="Farbschema" title="Farbschema wechseln"><span id="themeIkon"></span></button>
 </header>
 <div class="layout">
   <aside class="sidebar" id="sidebar" aria-label="Menü"></aside>
@@ -1656,6 +1718,11 @@ a.btn { color: inherit; text-decoration: none; }
 <div class="drop-overlay" aria-hidden="true"><div>JSON-Dateien hier ablegen</div></div>
 <div class="tooltip" id="tooltip" role="tooltip"></div>
 <div class="spaltenmenue" id="spaltenmenue" role="dialog" hidden></div>
+<div class="pop-menue" id="menueDaten" popover role="menu" aria-label="Daten"></div>
+<div class="pop-menue" id="menueTabelle" popover role="menu" aria-label="Weitere Aktionen"></div>
+<div class="pop-menue" id="menueObjekt" popover role="menu" aria-label="Weitere Aktionen zum Objekt"></div>
+<div class="pop-menue" id="menueProfil" popover role="menu" aria-label="Weitere Aktionen für Profile"></div>
+<div class="pop-menue" id="menueProfilKarte" popover role="menu" aria-label="Weitere Aktionen für dieses Profil"></div>
 <div class="toast" id="toast" role="status"></div>
 <div class="ladeanzeige" id="ladeanzeige" role="status" aria-live="polite" hidden><div class="lade-text">Wird geladen …</div><div class="lade-spur" role="progressbar" aria-label="Ladefortschritt" aria-valuemin="0" aria-valuemax="100"><i></i></div></div>
 
@@ -3775,6 +3842,13 @@ a.btn { color: inherit; text-decoration: none; }
   'use strict';
 
   const VERLAUF = [
+    { version: '3.0.0', datum: '2026-11-14', titel: 'Aufgeräumte Oberfläche im Apple-Stil', punkte: [
+      'Neue Gestaltung: ruhige Farben, Systemschrift, mehr Abstand, hell und dunkel',
+      'Seitenleiste nur noch zur Navigation; Dateien, Ablageordner und Sicherung im Menü „Daten“ oben rechts',
+      'Selten Gebrauchtes im Menü „⋯“: Spalten, ältere Revisionen, CSV, Drucken, Entfernen, Profil-Aktionen',
+      'Tabelle zeigt zunächst nur die wichtigsten Spalten; die übrigen lassen sich zuschalten',
+      'Objektansicht mit Zurück, Blättern und „Mein Stand“ in einer Zeile; aufgeräumte Startseite',
+    ] },
     { version: '2.12.0', datum: '2026-11-04', titel: 'Hinweise am Info-Symbol', punkte: [
       'Erklärtexte stehen nicht mehr als Fließtext auf der Seite, sondern am Info-Symbol ⓘ genau dort, wo sie gelten',
       'Darüberfahren zeigt den Hinweis, ein Klick oder Antippen hält ihn fest, Esc oder ein Klick daneben schließt ihn',
@@ -3948,11 +4022,11 @@ function pZuProfilen() {
 function pZurueckZiel() {
   const kurz = t => (t.length > 60 ? t.slice(0, 59) + '…' : t);
   const v = state.vorProfil;
-  if (v && v.view === 'detail' && getDoc(v.current)) return { ...v, text: `Zurück zu „${kurz(docTitle(getDoc(v.current)))}“` };
-  if (v && v.view === 'compare' && immoDocs().length) return { ...v, text: 'Zurück zum Vergleich' };
-  if (immoDocs().length > 1) return { view: 'compare', text: 'Zum Vergleich' };
+  if (v && v.view === 'detail' && getDoc(v.current)) return { ...v, text: kurz(docTitle(getDoc(v.current))) };
+  if (v && v.view === 'compare' && immoDocs().length) return { ...v, text: 'Vergleich' };
+  if (immoDocs().length > 1) return { view: 'compare', text: 'Vergleich' };
   const d = immoDocs()[0] || state.docs[0];
-  return d ? { view: 'detail', current: d.uid, text: `Zu „${kurz(docTitle(d))}“` } : null;
+  return d ? { view: 'detail', current: d.uid, text: kurz(docTitle(d)) } : null;
 }
 
 /* ---------- Anzeigeformate ---------- */
@@ -4532,11 +4606,28 @@ function pEingabeLaeuft(t) {
 function viewProfile() {
   const p = aktivesProfil();
   const zurueck = pZurueckZiel();
-  return `<div class="page-head"><div>${zurueck ? `<div class="crumbs no-print"><button class="linkbtn" data-action="p-zurueck">← ${esc(zurueck.text)}</button></div>` : ''}<h1${zurueck ? ' style="margin-top:6px"' : ''}>Persönliche Profile</h1><p class="sub">Haushalt, Einkommen, Steuern, Kapital und Finanzierung – nur in diesem Browser. Sicherung und Austausch über die Profil-Datei (JSON).</p></div>
-      <div class="dh-actions"><button class="btn sm primary" data-action="p-neu">Neues Profil</button><button class="btn sm" data-action="pick-files">Profil oder Paket importieren</button>${location.protocol !== 'file:' ? '<button class="btn sm" data-action="p-beispiele">Fiktive Beispielprofile laden</button>' : ''}</div></div>
+  return `${zurueck ? `<div class="dh-kopfzeile no-print"><button class="zurueck-knopf" data-action="p-zurueck" title="Zurück">${ikon('zurueck', 18)}<span>${esc(zurueck.text)}</span></button></div>` : ''}
+    <div class="page-head"><div><h1>Profile${info('Haushalt, Einkommen, Steuern, Kapital und Finanzierung – nur in diesem Browser. Sicherung und Austausch über die Profil-Datei (JSON).', 'Persönliche Profile')}</h1><p class="sub">Persönliche Angaben für die Rechnung je Objekt – nur lokal.</p></div>
+      <div class="werkzeuge"><button class="btn primary" data-action="p-neu">Neues Profil</button><button class="icon-knopf" popovertarget="menueProfil" aria-haspopup="menu" aria-expanded="false" aria-label="Weitere Aktionen" title="Weitere Aktionen: Importieren, Beispielprofile, Merken im Browser">${ikon('mehr', 22)}</button></div></div>
     ${pProfilListe()}
-    ${p ? pProfilEditor(p) : `<div class="empty"><b>Noch kein Profil.</b><br>Lege ein neues Profil an oder importiere eine Profil-Datei. Es sind keine persönlichen Daten voreingestellt.</div>`}
-    ${pPersistenzBox()}`;
+    ${p ? pProfilEditor(p) : `<div class="empty"><b>Noch kein Profil.</b><br>Lege ein neues Profil an oder importiere eine Profil-Datei (Menü „⋯“). Es sind keine persönlichen Daten voreingestellt.</div>`}`;
+}
+
+/** Menü „⋯“ der Profilseite: Importieren, Beispielprofile, Merken im Browser. */
+function profilMenue() {
+  return popPunkt('pick-files', 'datei', 'Profil oder Paket importieren …')
+    + (location.protocol !== 'file:' ? popPunkt('p-beispiele', 'profile', 'Fiktive Beispielprofile laden') : '')
+    + POP_TRENNER
+    + popSchalter('p-merken', 'Profile in diesem Browser merken', state.profile.merken, info('Standardmäßig aus. Speichert Profile und Objektszenarien in diesem Browser auf diesem Gerät – keine geräteübergreifende Synchronisierung und kein Ersatz für den Datei-Export. Getrennt von den gemerkten Immobiliendateien.', 'Profile im Browser merken'))
+    + popPunkt('p-browser-loeschen', 'entfernen', 'Gespeicherte Profile löschen …', { klasse: 'gefahr' });
+}
+
+/** Menü „⋯“ an einer Profilkarte: selten gebrauchte Aktionen für dieses Profil. */
+function profilKartenMenue(anker) {
+  const pid = anker?.dataset.pid, p = state.profile.liste.find(x => x.id === pid);
+  if (!p) return '';
+  return popPunkt('p-duplizieren', 'gegenueberstellung', 'Duplizieren', { attrs: `data-pid="${esc(pid)}"` })
+    + popPunkt('p-loeschen', 'entfernen', 'Profil löschen …', { attrs: `data-pid="${esc(pid)}"`, klasse: 'gefahr' });
 }
 
 function pProfilListe() {
@@ -4547,15 +4638,9 @@ function pProfilListe() {
       <div class="p-karte-kopf"><b>${esc(p.bezeichnung)}</b>${aktiv ? '<span class="tag tag-good">aktiv</span>' : ''}</div>
       <div class="p-karte-sub">Revision ${esc(p.revision)} · ${esc((MODI[(p.steuer || {}).modus] || {}).kurz || 'kein Steuermodus')} · ${(p.personen || []).length} Person${(p.personen || []).length === 1 ? '' : 'en'}</div>
       <div class="p-karte-sub">${meta.geaendert ? '<span class="tag tag-warn">nicht exportierte Änderungen</span>' : meta.exportiert_rev ? `<span class="tag">exportiert (Rev. ${esc(meta.exportiert_rev)})</span>` : ''}</div>
-      <div class="p-karte-aktionen">${aktiv ? '' : `<button class="btn sm" data-action="p-waehlen" data-pid="${esc(p.id)}">Auswählen</button>`}<button class="btn sm" data-action="p-export" data-pid="${esc(p.id)}">Exportieren</button><button class="btn sm" data-action="p-duplizieren" data-pid="${esc(p.id)}">Duplizieren</button><button class="btn sm ghost" data-action="p-loeschen" data-pid="${esc(p.id)}">Löschen</button></div>
+      <div class="p-karte-aktionen">${aktiv ? '' : `<button class="btn sm primary" data-action="p-waehlen" data-pid="${esc(p.id)}">Auswählen</button>`}<button class="btn sm" data-action="p-export" data-pid="${esc(p.id)}">Exportieren</button><button class="icon-knopf" popovertarget="menueProfilKarte" data-pid="${esc(p.id)}" aria-haspopup="menu" aria-expanded="false" aria-label="Weitere Aktionen für dieses Profil" title="Duplizieren, Löschen">${ikon('mehr', 20)}</button></div>
     </div>`;
   }).join('')}</div>`;
-}
-
-function pPersistenzBox() {
-  return `<div class="card p-persistenz"><h3>Profile im Browser merken${info('Standardmäßig aus. Gilt nur für diesen Browser auf diesem Gerät – keine geräteübergreifende Synchronisierung und kein Ersatz für den Datei-Export. Getrennt von den gemerkten Immobiliendateien.', 'Profile im Browser merken')}</h3>
-    <label class="check"><input type="checkbox" id="p-merken"${state.profile.merken ? ' checked' : ''}> Profile und Objektszenarien in diesem Browser speichern</label>
-    <button class="btn sm" data-action="p-browser-loeschen">Im Browser gespeicherte Profile löschen</button></div>`;
 }
 
 function pProfilEditor(p) {
@@ -5186,7 +5271,7 @@ function pVorschlaegeAlleDialog() {
  * Gelesen wird ausschließlich lokal – keine Verbindung zu Google oder anderen Servern, keine Anmeldung.
  * Der Ordner ist die Quelle: neue Dateien kommen hinzu, geänderte werden ersetzt, gelöschte verschwinden.
  * Automatisch geladen werden nur Bewertungs-Exporte. Profile und Berechnungspakete enthalten persönliche
- * Finanzdaten und werden weiterhin bewusst über „+ Dateien“ importiert.
+ * Finanzdaten und werden weiterhin bewusst über „Dateien hinzufügen“ importiert.
  *
  * Klassisches Skript; nutzt state, addTexts, render … des Hauptskripts erst zur Laufzeit (ordnerStart()).
  */
@@ -5408,8 +5493,6 @@ function ordnerTakt() {
 }
 
 /* ---------- Anzeige in der Seitenleiste ---------- */
-const ORDNER_ICON = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>';
-
 function ordnerStandText() {
   const o = state.ordner;
   const zeit = o.letzte ? o.letzte.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) : '–';
@@ -5417,25 +5500,35 @@ function ordnerStandText() {
 }
 /** Nur den Stand-Text austauschen, damit der Takt weder Fokus noch Scrollposition stört. */
 function ordnerStandAktualisieren() {
-  const el = document.getElementById('ordner-stand');
-  if (el) el.textContent = ordnerStandText();
+  document.querySelectorAll('[data-ordner-stand]').forEach(el => { el.textContent = ordnerStandText(); });
 }
 
-function sidebarOrdner() {
+const ORDNER_INFO = 'Z. B. der Google-Drive-Ordner mit den Exporten: Er wird bei jedem Öffnen und alle 30 Sekunden automatisch eingelesen. Geht in Chrome und Edge.';
+
+/** Abschnitt „Ablageordner“ im Menü „Daten“ (src/oberflaeche/menues.js). */
+function ordnerMenue() {
   const o = state.ordner;
   if (o.status === 'nicht_unterstuetzt') return '';
-  if (!o.handle) {
-    return `<div class="side-ordner"><div class="side-zeile"><button class="btn sm" data-action="ordner-verbinden">${ORDNER_ICON} Ablageordner verbinden</button>${info('Z. B. den Google-Drive-Ordner mit den Exporten – er wird dann bei jedem Öffnen und alle 30 Sekunden automatisch eingelesen. Geht in Chrome und Edge.', 'Ablageordner')}</div></div>`;
-  }
-  const kopf = `<div class="side-ordner-kopf">${ORDNER_ICON}<b title="${esc(o.name)}">${esc(o.name)}</b></div>`;
+  const kopf = POP_TRENNER + popKopf('Ablageordner', info(ORDNER_INFO, 'Ablageordner'));
+  if (!o.handle) return kopf + popPunkt('ordner-verbinden', 'ordner', 'Ablageordner verbinden …');
+  const name = `<div class="pop-hinweis"><b title="${esc(o.name)}">${esc(o.name)}</b>${['freigabe', 'fehlt'].includes(o.status) ? '' : `<span data-ordner-stand>${esc(ordnerStandText())}</span>`}${o.fehler ? `<span class="notice">${esc(o.fehler)}</span>` : ''}</div>`;
+  if (o.status === 'freigabe') return kopf + name + popPunkt('ordner-freigeben', 'neu_laden', 'Ordner einlesen') + popPunkt('ordner-trennen', 'trennen', 'Verbindung trennen');
+  if (o.status === 'fehlt') return kopf + name + popPunkt('ordner-verbinden', 'ordner', 'Neu verbinden …') + popPunkt('ordner-trennen', 'trennen', 'Verbindung trennen');
+  return kopf + name + popPunkt('ordner-einlesen', 'neu_laden', 'Jetzt einlesen') + popSchalter('ordner-auto', 'Automatisch einlesen', o.auto) + popPunkt('ordner-trennen', 'trennen', 'Verbindung trennen');
+}
+
+/** Fuß der Seitenleiste: Stand des Ablageordners. Was der Nutzer tun muss (Zugriff erlauben, neu verbinden), steht als Knopf da. */
+function sidebarOrdner() {
+  const o = state.ordner;
+  if (o.status === 'nicht_unterstuetzt' || !o.handle) return '';
+  const name = `<b class="side-ordner-name" title="${esc(o.name)}">${esc(o.name)}</b>`;
   if (o.status === 'freigabe') {
-    return `<div class="side-ordner">${kopf}<div class="side-zeile"><button class="btn sm primary" data-action="ordner-freigeben">Ordner einlesen</button>${info('Der Browser fragt nach dem Zugriff. Mit „Bei jedem Besuch zulassen“ geht es künftig ohne Klick.', 'Ordner einlesen')}</div><button class="linkbtn" data-action="ordner-trennen">Verbindung trennen</button></div>`;
+    return `<div class="side-ordner">${ikon('ordner', 17)}<div class="side-ordner-text">${name}<span>Zugriff nötig</span></div><button class="btn sm primary" data-action="ordner-freigeben">Einlesen</button>${info('Der Browser fragt nach dem Zugriff auf den Ordner. Mit „Bei jedem Besuch zulassen“ geht es künftig ohne Klick.', 'Ordner einlesen')}</div>`;
   }
   if (o.status === 'fehlt') {
-    return `<div class="side-ordner">${kopf}<span class="notice">${esc(o.fehler)}</span><div class="side-ordner-aktionen"><button class="btn sm" data-action="ordner-verbinden">Neu verbinden</button><button class="linkbtn" data-action="ordner-trennen">Trennen</button></div></div>`;
+    return `<div class="side-ordner fehler">${ikon('ordner', 17)}<div class="side-ordner-text">${name}<span class="notice">${esc(o.fehler)}</span></div><button class="btn sm" data-action="ordner-verbinden">Neu verbinden</button></div>`;
   }
-  return `<div class="side-ordner">${kopf}<div class="fine" id="ordner-stand" aria-live="polite">${esc(ordnerStandText())}</div>${o.fehler ? `<span class="notice">${esc(o.fehler)}</span>` : ''}
-      <div class="side-ordner-aktionen"><button class="btn sm" data-action="ordner-einlesen">Jetzt einlesen</button><label class="check"><input type="checkbox" id="ordner-auto"${o.auto ? ' checked' : ''}> automatisch</label><button class="linkbtn" data-action="ordner-trennen">Trennen</button></div></div>`;
+  return `<button type="button" class="side-ordner" popovertarget="menueDaten" title="Ablageordner – Menü „Daten“ öffnen">${ikon('ordner', 17)}<span class="side-ordner-text">${name}<span id="ordner-stand" data-ordner-stand aria-live="polite">${esc(ordnerStandText())}</span>${o.fehler ? `<span class="notice">${esc(o.fehler)}</span>` : ''}</span></button>`;
 }
 </script>
 <script>/* src/fremd/leaflet/leaflet.js */
@@ -5803,7 +5896,7 @@ function karteInfo(uid) {
     const e = ok && r.einordnung ? EINORDNUNG[r.einordnung.gesamt] : null;
     profil = ok
       ? `<div class="karte-info-profil"><div class="karte-info-profilname">Mit Profil „${esc(p.bezeichnung)}“</div><dl class="karte-info-werte"><dt>Zuzahlung vor Steuer</dt><dd>${pZuzahlung(kpi.zuzahlung_vor_steuer_monat)} / Monat</dd>${pIstZahl(kpi.zuzahlung_nach_steuer_monat) ? `<dt>Ø nach Steuer</dt><dd>${pZuzahlung(kpi.zuzahlung_nach_steuer_monat)} / Monat</dd>` : ''}</dl>${e ? `<span class="verdict sm ${e[1]}"><span class="vi" aria-hidden="true">${e[0]}</span><span>${esc(e[2])}</span></span>` : ''}</div>`
-      : `<div class="karte-info-profil fine">Mit Profil „${esc(p.bezeichnung)}“ noch nicht berechenbar – was fehlt, zeigt der Reiter „Mit meinem Profil“.</div>`;
+      : `<div class="karte-info-profil fine">Mit Profil „${esc(p.bezeichnung)}“ noch nicht berechenbar – was fehlt, zeigt die Ansicht „Mit meinem Profil“.</div>`;
   }
   return `<div class="karte-info">
     <div class="karte-info-titel"><span class="num">#${d.num}</span> ${esc(docTitle(d))}</div>
@@ -5988,22 +6081,10 @@ const spaltenTypen = () => spalten().map(c => ({ id: c.id, typ: c.filter }));
 const spaltenWert = (s, d) => colFilterValue(spalteMit(s.id), d);
 const spaltenZahl = (c, v) => `${nfA.format(v)}${c.einheit ? NB + c.einheit : ''}`;
 
-/* ---------- Überschrift, Urteilsauswahl, Leiste der aktiven Filter ---------- */
+/* ---------- Überschrift, Leiste der aktiven Filter ---------- */
 function spaltenKopf(c, aktiv) {
   const gefiltert = !!state.filter.spalten[c.id], titel = colTitel(c);
   return `<div class="th-kopf"><button class="th-sort" data-action="sort" data-col="${c.id}" title="Nach „${esc(titel)}“ sortieren">${c.label}${aktiv ? ` <span class="arrow">${state.sort.dir > 0 ? '▲' : '▼'}</span>` : ''}</button><button class="th-filter${gefiltert ? ' aktiv' : ''}" data-action="spaltenmenue" data-col="${c.id}" aria-haspopup="dialog" aria-expanded="${spaltenMenue.col === c.id}" aria-label="${esc(titel)}: sortieren und filtern${gefiltert ? ' (Filter aktiv)' : ''}" title="Sortieren und filtern">${FILTER_ICON}</button></div>`;
-}
-
-/** Die Auswahl „Alle Urteile“ über der Tabelle zeigt denselben Filter wie die Spalte „Gesamturteil“. */
-function urteilAuswahl() {
-  const b = state.filter.spalten.urteil;
-  const einer = b && b.werte.length === 1 && VERDICT_ORDER.includes(b.werte[0]) ? b.werte[0] : null;
-  return `<select id="fu" aria-label="Nach Gesamturteil filtern"><option value=""${b ? '' : ' selected'}>Alle Urteile</option>${VERDICT_ORDER.map(v => `<option value="${v}"${einer === v ? ' selected' : ''}>${esc(L(v))}</option>`).join('')}${b && !einer ? '<option value="__mehrere" selected>Mehrere (Spaltenfilter)</option>' : ''}</select>`;
-}
-function urteilAuswahlSetzen(v) {
-  if (v === '__mehrere') return;
-  spaltenBedingungSetzen(spalteMit('urteil'), v ? { werte: [v] } : null);
-  if (spaltenMenue.col === 'urteil') spaltenmenueZeichnen();
 }
 
 function spaltenBeschreibung(c, b) {
@@ -6130,7 +6211,7 @@ function spaltenBedingungSetzen(c, roh) {
   if (b) state.filter.spalten[c.id] = b;
   else delete state.filter.spalten[c.id];
   renderResults();
-  if (c.id === 'urteil') { const sel = $('#fu'); if (sel) sel.outerHTML = urteilAuswahl(); }
+  if (c.id === 'urteil') { const leiste = $('.urteil-leiste'); if (leiste) leiste.innerHTML = urteilChips(); }
   const fuss = document.getElementById('sm-fuss');
   if (fuss && spaltenMenue.col === c.id) fuss.innerHTML = spaltenmenueFuss(c);
 }
@@ -6227,7 +6308,7 @@ addEventListener('resize', spaltenmenueNachziehen);
  * Status, Termin und Notiz gelten je Objektschlüssel, also auch für neue Revisionen desselben Inserats. Sie
  * werden immer in diesem Browser gemerkt (localStorage), unabhängig von „Dateien merken“, und ändern die
  * Analyse-Dateien nicht. Die Sicherungsdatei enthält zusätzlich Adressnachträge und Kartenpunkte und lässt sich
- * über „+ Dateien“ wieder einlesen; vorhandene Eingaben werden dabei zusammengeführt, nie gelöscht.
+ * über „Daten“ → „Dateien hinzufügen“ wieder einlesen; vorhandene Eingaben werden dabei zusammengeführt, nie gelöscht.
  * Prüfung und Zusammenführen: Rechenkern-Modul eingaben.js.
  *
  * Klassisches Skript; nutzt state, render, download … des Hauptskripts erst zur Laufzeit.
@@ -6280,13 +6361,11 @@ function meinStand(doc) {
   if (!doc.isImmo) return '';
   const n = notizVon(doc) || {};
   return `<section class="card mein-stand no-print" aria-labelledby="ms-titel">
-    <div class="ms-kopf"><h3 id="ms-titel">Mein Stand${info('Bleibt nur in diesem Browser und gilt für alle Revisionen dieses Objekts. Sichern über „Eigene Eingaben sichern“ im Menü.', 'Mein Stand')}</h3></div>
-    <div class="ms-felder">
-      <div class="feld"><label for="ms-status">Status</label><select id="ms-status" data-notiz-feld="status" data-uid="${doc.uid}">${statusOptionen(n.status || '')}</select></div>
-      <div class="feld"><label for="ms-termin">Termin</label><input type="date" id="ms-termin" data-notiz-feld="termin" data-uid="${doc.uid}" value="${esc(n.termin || '')}"></div>
-    </div>
-    <div class="feld"><label for="ms-notiz">Notiz</label><textarea id="ms-notiz" data-notiz-feld="notiz" data-uid="${doc.uid}" rows="3" maxlength="${RK.eingaben.NOTIZ_MAX}" placeholder="z. B. Makler schickt Hausgeldabrechnung bis Freitag · Besichtigung 14 Uhr, Keller ansehen">${esc(n.notiz || '')}</textarea></div>
-    <div class="fine" id="ms-stand">${n.geaendert ? `Zuletzt geändert: ${esc(new Date(n.geaendert).toLocaleString('de-DE', { dateStyle: 'medium', timeStyle: 'short' }))}` : 'Noch nichts eingetragen.'}</div>
+    <div class="ms-kopf"><h3 id="ms-titel">Mein Stand${info('Bleibt nur in diesem Browser und gilt für alle Revisionen dieses Objekts. Sichern über „Daten“ → „Eigene Eingaben sichern“.', 'Mein Stand')}</h3>
+      <div class="fine" id="ms-stand">${n.geaendert ? `Geändert: ${esc(new Date(n.geaendert).toLocaleString('de-DE', { dateStyle: 'medium', timeStyle: 'short' }))}` : 'Noch nichts eingetragen.'}</div></div>
+    <div class="feld"><label for="ms-status">Status</label><select id="ms-status" data-notiz-feld="status" data-uid="${doc.uid}">${statusOptionen(n.status || '')}</select></div>
+    <div class="feld"><label for="ms-termin">Termin</label><input type="date" id="ms-termin" data-notiz-feld="termin" data-uid="${doc.uid}" value="${esc(n.termin || '')}"></div>
+    <div class="feld ms-notiz"><label for="ms-notiz">Notiz</label><textarea id="ms-notiz" data-notiz-feld="notiz" data-uid="${doc.uid}" rows="1" maxlength="${RK.eingaben.NOTIZ_MAX}" placeholder="z. B. Besichtigung 14 Uhr, Keller ansehen">${esc(n.notiz || '')}</textarea></div>
   </section>`;
 }
 
@@ -6381,9 +6460,9 @@ function hilfeAnleitung() {
       ${schritt(1, 'Inserat aussuchen', 'Link des Angebots kopieren, z. B. von Kleinanzeigen, ImmoScout24 oder Immowelt.')}
       ${schritt(2, 'Master-Prompt kopieren', 'Im Bereich <button class="linkbtn" data-action="hilfe" data-bereich="prompt">Master-Prompt</button> auf „Kopieren“ klicken. Optional das JSON-Schema herunterladen und im Chat mit anhängen – dann kann die KI ihre Datei selbst prüfen.')}
       ${schritt(3, 'Bei einer KI einfügen', 'Einen neuen Chat bei einer KI öffnen, die Webseiten lesen und Dateien erstellen kann (z. B. Claude oder ChatGPT). Prompt einfügen, darunter den Inserat-Link, absenden. Je Objekt ein eigener Chat; Rückfragen der KI beantworten.')}
-      ${schritt(4, 'JSON-Datei herunterladen', 'Am Ende liefert die KI einen Bericht und eine Datei <code>immobilienbewertung_&lt;plattform&gt;_&lt;id&gt;_&lt;datum&gt;.json</code>. Zeigt sie nur einen Codeblock, den Inhalt kopieren und hier über „Einfügen“ laden oder als .json-Datei speichern.')}
+      ${schritt(4, 'JSON-Datei herunterladen', 'Am Ende liefert die KI einen Bericht und eine Datei <code>immobilienbewertung_&lt;plattform&gt;_&lt;id&gt;_&lt;datum&gt;.json</code>. Zeigt sie nur einen Codeblock, den Inhalt kopieren und hier über „Daten“ → „JSON einfügen“ laden oder als .json-Datei speichern.')}
       ${schritt(5, 'In den Ablageordner legen', 'Alle Exporte in einen festen Ordner legen, z. B. in Google Drive „ImmoInvest/immos“ (mit „Google Drive für Desktop“ ist er auf dem Rechner verfügbar). Unterordner bis drei Ebenen werden mitgelesen.')}
-      ${schritt(6, 'Ordner einmal verbinden', `Im Menü unter „Daten &amp; Ablageordner“ auf <b>Ablageordner verbinden</b> klicken und den Ordner wählen (Chrome oder Edge). Danach liest der Viewer neue und geänderte Dateien beim Öffnen und alle 30 Sekunden automatisch ein.${typeof ORDNER_UNTERSTUETZT !== 'undefined' && !ORDNER_UNTERSTUETZT ? ' <i>Dieser Browser kann Ordner nicht dauerhaft verbinden – Dateien hier über „+ Dateien“ oder Ziehen laden.</i>' : ''}`)}
+      ${schritt(6, 'Ordner einmal verbinden', `Oben rechts auf „Daten“ und dann auf <b>Ablageordner verbinden</b> klicken und den Ordner wählen (Chrome oder Edge). Danach liest der Viewer neue und geänderte Dateien beim Öffnen und alle 30 Sekunden automatisch ein.${typeof ORDNER_UNTERSTUETZT !== 'undefined' && !ORDNER_UNTERSTUETZT ? ' <i>Dieser Browser kann Ordner nicht dauerhaft verbinden – Dateien hier über „Daten“ → „Dateien hinzufügen“ oder Ziehen laden.</i>' : ''}`)}
       ${schritt(7, 'Exportprüfung ansehen', 'Jede Datei wird geprüft (✓ oder Fehler in der Tabelle und unter „Exportprüfung“). Bei Fehlern die Meldungen an die KI geben und eine korrigierte Datei anfordern – mit gleicher Plattform-ID erkennt der Viewer sie als neue Revision.')}
     </ol>
     <p class="fine">Deine Dateien werden nur in diesem Browser gelesen, nichts wird hochgeladen. Persönliche Profile legst du getrennt unter „Persönliche Profile“ an.</p>`;
@@ -6487,8 +6566,9 @@ function infoZeigen(knopf, fest = false) {
   if (!inhalt) return;
   if (infoZustand.knopf && infoZustand.knopf !== knopf) infoZustand.knopf.setAttribute('aria-expanded', 'false');
   const b = infoBlase();
-  // In einem offenen (modalen) Dialog muss die Blase im Dialog liegen, sonst ist sie für Maus und Klick gesperrt
-  const ort = knopf.closest('dialog[open]') || document.body;
+  // In einem offenen (modalen) Dialog muss die Blase im Dialog liegen, sonst ist sie für Maus und Klick gesperrt;
+  // in einem aufgeklappten Menü liegt sie im Menü, damit ein Klick auf die Blase das Menü nicht schließt
+  const ort = knopf.closest('dialog[open], .pop-menue') || document.body;
   if (b.parentElement !== ort) { if (b.popover) { try { b.hidePopover(); } catch { /* schon zu */ } } ort.appendChild(b); }
   b.innerHTML = inhalt.innerHTML;
   b.classList.toggle('fest', fest);
@@ -6568,6 +6648,168 @@ document.addEventListener('scroll', () => { if (infoSichtbar()) { if (infoZustan
 window.addEventListener('resize', () => { if (infoSichtbar()) infoPlatzieren(); });
 // Schließt ein Dialog, in dem die Blase gerade liegt, verschwindet sie mit
 document.addEventListener('close', e => { if (e.target.contains?.(document.getElementById('infoBlase'))) infoAus(); }, true);
+</script>
+<script>/* src/oberflaeche/menues.js */
+/*
+ * ImmoInvest Viewer – Symbole und aufklappende Menüs
+ *
+ * Selten gebrauchte Aktionen stehen nicht als Knöpfe auf der Seite, sondern in Menüs:
+ *   #menueDaten    Knopf „Daten“ oben rechts: Dateien laden, Ablageordner, Sicherung, Browser-Speicher
+ *   #menueTabelle  Knopf „⋯“ über dem Vergleich: Spalten, ältere Revisionen, CSV-Export
+ *   #menueObjekt   Knopf „⋯“ in der Objektansicht: Inserat, Exportprüfung, Drucken, Entfernen
+ *   #menueProfil, #menueProfilKarte  Knöpfe „⋯“ auf der Profilseite: Importieren, Merken im Browser, Duplizieren, Löschen
+ *
+ * Die Menüs sind Popover-Elemente (popover="auto"): Ein Knopf mit popovertarget="…" öffnet und schließt sie,
+ * Esc oder ein Klick daneben schließt ebenfalls. Der Inhalt entsteht beim Öffnen aus dem aktuellen Zustand und
+ * wird nach jedem Neuzeichnen der Seite aufgefrischt (popMenuesAuffrischen).
+ *
+ * Klassisches Skript; nutzt state, esc, info, immoDocs … des Hauptskripts erst zur Laufzeit.
+ */
+'use strict';
+
+/* Liniensymbole im Stil der Systemsymbole: 24er-Raster, Strichstärke 1.8, Farbe vom Text */
+const IKON_PFAD = {
+  tabelle: '<rect x="3" y="4.5" width="18" height="15" rx="2.5"/><path d="M3 9.5h18M3 14.5h18M9.5 9.5v10"/>',
+  preis: '<path d="M4 19.5V4.5M4 19.5h16"/><circle cx="9" cy="13.5" r="1.4"/><circle cx="13.5" cy="9.5" r="1.4"/><circle cx="17.5" cy="14" r="1.4"/>',
+  karte: '<path d="M9 4.5 3.5 6.5v13L9 17.5l6 2 5.5-2v-13L15 6.5z"/><path d="M9 4.5v13M15 6.5v13"/>',
+  gegenueberstellung: '<rect x="3.5" y="4.5" width="7" height="15" rx="2"/><rect x="13.5" y="4.5" width="7" height="15" rx="2"/>',
+  persoenlich: '<circle cx="12" cy="8.2" r="3.7"/><path d="M4.5 20c.9-3.6 3.9-5.6 7.5-5.6s6.600 2 7.5 5.600"/>',
+  profile: '<circle cx="9" cy="8.500" r="3.200"/><path d="M2.800 19.500c.7-3.100 3.100-4.900 6.200-4.900s5.500 1.800 6.200 4.900"/><circle cx="17.200" cy="9.500" r="2.500"/><path d="M17.500 14.700c2 .2 3.300 1.600 3.800 3.700"/>',
+  ordner: '<path d="M3 7.500a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+  ablage: '<path d="M4 14.500v3.500a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3.500"/><path d="M12 15V4M7.500 8.500 12 4l4.500 4.500"/>',
+  datei: '<path d="M6.500 3.500h7l4.500 4.500v11a1.500 1.500 0 0 1-1.500 1.500h-10A1.500 1.500 0 0 1 5 19V5a1.500 1.500 0 0 1 1.500-1.500z"/><path d="M13.500 3.500V8H18M12 11.500v5M9.500 14h5"/>',
+  einfuegen: '<rect x="5" y="5" width="14" height="15.500" rx="2"/><path d="M9 5V3.500h6V5M8.500 11h7M8.500 14.500h7"/>',
+  neu_laden: '<path d="M19.500 12a7.500 7.500 0 1 1-2.400-5.500"/><path d="M19.500 4v4.500H15"/>',
+  trennen: '<path d="M9.500 14.500 14.500 9.500M10.500 6.500l1-1a4 4 0 0 1 5.700 5.700l-1 1M13.500 17.500l-1 1a4 4 0 0 1-5.700-5.700l1-1M4 4l16 16"/>',
+  sichern: '<path d="M12 4v10.500M7.500 10.500 12 15l4.500-4.500"/><path d="M4.500 16.500V18a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-1.500"/>',
+  entfernen: '<path d="M4.500 7h15M9.500 7V5h5v2M6.500 7l.8 12a1.500 1.500 0 0 0 1.500 1.400h6.400a1.500 1.500 0 0 0 1.500-1.400l.8-12"/>',
+  spalten: '<rect x="3.500" y="4.500" width="17" height="15" rx="2.500"/><path d="M9.200 4.500v15M14.800 4.500v15"/>',
+  csv: '<path d="M12 4v10.500M7.500 10.500 12 15l4.500-4.500"/><path d="M4.500 19.500h15"/>',
+  zuruecksetzen: '<path d="M4.500 12a7.500 7.500 0 1 0 2.400-5.500"/><path d="M4.500 4v4.500H9"/>',
+  hilfe: '<circle cx="12" cy="12" r="9"/><path d="M9.500 9.200a2.600 2.600 0 1 1 3.700 2.400c-.7.300-1.200 1-1.200 1.800v.6"/><circle cx="12" cy="17" r=".6" fill="currentColor"/>',
+  mehr: '<circle cx="12" cy="12" r="9"/><circle cx="8" cy="12" r=".9" fill="currentColor"/><circle cx="12" cy="12" r=".9" fill="currentColor"/><circle cx="16" cy="12" r=".9" fill="currentColor"/>',
+  suche: '<circle cx="10.500" cy="10.500" r="6"/><path d="m15 15 5 5"/>',
+  seitenleiste: '<rect x="3" y="4.500" width="18" height="15" rx="3"/><path d="M9 4.500v15"/>',
+  pfeil: '<path d="m9 6 6 6-6 6"/>',
+  zurueck: '<path d="m15 6-6 6 6 6"/>',
+  extern: '<path d="M14 4.500h5.500V10M19.500 4.500l-8 8"/><path d="M10 6.500H6.500a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V14"/>',
+  pruefung: '<circle cx="12" cy="12" r="9"/><path d="m8 12.300 2.800 2.800L16 9.500"/>',
+  drucken: '<path d="M7 9V4h10v5M7 17H5a1.500 1.500 0 0 1-1.500-1.500v-5A1.500 1.500 0 0 1 5 9h14a1.500 1.500 0 0 1 1.500 1.500v5A1.500 1.500 0 0 1 19 17h-2"/><rect x="7" y="13.500" width="10" height="6.500" rx="1"/>',
+  haus: '<path d="M3 10.500 12 3l9 7.500"/><path d="M5 9.500V21h14V9.500"/><path d="M9.500 21v-5.500h5V21"/>',
+  hell: '<circle cx="12" cy="12" r="4"/><path d="M12 2.500v2.500M12 19v2.500M2.500 12H5M19 12h2.500M5.300 5.300 7 7M17 17l1.700 1.700M5.300 18.700 7 17M17 7l1.700-1.700"/>',
+  dunkel: '<path d="M20 14.500A8.500 8.500 0 1 1 9.500 4a7 7 0 0 0 10.500 10.500z"/>',
+  auto: '<circle cx="12" cy="12" r="9"/><path d="M12 3v18a9 9 0 0 0 0-18z" fill="currentColor"/>',
+};
+const ikon = (name, groesse = 18) => `<svg class="ikon" viewBox="0 0 24 24" width="${groesse}" height="${groesse}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IKON_PFAD[name] || ''}</svg>`;
+
+/* ---------- Bausteine der Menüs ---------- */
+const popPunkt = (aktion, symbol, text, { attrs = '', zusatz = '', klasse = '' } = {}) =>
+  `<button type="button" class="pop-punkt${klasse ? ' ' + klasse : ''}" role="menuitem" data-action="${aktion}" ${attrs}>${ikon(symbol)}<span class="pop-text">${text}</span>${zusatz}</button>`;
+const popSchalter = (id, text, an, hinweis = '') =>
+  `<div class="pop-punkt pop-schalter"><label for="${id}" class="pop-text">${text}</label>${hinweis}<input type="checkbox" class="schalter" role="switch" id="${id}"${an ? ' checked' : ''}></div>`;
+const popKopf = (text, hinweis = '') => `<div class="pop-kopf">${text}${hinweis}</div>`;
+const POP_TRENNER = '<hr class="pop-trenner">';
+
+/** Menü „Daten“: alles rund um Dateien, Ablageordner, Sicherung und Browser-Speicher. */
+function datenMenue() {
+  const kaputt = state.docs.filter(d => !d.isImmo), n = eingabenZahl();
+  return popKopf('Bewertungen laden')
+    + popPunkt('pick-files', 'datei', 'Dateien hinzufügen …')
+    + popPunkt('pick-dir', 'ordner', 'Ordner einmalig laden …')
+    + popPunkt('paste', 'einfuegen', 'JSON einfügen …')
+    + ordnerMenue()
+    + POP_TRENNER
+    + popKopf('Eigene Eingaben', info('Status, Notizen, Adressen und Kartenpunkte als Datei sichern. Zurückholen: die Datei über „Dateien hinzufügen“ laden.', 'Eigene Eingaben sichern'))
+    + popPunkt('eingaben-sichern', 'sichern', 'Eigene Eingaben sichern', { attrs: n ? '' : 'disabled', zusatz: n ? `<span class="count">${n}</span>` : '' })
+    + POP_TRENNER
+    + popSchalter('persist', 'Dateien in diesem Browser merken', state.persist)
+    + (state.saveError ? `<div class="pop-hinweis notice">${esc(state.saveError)}</div>` : '')
+    + (state.docs.length ? popPunkt('clear-all', 'entfernen', `Alle ${state.docs.length} Dateien entfernen …`, { klasse: 'gefahr' }) : '')
+    + (kaputt.length ? POP_TRENNER + popKopf('Nicht lesbar') + kaputt.map(d => popPunkt('open', 'datei', esc(d.fileName), { attrs: `data-uid="${d.uid}"`, klasse: 'gefahr' })).join('') : '')
+    + POP_TRENNER
+    + popPunkt('hilfe', 'hilfe', 'Anleitung und Master-Prompt', { attrs: 'data-bereich="anleitung"' });
+}
+
+/** Menü „⋯“ über dem Vergleich: Aktionen, die man selten braucht. */
+function tabellenMenue() {
+  const docs = immoDocs(), hatRev = docs.some(d => !d.rev?.latest);
+  const wahlbar = spaltenVerfuegbar().filter(c => !SPALTEN_FEST.includes(c.id));
+  const sichtbar = wahlbar.filter(c => !state.ausgeblendet.has(c.id)).length;
+  const tab = state.cmpTab;
+  return (tab === 'tabelle' ? popPunkt('spalten-dialog', 'spalten', 'Spalten wählen …', { zusatz: `<span class="count">${sichtbar}/${wahlbar.length}</span>` }) : '')
+    + (hatRev ? popSchalter('fold', 'Ältere Revisionen zeigen', state.filter.showOld) : '')
+    + (['persoenlich', 'karte'].includes(tab) ? '' : popPunkt('csv', 'csv', 'Als CSV exportieren', { klasse: 'needs-download' }))
+    + (ansichtVeraendert() ? POP_TRENNER + popPunkt('ansicht-zuruecksetzen', 'zuruecksetzen', 'Ansicht zurücksetzen') : '');
+}
+
+/** Menü „⋯“ in der Objektansicht: Inserat, Exportprüfung, Drucken, Entfernen. */
+function objektMenue() {
+  const doc = getDoc(state.current);
+  if (!doc) return '';
+  const url = doc.isImmo ? safeUrl(obj(doc.data.angebot).url) : null;
+  const c = doc.isImmo ? countIssues(doc) : null;
+  const stand = c ? (c.error ? `${c.error} Fehler` : c.warn ? `${c.warn} Warnung${c.warn === 1 ? '' : 'en'}` : 'in Ordnung') : '';
+  return `<div class="pop-hinweis"><span class="pop-datei" title="${esc(doc.fileName)}">${esc(doc.fileName)}</span></div>`
+    + (url ? `<a class="pop-punkt" role="menuitem" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${ikon('extern')}<span class="pop-text">Inserat öffnen</span></a>` : '')
+    + (doc.isImmo && state.detailModus !== 'persoenlich' ? popPunkt('jump', 'pruefung', 'Exportprüfung', { attrs: 'data-target="sec-pruefung"', zusatz: `<span class="count">${stand}</span>` }) : '')
+    + popPunkt('print', 'drucken', 'Drucken / PDF', { klasse: 'needs-print' })
+    + POP_TRENNER
+    + popPunkt('remove', 'entfernen', 'Aus der Ansicht entfernen', { attrs: `data-uid="${doc.uid}" title="Nur aus dieser Ansicht entfernen – die Datei bleibt unverändert"`, klasse: 'gefahr' });
+}
+
+/* ---------- Öffnen, Ausrichten, Auffrischen ---------- */
+// profilMenue und profilKartenMenue stehen in src/oberflaeche/persoenlich.js; die Funktion bekommt den öffnenden Knopf
+const POP_MENUES = { menueDaten: () => datenMenue(), menueTabelle: () => tabellenMenue(), menueObjekt: () => objektMenue(), menueProfil: () => profilMenue(), menueProfilKarte: anker => profilKartenMenue(anker) };
+const popAnker = {};
+
+function popMenueFuellen(el) { el.innerHTML = POP_MENUES[el.id](popAnker[el.id]); }
+
+/** Menü unter seinen Knopf setzen, rechtsbündig, wenn der Knopf in der rechten Fensterhälfte liegt. */
+function popMenueAusrichten(el) {
+  let k = popAnker[el.id];
+  if (!k || !k.isConnected || !k.getClientRects().length) k = [...document.querySelectorAll(`[popovertarget="${el.id}"]`)].find(x => x.getClientRects().length);
+  if (!k) return;
+  popAnker[el.id] = k;
+  const r = k.getBoundingClientRect(), rand = 8, vw = document.documentElement.clientWidth, vh = window.innerHeight;
+  const bw = el.offsetWidth, bh = el.offsetHeight;
+  const links = r.left + r.width / 2 > vw / 2 ? r.right - bw : r.left;
+  let oben = r.bottom + 6;
+  if (oben + bh > vh - rand && r.top - 6 - bh >= rand) oben = r.top - 6 - bh;
+  el.style.left = `${Math.round(Math.max(rand, Math.min(links, vw - bw - rand)))}px`;
+  el.style.top = `${Math.round(Math.max(rand, oben))}px`;
+}
+
+/** Nach jedem Neuzeichnen: offene Menüs zeigen den neuen Zustand, Knöpfe melden „geöffnet“. */
+function popMenuesAuffrischen() {
+  for (const id of Object.keys(POP_MENUES)) {
+    const el = document.getElementById(id);
+    let offen = false;
+    try { offen = !!el && el.matches(':popover-open'); } catch { /* Browser ohne Popover */ }
+    if (offen) { popMenueFuellen(el); popMenueAusrichten(el); }
+    document.querySelectorAll(`[popovertarget="${id}"]`).forEach(k => k.setAttribute('aria-expanded', String(offen)));
+  }
+}
+
+// Welcher Knopf öffnet? (Einfangphase: läuft vor dem Umschalten des Popovers)
+document.addEventListener('click', e => {
+  const k = e.target.closest?.('[popovertarget]');
+  if (k) popAnker[k.getAttribute('popovertarget')] = k;
+}, true);
+document.addEventListener('beforetoggle', e => {
+  if (e.newState === 'open' && POP_MENUES[e.target.id]) popMenueFuellen(e.target);
+}, true);
+document.addEventListener('toggle', e => {
+  if (!POP_MENUES[e.target.id]) return;
+  if (e.newState === 'open') popMenueAusrichten(e.target);
+  document.querySelectorAll(`[popovertarget="${e.target.id}"]`).forEach(k => k.setAttribute('aria-expanded', String(e.newState === 'open')));
+}, true);
+// Ein gewählter Menüpunkt schließt das Menü; Schalter und Info-Symbole lassen es offen
+document.addEventListener('click', e => {
+  const m = e.target.closest?.('.pop-menue');
+  if (!m || !e.target.closest('.pop-punkt[data-action], a.pop-punkt')) return;
+  try { m.hidePopover(); } catch { /* schon zu */ }
+});
+addEventListener('resize', () => { for (const id of Object.keys(POP_MENUES)) { const el = document.getElementById(id); try { if (el?.matches(':popover-open')) popMenueAusrichten(el); } catch { /* ohne Popover */ } } });
 </script>
 <!-- Master-Prompt und Bewertungsschema für die Hilfe; beim Bauen eingebettet (tools/viewer_bauen.py, außer mit --ohne-prompt) -->
 <script type="text/plain" id="master-prompt">
@@ -7761,9 +8003,9 @@ const state = {
   // Eigene Eingaben je Objektschlüssel: Status, Termin, Notiz (src/oberflaeche/eingaben.js)
   notizen: {},
   // Ausgeblendete Spalten der Vergleichstabelle (gemerkt mit der Ansicht)
-  ausgeblendet: new Set(),
+  ausgeblendet: new Set(), // Startwert SPALTEN_STANDARD_AUS, gesetzt in ansichtLaden()
   // Menü links: ganz zugeklappt (nur breite Bildschirme, gemerkt) und offene Gruppen
-  menue: { zu: false, mobilAuf: false, gruppen: { ansicht: true, profil: true, daten: true } },
+  menue: { zu: false, mobilAuf: false, gruppen: { ansicht: true, offen: true, profil: true } },
 };
 let uidCounter = 0;
 let numCounter = 0;
@@ -8516,20 +8758,26 @@ function render() {
 
 /* ---------- Ansicht merken: Sortierung, Suche, Orts- und Spaltenfilter, ältere Revisionen ---------- */
 const ANSICHT_STANDARD = { sort: { col: 'num', dir: 1 } };
+/* Luftige Tabelle: selten gebrauchte Spalten sind zunächst ausgeblendet (zuschaltbar über „⋯“ → „Spalten wählen“).
+   SPALTEN_STAND zählt hoch, wenn sich diese Vorgabe ändert – eine ältere gemerkte Ansicht bekommt sie dann einmalig. */
+const SPALTEN_STANDARD_AUS = ['sicherheit', 'faktor', 'energie', 'baujahr', 'offen', 'risiken', 'pruefdatum', 'export'];
+const SPALTEN_STAND = 2;
+const spaltenStandard = () => { const a = state.ausgeblendet; return a.size === SPALTEN_STANDARD_AUS.length && SPALTEN_STANDARD_AUS.every(id => a.has(id)); };
 function ansichtLaden() {
+  state.ausgeblendet = new Set(SPALTEN_STANDARD_AUS);
   try {
     const a = JSON.parse(lsGet(LS.ansicht) || '{}');
     if (a.sort && alleSpalten().some(c => c.id === a.sort.col)) state.sort = { col: a.sort.col, dir: a.sort.dir === -1 ? -1 : 1 };
     if (typeof a.q === 'string') state.filter.q = a.q.slice(0, 200);
     if (typeof a.showOld === 'boolean') state.filter.showOld = a.showOld;
     if (Array.isArray(a.orte)) state.filter.orte = new Set(a.orte.filter(o => typeof o === 'string'));
-    if (Array.isArray(a.ausgeblendet)) state.ausgeblendet = new Set(a.ausgeblendet.filter(id => alleSpalten().some(c => c.id === id) && !SPALTEN_FEST.includes(id)));
+    if (Array.isArray(a.ausgeblendet) && a.spaltenStand === SPALTEN_STAND) state.ausgeblendet = new Set(a.ausgeblendet.filter(id => alleSpalten().some(c => c.id === id) && !SPALTEN_FEST.includes(id)));
     if (a.spalten && typeof a.spalten === 'object') {
       for (const c of alleSpalten()) { const b = a.spalten[c.id] && RK.tabellenfilter.bereinige(c.filter, a.spalten[c.id]); if (b) state.filter.spalten[c.id] = b; }
     }
   } catch { /* defekter Speicherinhalt wird ignoriert */ }
 }
-const ansichtDaten = () => ({ sort: state.sort, q: state.filter.q, showOld: state.filter.showOld, orte: [...state.filter.orte], spalten: state.filter.spalten, ausgeblendet: [...state.ausgeblendet] });
+const ansichtDaten = () => ({ sort: state.sort, q: state.filter.q, showOld: state.filter.showOld, orte: [...state.filter.orte], spalten: state.filter.spalten, ausgeblendet: [...state.ausgeblendet], spaltenStand: SPALTEN_STAND });
 let ansichtZuletzt = '';
 function ansichtSpeichern() {
   const text = JSON.stringify(ansichtDaten());
@@ -8537,22 +8785,16 @@ function ansichtSpeichern() {
   ansichtZuletzt = text;
   lsSet(LS.ansicht, text);
 }
-const ansichtVeraendert = () => state.sort.col !== ANSICHT_STANDARD.sort.col || state.sort.dir !== ANSICHT_STANDARD.sort.dir || !!state.filter.q || state.filter.showOld || state.filter.orte.size > 0 || Object.keys(state.filter.spalten).length > 0 || state.ausgeblendet.size > 0;
+const ansichtVeraendert = () => state.sort.col !== ANSICHT_STANDARD.sort.col || state.sort.dir !== ANSICHT_STANDARD.sort.dir || !!state.filter.q || state.filter.showOld || state.filter.orte.size > 0 || Object.keys(state.filter.spalten).length > 0 || !spaltenStandard();
 function ansichtZuruecksetzen() {
   state.sort = { ...ANSICHT_STANDARD.sort };
-  state.filter.q = ''; state.filter.showOld = false; state.filter.orte.clear(); state.filter.spalten = {}; state.ausgeblendet.clear();
+  state.filter.q = ''; state.filter.showOld = false; state.filter.orte.clear(); state.filter.spalten = {}; state.ausgeblendet = new Set(SPALTEN_STANDARD_AUS);
   spaltenmenueSchliessen({ fokus: false });
   render();
   toast('Sortierung und Filter zurückgesetzt.');
 }
 
 /* ---------- Menü links ---------- */
-const MENUE_ICON = {
-  ansicht: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18v14H3z"/><path d="M3 10h18M9 10v9"/></svg>',
-  profil: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>',
-  daten: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
-};
-
 function menueLaden() {
   try {
     const m = JSON.parse(lsGet(LS.menue) || '{}');
@@ -8580,74 +8822,58 @@ function menueUmschalten() {
 }
 
 function menueGruppe(id, titel, inhalt) {
-  return `<details class="menue-gruppe" data-gruppe="${id}"${state.menue.gruppen[id] !== false ? ' open' : ''}><summary>${MENUE_ICON[id]}<span>${titel}</span></summary><div class="menue-inhalt">${inhalt}</div></details>`;
+  return `<details class="menue-gruppe" data-gruppe="${id}"${state.menue.gruppen[id] !== false ? ' open' : ''}><summary><span>${titel}</span></summary><div class="menue-inhalt">${inhalt}</div></details>`;
 }
 
+/** Seitenleiste: nur Navigation (Ansichten, geöffnetes Objekt, Profil). Dateien, Ordner und Sicherung stehen im Menü „Daten“. */
 function renderSidebar() {
   const sb = $('#sidebar');
-  const immo = immoDocs(), objekte = immo.filter(d => d.rev?.latest).length;
-  const kaputt = state.docs.filter(d => !d.isImmo);
+  const immo = immoDocs();
   const aktuell = state.view === 'detail' ? getDoc(state.current) : null;
+  const punkt = ([id, t]) => { const an = state.view === 'compare' && state.cmpTab === id; return `<button class="navitem${an ? ' active' : ''}" data-action="menue-tab" data-tab="${id}"${an ? ' aria-current="page"' : ''}>${ikon(id)}<span class="menue-text">${t.replace(/&shy;/g, '')}</span>${id === 'gegenueberstellung' && state.selectionTouched && state.selected.size ? `<span class="count">${state.selected.size}</span>` : ''}</button>`; };
   const ansicht = immo.length
-    ? `<nav class="menue-nav" aria-label="Ansichten">
-        <div class="menue-label">Vergleich · ${objekte} Objekt${objekte === 1 ? '' : 'e'}</div>
-        ${CMP_TABS.map(([id, t]) => `<button class="navitem sub${state.view === 'compare' && state.cmpTab === id ? ' active' : ''}" data-action="menue-tab" data-tab="${id}"${state.view === 'compare' && state.cmpTab === id ? ' aria-current="page"' : ''}>${t.replace(/&shy;/g, '')}${id === 'gegenueberstellung' && state.selected.size ? ` <span class="count">${state.selected.size}</span>` : ''}</button>`).join('')}
-        ${aktuell && aktuell.isImmo ? `<div class="menue-label">Geöffnet</div><button class="navitem sub active" data-action="open" data-uid="${aktuell.uid}" aria-current="page"><span class="vdot ${vcls(urteilOf(aktuell))}"></span><span class="menue-text">#${aktuell.num} ${esc(docTitle(aktuell))}</span></button>` : ''}
-      </nav>`
-    : '<p class="fine" style="margin:4px 10px">Noch keine Bewertungen geladen.</p>';
-  const daten = `
-    <div class="side-actions">
-      <button class="btn primary" data-action="pick-files" title="JSON-Dateien auswählen">+ Dateien</button>
-      <button class="btn" data-action="pick-dir" title="Ordner mit JSON-Dateien einmalig laden">Ordner</button>
-      <button class="btn" data-action="paste" title="JSON-Text einfügen">Einfügen</button>
-    </div>
-    ${sidebarOrdner()}
-    ${kaputt.length ? `<div class="menue-label">Nicht lesbar</div>${kaputt.map(d => `<button class="navitem sub${state.current === d.uid && state.view === 'detail' ? ' active' : ''}" data-action="open" data-uid="${d.uid}"><span class="vdot v-crit"></span><span class="menue-text">${esc(d.fileName)}</span></button>`).join('')}` : ''}
-    <button class="linkbtn" data-action="hilfe" data-bereich="anleitung" style="align-self:flex-start">Anleitung und Master-Prompt</button>
-    <div class="side-sicherung">
-      <div class="side-zeile"><button class="btn sm" data-action="eingaben-sichern"${eingabenZahl() ? '' : ' disabled'}>Eigene Eingaben sichern${eingabenZahl() ? ` <span class="count">${eingabenZahl()}</span>` : ''}</button>${info('Status, Notizen, Adressen und Kartenpunkte als Datei. Zurückholen: die Datei über „+ Dateien“ laden.', 'Eigene Eingaben sichern')}</div>
-    </div>
-    <div class="side-foot">
-      <label class="check"><input type="checkbox" id="persist" ${state.persist ? 'checked' : ''}> Dateien in diesem Browser merken</label>
-      ${state.saveError ? `<span class="notice">${esc(state.saveError)}</span>` : ''}
-      ${state.docs.length ? `<button class="linkbtn" data-action="clear-all" style="align-self:flex-start">Alle ${state.docs.length} Dateien aus der Ansicht entfernen</button>` : ''}
-    </div>`;
-  sb.innerHTML = menueGruppe('ansicht', 'Ansicht', ansicht) + menueGruppe('profil', 'Persönliche Profile', sidebarProfil()) + menueGruppe('daten', 'Daten &amp; Ablageordner', daten);
+    ? `<nav class="menue-nav" aria-label="Ansichten">${CMP_TABS.map(punkt).join('')}</nav>`
+    : '<p class="menue-leer">Noch keine Bewertungen geladen.</p>';
+  const offen = aktuell ? `<nav class="menue-nav" aria-label="Geöffnetes Objekt"><button class="navitem active" data-action="open" data-uid="${aktuell.uid}" aria-current="page"><span class="vdot ${aktuell.isImmo ? vcls(urteilOf(aktuell)) : 'v-crit'}"></span><span class="menue-text">${aktuell.isImmo ? `#${aktuell.num} ${esc(docTitle(aktuell))}` : esc(aktuell.fileName)}</span></button></nav>` : '';
+  sb.innerHTML = menueGruppe('ansicht', 'Vergleich', ansicht)
+    + (offen ? menueGruppe('offen', 'Geöffnet', offen) : '')
+    + menueGruppe('profil', 'Profil', sidebarProfil())
+    + `<div class="side-fuss">${sidebarOrdner()}</div>`;
+  $('#datenKnopf')?.classList.toggle('primary', !state.docs.length && state.view !== 'start');
+  popMenuesAuffrischen();
 }
 
 function sidebarProfil() {
-  const p = aktivesProfil();
-  return `<div class="side-profil">
-      <button class="navitem sub${state.view === 'profile' ? ' active' : ''}" data-action="profile">Profile verwalten${state.profile.liste.length ? ` <span class="count">${state.profile.liste.length}</span>` : ''}</button>
-      ${p ? `<div class="side-profil-aktiv">Aktiv: <b>${esc(p.bezeichnung)}</b>${profilMeta(p.id).geaendert ? '<span class="tag tag-warn">nicht exportiert</span>' : ''}</div>` : '<div class="side-profil-aktiv">Kein Profil aktiv</div>'}
-    </div>`;
+  const p = aktivesProfil(), n = state.profile.liste.length;
+  return `<nav class="menue-nav" aria-label="Profil"><button class="navitem${state.view === 'profile' ? ' active' : ''}" data-action="profile"${state.view === 'profile' ? ' aria-current="page"' : ''}>${ikon('profile')}<span class="menue-text">Profile verwalten</span>${n ? `<span class="count">${n}</span>` : ''}</button></nav>
+    <div class="side-profil-aktiv">${p ? `Aktiv: <b>${esc(p.bezeichnung)}</b>${profilMeta(p.id).geaendert ? '<span class="tag tag-warn">nicht exportiert</span>' : ''}` : 'Kein Profil aktiv'}</div>`;
 }
 
 function viewStart() {
+  const verbinden = ORDNER_UNTERSTUETZT
+    ? ` · <button class="linkbtn" data-action="ordner-verbinden">Ablageordner verbinden</button>${info('Z. B. der Google-Drive-Ordner mit deinen Exporten: Er wird bei jedem Öffnen und laufend automatisch eingelesen.', 'Ablageordner')}`
+    : info('Einen Ordner dauerhaft verbinden und automatisch einlesen geht in Chrome und Edge.', 'Ablageordner');
   return `<div class="start">
     <div class="drop" data-action="pick-files">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="m7 8 5-5 5 5"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></svg>
       <h1>Bewertungs-Exporte ansehen und vergleichen</h1>
-      <p>JSON-Dateien nach Schema 1.0 (Master-Prompt V3 oder V3.1) hierher ziehen – eine Datei für die Einzelansicht, mehrere für den Vergleich. Auch ganze Ordner funktionieren.</p>
-      <div class="btn-row">
-        <button class="btn primary" data-action="pick-files">Dateien auswählen</button>
-        <button class="btn" data-action="pick-dir">Ordner wählen</button>
-        <button class="btn" data-action="paste">JSON einfügen</button>
-      </div>
-      ${ORDNER_UNTERSTUETZT ? `<p class="fine">Oder einen <button class="linkbtn" data-action="ordner-verbinden">Ablageordner verbinden</button>${info('Z. B. den Google-Drive-Ordner mit deinen Exporten: Er wird bei jedem Öffnen und laufend automatisch eingelesen.', 'Ablageordner')}</p>` : '<p class="fine">Einen Ordner dauerhaft verbinden und automatisch einlesen geht in Chrome und Edge.</p>'}
+      <p>JSON-Dateien hierher ziehen – eine für die Einzelansicht, mehrere für den Vergleich.${info('Gelesen werden Bewertungs-Exporte nach Schema 1.0 (Master-Prompt V3 oder V3.1). Auch ganze Ordner funktionieren.', 'Welche Dateien')}</p>
+      <div class="btn-row"><button class="btn primary gross" data-action="pick-files">Dateien auswählen</button></div>
+      <p class="start-mehr"><button class="linkbtn" data-action="pick-dir">Ordner wählen</button> · <button class="linkbtn" data-action="paste">JSON einfügen</button>${verbinden}</p>
       <p class="fine">Die Dateien werden nur lokal in diesem Browser gelesen. Nichts wird hochgeladen.</p>
     </div>
-    <div class="flow" aria-label="Arbeitsablauf"><span class="box">Inserat-Link</span>→<span class="box">KI-Prüfung mit Master-Prompt V3.1</span>→<span class="box">JSON-Export</span>→<span class="box">Dieser Viewer</span></div>
-    <div class="btn-row"><button class="btn" data-action="hilfe" data-bereich="anleitung">Anleitung: So entstehen die JSON-Dateien</button><button class="btn" data-action="hilfe" data-bereich="prompt">Master-Prompt kopieren</button></div>
+    <div class="start-einstieg"><span>Noch keine Dateien?</span>
+      <button class="btn" data-action="hilfe" data-bereich="anleitung">Anleitung: So entstehen die JSON-Dateien</button>
+      <button class="btn" data-action="hilfe" data-bereich="prompt">Master-Prompt kopieren</button>
+      ${location.protocol === 'file:' ? '' : '<button class="btn" data-action="load-samples">Fiktive Beispiele laden</button>'}
+    </div>
     <div class="features">
       <div class="feature"><b>Einzelansicht</b><p>Entscheidungsüberblick, vier getrennte Urteile, Steckbrief mit Belegstatus, Widersprüche, Szenarien, Risiken und nächste Schritte.</p></div>
-      <div class="feature"><b>Vergleich</b><p>Sortierbare Tabelle, Streudiagramm Preis/m² gegen Rendite, Karte der Objekte mit Adresse, Gegenüberstellung mit Abgleich der Annahmen und CSV-Export.</p></div>
+      <div class="feature"><b>Vergleich</b><p>Sortierbare Tabelle, Streudiagramm Preis/m² gegen Rendite, Karte der Objekte mit Adresse, Gegenüberstellung und CSV-Export.</p></div>
       <div class="feature"><b>Exportprüfung</b><p>Prüft Datentypen, Kategorien, IDs, Verweise und JSON-Pointer und rechnet Kennzahlen nach.</p></div>
-      <div class="feature"><b>Mit deinem Profil rechnen</b><p>Persönliches Haushalts-, Steuer- und Finanzierungsprofil anlegen oder importieren und Zuzahlung, Steuerwirkung und Budget je Objekt sehen – nur lokal. <button class="linkbtn" data-action="profile">Profile öffnen</button></p></div>
+      <div class="feature"><b>Mit deinem Profil rechnen</b><p>Haushalts-, Steuer- und Finanzierungsprofil anlegen und Zuzahlung, Steuerwirkung und Budget je Objekt sehen – nur lokal. <button class="linkbtn" data-action="profile">Profile öffnen</button></p></div>
     </div>
-    ${location.protocol === 'file:'
-      ? '<p class="fine" style="text-align:center;margin-top:18px">Fiktive Beispieldateien liegen im Ordner <code>beispiele/</code> neben dieser Datei.</p>'
-      : '<div class="btn-row"><button class="btn" data-action="load-samples">Fiktive Beispiele laden</button></div>'}
+    ${location.protocol === 'file:' ? '<p class="fine" style="text-align:center;margin-top:18px">Fiktive Beispieldateien liegen im Ordner <code>beispiele/</code> neben dieser Datei.</p>' : ''}
   </div>`;
 }
 
@@ -8668,7 +8894,7 @@ function viewDetail(doc) {
 }
 
 function viewErrorDoc(doc) {
-  return `<div class="page-head"><div><div class="crumbs">${immoDocs().length > 1 ? '<button class="linkbtn" data-action="compare">← Zum Vergleich</button>' : ''}</div><h1 style="margin-top:6px">${esc(doc.fileName)}</h1><p class="sub">Diese Datei konnte nicht als Immobilienbewertung gelesen werden.</p></div><div class="dh-actions"><button class="btn sm" data-action="remove" data-uid="${doc.uid}">Aus der Ansicht entfernen</button></div></div>
+  return `${immoDocs().length ? `<div class="dh-kopfzeile no-print"><button class="zurueck-knopf" data-action="compare" title="Zurück zum Vergleich">${ikon('zurueck', 18)}<span>Vergleich</span></button></div>` : ''}<div class="page-head"><div><h1 style="margin-top:6px">${esc(doc.fileName)}</h1><p class="sub">Diese Datei konnte nicht als Immobilienbewertung gelesen werden.</p></div><div class="dh-actions"><button class="btn sm" data-action="remove" data-uid="${doc.uid}">Aus der Ansicht entfernen</button></div></div>
     <div class="card"><ul class="issues">${issueItems(doc.issues)}</ul>
     ${doc.text ? `<details class="raw" style="margin-top:14px"><summary>Dateiinhalt (Auszug)</summary><pre>${esc(doc.text.slice(0, 6000))}</pre></details>` : ''}</div>`;
 }
@@ -8684,15 +8910,20 @@ function detailHead(doc) {
     const others = doc.rev.group.filter(x => x !== doc);
     rev = `<div class="revnote no-print"><b>${doc.rev.latest ? `Neueste von ${doc.rev.total} Revisionen.` : `Ältere Revision (${doc.rev.index} von ${doc.rev.total}).`}</b>${others.map(o => `<button class="linkbtn" data-action="open" data-uid="${o.uid}">Rev. ${o.rev.index} vom ${esc(fmtDate(obj(o.data.metadaten).exportdatum || obj(o.data.metadaten).pruefdatum || ''))} öffnen</button>`).join(' · ')}</div>`;
   }
+  // Der Prüfstatus steht nur dann als Knopf im Kopf, wenn es etwas zu tun gibt; sonst genügt der Punkt im Menü „⋯“
+  const c = countIssues(doc), problem = c.error || c.warn;
   return `<div class="detail-head">
-    <div class="dh-kopfzeile"><div class="crumbs">${immoDocs().length > 1 ? '<button class="linkbtn" data-action="compare">← Zum Vergleich</button><span>/</span>' : ''}<span class="file" title="${esc(doc.fileName)}">${esc(doc.fileName)}</span></div>${objektBlaettern(doc)}</div>
+    <div class="dh-kopfzeile no-print">
+      ${immoDocs().length > 1 ? `<button class="zurueck-knopf" data-action="compare" title="Zurück zum Vergleich">${ikon('zurueck', 18)}<span>Vergleich</span></button>` : '<span></span>'}
+      <div class="dh-werkzeuge">${objektBlaettern(doc)}<button class="icon-knopf" popovertarget="menueObjekt" aria-haspopup="menu" aria-expanded="false" aria-label="Weitere Aktionen" title="Weitere Aktionen: Inserat, Exportprüfung, Drucken, Entfernen">${ikon('mehr', 22)}</button></div>
+    </div>
     <div class="dh-row">
       <div class="dh-main">
         <h1><span class="num">#${doc.num}</span> ${esc(docTitle(doc))}</h1>
         <p class="sub">${esc([place, a.objektart].filter(Boolean).join(' · '))}</p>
         <p class="sub small">${esc(ids)}${url ? ` · <a href="${esc(url)}" target="_blank" rel="noopener noreferrer">Inserat öffnen ↗</a>` : ''}</p>
       </div>
-      <div class="dh-actions"><button class="btn sm" data-action="jump" data-target="sec-pruefung">${issueSummary(doc)}</button><button class="btn sm needs-print" data-action="print">Drucken / PDF</button><button class="btn sm" data-action="remove" data-uid="${doc.uid}" title="Nur aus dieser Ansicht entfernen – die Datei bleibt unverändert">Entfernen</button></div>
+      ${problem ? `<div class="dh-actions"><button class="btn sm" data-action="jump" data-target="sec-pruefung" title="Zur Exportprüfung springen">${issueSummary(doc)}</button></div>` : ''}
     </div>
     <div class="meta-chips">
       ${chip('Status', m.analysestatus)}${chip('Verfügbarkeit', a.verfuegbarkeit, a.verfuegbarkeit_stand)}${chip('Prüfdatum', m.pruefdatum)}
@@ -8719,7 +8950,7 @@ function vergleichKarten(rows, sp) {
     const einordnung = sp.some(c => c.id === 'p_einordnung') ? profilEinordnung(d) : '';
     const ein = einordnung ? EINORDNUNG[einordnung] : null;
     return `<li class="cmp-karte" data-action="open" data-uid="${d.uid}">
-      <div class="ck-kopf"><input type="checkbox" data-select="${d.uid}" ${state.selected.has(d.uid) ? 'checked' : ''} aria-label="Für Gegenüberstellung auswählen"><span class="num">#${d.num}</span><b class="ck-titel">${esc(docTitle(d))}</b></div>
+      <div class="ck-kopf"><input type="checkbox" data-select="${d.uid}" ${state.selectionTouched && state.selected.has(d.uid) ? 'checked' : ''} aria-label="Für Gegenüberstellung auswählen"><span class="num">#${d.num}</span><b class="ck-titel">${esc(docTitle(d))}</b></div>
       <div class="obj-sub">${esc([docPlace(d), platLabel(obj(d.data.angebot).plattform)].filter(Boolean).join(' · '))}</div>
       <div class="ck-urteile">${statusChip(d)}${urteilKurz(urteilOf(d))}${ein ? `<span class="verdict sm ${ein[1]}"><span class="vi" aria-hidden="true">${ein[0]}</span><span>${esc(ein[2].replace(' zum persönlichen Budget', ''))}</span></span>` : ''}</div>
       ${zeigen.length ? `<dl class="ck-werte">${zeigen.map(e).join('')}</dl>` : ''}
@@ -8736,8 +8967,8 @@ function objektNachbarn(doc) {
 function objektBlaettern(doc) {
   const n = objektNachbarn(doc);
   if (!n || n.liste.length < 2) return '';
-  const knopf = (ziel, richtung, text, kurz) => `<button class="btn sm" data-action="open" data-uid="${ziel ? ziel.uid : ''}"${ziel ? '' : ' disabled'} title="${ziel ? `${text}: #${ziel.num} ${esc(docTitle(ziel))} (Taste ${richtung})` : `Kein ${text.toLowerCase()}`}" aria-label="${text}">${kurz}</button>`;
-  return `<div class="dh-blaettern no-print" role="group" aria-label="Zwischen Objekten blättern">${knopf(n.vor, '←', 'Vorheriges Objekt', '‹ Zurück')}<span class="dh-position">${n.i + 1} von ${n.liste.length}</span>${knopf(n.nach, '→', 'Nächstes Objekt', 'Weiter ›')}</div>`;
+  const knopf = (ziel, richtung, text, symbol) => `<button class="icon-knopf" data-action="open" data-uid="${ziel ? ziel.uid : ''}"${ziel ? '' : ' disabled'} title="${ziel ? `${text}: #${ziel.num} ${esc(docTitle(ziel))} (Taste ${richtung})` : `Kein ${text.toLowerCase()}`}" aria-label="${text}">${ikon(symbol, 20)}</button>`;
+  return `<div class="dh-blaettern no-print" role="group" aria-label="Zwischen Objekten blättern">${knopf(n.vor, '←', 'Vorheriges Objekt', 'zurueck')}<span class="dh-position">${n.i + 1} von ${n.liste.length}</span>${knopf(n.nach, '→', 'Nächstes Objekt', 'pfeil')}</div>`;
 }
 
 function tile(doc, path, label) {
@@ -9082,7 +9313,7 @@ function spaltenDialog() {
   const liste = spaltenVerfuegbar().filter(c => !SPALTEN_FEST.includes(c.id));
   openDialog(dlgHead('Spalten anzeigen' + info('Ausgeblendete Spalten verschwinden aus Tabelle und CSV-Export; ihre Filter und ihre Sortierung ruhen so lange. „#“ und „Objekt“ bleiben immer sichtbar.', 'Spalten anzeigen')) + `
     <div class="spalten-wahl">${liste.map(c => `<label class="check"><input type="checkbox" data-spalte-an="${c.id}"${state.ausgeblendet.has(c.id) ? '' : ' checked'}> ${esc(colTitel(c))}${c.profil ? ' <span class="tag">Profil</span>' : ''}</label>`).join('')}</div>
-    <div class="btn-row" style="justify-content:flex-end;margin-bottom:0"><button class="btn" data-action="spalten-alle">Alle zeigen</button><button class="btn primary" data-action="close-dlg">Fertig</button></div>`);
+    <div class="btn-row" style="justify-content:flex-end;margin-bottom:0"><button class="btn" data-action="spalten-standard">Standard</button><button class="btn" data-action="spalten-alle">Alle zeigen</button><button class="btn primary" data-action="close-dlg">Fertig</button></div>`);
 }
 const alleSpalten = () => [...COLS, ...PROFIL_COLS];
 
@@ -9124,24 +9355,25 @@ function viewCompare() {
   const bad = state.docs.filter(d => !d.isImmo).length;
   // Kacheln zählen Objekte (neueste Revision); der Ortsfilter gilt überall außer in der Gegenüberstellung
   const scope = filtered ? latest.filter(inOrtFilter) : latest;
-  const cnt = vs => scope.filter(d => vs.includes(urteilOf(d))).length;
   const orte = filtered ? [...state.filter.orte] : [];
-  // Urteilsleiste: Anzahl je Gesamturteil, ein Klick filtert die Tabelle (derselbe Filter wie die Spalte „Gesamturteil“)
-  const ub = state.filter.spalten.urteil, nurEins = ub && ub.werte.length === 1 ? ub.werte[0] : null;
-  const urteilKnopf = v => { const n = cnt([v]), an = nurEins === v; return n || an ? `<button class="urteil-chip ${vcls(v)}${an ? ' an' : ''}" data-action="urteil-kachel" data-v="${v}" aria-pressed="${an}" title="${an ? 'Filter aufheben' : `Nur „${esc(L(v))}“ zeigen`}"><span class="vi" aria-hidden="true">${(VERDICT[v] || ['?'])[0]}</span><span class="urteil-chip-text">${esc(L(v))}</span><b>${n}</b></button>` : ''; };
-  return `<div class="page-head"><div><h1>Vergleich</h1><p class="sub">${latest.length} Objekt${latest.length === 1 ? '' : 'e'}${hasRevs ? ` · ${docs.length} Bewertungen inkl. älterer Revisionen` : ''}${bad ? ` · ${bad} Datei${bad === 1 ? '' : 'en'} nicht lesbar` : ''}${orte.length ? ` · Filter Ort: ${esc(orte.map(o => o || 'ohne Angabe').join(', '))}` : ''}</p></div>
-      ${filtered && !['persoenlich', 'karte'].includes(state.cmpTab) ? '<div class="dh-actions"><button class="btn sm needs-download" data-action="csv">CSV exportieren</button></div>' : ''}</div>
-    <div class="urteil-leiste" role="group" aria-label="Objekte nach Gesamturteil – anklicken zum Filtern">
-      <span class="urteil-gesamt"><b>${scope.length}</b> ${orte.length ? 'Objekte im Ortsfilter' : `Objekt${scope.length === 1 ? '' : 'e'}`}</span>
-      ${VERDICT_ORDER.map(urteilKnopf).join('')}
-    </div>
-    <div class="cmp-tabs" role="tablist" aria-label="Bereiche des Vergleichs">${CMP_TABS.map(([id, label]) => `<button class="cmp-tab${state.cmpTab === id ? ' active' : ''}" role="tab" aria-selected="${state.cmpTab === id}" data-action="cmp-tab" data-tab="${id}">${label}${id === 'gegenueberstellung' ? ` <span class="count">${state.selected.size}</span>` : ''}</button>`).join('')}</div>
-    ${filtered ? compareFilters(hasRevs) : ''}
+  const titel = (CMP_TABS.find(([id]) => id === state.cmpTab) || CMP_TABS[0])[1].replace(/&shy;/g, '');
+  // Werkzeuge rechts: Suche und das Menü „⋯“ (Spalten, ältere Revisionen, CSV). Die Reiter erscheinen nur, wenn die Seitenleiste zu ist.
+  const werkzeuge = filtered ? `<div class="werkzeuge">
+        <label class="such-feld" title="Titel, Ort, Plattform-ID oder Dateiname (Taste /)">${ikon('suche', 16)}<input type="search" id="fq" placeholder="Suchen" value="${esc(state.filter.q)}" aria-label="Suchen"></label>
+        ${state.cmpTab === 'tabelle' ? tabellenInfo() : ''}
+        <button class="icon-knopf" popovertarget="menueTabelle" aria-haspopup="menu" aria-expanded="false" aria-label="Weitere Aktionen" title="Weitere Aktionen: Spalten, Revisionen, CSV-Export">${ikon('mehr', 22)}</button>
+      </div>` : '';
+  return `<div class="page-head"><div><h1>${titel}</h1><p class="sub">${latest.length} Objekt${latest.length === 1 ? '' : 'e'}${hasRevs ? ` · ${docs.length} Bewertungen inkl. älterer Revisionen` : ''}${bad ? ` · ${bad} Datei${bad === 1 ? '' : 'en'} nicht lesbar` : ''}${orte.length ? ` · ${scope.length} im Ortsfilter` : ''}</p></div>${werkzeuge}</div>
+    <div class="cmp-tabs" role="tablist" aria-label="Bereiche des Vergleichs">${CMP_TABS.map(([id, label]) => `<button class="cmp-tab${state.cmpTab === id ? ' active' : ''}" role="tab" aria-selected="${state.cmpTab === id}" data-action="cmp-tab" data-tab="${id}">${label}${id === 'gegenueberstellung' && state.selectionTouched && state.selected.size ? ` <span class="count">${state.selected.size}</span>` : ''}</button>`).join('')}</div>
+    ${filtered ? `<div class="filter-zeile">
+      <div class="urteil-leiste" role="group" aria-label="Nach Gesamturteil filtern">${urteilChips()}</div>
+      ${ortFilter()}
+      ${ansichtVeraendert() ? '<button class="linkbtn" data-action="ansicht-zuruecksetzen" title="Sortierung, Suche und alle Filter zurücksetzen">Zurücksetzen</button>' : ''}
+    </div>` : ''}
     <div id="cmpResults">${compareResults()}</div>
     ${auswahlLeiste()}`;
 }
 
-/** Suche, Urteil, Revisionen und Schnellfilter nach Ort (für Tabelle und Kaufpreis/m² & Rendite). */
 /** Feste Leiste unten, sobald Objekte bewusst für die Gegenüberstellung angehakt sind. */
 function auswahlLeiste() {
   const n = state.selected.size;
@@ -9151,22 +9383,26 @@ function auswahlLeiste() {
     <button class="btn sm" data-action="select-none">Auswahl aufheben</button></div>`;
 }
 
-function compareFilters(hasRevs) {
+/** Urteils-Chips: Anzahl je Gesamturteil; ein Klick filtert (derselbe Filter wie die Spalte „Gesamturteil“). */
+function urteilChips() {
+  const scope = immoDocs().filter(d => d.rev?.latest).filter(inOrtFilter);
+  const ub = state.filter.spalten.urteil, nurEins = ub && ub.werte.length === 1 ? ub.werte[0] : null;
+  return VERDICT_ORDER.map(v => {
+    const n = scope.filter(d => urteilOf(d) === v).length, an = nurEins === v;
+    return n || an ? `<button class="urteil-chip ${vcls(v)}${an ? ' an' : ''}" data-action="urteil-kachel" data-v="${v}" aria-pressed="${an}" title="${an ? 'Filter aufheben' : `Nur „${esc(L(v))}“ zeigen`}"><span class="vi" aria-hidden="true">${(VERDICT[v] || ['?'])[0]}</span><span class="urteil-chip-text">${esc(L(v))}</span><b>${n}</b></button>` : '';
+  }).join('');
+}
+
+/** Schnellfilter nach Ort (gilt überall außer in der Gegenüberstellung). */
+function ortFilter() {
   const base = immoDocs().filter(d => state.filter.showOld || d.rev?.latest);
   const counts = new Map();
   for (const d of base) counts.set(ortKey(d), (counts.get(ortKey(d)) || 0) + 1);
   const orte = [...counts].sort((a, b) => (a[0] === '') - (b[0] === '') || a[0].localeCompare(b[0], 'de'));
-  const chips = orte.length > 1 ? `<div class="ort-filter" role="group" aria-label="Nach Ort filtern"><span class="lbl">Ort</span>
-      <button class="chip-btn${state.filter.orte.size ? '' : ' on'}" data-action="filter-ort-all" aria-pressed="${!state.filter.orte.size}">Alle <span class="n">${base.length}</span></button>
+  return orte.length > 1 ? `<div class="ort-filter" role="group" aria-label="Nach Ort filtern">
+      <button class="chip-btn${state.filter.orte.size ? '' : ' on'}" data-action="filter-ort-all" aria-pressed="${!state.filter.orte.size}">Alle Orte</button>
       ${orte.map(([o, n]) => { const on = state.filter.orte.has(o); return `<button class="chip-btn${on ? ' on' : ''}" data-action="filter-ort" data-ort="${esc(o)}" aria-pressed="${on}">${esc(o || 'Ohne Ortsangabe')} <span class="n">${n}</span></button>`; }).join('')}
     </div>` : '';
-  return `<div class="filters">
-      <input type="search" id="fq" placeholder="Suchen: Titel, Ort, Plattform-ID, Datei … (Taste /)" value="${esc(state.filter.q)}" aria-label="Suchen">
-      ${urteilAuswahl()}
-      ${hasRevs ? `<label class="check"><input type="checkbox" id="fold"${state.filter.showOld ? ' checked' : ''}> Ältere Revisionen zeigen</label>` : ''}
-      ${state.cmpTab === 'tabelle' ? `<button class="btn sm" data-action="spalten-dialog" title="Spalten ein- und ausblenden">Spalten${state.ausgeblendet.size ? ` <span class="count">${spaltenVerfuegbar().filter(c => !SPALTEN_FEST.includes(c.id) && !state.ausgeblendet.has(c.id)).length}/${spaltenVerfuegbar().length - SPALTEN_FEST.length}</span>` : ''}</button>${tabellenInfo()}` : ''}
-      ${ansichtVeraendert() ? '<button class="linkbtn" data-action="ansicht-zuruecksetzen" title="Sortierung, Suche und alle Filter zurücksetzen">Ansicht zurücksetzen</button>' : ''}
-    </div>${chips}`;
 }
 
 function compareResults() {
@@ -9179,7 +9415,7 @@ function compareResults() {
 }
 
 function compareTable(rows) {
-  const allSel = rows.length > 0 && rows.every(d => state.selected.has(d.uid));
+  const allSel = state.selectionTouched && rows.length > 0 && rows.every(d => state.selected.has(d.uid));
   const sp = spalten();
   const head = sp.map(c => {
     const active = state.sort.col === c.id;
@@ -9189,12 +9425,12 @@ function compareTable(rows) {
     const e = obj(d.data.energie), m = obj(d.data.metadaten), a = obj(d.data.angebot), b = obj(d.data.bewertung);
     const cell = c => {
       if (c.id === 'num') return `<td class="num"><span class="num">#${d.num}</span></td>`;
-      if (c.id === 'objekt') { const unter = [docPlace(d), platLabel(a.plattform), a.plattform_id].filter(Boolean).join(' · ') + (d.rev && d.rev.total > 1 ? ` · Rev. ${d.rev.index}/${d.rev.total}` : ''); return `<td class="cell-obj"><div class="obj-title" title="${esc(docTitle(d))}">${esc(docTitle(d))}</div><div class="obj-sub" title="${esc(unter)}">${offerTag(d.data)}<span class="obj-sub-text">${esc(unter)}</span></div></td>`; }
+      if (c.id === 'objekt') { const unter = [docPlace(d), platLabel(a.plattform), a.plattform_id].filter(Boolean).join(' · ') + (d.rev && d.rev.total > 1 ? ` · Rev. ${d.rev.index}/${d.rev.total}` : ''); return `<td class="cell-obj"><div class="obj-title" title="${esc(docTitle(d))}">${esc(docTitle(d))}</div><div class="obj-sub" title="${esc(unter)}">${offerTag(d.data)}${state.ausgeblendet.has('export') && countIssues(d).error ? '<span class="tag tag-crit" title="Die Exportprüfung meldet Fehler – Einzelheiten in der Objektansicht unter „Exportprüfung“">Exportfehler</span>' : ''}<span class="obj-sub-text">${esc(unter)}</span></div></td>`; }
       if (c.id === 'urteil') return `<td class="cell-urteil">${urteilKurz(b.gesamturteil)}</td>`;
       if (c.id === 'status') return statusZelle(d);
       if (c.profil) {
         const r = profilErgebnis(d), ok = r && r.anwendbar && r.status.cashflow === 'vollstaendig';
-        const leer = `<span class="null" title="${esc(!r || !r.anwendbar ? 'Mit dem Profil nicht anwendbar' : 'Mit dem Profil noch nicht berechenbar – was fehlt, zeigt der Reiter „Mit meinem Profil“')}">—</span>`;
+        const leer = `<span class="null" title="${esc(!r || !r.anwendbar ? 'Mit dem Profil nicht anwendbar' : 'Mit dem Profil noch nicht berechenbar – was fehlt, zeigt die Ansicht „Mit meinem Profil“')}">—</span>`;
         if (!ok) return `<td class="${c.num ? 'num ' : ''}profilspalte">${leer}</td>`;
         if (c.id === 'p_einordnung') { const e = EINORDNUNG[r.einordnung?.gesamt]; return `<td class="profilspalte nowrap">${e ? `<span class="verdict sm ${e[1]}" title="${esc(e[2])}"><span class="vi" aria-hidden="true">${e[0]}</span><span>${esc({ passt: 'Passt', passt_nicht: 'Passt nicht', nicht_beurteilbar: 'Nicht beurteilbar' }[r.einordnung.gesamt])}</span></span>` : leer}</td>`; }
         return `<td class="num profilspalte">${pZuzahlung(colValue(c, d))}</td>`;
@@ -9207,15 +9443,15 @@ function compareTable(rows) {
       if (c.id === 'export') return `<td class="nowrap">${issueTags(d)}</td>`;
       return `<td class="num">${valueCell(d, c.path, { compact: true })}</td>`;
     };
-    return `<tr class="clickable" data-action="open" data-uid="${d.uid}"><td><input type="checkbox" data-select="${d.uid}" ${state.selected.has(d.uid) ? 'checked' : ''} aria-label="Für Gegenüberstellung auswählen"></td>${sp.map(cell).join('')}</tr>`;
+    return `<tr class="clickable" data-action="open" data-uid="${d.uid}"><td><input type="checkbox" data-select="${d.uid}" ${state.selectionTouched && state.selected.has(d.uid) ? 'checked' : ''} aria-label="Für Gegenüberstellung auswählen"></td>${sp.map(cell).join('')}</tr>`;
   }).join('');
 
-  return `${vergleichKarten(rows, sp)}<div class="card flush cmp-tabelle-karte"><div class="table-wrap fest"><table class="t cmp-table"><thead><tr><th><input type="checkbox" id="selAll" ${allSel ? 'checked' : ''} aria-label="Alle sichtbaren auswählen"></th>${head}</tr></thead><tbody>${body || `<tr><td colspan="${sp.length + 1}" class="muted">Keine Treffer.${Object.keys(state.filter.spalten).length ? ' <button class="linkbtn" data-action="spaltenfilter-alle-weg">Spaltenfilter löschen</button>' : ''}</td></tr>`}</tbody></table></div></div>`;
+  return `${vergleichKarten(rows, sp)}<div class="card flush cmp-tabelle-karte"><div class="table-wrap fest"><table class="t cmp-table${state.selectionTouched && state.selected.size ? ' mit-auswahl' : ''}"><thead><tr><th><input type="checkbox" id="selAll" ${allSel ? 'checked' : ''} aria-label="Alle sichtbaren auswählen"></th>${head}</tr></thead><tbody>${body || `<tr><td colspan="${sp.length + 1}" class="muted">Keine Treffer.${Object.keys(state.filter.spalten).length ? ' <button class="linkbtn" data-action="spaltenfilter-alle-weg">Spaltenfilter löschen</button>' : ''}</td></tr>`}</tbody></table></div></div>`;
 }
 
 /** Hinweise zur Vergleichstabelle (ⓘ in der Filterleiste). */
 function tabellenInfo() {
-  return info(`<span class="info-zeile">${aktivesProfil() ? `Blau hinterlegte Spalten rechnen mit dem Profil „${esc(aktivesProfil().bezeichnung)}“ (Zuzahlung je Monat; „Überschuss“ = es bleibt etwas übrig). ` : 'Mit einem aktiven persönlichen Profil erscheinen hier zusätzlich Zuzahlung vor und nach Steuer und die Einordnung zum Budget. '}</span><span class="info-zeile">Überschrift anklicken = sortieren, Trichter daneben = sortieren und filtern, „Spalten“ blendet Spalten ein und aus. Zahlenfilter zeigen unbekannte Werte standardmäßig weiter an; Szenariowerte zählen beim Sortieren und Filtern nicht. Häkchen wählen Objekte für die Gegenüberstellung.</span>${WERTE_LEGENDE_INHALT}`, 'Bedienung der Tabelle');
+  return info(`<span class="info-zeile">${aktivesProfil() ? `Blau hinterlegte Spalten rechnen mit dem Profil „${esc(aktivesProfil().bezeichnung)}“ (Zuzahlung je Monat; „Überschuss“ = es bleibt etwas übrig). ` : 'Mit einem aktiven persönlichen Profil erscheinen hier zusätzlich Zuzahlung vor und nach Steuer und die Einordnung zum Budget. '}</span><span class="info-zeile">Überschrift anklicken = sortieren. Der Trichter daneben (erscheint beim Darüberfahren) sortiert und filtert. Weitere Spalten: Menü „⋯“ → „Spalten wählen“.</span><span class="info-zeile">Zahlenfilter zeigen unbekannte Werte standardmäßig weiter an; Szenariowerte zählen beim Sortieren und Filtern nicht. Die Kästchen links (erscheinen beim Darüberfahren) wählen Objekte für die Gegenüberstellung.</span>${WERTE_LEGENDE_INHALT}`, 'Bedienung der Tabelle');
 }
 
 /** Streudiagramm Kaufpreis/m² gegen Bruttomietrendite mit Werteliste daneben. */
@@ -9515,7 +9751,10 @@ const THEMES = ['auto', 'light', 'dark'];
 function applyTheme(t) {
   if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
   else delete document.documentElement.dataset.theme;
-  $('#themeLabel').textContent = { auto: 'Auto', light: 'Hell', dark: 'Dunkel' }[t] || 'Auto';
+  const name = { auto: 'Automatisch', light: 'Hell', dark: 'Dunkel' }[t] || 'Automatisch';
+  $('#themeIkon').innerHTML = ikon({ light: 'hell', dark: 'dunkel' }[t] || 'auto', 20);
+  $('#themeBtn').setAttribute('aria-label', `Farbschema: ${name}`);
+  $('#themeBtn').title = `Farbschema: ${name} – anklicken zum Wechseln`;
 }
 
 /* =====================================================================
@@ -9565,6 +9804,7 @@ document.addEventListener('click', e => {
     case 'spalten-dialog': spaltenDialog(); break;
     case 'eingaben-sichern': eingabenSichern(); break;
     case 'spalten-alle': state.ausgeblendet.clear(); spaltenDialog(); render(); break;
+    case 'spalten-standard': state.ausgeblendet = new Set(SPALTEN_STANDARD_AUS); spaltenDialog(); render(); break;
     case 'meta-mehr': state.metaMehr = !state.metaMehr; renderMitFokus(); break;
     case 'menue-tab':
       if ($('#dlg').open) $('#dlg').close();
@@ -9654,9 +9894,12 @@ document.addEventListener('change', e => {
   if (t.id === 'karten-filter') { const c = spalteMit(t.value); t.value = ''; if (c) spaltenmenueOeffnen(c, 'karten'); return; }
   if (pAenderung(t)) return;
   if (t.id === 'ordner-auto') { state.ordner.auto = t.checked; lsSet(LS_ORDNER_AUTO, t.checked ? '1' : '0'); return; }
-  if (t.dataset.select) { state.selectionTouched = true; t.checked ? state.selected.add(t.dataset.select) : state.selected.delete(t.dataset.select); renderMitFokus(); return; }
-  if (t.id === 'selAll') { state.selectionTouched = true; for (const d of filteredDocs()) t.checked ? state.selected.add(d.uid) : state.selected.delete(d.uid); render(); return; }
-  if (t.id === 'fu') { urteilAuswahlSetzen(t.value); return; }
+  if (t.dataset.select) {
+    // Die Vorauswahl (erste vier Objekte) gilt nur, bis in Tabelle oder Karten das erste Häkchen gesetzt wird
+    if (!state.selectionTouched && !t.closest('.pick-list')) state.selected.clear();
+    state.selectionTouched = true; t.checked ? state.selected.add(t.dataset.select) : state.selected.delete(t.dataset.select); renderMitFokus(); return;
+  }
+  if (t.id === 'selAll') { if (!state.selectionTouched) state.selected.clear(); state.selectionTouched = true; for (const d of filteredDocs()) t.checked ? state.selected.add(d.uid) : state.selected.delete(d.uid); render(); return; }
   if (t.id === 'fold') { state.filter.showOld = t.checked; render(); return; }
   if (t.id === 'fdiff') { state.diffOnly = t.checked; renderResults(); return; }
   if (t.id === 'persist') { state.persist = t.checked; lsSet(LS.persist, t.checked ? '1' : '0'); save(); renderSidebar(); }
