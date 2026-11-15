@@ -825,7 +825,7 @@ h1, h2, h3 { letter-spacing: -.02em; }
   background: var(--leiste); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px);
   border-bottom: 1px solid var(--line);
 }
-.brand { display: flex; align-items: center; gap: 9px; margin: 0; font-size: 15px; font-weight: 600; letter-spacing: -.01em; white-space: nowrap; min-width: 0; }
+.brand { display: flex; align-items: center; gap: 9px; margin: 0 0 0 6px; font-size: 15px; font-weight: 600; letter-spacing: -.01em; white-space: nowrap; min-width: 0; }
 .brand .marke { width: 22px; height: 22px; flex: none; border-radius: 6px; box-shadow: 0 1px 2px rgba(0, 60, 140, .28); }
 .layout { display: grid; grid-template-columns: 248px minmax(0, 1fr); min-height: calc(100vh - 52px); }
 .sidebar {
@@ -1464,7 +1464,7 @@ dialog::backdrop { background: rgba(0, 0, 0, .32); -webkit-backdrop-filter: blur
 @keyframes flash { 0% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
 
 /* ---------- Persönliche Profile und Berechnung mit dem Profil ---------- */
-.side-profil-aktiv { margin: 0 10px 0 37px; font-size: 12.5px; line-height: 1.4; color: var(--ink-2); }
+.side-profil-aktiv { margin: -3px 10px 4px 37px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12.5px; line-height: 1.4; color: var(--ink-2); }
 .side-profil-aktiv b { font-weight: 500; color: var(--ink); }
 .side-profil-aktiv .tag { margin-left: 4px; }
 .feld-raster { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 12px 16px; margin: 12px 0; }
@@ -1497,7 +1497,8 @@ dialog::backdrop { background: rgba(0, 0, 0, .32); -webkit-backdrop-filter: blur
 .p-editor-kopf { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; }
 .p-editor-kopf > .feld { flex: 1 1 320px; max-width: 520px; }
 .p-editor-status { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-.p-editor .cmp-tabs { margin-top: 16px; }
+/* Die Reiter im Profil-Editor sind immer sichtbar (nicht nur ohne Seitenleiste) */
+.p-editor .cmp-tabs { display: flex; margin-top: 16px; }
 .p-editor-raster { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 340px); gap: 20px; margin-top: 8px; align-items: start; }
 .p-editor-seite { position: sticky; top: 120px; display: flex; flex-direction: column; gap: 12px; }
 .p-seite-block { background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; font-size: 13.5px; }
@@ -1664,7 +1665,7 @@ a.btn { color: inherit; text-decoration: none; }
 .such-feld input { flex: 1; min-width: 0; height: 100%; padding: 0; border: 0; background: transparent; color: var(--ink); font-size: 14px; outline: none; }
 .such-feld input::placeholder { color: var(--muted); }
 .werkzeug-zeile { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 14px; }
-.werkzeug-zeile .such-feld { flex: 0 1 230px; width: auto; min-width: 140px; height: 32px; }
+.werkzeug-zeile .such-feld { flex: 0 1 380px; width: auto; min-width: 180px; height: 32px; }
 .filter-zeile { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; flex: 1 1 auto; min-width: 0; min-height: 32px; }
 .werkzeug-ende { display: flex; align-items: center; gap: 4px; flex: none; margin-left: auto; }
 .pop-menue { display: none; position: fixed; inset: auto; left: 0; top: 0; margin: 0; box-sizing: border-box; min-width: 250px; max-width: min(340px, calc(100vw - 16px)); max-height: calc(100vh - 16px); overflow: auto; padding: 6px; border: 1px solid var(--line); border-radius: 14px; background: var(--leiste); -webkit-backdrop-filter: saturate(180%) blur(24px); backdrop-filter: saturate(180%) blur(24px); color: var(--ink); box-shadow: 0 14px 44px rgba(0, 0, 0, .18), 0 2px 6px rgba(0, 0, 0, .06); font-size: 14px; }
@@ -1772,14 +1773,13 @@ body.mit-tabs .sec { scroll-margin-top: 152px; }
 @media (max-width: 1179px) { .bereich-knopf { display: none; } }
 @media print { .tab-leiste { display: none !important; } }
 
-/* ---------- Kopfzeile: Marke ganz links über der Seitenleiste, Umschalter an deren Rand ---------- */
-.topbar { justify-content: flex-start; padding-left: 0; }
-.brand-bereich { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex: none; align-self: stretch; width: 248px; padding: 0 9px 0 17px; background: var(--page); border-right: 1px solid var(--line); box-shadow: 0 1px 0 var(--page); }
+/* ---------- Kopfzeile: links der Umschalter der Seitenleiste (fester Platz), daneben die Marke ---------- */
+.topbar { justify-content: flex-start; }
 .topbar-luft { flex: 1; }
-.menue-zu .brand-bereich { width: auto; padding-right: 4px; background: none; border-right: 0; box-shadow: none; }
-@media (max-width: 900px) { .brand-bereich { width: auto; padding: 0 4px 0 12px; background: none; border-right: 0; box-shadow: none; } }
 /* ---------- Unten links: ein Knopf für Daten, Ablageordner, Einstellungen und Hilfe ---------- */
-.side-konto { display: flex; align-items: center; gap: 10px; width: 100%; padding: 7px 8px; border: 0; border-radius: 10px; background: transparent; color: var(--ink-2); text-align: left; font: inherit; cursor: pointer; }
+.side-fuss-zeile { display: flex; align-items: center; gap: 4px; }
+.side-fuss-zeile .icon-knopf { width: 36px; height: 36px; border-radius: 10px; }
+.side-konto { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; padding: 7px 8px; border: 0; border-radius: 10px; background: transparent; color: var(--ink-2); text-align: left; font: inherit; cursor: pointer; }
 .side-konto:hover, .side-konto[aria-expanded="true"] { background: var(--fill); }
 .side-konto-bild { display: inline-grid; place-items: center; flex: none; width: 30px; height: 30px; border-radius: 8px; background: var(--fill); color: var(--accent); }
 .side-konto-text { display: flex; flex-direction: column; flex: 1; min-width: 0; font-size: 12px; line-height: 1.35; }
@@ -1801,6 +1801,22 @@ body.mit-tabs .sec { scroll-margin-top: 152px; }
 .einst-verweis > .ikon:first-child { color: var(--ink-2); }
 .einst-verweis.gefahr > .ikon:first-child { color: inherit; }
 .einst h4 .info { margin-left: 4px; }
+
+/* ---------- Seite „Profil“: Profil wählen (eigene, Vorlagen), darunter Objekte oder Bearbeiten ---------- */
+.p-wahl-titel { display: flex; align-items: center; gap: 4px; margin: 18px 0 8px; font-size: 13px; font-weight: 600; letter-spacing: 0; color: var(--ink-2); }
+.p-wahl-titel:first-of-type { margin-top: 4px; }
+.p-karte.waehlbar { cursor: pointer; transition: border-color .12s, box-shadow .12s; }
+.p-karte.waehlbar:hover { border-color: var(--line-2); box-shadow: 0 2px 10px rgba(0, 0, 0, .08); }
+button.p-karte { text-align: left; font: inherit; color: inherit; }
+.p-karte-neu, .p-karte-vorlage { justify-content: center; min-height: 92px; }
+.p-karte-neu { border-style: dashed; border-color: var(--line-2); background: transparent; box-shadow: none; }
+.p-karte-neu:hover { background: var(--fill); }
+.p-karte-neu b, .p-karte-vorlage b { display: flex; align-items: center; gap: 8px; font-size: 14.5px; }
+.p-karte-neu .ikon { color: var(--accent); }
+.p-karte-vorlage .tag { margin-left: auto; font-weight: 500; }
+.p-bereiche { margin: 22px 0 14px; }
+.segment.gross button { padding: 7px 16px; font-size: 13.5px; }
+.p-leer { margin: 18px 2px 0; font-size: 13.5px; color: var(--ink-2); }
 
 /* ---------- Einstellungen ---------- */
 dialog.schmal { width: min(520px, calc(100vw - 32px)); }
@@ -1858,10 +1874,8 @@ label.einst-text { cursor: pointer; }
 </head>
 <body>
 <header class="topbar">
-  <div class="brand-bereich">
-    <div class="brand"><svg class="marke" viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="markeVerlauf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3d9cff"/><stop offset="1" stop-color="#005fd8"/></linearGradient></defs><rect width="24" height="24" rx="6.5" fill="url(#markeVerlauf)"/><rect x="5.5" y="12.4" width="3.4" height="6.1" rx="1.2" fill="#fff" opacity=".62"/><rect x="10.3" y="9" width="3.4" height="9.5" rx="1.2" fill="#fff" opacity=".82"/><rect x="15.1" y="5.5" width="3.4" height="13" rx="1.2" fill="#fff"/></svg><span>ImmoInvest</span></div>
-    <button class="icon-knopf" data-action="menue" id="menueBtn" aria-controls="sidebar" aria-expanded="true" title="Seitenleiste ein- oder ausblenden" aria-label="Seitenleiste ein- oder ausblenden"><svg class="ikon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="15" rx="3"/><path d="M9 4.5v15"/></svg></button>
-  </div>
+  <button class="icon-knopf" data-action="menue" id="menueBtn" aria-controls="sidebar" aria-expanded="true" title="Seitenleiste ein- oder ausblenden" aria-label="Seitenleiste ein- oder ausblenden"><svg class="ikon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="15" rx="3"/><path d="M9 4.5v15"/></svg></button>
+  <div class="brand"><svg class="marke" viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="markeVerlauf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3d9cff"/><stop offset="1" stop-color="#005fd8"/></linearGradient></defs><rect width="24" height="24" rx="6.5" fill="url(#markeVerlauf)"/><rect x="5.5" y="12.4" width="3.4" height="6.1" rx="1.2" fill="#fff" opacity=".62"/><rect x="10.3" y="9" width="3.4" height="9.5" rx="1.2" fill="#fff" opacity=".82"/><rect x="15.1" y="5.5" width="3.4" height="13" rx="1.2" fill="#fff"/></svg><span>ImmoInvest</span></div>
   <span class="topbar-luft"></span>
   <button class="icon-knopf hilfe-knopf" data-action="hilfe" data-bereich="anleitung" aria-label="Hilfe" title="Hilfe: Anleitung, Master-Prompt, Tastaturkürzel, Versionen (Taste ?)"><svg class="ikon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.6 2.6 0 1 1 3.7 2.4c-.7.3-1.200 1-1.200 1.800v.600"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></button>
   <button class="icon-knopf bereich-knopf" data-action="neben-umschalten" id="bereichKnopf" aria-pressed="false" aria-label="Objektbereich ein- oder ausblenden" title="Objektbereich ein- oder ausblenden" hidden><svg class="ikon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="15" rx="3"/><path d="M15 4.5v15"/></svg></button>
@@ -1881,7 +1895,6 @@ label.einst-text { cursor: pointer; }
 <div class="pop-menue" id="menueTabelle" popover role="menu" aria-label="Weitere Aktionen"></div>
 <div class="pop-menue" id="menueOrt" popover role="menu" aria-label="Nach Ort filtern"></div>
 <div class="pop-menue" id="menueObjekt" popover role="menu" aria-label="Weitere Aktionen zum Objekt"></div>
-<div class="pop-menue" id="menueProfil" popover role="menu" aria-label="Weitere Aktionen für Profile"></div>
 <div class="pop-menue" id="menueProfilKarte" popover role="menu" aria-label="Weitere Aktionen für dieses Profil"></div>
 <div class="toast" id="toast" role="status"></div>
 <div class="ladeanzeige" id="ladeanzeige" role="status" aria-live="polite" hidden><div class="lade-text">Wird geladen …</div><div class="lade-spur" role="progressbar" aria-label="Ladefortschritt" aria-valuemin="0" aria-valuemax="100"><i></i></div></div>
@@ -4002,6 +4015,13 @@ label.einst-text { cursor: pointer; }
   'use strict';
 
   const VERLAUF = [
+    { version: '3.4.0', datum: '2026-11-15', titel: 'Ein Menüpunkt „Profil“ mit Vorlagen, Zahnrad neben dem Menü', punkte: [
+      'Seite „Profil“: Vorlagen mit einem Klick, eigenes Profil, Ergebnisse je Objekt und Bearbeiten an einem Ort',
+      'Seitenleiste ohne Unterteilung: „Profil“ ersetzt „Mit meinem Profil“ und „Profile verwalten“',
+      'Unten links das Menü, rechts daneben das Zahnrad für die Einstellungen; Menüpunkte ohne „…“',
+      'Umschalter der Seitenleiste wieder fest ganz links, Marke daneben; längeres Suchfeld',
+      'Behoben: Die Reiter im Profil-Editor waren bei eingeblendeter Seitenleiste nicht zu sehen',
+    ] },
     { version: '3.3.0', datum: '2026-11-15', titel: 'Ein Menü unten links, Einstellungsmodus, Urteil als Auswahl', punkte: [
       'Daten laden, Ablageordner, Einstellungen und Hilfe liegen in einem einzigen Menü unten links',
       'Einstellungen als eigene Ansicht: Bereiche links, Inhalt rechts',
@@ -4097,7 +4117,14 @@ label.einst-text { cursor: pointer; }
 const RK = window.ImmoRechenkern;
 const LS_PROFILE = 'immoviewer.v1.profile';
 const LS_PROFILE_MERKEN = 'immoviewer.v1.profile_merken';
-const BEISPIELPROFILE = ['profil_a_manueller_steuersatz.json', 'profil_b_zve_zusammenveranlagung.json', 'profil_c_brutto_schaetzung.json', 'profil_d_mehrere_konditionen.json'];
+/* Vorlagen: fiktive Beispielprofile (beispiele/profile/), die sich auf der Seite „Profil“ mit einem Klick laden lassen */
+const PROFIL_VORLAGEN = [
+  { datei: 'profil_a_manueller_steuersatz.json', id: 'prof-beispiel-a', titel: 'Single', text: 'Eine Person, fester Steuersatz' },
+  { datei: 'profil_b_zve_zusammenveranlagung.json', id: 'prof-beispiel-b', titel: 'Paar', text: 'Zusammen veranlagt, zu versteuerndes Einkommen bekannt' },
+  { datei: 'profil_c_brutto_schaetzung.json', id: 'prof-beispiel-c', titel: 'Paar, Steuer geschätzt', text: 'Schätzung aus dem Bruttoeinkommen' },
+  { datei: 'profil_d_mehrere_konditionen.json', id: 'prof-beispiel-d', titel: 'Konditionenvergleich', text: 'Eine Person, vier Finanzierungsangebote' },
+];
+const BEISPIELPROFILE = PROFIL_VORLAGEN.map(v => v.datei);
 const MODI = {
   manuell: { titel: 'A · Frei gewählter Grenzsteuersatz', kurz: 'Manueller Satz', text: 'Schnell und transparent: Das steuerliche Ergebnis der Wohnung wird mit deinem Satz bewertet. Vereinfachung – ein Verlust gilt als voll verrechenbar, der Satz ist nicht aus deinem Einkommen nachgewiesen.' },
   zve: { titel: 'B · Tarifberechnung mit bekanntem zvE', kurz: 'Tarif mit zvE', text: 'Genauer: Einkommensteuertarif 2026 mit Splitting bzw. Einzelveranlagung. Du gibst das zu versteuernde Einkommen ohne diese neue Investition ein (z. B. aus dem letzten Steuerbescheid, bereinigt).' },
@@ -4195,21 +4222,18 @@ function profilGeaendert(p) {
   pSpeichern();
 }
 
-/** Wechselt zu den Profilen und merkt sich, woher man kam – Ziel des Zurück-Links. */
+/** Wechselt zur Seite „Profil“ und merkt sich, woher man kam – Ziel des Zurück-Links (nur von einem Objekt aus). */
 function pZuProfilen() {
-  if (state.view !== 'profile') state.vorProfil = { view: state.view, current: state.current, detailModus: state.detailModus, y: window.scrollY };
+  if (state.view !== 'profile') state.vorProfil = { view: state.view, current: state.current, detailModus: state.detailModus, y: window.scrollY, neben: objektNeben() };
   state.view = 'profile';
 }
 
-/** Zurück zur Ansicht vor den Profilen; ohne gültige Vorgeschichte zum Vergleich bzw. zum einzigen Objekt. */
+/** Zurück zum Objekt, von dem aus die Profilseite geöffnet wurde; sonst gibt es keinen Zurück-Link (die Seitenleiste genügt). */
 function pZurueckZiel() {
-  const kurz = t => (t.length > 60 ? t.slice(0, 59) + '…' : t);
+  const kurz = x => (x.length > 60 ? x.slice(0, 59) + '…' : x);
   const v = state.vorProfil;
-  if (v && v.view === 'detail' && getDoc(v.current)) return { ...v, text: kurz(docTitle(getDoc(v.current))) };
-  if (v && v.view === 'compare' && immoDocs().length) return { ...v, text: 'Vergleich' };
-  if (immoDocs().length > 1) return { view: 'compare', text: 'Vergleich' };
-  const d = immoDocs()[0] || state.docs[0];
-  return d ? { view: 'detail', current: d.uid, text: kurz(docTitle(d)) } : null;
+  if (!v || !getDoc(v.current) || !(v.view === 'detail' || (v.view === 'compare' && v.neben))) return null;
+  return { ...v, text: kurz(docTitle(getDoc(v.current))) };
 }
 
 /* ---------- Anzeigeformate ---------- */
@@ -4288,7 +4312,7 @@ function pNeu() {
   state.profile.aktivId = p.id;
   profilMeta(p.id).geaendert = true;
   pZuProfilen();
-  state.profilTab = 'haushalt';
+  state.profilTab = 'haushalt'; state.profilBereich = 'bearbeiten';
   pSpeichern();
   render();
   window.scrollTo(0, 0);
@@ -4468,6 +4492,22 @@ function pPaketUebernehmen() {
     if (!diff.length) toast('Übernommen – die Neuberechnung stimmt mit dem Paket überein.');
     else openDialog(dlgHead('Neuberechnung weicht ab') + `<p style="margin-top:0">Mögliche Gründe: andere Immobiliendatei, geänderte Rechenregeln oder ein bereits vorhandenes, abweichendes Profil.</p><div class="table-wrap"><table class="t"><thead><tr><th>Kennzahl</th><th class="num">Paket</th><th class="num">Neu</th></tr></thead><tbody>${diff.map(d => `<tr><td><code>${esc(d.kennzahl)}</code></td><td class="num">${esc(String(d.gespeichert))}</td><td class="num">${esc(String(d.neu))}</td></tr>`).join('')}</tbody></table></div>`);
   } else { pZuProfilen(); render(); toast('Profil und Szenario übernommen. Lade die passende Immobiliendatei, um neu zu rechnen.'); }
+}
+
+/** Eine Vorlage (fiktives Beispielprofil) laden und aktivieren. */
+async function pVorlageLaden(datei) {
+  try {
+    const r = await fetch('beispiele/profile/' + datei);
+    if (!r.ok) throw new Error('nicht erreichbar');
+    const erg = pProfilImport(await r.json(), datei, true);
+    if (!erg.ok) throw new Error('nicht lesbar');
+    state.profile.aktivId = erg.profil.id;
+    state.profilBereich = immoDocs().length ? 'objekte' : 'bearbeiten';
+    pSpeichern();
+    toast(`Vorlage „${erg.profil.bezeichnung}“ geladen – fiktive Werte, bitte anpassen.`);
+  } catch { toast('Vorlage nicht erreichbar (nur über einen Webserver, nicht per Doppelklick).'); }
+  pZuProfilen();
+  render();
 }
 
 async function pBeispieleLaden() {
@@ -4690,6 +4730,8 @@ function pAktion(action, el) {
   switch (action) {
     case 'p-neu': return pNeu();
     case 'p-waehlen': state.profile.aktivId = el.dataset.pid; pSpeichern(); return render();
+    case 'p-vorlage': return pVorlageLaden(el.dataset.datei);
+    case 'p-bereich': state.profilBereich = el.dataset.bereich; render(); return undefined;
     case 'p-duplizieren': return pDuplizieren(el.dataset.pid);
     case 'p-loeschen': return pLoeschenFragen(el.dataset.pid);
     case 'p-loeschen-ok': return pLoeschen(el.dataset.pid);
@@ -4725,9 +4767,9 @@ function pAktion(action, el) {
     case 'p-paket-export': return pPaketExportFragen(doc, el.dataset.umfang);
     case 'p-paket-export-ok': return pPaketExport(doc, el.dataset.umfang);
     case 'detail-modus': state.detailModus = el.dataset.modus; return renderMitFokus();
-    case 'profile': pZuProfilen(); render(); return window.scrollTo(0, 0);
+    case 'profile': pZuProfilen(); if (el.dataset.bereich) state.profilBereich = el.dataset.bereich; state.menue.mobilAuf = false; render(); return window.scrollTo(0, 0);
     case 'p-profil-tab':
-      pZuProfilen(); state.profilTab = el.dataset.tab; render();
+      pZuProfilen(); state.profilTab = el.dataset.tab; state.profilBereich = 'bearbeiten'; render();
       return (document.querySelector('.p-editor') || document.body).scrollIntoView({ block: 'start' });
     case 'p-vorschlaege': return pVorschlaegeDialog(getDoc(el.dataset.uid));
     case 'p-vorschlaege-ok': {
@@ -4748,7 +4790,7 @@ function pAktion(action, el) {
     case 'p-zurueck': {
       const z = pZurueckZiel();
       if (!z) return undefined;
-      state.view = z.view;
+      state.view = z.view; state.neben = !!z.neben;
       if (z.current) state.current = z.current;
       if (z.detailModus) state.detailModus = z.detailModus;
       render();
@@ -4787,43 +4829,44 @@ function pEingabeLaeuft(t) {
    Ansicht: Profile
    ===================================================================== */
 function viewProfile() {
-  const p = aktivesProfil();
-  const zurueck = pZurueckZiel();
-  return `${zurueck ? `<div class="dh-kopfzeile no-print"><button class="zurueck-knopf" data-action="p-zurueck" title="Zurück">${ikon('zurueck', 18)}<span>${esc(zurueck.text)}</span></button></div>` : ''}
-    <div class="page-head"><div><h1>Profile${info('Haushalt, Einkommen, Steuern, Kapital und Finanzierung – nur in diesem Browser. Sicherung und Austausch über die Profil-Datei (JSON).', 'Persönliche Profile')}</h1><p class="sub">Persönliche Angaben für die Rechnung je Objekt – nur lokal.</p></div>
-      <div class="werkzeuge"><button class="btn primary" data-action="p-neu">Neues Profil</button><button class="icon-knopf" popovertarget="menueProfil" aria-haspopup="menu" aria-expanded="false" aria-label="Weitere Aktionen" title="Weitere Aktionen: Importieren, Beispielprofile, Merken im Browser">${ikon('mehr', 22)}</button></div></div>
-    ${pProfilListe()}
-    ${p ? pProfilEditor(p) : `<div class="empty"><b>Noch kein Profil.</b><br>Lege ein neues Profil an oder importiere eine Profil-Datei (Menü „⋯“). Es sind keine persönlichen Daten voreingestellt.</div>`}`;
-}
-
-/** Menü „⋯“ der Profilseite: Importieren, Beispielprofile, Merken im Browser. */
-function profilMenue() {
-  return popPunkt('pick-files', 'datei', 'Profil oder Paket importieren …')
-    + (location.protocol !== 'file:' ? popPunkt('p-beispiele', 'profile', 'Fiktive Beispielprofile laden') : '')
-    + POP_TRENNER
-    + popSchalter('p-merken', 'Profile in diesem Browser merken', state.profile.merken, info('Standardmäßig aus. Speichert Profile und Objektszenarien in diesem Browser auf diesem Gerät – keine geräteübergreifende Synchronisierung und kein Ersatz für den Datei-Export. Getrennt von den gemerkten Immobiliendateien.', 'Profile im Browser merken'))
-    + popPunkt('p-browser-loeschen', 'entfernen', 'Gespeicherte Profile löschen …', { klasse: 'gefahr' });
+  const p = aktivesProfil(), zurueck = pZurueckZiel(), objekte = immoDocs().filter(d => d.rev?.latest);
+  const bereich = !objekte.length || state.profilBereich === 'bearbeiten' ? 'bearbeiten' : 'objekte';
+  const wahl = (id, text) => `<button type="button" role="tab" aria-selected="${bereich === id}"${bereich === id ? ' class="aktiv"' : ''} data-action="p-bereich" data-bereich="${id}">${text}</button>`;
+  return `${ansichtReiter()}
+    ${zurueck ? `<div class="dh-kopfzeile no-print"><button class="zurueck-knopf" data-action="p-zurueck" title="Zurück zum Objekt">${ikon('zurueck', 18)}<span>${esc(zurueck.text)}</span></button></div>` : ''}
+    <div class="page-head"><div><h1>Profil${info('Haushalt, Einkommen, Steuern, Kapital und Finanzierung – nur in diesem Browser. Sicherung und Austausch über die Profil-Datei (JSON). Ob sich der Browser Profile merkt, stellst du in den Einstellungen unter „Daten & Speicher“ ein.', 'Persönliche Profile')}</h1><p class="sub">Womit soll je Objekt gerechnet werden? Alles bleibt auf diesem Gerät.</p></div></div>
+    ${pProfilWahl()}
+    ${p ? `${objekte.length ? `<div class="segment gross p-bereiche no-print" role="tablist" aria-label="Bereiche des Profils">${wahl('objekte', 'Objekte mit diesem Profil')}${wahl('bearbeiten', 'Profil bearbeiten')}</div>` : '<div class="p-bereiche"></div>'}
+      ${bereich === 'objekte' ? vergleichPersoenlich(objekte) : pProfilEditor(p)}`
+    : '<p class="p-leer">Wähle oben eine Vorlage zum Ausprobieren oder lege ein eigenes Profil an. Es sind keine persönlichen Daten voreingestellt.</p>'}`;
 }
 
 /** Menü „⋯“ an einer Profilkarte: selten gebrauchte Aktionen für dieses Profil. */
 function profilKartenMenue(anker) {
   const pid = anker?.dataset.pid, p = state.profile.liste.find(x => x.id === pid);
   if (!p) return '';
-  return popPunkt('p-duplizieren', 'gegenueberstellung', 'Duplizieren', { attrs: `data-pid="${esc(pid)}"` })
-    + popPunkt('p-loeschen', 'entfernen', 'Profil löschen …', { attrs: `data-pid="${esc(pid)}"`, klasse: 'gefahr' });
+  return popPunkt('p-export', 'sichern', 'Exportieren', { attrs: `data-pid="${esc(pid)}"` })
+    + popPunkt('p-duplizieren', 'gegenueberstellung', 'Duplizieren', { attrs: `data-pid="${esc(pid)}"` })
+    + popPunkt('p-loeschen', 'entfernen', 'Profil löschen', { attrs: `data-pid="${esc(pid)}"`, klasse: 'gefahr' });
 }
 
-function pProfilListe() {
-  if (!state.profile.liste.length) return '';
-  return `<div class="p-liste">${state.profile.liste.map(p => {
-    const aktiv = p.id === state.profile.aktivId, meta = profilMeta(p.id);
-    return `<div class="p-karte${aktiv ? ' aktiv' : ''}">
+/** Profil wählen: geladene Profile (Klick aktiviert), eigenes Profil anlegen oder Datei laden, darunter die Vorlagen. */
+function pProfilWahl() {
+  const liste = state.profile.liste;
+  const vorlagen = location.protocol === 'file:' ? [] : PROFIL_VORLAGEN.filter(v => !liste.some(p => p.id === v.id));
+  const karten = liste.map(p => {
+    const aktiv = p.id === state.profile.aktivId, meta = profilMeta(p.id), n = (p.personen || []).length;
+    return `<div class="p-karte${aktiv ? ' aktiv' : ' waehlbar'}"${aktiv ? '' : ` data-action="p-waehlen" data-pid="${esc(p.id)}" title="Dieses Profil verwenden"`}>
       <div class="p-karte-kopf"><b>${esc(p.bezeichnung)}</b>${aktiv ? '<span class="tag tag-good">aktiv</span>' : ''}</div>
-      <div class="p-karte-sub">Revision ${esc(p.revision)} · ${esc((MODI[(p.steuer || {}).modus] || {}).kurz || 'kein Steuermodus')} · ${(p.personen || []).length} Person${(p.personen || []).length === 1 ? '' : 'en'}</div>
-      <div class="p-karte-sub">${meta.geaendert ? '<span class="tag tag-warn">nicht exportierte Änderungen</span>' : meta.exportiert_rev ? `<span class="tag">exportiert (Rev. ${esc(meta.exportiert_rev)})</span>` : ''}</div>
-      <div class="p-karte-aktionen">${aktiv ? '' : `<button class="btn sm primary" data-action="p-waehlen" data-pid="${esc(p.id)}">Auswählen</button>`}<button class="btn sm" data-action="p-export" data-pid="${esc(p.id)}">Exportieren</button><button class="icon-knopf" popovertarget="menueProfilKarte" data-pid="${esc(p.id)}" aria-haspopup="menu" aria-expanded="false" aria-label="Weitere Aktionen für dieses Profil" title="Duplizieren, Löschen">${ikon('mehr', 20)}</button></div>
+      <div class="p-karte-sub">${n} Person${n === 1 ? '' : 'en'} · ${esc((MODI[(p.steuer || {}).modus] || {}).kurz || 'kein Steuermodus')} · Revision ${esc(p.revision)}</div>
+      <div class="p-karte-aktionen">${aktiv ? '' : `<button class="btn sm primary" data-action="p-waehlen" data-pid="${esc(p.id)}">Verwenden</button>`}${meta.geaendert ? '<span class="tag tag-warn">nicht exportiert</span>' : ''}<button class="icon-knopf" popovertarget="menueProfilKarte" data-pid="${esc(p.id)}" aria-haspopup="menu" aria-expanded="false" aria-label="Weitere Aktionen für dieses Profil" title="Exportieren, Duplizieren, Löschen">${ikon('mehr', 20)}</button></div>
     </div>`;
-  }).join('')}</div>`;
+  }).join('');
+  const neu = `<button type="button" class="p-karte p-karte-neu" data-action="p-neu"><b>${ikon('plus')}Eigenes Profil</b><span class="p-karte-sub">Leer beginnen und eigene Werte eintragen</span></button>
+    <button type="button" class="p-karte p-karte-neu" data-action="pick-files"><b>${ikon('datei')}Profil-Datei laden</b><span class="p-karte-sub">Exportiertes Profil oder Berechnungspaket (JSON)</span></button>`;
+  return `<h2 class="p-wahl-titel">${liste.length ? 'Deine Profile' : 'Profil anlegen'}</h2><div class="p-liste">${karten}${neu}</div>
+    ${vorlagen.length ? `<h2 class="p-wahl-titel">Vorlagen${info('Fiktive Beispielprofile zum Ausprobieren. Ein Klick lädt die Vorlage und rechnet sofort damit; die Werte lassen sich danach anpassen. Es sind keine echten Daten.', 'Vorlagen')}</h2>
+      <div class="p-liste">${vorlagen.map(v => `<button type="button" class="p-karte p-karte-vorlage waehlbar" data-action="p-vorlage" data-datei="${v.datei}"><b>${v.titel}<span class="tag">fiktiv</span></b><span class="p-karte-sub">${v.text}</span></button>`).join('')}</div>` : ''}`;
 }
 
 function pProfilEditor(p) {
@@ -4994,7 +5037,7 @@ function pModusSchalter() {
 
 function pKeinProfil() {
   return `<div class="card p-kein-profil"><h3>Für die persönliche Berechnung fehlt ein Profil${info('Ein Profil enthält Haushalt, Einkommen, Steuermodus, Eigenkapital und Konditionen. Alles bleibt in diesem Browser.', 'Profil')}</h3>
-    <div class="btn-row" style="justify-content:flex-start"><button class="btn primary" data-action="p-neu">Neues Profil anlegen</button><button class="btn" data-action="pick-files">Profil-Datei importieren</button>${location.protocol !== 'file:' ? '<button class="btn" data-action="p-beispiele">Fiktive Beispielprofile laden</button>' : ''}</div></div>`;
+    <div class="btn-row" style="justify-content:flex-start"><button class="btn primary" data-action="profile">Profil wählen oder anlegen</button></div></div>`;
 }
 
 function viewPersoenlich(doc) {
@@ -5026,7 +5069,7 @@ function pBanner(p, r, os) {
       ${meta.geaendert ? '<span class="tag tag-warn">Profil nicht exportiert</span>' : ''}
       <span class="meta"><span class="muted">Steuermodus</span>${esc((MODI[(p.steuer || {}).modus] || {}).kurz || 'keiner')}</span>
       <label class="p-inline">Konditionssatz <select data-os="aktive_kondition_id" data-ostyp="wahl" data-fkey="os:aktive_kondition_id">${kond.length ? kond.map(x => `<option value="${esc(x.id)}"${k && x.id === k.id ? ' selected' : ''}>${esc(x.bezeichnung || x.id)} (${x.art === 'angebot' ? 'Angebot' : 'Annahme'}, ${x.quelle === 'objekt' ? 'Objekt' : 'Profil'})</option>`).join('') : '<option value="">keine Kondition</option>'}</select></label>
-      <button class="btn sm" data-action="profile">Profil bearbeiten</button>${info('Die importierte Analyse, ihre Belege und Urteile bleiben unverändert. Diese Rechnung nutzt dein aktives Profil und die Anpassungen unten; die Budget-Einordnung sagt nichts über Objektqualität, Zustand, Rechtsrisiken oder Preisangemessenheit.', 'Rechnung mit Profil')}
+      <button class="btn sm" data-action="profile" data-bereich="bearbeiten">Profil bearbeiten</button>${info('Die importierte Analyse, ihre Belege und Urteile bleiben unverändert. Diese Rechnung nutzt dein aktives Profil und die Anpassungen unten; die Budget-Einordnung sagt nichts über Objektqualität, Zustand, Rechtsrisiken oder Preisangemessenheit.', 'Rechnung mit Profil')}
     </div>
     <div class="meta-chips">${status}</div>
   </div>`;
@@ -5365,10 +5408,10 @@ function vergleichPersoenlich(rows) {
       <td>${!r.anwendbar ? '<span class="tag">nicht anwendbar</span>' : e && ok ? `<span class="verdict sm ${e[1]}"><span class="vi" aria-hidden="true">${e[0]}</span><span>${esc(e[2].replace(' zum persönlichen Budget', ''))}</span></span>` : '—'}</td>
 </tr>`;
   }).join('');
-  return `${pProfilLuecken(p)}
-    <div class="callout"><b>Alternative Einzelkäufe mit Profil „${esc(p.bezeichnung)}“</b> – jede Zeile nutzt das volle Eigenkapital und das volle Haushaltsbudget. Werte werden nicht addiert; eine gemeinsame Portfoliorechnung ist nicht Teil dieser Ansicht.</div>
+  // Hinweise stehen am Info-Symbol der Tabelle; eine Karte erscheint nur, wenn im Profil noch etwas fehlt
+  return `${RK.szenario.profilLuecken(p).length ? pProfilLuecken(p) : ''}
     ${mitVorschlaegen.length > 1 ? `<div class="btn-row p-schnell" style="justify-content:flex-start;margin-top:12px"><button class="btn sm" data-action="p-vorschlaege-alle">Vorschläge für alle ${mitVorschlaegen.length} Objekte prüfen und übernehmen</button></div>` : ''}
-    <div class="card flush" style="margin-top:12px"><div class="table-wrap fest"><table class="t p-vergleich-tabelle"><thead><tr><th>Objekt${info('Objekt anklicken, um die Berechnung mit deinem Profil zu öffnen und einzelne Werte anzupassen. Vorschläge kommen aus den Modellannahmen der jeweiligen Analyse und werden als solche gekennzeichnet.', 'Vergleich mit Profil')}</th><th class="num">Kaufpreis</th><th class="num">Darlehen</th><th class="num">Rate</th><th class="num">Zuzahlung vor Steuer</th><th class="num">Ø nach Steuer</th><th class="num">Verbleibendes Budget</th><th class="num">Restschuld</th><th>Einordnung</th></tr></thead><tbody>${zeilen || `<tr><td colspan="9" class="muted">Keine Treffer.</td></tr>`}</tbody></table></div></div>`;
+    <div class="card flush" style="margin-top:12px"><div class="table-wrap fest"><table class="t p-vergleich-tabelle"><thead><tr><th>Objekt${info(`<span class="info-zeile">Objekt anklicken, um die Berechnung mit deinem Profil zu öffnen und einzelne Werte anzupassen. Vorschläge kommen aus den Modellannahmen der jeweiligen Analyse und werden als solche gekennzeichnet.</span><span class="info-zeile">Alternative Einzelkäufe: Jede Zeile nutzt das volle Eigenkapital und das volle Haushaltsbudget von „${esc(p.bezeichnung)}“. Werte werden nicht addiert; eine gemeinsame Portfoliorechnung ist nicht Teil dieser Ansicht.</span><span class="info-zeile">Fehlen Zahlen, obwohl das Profil vollständig ist, liegt es an Werten der jeweiligen Analyse (unter dem Objektnamen aufgeführt).</span>`, 'Objekte mit diesem Profil')}</th><th class="num">Kaufpreis</th><th class="num">Darlehen</th><th class="num">Rate</th><th class="num">Zuzahlung vor Steuer</th><th class="num">Ø nach Steuer</th><th class="num">Verbleibendes Budget</th><th class="num">Restschuld</th><th>Einordnung</th></tr></thead><tbody>${zeilen || `<tr><td colspan="9" class="muted">Keine Treffer.</td></tr>`}</tbody></table></div></div>`;
 }
 
 const FEHLT_KURZ = { kaufpreis_eur: 'Kaufpreis', verpflichtende_zusatzkaeufe_eur: 'Zusatzkäufe', grunderwerbsteuer_prozent: 'Grunderwerbsteuer', kaeuferprovision_prozent: 'Provision', anfaengliche_massnahmen_eur: 'Maßnahmen', kaltmiete_monat_eur: 'Kaltmiete', bk_vorauszahlung_monat_eur: 'BK-Vorauszahlung', umlagefaehig_monat_eur: 'umlagefähige Kosten', nicht_umlagefaehig_monat_eur: 'nicht umlagefähige Kosten', ruecklage_monat_eur: 'Rücklage', gebaeudeanteil_prozent: 'Gebäudeanteil', fertigstellung_jahr: 'Baujahr', eigentum: 'Eigentumsanteile', beginn: 'Beginn' };
@@ -5693,10 +5736,10 @@ function ordnerMenue() {
   const o = state.ordner;
   if (o.status === 'nicht_unterstuetzt') return '';
   const kopf = POP_TRENNER + popKopf('Ablageordner', info(ORDNER_INFO, 'Ablageordner'));
-  if (!o.handle) return kopf + popPunkt('ordner-verbinden', 'ordner', 'Ablageordner verbinden …');
+  if (!o.handle) return kopf + popPunkt('ordner-verbinden', 'ordner', 'Ablageordner verbinden');
   const name = `<div class="pop-hinweis"><b title="${esc(o.name)}">${esc(o.name)}</b>${['freigabe', 'fehlt'].includes(o.status) ? '' : `<span data-ordner-stand>${esc(ordnerStandText())}</span>`}${o.fehler ? `<span class="notice">${esc(o.fehler)}</span>` : ''}</div>`;
   if (o.status === 'freigabe') return kopf + name + popPunkt('ordner-freigeben', 'neu_laden', 'Ordner einlesen') + popPunkt('ordner-trennen', 'trennen', 'Verbindung trennen');
-  if (o.status === 'fehlt') return kopf + name + popPunkt('ordner-verbinden', 'ordner', 'Neu verbinden …') + popPunkt('ordner-trennen', 'trennen', 'Verbindung trennen');
+  if (o.status === 'fehlt') return kopf + name + popPunkt('ordner-verbinden', 'ordner', 'Neu verbinden') + popPunkt('ordner-trennen', 'trennen', 'Verbindung trennen');
   return kopf + name + popPunkt('ordner-einlesen', 'neu_laden', 'Jetzt einlesen') + popSchalter('ordner-auto', 'Automatisch einlesen', o.auto) + popPunkt('ordner-trennen', 'trennen', 'Verbindung trennen');
 }
 
@@ -6080,7 +6123,7 @@ function karteInfo(uid) {
     const e = ok && r.einordnung ? EINORDNUNG[r.einordnung.gesamt] : null;
     profil = ok
       ? `<div class="karte-info-profil"><div class="karte-info-profilname">Mit Profil „${esc(p.bezeichnung)}“</div><dl class="karte-info-werte"><dt>Zuzahlung vor Steuer</dt><dd>${pZuzahlung(kpi.zuzahlung_vor_steuer_monat)} / Monat</dd>${pIstZahl(kpi.zuzahlung_nach_steuer_monat) ? `<dt>Ø nach Steuer</dt><dd>${pZuzahlung(kpi.zuzahlung_nach_steuer_monat)} / Monat</dd>` : ''}</dl>${e ? `<span class="verdict sm ${e[1]}"><span class="vi" aria-hidden="true">${e[0]}</span><span>${esc(e[2])}</span></span>` : ''}</div>`
-      : `<div class="karte-info-profil fine">Mit Profil „${esc(p.bezeichnung)}“ noch nicht berechenbar – was fehlt, zeigt die Ansicht „Mit meinem Profil“.</div>`;
+      : `<div class="karte-info-profil fine">Mit Profil „${esc(p.bezeichnung)}“ noch nicht berechenbar – was fehlt, zeigt die Ansicht „Profil“.</div>`;
   }
   return `<div class="karte-info">
     <div class="karte-info-titel"><span class="num">#${d.num}</span> ${esc(docTitle(d))}</div>
@@ -6245,7 +6288,7 @@ document.addEventListener('visibilitychange', () => { if (document.visibilitySta
  * Jede Überschrift hat zwei Knöpfe: die Beschriftung sortiert (wie bisher), der Trichter öffnet ein Menü zum
  * Sortieren und Filtern. Filtertyp und Werte kommen aus spalten() im Hauptskript (COLS, mit aktivem Profil plus PROFIL_COLS) (filter, fv, optionen, einheit),
  * die Prüfung aus dem Rechenkern-Modul tabellenfilter.js. Die Filter wirken über filteredDocs() in allen
- * gefilterten Reitern (Tabelle, Kaufpreis/m² & Rendite, Karte, Mit meinem Profil) und im CSV-Export; aktive
+ * gefilterten Reitern (Tabelle, Kaufpreis/m² & Rendite, Karte) und im CSV-Export; aktive
  * Filter stehen deshalb in jedem dieser Reiter als Leiste über den Ergebnissen.
  *
  * Klassisches Skript; nutzt state, COLS, renderResults … des Hauptskripts erst zur Laufzeit.
@@ -6644,7 +6687,7 @@ function hilfeAnleitung() {
       ${schritt(3, 'Bei einer KI einfügen', 'Einen neuen Chat bei einer KI öffnen, die Webseiten lesen und Dateien erstellen kann (z. B. Claude oder ChatGPT). Prompt einfügen, darunter den Inserat-Link, absenden. Je Objekt ein eigener Chat; Rückfragen der KI beantworten.')}
       ${schritt(4, 'JSON-Datei herunterladen', 'Am Ende liefert die KI einen Bericht und eine Datei <code>immobilienbewertung_&lt;plattform&gt;_&lt;id&gt;_&lt;datum&gt;.json</code>. Zeigt sie nur einen Codeblock, den Inhalt kopieren und hier über „Daten“ → „JSON einfügen“ laden oder als .json-Datei speichern.')}
       ${schritt(5, 'In den Ablageordner legen', 'Alle Exporte in einen festen Ordner legen, z. B. in Google Drive „ImmoInvest/immos“ (mit „Google Drive für Desktop“ ist er auf dem Rechner verfügbar). Unterordner bis drei Ebenen werden mitgelesen.')}
-      ${schritt(6, 'Ordner einmal verbinden', `Unten links das Menü öffnen (Knopf „Daten“), dort auf <b>Ablageordner verbinden</b> klicken und den Ordner wählen (Chrome oder Edge). Danach liest der Viewer neue und geänderte Dateien beim Öffnen und alle 30 Sekunden automatisch ein.${typeof ORDNER_UNTERSTUETZT !== 'undefined' && !ORDNER_UNTERSTUETZT ? ' <i>Dieser Browser kann Ordner nicht dauerhaft verbinden – Dateien hier über „Daten“ → „Dateien hinzufügen“ oder Ziehen laden.</i>' : ''}`)}
+      ${schritt(6, 'Ordner einmal verbinden', `Unten links auf „Daten“ klicken, im Menü <b>Ablageordner verbinden</b> wählen und den Ordner wählen (Chrome oder Edge). Danach liest der Viewer neue und geänderte Dateien beim Öffnen und alle 30 Sekunden automatisch ein.${typeof ORDNER_UNTERSTUETZT !== 'undefined' && !ORDNER_UNTERSTUETZT ? ' <i>Dieser Browser kann Ordner nicht dauerhaft verbinden – Dateien hier über „Daten“ → „Dateien hinzufügen“ oder Ziehen laden.</i>' : ''}`)}
       ${schritt(7, 'Exportprüfung ansehen', 'Jede Datei wird geprüft (✓ oder Fehler in der Tabelle und unter „Exportprüfung“). Bei Fehlern die Meldungen an die KI geben und eine korrigierte Datei anfordern – mit gleicher Plattform-ID erkennt der Viewer sie als neue Revision.')}
     </ol>
     <p class="fine">Deine Dateien werden nur in diesem Browser gelesen, nichts wird hochgeladen. Persönliche Profile legst du getrennt unter „Persönliche Profile“ an.</p>`;
@@ -6885,6 +6928,7 @@ const IKON_PFAD = {
   ort: '<path d="M12 21s-6.500-5.800-6.500-11a6.500 6.500 0 0 1 13 0c0 5.200-6.500 11-6.500 11z"/><circle cx="12" cy="10" r="2.300"/>',
   auswahl: '<path d="m7 10 5 5 5-5"/>',
   haken: '<path d="m5.500 12.500 4.200 4.200L18.500 7.500"/>',
+  plus: '<path d="M12 5.500v13M5.500 12h13"/>',
   auf_ab: '<path d="m8 9.500 4-4 4 4M8 14.500l4 4 4-4"/>',
   neu: '<path d="M12 3.500l1.900 5.300 5.600.200-4.400 3.500 1.500 5.400L12 14.800l-4.600 3.100 1.500-5.400-4.400-3.500 5.600-.200z"/>',
   zahnrad: '<path d="M10.53 2.72L13.47 2.72L13.81 5.24A7.0 7.0 0 0 1 15.50 5.94L17.53 4.40L19.60 6.47L18.06 8.50A7.0 7.0 0 0 1 18.76 10.19L21.28 10.53L21.28 13.47L18.76 13.81A7.0 7.0 0 0 1 18.06 15.50L19.60 17.53L17.53 19.60L15.50 18.06A7.0 7.0 0 0 1 13.81 18.76L13.47 21.28L10.53 21.28L10.19 18.76A7.0 7.0 0 0 1 8.50 18.06L6.47 19.60L4.40 17.53L5.94 15.50A7.0 7.0 0 0 1 5.24 13.81L2.72 13.47L2.72 10.53L5.24 10.19A7.0 7.0 0 0 1 5.94 8.50L4.40 6.47L6.47 4.40L8.50 5.94A7.0 7.0 0 0 1 10.19 5.24Z"/><circle cx="12" cy="12" r="2.9"/>',
@@ -6908,23 +6952,22 @@ function sidebarKonto() {
   const name = verbunden ? esc(o.name) : 'Daten';
   const stand = verbunden ? `<span data-ordner-stand aria-live="polite">${esc(ordnerStandText())}</span>${o.fehler ? `<span class="notice">${esc(o.fehler)}</span>` : ''}`
     : `<span>${n ? `${n} Datei${n === 1 ? '' : 'en'} geladen` : 'Noch nichts geladen'}</span>`;
-  return `<button type="button" class="side-konto" id="datenKnopf" popovertarget="menueDaten" aria-haspopup="menu" aria-expanded="false" aria-label="${name}: Daten, Einstellungen und Hilfe" title="Daten laden, Ablageordner, Einstellungen, Hilfe"><span class="side-konto-bild">${ikon(verbunden ? 'ordner' : 'ablage', 17)}</span><span class="side-konto-text"><b>${name}</b>${stand}</span>${ikon('auf_ab', 15)}</button>`;
+  return `<button type="button" class="side-konto" id="datenKnopf" popovertarget="menueDaten" aria-haspopup="menu" aria-expanded="false" aria-label="${name}: Daten laden, Ablageordner und Hilfe" title="Daten laden, Ablageordner, Sicherung, Hilfe"><span class="side-konto-bild">${ikon(verbunden ? 'ordner' : 'ablage', 17)}</span><span class="side-konto-text"><b>${name}</b>${stand}</span>${ikon('auf_ab', 15)}</button>`;
 }
 
-/** Menü am Knopf unten links: Dateien laden, Ablageordner, Sicherung, Einstellungen, Hilfe. */
+/** Menü am Knopf unten links: Dateien laden, Ablageordner, Sicherung, Hilfe. Die Einstellungen öffnet das Zahnrad daneben. */
 function datenMenue() {
   const kaputt = state.docs.filter(d => !d.isImmo), n = eingabenZahl();
   return popKopf('Bewertungen laden')
-    + popPunkt('pick-files', 'datei', 'Dateien hinzufügen …')
-    + popPunkt('pick-dir', 'ordner', 'Ordner einmalig laden …')
-    + popPunkt('paste', 'einfuegen', 'JSON einfügen …')
+    + popPunkt('pick-files', 'datei', 'Dateien hinzufügen')
+    + popPunkt('pick-dir', 'ordner', 'Ordner einmalig laden')
+    + popPunkt('paste', 'einfuegen', 'JSON einfügen')
     + ordnerMenue()
     + POP_TRENNER
     + popPunkt('eingaben-sichern', 'sichern', 'Eigene Eingaben sichern', { attrs: `title="Status, Notizen, Adressen und Kartenpunkte als Datei sichern. Zurückholen: die Datei über „Dateien hinzufügen“ laden."${n ? '' : ' disabled'}`, zusatz: n ? `<span class="count">${n}</span>` : '' })
     + (state.saveError ? `<div class="pop-hinweis notice">${esc(state.saveError)}</div>` : '')
     + (kaputt.length ? POP_TRENNER + popKopf('Nicht lesbar') + kaputt.map(d => popPunkt('open', 'datei', esc(d.fileName), { attrs: `data-uid="${d.uid}"`, klasse: 'gefahr' })).join('') : '')
     + POP_TRENNER
-    + popPunkt('einstellungen', 'zahnrad', 'Einstellungen')
     + popPunkt('hilfe', 'hilfe', 'Hilfe und Anleitung', { attrs: 'data-bereich="anleitung"' })
     + popPunkt('hilfe', 'neu', 'Was ist neu', { attrs: 'data-bereich="versionen" id="versionsKnopf"', klasse: 'pop-fuss', zusatz: `<span class="count">Version ${esc(window.ImmoVersionen?.VERSION || '')}</span>` });
 }
@@ -6935,7 +6978,7 @@ function tabellenMenue() {
   const wahlbar = spaltenVerfuegbar().filter(c => !SPALTEN_FEST.includes(c.id));
   const sichtbar = wahlbar.filter(c => !state.ausgeblendet.has(c.id)).length;
   const tab = state.cmpTab;
-  return (tab === 'tabelle' ? popPunkt('spalten-dialog', 'spalten', 'Spalten wählen …', { zusatz: `<span class="count">${sichtbar}/${wahlbar.length}</span>` }) : '')
+  return (tab === 'tabelle' ? popPunkt('spalten-dialog', 'spalten', 'Spalten wählen', { zusatz: `<span class="count">${sichtbar}/${wahlbar.length}</span>` }) : '')
     + (hatRev ? popSchalter('fold', 'Ältere Revisionen zeigen', state.filter.showOld) : '')
     + (['persoenlich', 'karte'].includes(tab) ? '' : popPunkt('csv', 'csv', 'Als CSV exportieren', { klasse: 'needs-download' }))
     + (ansichtVeraendert() ? POP_TRENNER + popPunkt('ansicht-zuruecksetzen', 'zuruecksetzen', 'Ansicht zurücksetzen') : '');
@@ -6957,8 +7000,8 @@ function objektMenue() {
 }
 
 /* ---------- Öffnen, Ausrichten, Auffrischen ---------- */
-// profilMenue und profilKartenMenue stehen in src/oberflaeche/persoenlich.js; die Funktion bekommt den öffnenden Knopf
-const POP_MENUES = { menueDaten: () => datenMenue(), menueTabelle: () => tabellenMenue(), menueOrt: () => ortMenue(), menueUrteil: () => urteilMenue(), menueObjekt: () => objektMenue(), menueProfil: () => profilMenue(), menueProfilKarte: anker => profilKartenMenue(anker) };
+// profilKartenMenue steht in src/oberflaeche/persoenlich.js; die Funktion bekommt den öffnenden Knopf
+const POP_MENUES = { menueDaten: () => datenMenue(), menueTabelle: () => tabellenMenue(), menueOrt: () => ortMenue(), menueUrteil: () => urteilMenue(), menueObjekt: () => objektMenue(), menueProfilKarte: anker => profilKartenMenue(anker) };
 const popAnker = {};
 
 function popMenueFuellen(el) { el.innerHTML = POP_MENUES[el.id](popAnker[el.id]); }
@@ -7166,20 +7209,21 @@ function viewEinstellungen() {
     const o = state.ordner, n = eingabenZahl();
     let ordner = '';
     if (o.status !== 'nicht_unterstuetzt') {
-      if (!o.handle) ordner = aktion('ordner-verbinden', 'ordner', 'Ablageordner verbinden …');
+      if (!o.handle) ordner = aktion('ordner-verbinden', 'ordner', 'Ablageordner verbinden');
       else {
         const lesbar = !['freigabe', 'fehlt'].includes(o.status);
-        const knoepfe = o.status === 'freigabe' ? '<button class="btn sm primary" data-action="ordner-freigeben">Einlesen</button>' : o.status === 'fehlt' ? '<button class="btn sm" data-action="ordner-verbinden">Neu verbinden …</button>' : '<button class="btn sm" data-action="ordner-einlesen">Jetzt einlesen</button>';
+        const knoepfe = o.status === 'freigabe' ? '<button class="btn sm primary" data-action="ordner-freigeben">Einlesen</button>' : o.status === 'fehlt' ? '<button class="btn sm" data-action="ordner-verbinden">Neu verbinden</button>' : '<button class="btn sm" data-action="ordner-einlesen">Jetzt einlesen</button>';
         ordner = zeile(esc(o.name), `<div class="einst-knoepfe">${knoepfe}<button class="btn sm" data-action="ordner-trennen">Trennen</button></div>`, lesbar ? `<span data-ordner-stand>${esc(ordnerStandText())}</span>${o.fehler ? ` · ${esc(o.fehler)}` : ''}` : o.status === 'freigabe' ? 'Der Browser braucht erneut die Erlaubnis, den Ordner zu lesen.' : esc(o.fehler || 'Ordner nicht erreichbar.'))
           + (lesbar ? schalter('einst-ordner-auto', 'Automatisch einlesen', o.auto, 'Beim Öffnen und wenn sich im Ordner etwas ändert.') : '');
       }
     }
-    inhalt = gruppe('Bewertungen laden', aktion('pick-files', 'datei', 'Dateien hinzufügen …') + aktion('pick-dir', 'ordner', 'Ordner einmalig laden …') + aktion('paste', 'einfuegen', 'JSON einfügen …'))
+    inhalt = gruppe('Bewertungen laden', aktion('pick-files', 'datei', 'Dateien hinzufügen') + aktion('pick-dir', 'ordner', 'Ordner einmalig laden') + aktion('paste', 'einfuegen', 'JSON einfügen'))
       + gruppe('Ablageordner', ordner, info(ORDNER_INFO, 'Ablageordner'))
       + gruppe('In diesem Browser merken', schalter('einst-dateien', 'Geladene Bewertungen', state.persist, 'Die Dateien sind beim nächsten Öffnen wieder da.') + schalter('einst-profile', 'Persönliche Profile', state.profile.merken, 'Zunächst aus. Profile bleiben sonst nur bis zum Schließen der Seite – dann als Datei exportieren.')
+        + (state.profile.merken ? aktion('p-browser-loeschen', 'entfernen', 'Im Browser gespeicherte Profile löschen', { klasse: 'gefahr' }) : '')
         + (state.saveError ? `<div class="einst-zeile"><span class="notice">${esc(state.saveError)}</span></div>` : ''))
       + gruppe('Sichern und aufräumen', aktion('eingaben-sichern', 'sichern', 'Eigene Eingaben sichern', { zusatz: n ? `${n}` : 'keine', aus: !n, attrs: 'title="Status, Notizen, Adressen und Kartenpunkte als Datei sichern"' })
-        + aktion('clear-all', 'entfernen', state.docs.length ? `Alle ${state.docs.length} Dateien entfernen …` : 'Alle Dateien entfernen …', { klasse: 'gefahr', aus: !state.docs.length }));
+        + aktion('clear-all', 'entfernen', state.docs.length ? `Alle ${state.docs.length} Dateien entfernen` : 'Alle Dateien entfernen', { klasse: 'gefahr', aus: !state.docs.length }));
   } else if (bereich[0] === 'hilfe') {
     inhalt = gruppe('Hilfe', aktion('hilfe', 'hilfe', 'Anleitung und Master-Prompt', { attrs: 'data-bereich="anleitung"' }) + aktion('hilfe', 'suche', 'Tastaturkürzel', { attrs: 'data-bereich="kuerzel"' }))
       + gruppe('Über ImmoInvest', aktion('hilfe', 'neu', 'Was ist neu', { attrs: 'data-bereich="versionen"', zusatz: `Version ${esc(window.ImmoVersionen?.VERSION || '')}` }))
@@ -7187,7 +7231,7 @@ function viewEinstellungen() {
   } else {
     inhalt = gruppe('Darstellung', HOSTED ? '' : zeile('Farbschema', segment('Farbschema', 'thema', [['auto', 'Automatisch'], ['light', 'Hell'], ['dark', 'Dunkel']], thema)))
       + gruppe('Objekte', zeile('Objekt öffnen', segment('Objekt öffnen', 'objekt', [['neben', 'Neben der Liste'], ['ganz', 'Ganze Seite']], state.einst.objektNeben ? 'neben' : 'ganz'), 'Neben der Liste bleibt die Tabelle sichtbar; die Trennlinie lässt sich ziehen. Gilt auf breiten Fenstern.'))
-      + gruppe('Tabelle', immoDocs().length ? aktion('spalten-dialog', 'spalten', 'Spalten wählen …') + aktion('ansicht-zuruecksetzen', 'zuruecksetzen', 'Sortierung und Filter zurücksetzen', { aus: !ansichtVeraendert() }) : '');
+      + gruppe('Tabelle', immoDocs().length ? aktion('spalten-dialog', 'spalten', 'Spalten wählen') + aktion('ansicht-zuruecksetzen', 'zuruecksetzen', 'Sortierung und Filter zurücksetzen', { aus: !ansichtVeraendert() }) : '');
   }
   return `<div class="ohne-leiste no-print"><div class="dh-kopfzeile"><button class="zurueck-knopf" data-action="einst-zurueck">${ikon('zurueck', 18)}<span>Zurück</span></button></div>
       <div class="cmp-tabs" role="tablist" aria-label="Bereiche der Einstellungen">${EINST_BEREICHE.map(([id, t]) => `<button class="cmp-tab${bereich[0] === id ? ' active' : ''}" role="tab" aria-selected="${bereich[0] === id}" data-action="einst-bereich" data-bereich="${id}">${t}</button>`).join('')}</div></div>
@@ -8478,7 +8522,7 @@ const state = {
   // Ausgeblendete Spalten der Vergleichstabelle (gemerkt mit der Ansicht)
   ausgeblendet: new Set(), // Startwert SPALTEN_STANDARD_AUS, gesetzt in ansichtLaden()
   // Menü links: ganz zugeklappt (nur breite Bildschirme, gemerkt) und offene Gruppen
-  menue: { zu: false, mobilAuf: false, gruppen: { ansicht: true, offen: true, profil: true } },
+  menue: { zu: false, mobilAuf: false, gruppen: { ansicht: true, offen: true } },
   // Gemerkte Einstellungen und Objektbereich neben der Liste (src/oberflaeche/einstellungen.js)
   einst: einstZustand(),
   neben: false,
@@ -8486,6 +8530,8 @@ const state = {
   tabs: [],
   // Einstellungsmodus: gewählter Bereich und die Ansicht, zu der „Zurück“ führt
   einstBereich: 'allgemein',
+  // Seite „Profil“: 'objekte' (Ergebnisse je Objekt) oder 'bearbeiten' (Editor)
+  profilBereich: 'objekte',
   vorEinst: null,
 };
 let uidCounter = 0;
@@ -9348,25 +9394,21 @@ function renderSidebar() {
   const immo = immoDocs();
   const aktuell = state.view === 'detail' ? getDoc(state.current) : null;
   const punkt = ([id, t]) => { const an = state.view === 'compare' && state.cmpTab === id; return `<button class="navitem${an ? ' active' : ''}" data-action="menue-tab" data-tab="${id}"${an ? ' aria-current="page"' : ''}>${ikon(id)}<span class="menue-text">${t.replace(/&shy;/g, '')}</span>${id === 'gegenueberstellung' && state.selectionTouched && state.selected.size ? `<span class="count">${state.selected.size}</span>` : ''}</button>`; };
-  const ansicht = immo.length
-    ? `<nav class="menue-nav" aria-label="Ansichten">${CMP_TABS.map(punkt).join('')}</nav>`
-    : '<p class="menue-leer">Noch keine Bewertungen geladen.</p>';
+  const ansicht = `<nav class="menue-nav" aria-label="Ansichten">${immo.length ? CMP_TABS.map(punkt).join('') : '<p class="menue-leer">Noch keine Bewertungen geladen.</p>'}${sidebarProfil()}</nav>`;
   // Geöffnete Objekte: dieselben wie die Tabs; „×“ schließt eines
   const offenListe = state.tabs.map(getDoc).filter(Boolean);
   if (aktuell && !offenListe.includes(aktuell)) offenListe.push(aktuell);
   const offen = offenListe.length ? `<nav class="menue-nav" aria-label="Geöffnete Objekte">${offenListe.map(d => { const an = objektOffen() && d.uid === state.current; const name = d.isImmo ? `#${d.num} ${esc(docTitle(d))}` : esc(d.fileName); return `<div class="navzeile"><button class="navitem${an ? ' active' : ''}" data-action="open" data-uid="${d.uid}"${an ? ' aria-current="page"' : ''} title="${name}"><span class="vdot ${d.isImmo ? vcls(urteilOf(d)) : 'v-crit'}"></span><span class="menue-text">${name}</span></button>${state.tabs.includes(d.uid) ? `<button class="nav-x" data-action="tab-zu" data-uid="${d.uid}" aria-label="${name} schließen" title="Schließen">×</button>` : ''}</div>`; }).join('')}</nav>` : '';
-  sb.innerHTML = menueGruppe('ansicht', 'Vergleich', ansicht)
+  sb.innerHTML = menueGruppe('ansicht', 'Ansichten', ansicht)
     + (offen ? menueGruppe('offen', 'Geöffnet', offen) : '')
-    + menueGruppe('profil', 'Profil', sidebarProfil())
-    + `<div class="side-fuss">${sidebarOrdner()}${sidebarKonto()}</div>`;
+    + `<div class="side-fuss">${sidebarOrdner()}<div class="side-fuss-zeile">${sidebarKonto()}<button class="icon-knopf" data-action="einstellungen" id="einstKnopf" aria-label="Einstellungen" title="Einstellungen">${ikon('zahnrad', 20)}</button></div></div>`;
   bereichKnopfAuffrischen();
   popMenuesAuffrischen();
 }
 
 function sidebarProfil() {
-  const p = aktivesProfil(), n = state.profile.liste.length;
-  return `<nav class="menue-nav" aria-label="Profil"><button class="navitem${state.view === 'profile' ? ' active' : ''}" data-action="profile"${state.view === 'profile' ? ' aria-current="page"' : ''}>${ikon('profile')}<span class="menue-text">Profile verwalten</span>${n ? `<span class="count">${n}</span>` : ''}</button></nav>
-    <div class="side-profil-aktiv">${p ? `Aktiv: <b>${esc(p.bezeichnung)}</b>${profilMeta(p.id).geaendert ? '<span class="tag tag-warn">nicht exportiert</span>' : ''}` : 'Kein Profil aktiv'}</div>`;
+  const p = aktivesProfil(), an = state.view === 'profile';
+  return `<button class="navitem${an ? ' active' : ''}" data-action="profile"${an ? ' aria-current="page"' : ''}>${ikon('persoenlich')}<span class="menue-text">Profil</span></button>${p ? `<div class="side-profil-aktiv" title="Aktives Profil">${esc(p.bezeichnung)}${profilMeta(p.id).geaendert ? '<span class="tag tag-warn">nicht exportiert</span>' : ''}</div>` : ''}`;
 }
 
 function viewStart() {
@@ -9447,7 +9489,7 @@ function detailHead(doc) {
     </div>
     <div class="meta-chips">
       ${chip('Status', m.analysestatus)}${chip('Verfügbarkeit', a.verfuegbarkeit, a.verfuegbarkeit_stand)}${chip('Prüfdatum', m.pruefdatum)}
-      ${[a.zugriffsstatus, m.nutzungsfokus, m.exportdatum].some(v => v != null) ? (state.metaMehr ? `${chip('Zugriff', a.zugriffsstatus)}${chip('Fokus', m.nutzungsfokus)}${chip('Export', m.exportdatum)}<button class="meta-mehr" data-action="meta-mehr" aria-expanded="true">Weniger</button>` : '<button class="meta-mehr" data-action="meta-mehr" aria-expanded="false" title="Zugriff, Nutzungsfokus und Exportdatum zeigen">Mehr …</button>') : ''}
+      ${[a.zugriffsstatus, m.nutzungsfokus, m.exportdatum].some(v => v != null) ? (state.metaMehr ? `${chip('Zugriff', a.zugriffsstatus)}${chip('Fokus', m.nutzungsfokus)}${chip('Export', m.exportdatum)}<button class="meta-mehr" data-action="meta-mehr" aria-expanded="true">Weniger</button>` : '<button class="meta-mehr" data-action="meta-mehr" aria-expanded="false" title="Zugriff, Nutzungsfokus und Exportdatum zeigen">Mehr</button>') : ''}
     </div>
     ${offerNotice(d)}
     ${rev}
@@ -9464,7 +9506,7 @@ function vergleichKarten(rows, sp) {
   };
   const sortWahl = sp.flatMap(c => [1, -1].map(dir => `<option value="${c.id}|${dir}"${state.sort.col === c.id && state.sort.dir === dir ? ' selected' : ''}>${esc(colTitel(c))} ${dir === 1 ? '↑' : '↓'}</option>`)).join('');
   const steuer = `<div class="karten-steuer"><label><span>Sortieren</span><select id="karten-sort">${sortWahl}</select></label>
-    <label><span>Filtern</span><select id="karten-filter" class="karten-filter"><option value="">Spalte wählen …</option>${sp.map(c => `<option value="${c.id}">${esc(colTitel(c))}${state.filter.spalten[c.id] ? ' (aktiv)' : ''}</option>`).join('')}</select></label></div>`;
+    <label><span>Filtern</span><select id="karten-filter" class="karten-filter"><option value="">Spalte wählen</option>${sp.map(c => `<option value="${c.id}">${esc(colTitel(c))}${state.filter.spalten[c.id] ? ' (aktiv)' : ''}</option>`).join('')}</select></label></div>`;
   const karten = rows.map(d => {
     const e = c => `<div><dt>${esc(colTitel(c).replace(' (Profil)', ''))}</dt><dd>${wert(c, d)}</dd></div>`;
     const einordnung = sp.some(c => c.id === 'p_einordnung') ? profilEinordnung(d) : '';
@@ -9842,7 +9884,12 @@ const colValue = (c, d) => (c.sv ? c.sv(d) : (() => { const r = resolvePointer(d
 const colFilterValue = (c, d) => { const v = c.fv ? c.fv(d) : colValue(c, d); return c.filter === 'zahl' ? nurZahl(v) : v; };
 const colTitel = c => c.titel || c.label.replace(/\u00ad/g, '');
 
-const CMP_TABS = [['tabelle', 'Tabelle'], ['preis', 'Kaufpreis/m² &amp; Rendite'], ['karte', 'Karte'], ['gegenueberstellung', 'Gegen&shy;über&shy;stellung'], ['persoenlich', 'Mit meinem Profil']];
+const CMP_TABS = [['tabelle', 'Tabelle'], ['preis', 'Kaufpreis/m² &amp; Rendite'], ['karte', 'Karte'], ['gegenueberstellung', 'Gegen&shy;über&shy;stellung']];
+/** Reiter aller Ansichten (nur sichtbar, wenn die Seitenleiste zu ist oder der Bildschirm schmal): Vergleich und Profil. */
+function ansichtReiter() {
+  const zahl = id => (id === 'gegenueberstellung' && state.selectionTouched && state.selected.size ? ` <span class="count">${state.selected.size}</span>` : '');
+  return `<div class="cmp-tabs" role="tablist" aria-label="Ansichten">${CMP_TABS.map(([id, label]) => { const an = state.view === 'compare' && state.cmpTab === id; return `<button class="cmp-tab${an ? ' active' : ''}" role="tab" aria-selected="${an}" data-action="cmp-tab" data-tab="${id}">${label}${zahl(id)}</button>`; }).join('')}<button class="cmp-tab${state.view === 'profile' ? ' active' : ''}" role="tab" aria-selected="${state.view === 'profile'}" data-action="profile">Profil</button></div>`;
+}
 const ortKey = d => String(obj(obj(d.data).standort).ort ?? '').trim();
 const inOrtFilter = d => !state.filter.orte.size || state.filter.orte.has(ortKey(d));
 
@@ -9880,7 +9927,7 @@ function viewCompare() {
         <div class="werkzeug-ende">${state.cmpTab === 'tabelle' ? tabellenInfo() : ''}<button class="icon-knopf" popovertarget="menueTabelle" aria-haspopup="menu" aria-expanded="false" aria-label="Weitere Aktionen" title="Weitere Aktionen: Spalten, Revisionen, CSV-Export">${ikon('mehr', 22)}</button></div>
       </div>` : '';
   return `<div class="page-head"><div><h1>${titel}</h1><p class="sub" id="cmpStand">${vergleichStand()}</p></div></div>
-    <div class="cmp-tabs" role="tablist" aria-label="Bereiche des Vergleichs">${CMP_TABS.map(([id, label]) => `<button class="cmp-tab${state.cmpTab === id ? ' active' : ''}" role="tab" aria-selected="${state.cmpTab === id}" data-action="cmp-tab" data-tab="${id}">${label}${id === 'gegenueberstellung' && state.selectionTouched && state.selected.size ? ` <span class="count">${state.selected.size}</span>` : ''}</button>`).join('')}</div>
+    ${ansichtReiter()}
     ${werkzeuge}
     <div id="cmpResults">${compareResults()}</div>
     ${auswahlLeiste()}`;
@@ -9963,7 +10010,6 @@ function ortMenue() {
 function compareResults() {
   if (state.cmpTab === 'gegenueberstellung') return selectionPicker() + matrixCard();
   const rows = filteredDocs();
-  if (state.cmpTab === 'persoenlich') return vergleichPersoenlich(rows);
   if (state.cmpTab === 'karte') return karteAnsicht(rows);
   return state.cmpTab === 'preis' ? priceOverview(rows) : compareTable(rows);
 }
@@ -9984,7 +10030,7 @@ function compareTable(rows) {
       if (c.id === 'status') return statusZelle(d);
       if (c.profil) {
         const r = profilErgebnis(d), ok = r && r.anwendbar && r.status.cashflow === 'vollstaendig';
-        const leer = `<span class="null" title="${esc(!r || !r.anwendbar ? 'Mit dem Profil nicht anwendbar' : 'Mit dem Profil noch nicht berechenbar – was fehlt, zeigt die Ansicht „Mit meinem Profil“')}">—</span>`;
+        const leer = `<span class="null" title="${esc(!r || !r.anwendbar ? 'Mit dem Profil nicht anwendbar' : 'Mit dem Profil noch nicht berechenbar – was fehlt, zeigt die Ansicht „Profil“')}">—</span>`;
         if (!ok) return `<td class="${c.num ? 'num ' : ''}profilspalte">${leer}</td>`;
         if (c.id === 'p_einordnung') { const e = EINORDNUNG[r.einordnung?.gesamt]; return `<td class="profilspalte nowrap">${e ? `<span class="verdict sm ${e[1]}" title="${esc(e[2])}"><span class="vi" aria-hidden="true">${e[0]}</span><span>${esc({ passt: 'Passt', passt_nicht: 'Passt nicht', nicht_beurteilbar: 'Nicht beurteilbar' }[r.einordnung.gesamt])}</span></span>` : leer}</td>`; }
         return `<td class="num profilspalte">${pZuzahlung(colValue(c, d))}</td>`;
@@ -10311,6 +10357,9 @@ function applyTheme(t) {
    ===================================================================== */
 document.addEventListener('click', e => {
   if (e.target.closest('a[href], select, textarea') || e.target.matches('input')) return;
+  // Ein Knopf, der ein Menü öffnet, löst nicht zusätzlich die Aktion eines umgebenden Elements aus (z. B. Profilkarte)
+  const menueKnopf = e.target.closest('[popovertarget]');
+  if (menueKnopf && !menueKnopf.dataset.action) return;
   const el = e.target.closest('[data-action]');
   if (!el) return;
   const { action, uid } = el.dataset;
@@ -10340,7 +10389,7 @@ document.addEventListener('click', e => {
       renderResults();
       break;
     }
-    case 'cmp-tab': state.cmpTab = el.dataset.tab; lsSet(LS.cmpTab, state.cmpTab); render(); break;
+    case 'cmp-tab': state.view = 'compare'; state.cmpTab = el.dataset.tab; lsSet(LS.cmpTab, state.cmpTab); render(); break;
     case 'menue': menueUmschalten(); break;
     case 'filter-urteil': {
       // Ankreuzen im Menü „Urteil“; sind alle vorkommenden Urteile angekreuzt oder keines, entfällt der Filter
