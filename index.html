@@ -1818,6 +1818,149 @@ button.p-karte { text-align: left; font: inherit; color: inherit; }
 .segment.gross button { padding: 7px 16px; font-size: 13.5px; }
 .p-leer { margin: 18px 2px 0; font-size: 13.5px; color: var(--ink-2); }
 
+/* ---------- Objektakte (src/oberflaeche/akte.js): Reiter, Überblick, Prüfung, Besichtigung, Kontakt ---------- */
+.objekt-reiter { display: flex; width: fit-content; max-width: 100%; margin: 14px 0 16px; overflow-x: auto; scrollbar-width: none; }
+.objekt-reiter::-webkit-scrollbar { display: none; }
+.objekt-reiter button { flex: none; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.reiter-marke { display: inline-grid; place-items: center; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: var(--fill-2); color: var(--ink-2); font-size: 11.5px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.reiter-marke.krit { background: var(--s-crit); color: #fff; }
+.reiter-marke.warn { background: var(--s-warn); color: #3a2a00; }
+.akte { display: flex; flex-direction: column; gap: 12px; }
+.akte-ueberblick { margin-bottom: 12px; }
+.akte .card { margin: 0; }
+.akte-karte { display: flex; flex-direction: column; gap: 10px; }
+.akte-kopf { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; }
+.akte-kopf h3, .akte-kopf h4, .akte-zwischen h3 { margin: 0; font-size: 15px; }
+.akte-kopf h4 { font-size: 13.5px; }
+.akte-zahl { font-size: 12.5px; color: var(--ink-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.akte-balken { display: block; height: 6px; border-radius: 999px; background: var(--fill); overflow: hidden; }
+.akte-balken i { display: block; height: 100%; border-radius: inherit; background: var(--accent); transition: width .2s; }
+.krit { color: var(--crit-ink); }
+.akte :is(input[type="text"], input[type="date"], input[type="tel"], input[type="email"], select, textarea) { min-width: 0; height: 36px; padding: 0 10px; border: 1px solid var(--line-2); border-radius: 8px; background-color: var(--surface); color: var(--ink); font-size: 14px; }
+.akte textarea { display: block; width: 100%; height: auto; min-height: 36px; padding: 8px 10px; line-height: 1.4; resize: vertical; field-sizing: content; max-height: 40vh; }
+.akte :is(input, select, textarea):focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 45%, transparent); outline-offset: 0; border-color: var(--accent); }
+.akte input[type="checkbox"] { width: 18px; height: 18px; flex: none; accent-color: var(--accent); }
+.akte-leer { margin: 0 2px; font-size: 13.5px; color: var(--ink-2); }
+.akte-zwischen { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin: 8px 2px 0; }
+.akte-zwischen .btn-row { margin: 0; }
+.akte-raster { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); gap: 10px 12px; align-items: end; }
+.akte-feld { display: flex; flex-direction: column; gap: 4px; min-width: 0; font-size: 12.5px; color: var(--ink-2); }
+.akte-feld.breit { grid-column: 1 / -1; }
+.akte-feld.unten { justify-content: flex-end; align-items: flex-start; }
+/* Überblick */
+.schritte { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 2px 24px; }
+.schritt { display: flex; align-items: center; gap: 4px; min-height: 40px; border-bottom: 1px solid var(--line); }
+.schritt-wahl { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; padding: 6px 0; cursor: pointer; font-size: 14px; }
+.schritt.erledigt .schritt-wahl span { color: var(--ink-2); }
+.schritt .schritt-datum { flex: none; width: 138px; height: 30px; padding: 0 6px; font-size: 13px; }
+.akte-kacheln { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr)); gap: 10px; }
+.akte-kachel { display: flex; flex-direction: column; gap: 2px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: var(--shadow); color: var(--ink-2); font: inherit; font-size: 12.5px; text-align: left; cursor: pointer; transition: border-color .12s; }
+.akte-kachel:hover { border-color: var(--line-2); }
+.akte-kachel b { color: var(--ink); font-size: 14.5px; font-weight: 600; }
+.akte-kachel-titel { font-weight: 600; }
+.akte-kachel.krit span:last-child { color: var(--crit-ink); font-weight: 600; }
+.akte-kachel.warn span:last-child { color: var(--warn-ink); font-weight: 600; }
+/* Prüfung */
+.akte-leiste { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+.akte-leiste .akte-feld { flex-direction: row; align-items: center; gap: 8px; }
+.akte-fortschritt { display: flex; align-items: center; gap: 10px; flex: 1 1 200px; min-width: 0; font-size: 12.5px; color: var(--ink-2); }
+.akte-fortschritt .akte-balken { flex: 1; min-width: 60px; max-width: 220px; }
+.akte-vorschlaege { list-style: none; margin: 0; padding: 0; }
+.akte-vorschlaege li { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid var(--line); }
+.akte-vorschlaege div { display: flex; flex-direction: column; min-width: 0; font-size: 13.5px; }
+.akte-vorschlaege b { font-weight: 500; }
+.akte-vorschlaege span { font-size: 12.5px; color: var(--ink-2); }
+details.akte-gruppe { padding: 0; }
+.akte-gruppe > summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; font-size: 15px; font-weight: 600; cursor: pointer; list-style: none; }
+.akte-gruppe > summary::-webkit-details-marker { display: none; }
+.akte-gruppe > summary > span:first-child::before { content: ""; display: inline-block; width: 7px; height: 7px; margin: 0 10px 2px 2px; border-right: 1.8px solid var(--muted); border-bottom: 1.8px solid var(--muted); transform: rotate(-45deg); transition: transform .12s; }
+.akte-gruppe[open] > summary > span:first-child::before { transform: rotate(45deg); }
+.pp-liste { list-style: none; margin: 0; padding: 0 16px 12px; }
+.pp { padding: 7px 0; border-top: 1px solid var(--line); }
+.pp-zeile { display: flex; align-items: center; gap: 8px; }
+.pp-text { flex: 1; min-width: 0; font-size: 14px; line-height: 1.35; }
+.pp-text .tag { margin-left: 8px; }
+.pp.stand-ok .pp-text, .pp.stand-entfaellt .pp-text { color: var(--ink-2); }
+.pp.stand-entfaellt .pp-text { text-decoration: line-through; }
+.pp-wahl { display: flex; flex: none; gap: 4px; }
+.pp-knopf { display: inline-grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 1px solid var(--line-2); border-radius: 8px; background: var(--surface); color: var(--muted); font-size: 15px; font-weight: 700; cursor: pointer; transition: background .12s, color .12s, border-color .12s; }
+.pp-knopf:hover { color: var(--ink); background: var(--fill); }
+.pp-knopf.pp-ok.an { background: var(--s-good); border-color: var(--s-good); color: #fff; }
+.pp-knopf.pp-problem.an { background: var(--s-crit); border-color: var(--s-crit); color: #fff; }
+.pp-knopf.pp-entfaellt.an { background: var(--ink-2); border-color: var(--ink-2); color: var(--surface); }
+.pp-knopf:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.pp-notiz-knopf { font-size: 15px; }
+.pp-notiz-knopf.hat { color: var(--accent); }
+.pp-notiz { margin-top: 6px; }
+.pp-leer { padding: 8px 0; border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-2); }
+.pp-neu { display: flex; gap: 8px; padding-top: 10px; border-top: 1px solid var(--line); }
+.pp-neu input { flex: 1; }
+/* Besichtigung */
+.raum-liste, .kontakt-liste { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr)); gap: 10px; }
+.raum { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border-left: 4px solid var(--line-2); }
+.raum.zustand-gut { border-left-color: var(--s-good); }
+.raum.zustand-mittel { border-left-color: var(--s-warn); }
+.raum.zustand-schlecht { border-left-color: var(--s-crit); }
+/* Raum: Name und Entfernen in der ersten Zeile, der Zustand darunter – so bleibt der Name auch in schmalen Karten lesbar */
+.raum-kopf { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
+.akte input.raum-name { flex: 1 1 120px; font-size: 15px; font-weight: 600; border-color: transparent; background-color: transparent; padding-left: 4px; }
+.akte input.raum-name:hover { border-color: var(--line-2); }
+.raum-kopf .segment { order: 3; margin-right: auto; }
+.raum-kopf .icon-knopf { order: 2; }
+.foto-reihe { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.foto { width: 72px; height: 72px; flex: none; padding: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--fill); overflow: hidden; cursor: pointer; }
+.foto img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.foto img:not([src]) { visibility: hidden; }
+.foto.fehlt { display: grid; place-items: center; }
+.foto.fehlt::after { content: "fehlt"; font-size: 11px; color: var(--muted); }
+.foto.fehlt img { display: none; }
+.foto:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.foto-knopf { cursor: pointer; }
+.foto-gross { display: block; max-width: 100%; max-height: 62vh; margin: 0 auto 14px; border-radius: 10px; }
+.mangel-liste, .verlauf { list-style: none; margin: 0; padding: 0; }
+.mangel { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-top: 1px solid var(--line); }
+.mangel-schwere { flex: none; min-width: 56px; padding: 2px 8px; border-radius: 999px; background: var(--fill); font-size: 12px; font-weight: 600; text-align: center; }
+.mangel.schwere-schwer .mangel-schwere { background: var(--s-crit); color: #fff; }
+.mangel.schwere-mittel .mangel-schwere { background: var(--s-warn); color: #3a2a00; }
+.mangel-text { flex: 1; min-width: 0; font-size: 14px; }
+.mangel-text small { display: block; font-size: 12.5px; color: var(--ink-2); }
+.mangel-neu { display: flex; flex-wrap: wrap; gap: 8px; }
+.mangel-neu input { flex: 1 1 220px; }
+/* Kontakt */
+.kontakt { display: flex; flex-direction: column; gap: 10px; padding: 12px 14px; }
+.kontakt-kopf { display: flex; align-items: center; gap: 8px; }
+.kontakt-kopf select { font-weight: 600; }
+.kontakt-wege { display: flex; gap: 6px; margin-left: auto; }
+ul.verlauf { padding: 2px 16px; }
+.eintrag { padding: 10px 0; }
+.eintrag + .eintrag { border-top: 1px solid var(--line); }
+.eintrag-kopf { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-size: 13.5px; color: var(--ink-2); }
+.eintrag-kopf b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.eintrag-kopf .icon-knopf { margin-left: auto; width: 28px; height: 28px; }
+.eintrag p { margin: 4px 0 0; font-size: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.eintrag-wv { margin-top: 6px; font-size: 13px; color: var(--ink-2); }
+.eintrag-wv.faellig { color: var(--warn-ink); font-weight: 600; }
+.eintrag-wv.erledigt { text-decoration: line-through; }
+.akte-texte .akte-text { padding: 0 16px 14px; }
+.akte-text pre { margin: 8px 0 0; padding: 10px 12px; border-radius: 8px; background: var(--surface-2); font: inherit; font-size: 13px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.status-wv { font-size: 12px; color: var(--ink-2); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.status-wv.faellig { color: var(--warn-ink); font-weight: 600; }
+/* Tablet und Handy: größere Flächen zum Antippen */
+@media (pointer: coarse) {
+  .pp-knopf { width: 42px; height: 42px; font-size: 18px; }
+  .pp { padding: 9px 0; }
+  .akte :is(input[type="text"], input[type="date"], input[type="tel"], input[type="email"], select) { height: 44px; font-size: 16px; }
+  .akte textarea { font-size: 16px; min-height: 44px; }
+  .akte input[type="checkbox"] { width: 22px; height: 22px; }
+  .schritt { min-height: 48px; }
+  .foto { width: 88px; height: 88px; }
+  .akte .btn.sm { height: 40px; padding: 0 14px; }
+  .objekt-reiter button { padding: 9px 14px; }
+}
+@container objekt (max-width: 520px) { .pp-zeile { flex-wrap: wrap; } .pp-text { flex-basis: 100%; } }
+@media (max-width: 520px) { .pp-zeile { flex-wrap: wrap; } .pp-text { flex-basis: 100%; } }
+@media print { .akte .foto-knopf, .akte .pp-neu, .akte .mangel-neu, .akte .eintrag-neu, .akte .icon-knopf { display: none !important; } }
+
 /* ---------- Einstellungen ---------- */
 dialog.schmal { width: min(520px, calc(100vw - 32px)); }
 .segment { display: inline-flex; flex: none; max-width: 100%; padding: 2px; gap: 2px; border-radius: 9px; background: var(--fill); }
@@ -3893,6 +4036,301 @@ label.einst-text { cursor: pointer; }
   else (root.ImmoRechenkern = root.ImmoRechenkern || {}).tabellenfilter = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);
 </script>
+<script>/* src/rechenkern/akte.js */
+/*
+ * ImmoInvest Rechenkern – Objektakte: eigene Arbeit an einem Objekt bis zum Kauf
+ *
+ * Je Objektschlüssel hält die Akte fest, was der Nutzer selbst beiträgt: Schritte bis zum Kauf, Prüf-Checkliste
+ * (Vorlage je Objektart plus eigene Punkte), Besichtigung (Räume, Mängel, Fotoverweise), Kontakte und den Verlauf
+ * der Kommunikation mit Wiedervorlagen. Die importierte Analyse bleibt unverändert.
+ *
+ * Dieses Modul liefert die Vorlagen, prüft und vereinheitlicht Akten (Dateien sind nicht vertrauenswürdig) und
+ * führt zwei Fassungen zusammen – nötig für die Sicherungsdatei und den Abgleich über den Ablageordner.
+ * Zusammenführen: Jeder Eintrag trägt einen Zeitstempel t; je Eintrag gewinnt die jüngere Fassung. Gelöschte
+ * Einträge bleiben als Markierung (weg: true) erhalten, damit das Löschen auf anderen Geräten ankommt.
+ * Ohne DOM und ohne Netz.
+ */
+(function (root) {
+  'use strict';
+
+  const nodeModul = typeof module === 'object' && module.exports;
+
+  /* ---------- Vorlagen ---------- */
+  // Schritte bis zum Kauf in der üblichen Reihenfolge
+  const SCHRITTE = [
+    ['anfrage', 'Anfrage gestellt', 'Anbieter angeschrieben oder angerufen, Exposé angefordert.'],
+    ['unterlagen', 'Unterlagen erhalten', 'Die wesentlichen Unterlagen liegen vor (siehe Prüfung → Unterlagen).'],
+    ['besichtigung', 'Besichtigt', 'Objekt innen und außen gesehen, Notizen und Fotos gemacht.'],
+    ['pruefung', 'Prüfung abgeschlossen', 'Checkliste durchgegangen, offene Punkte geklärt oder bewusst akzeptiert.'],
+    ['finanzierung', 'Finanzierung zugesagt', 'Schriftliche Zusage der Bank liegt vor.'],
+    ['einigung', 'Kaufpreis vereinbart', 'Angebot abgegeben und mit dem Verkäufer einig geworden.'],
+    ['entwurf', 'Kaufvertragsentwurf geprüft', 'Entwurf vom Notar erhalten und geprüft; bei Verbraucherverträgen liegen in der Regel 14 Tage zwischen Entwurf und Termin.'],
+    ['notar', 'Beurkundet', 'Notartermin hat stattgefunden.'],
+    ['uebergabe', 'Kaufpreis gezahlt und übergeben', 'Fälligkeit eingetreten, gezahlt, Schlüssel und Unterlagen übernommen.'],
+  ];
+
+  const VORLAGEN = [['etw_vermietet', 'Eigentumswohnung, vermietet'], ['etw_frei', 'Eigentumswohnung, bezugsfrei'], ['mfh', 'Mehrfamilienhaus']];
+  const GRUPPEN = [
+    ['analyse', 'Offene Punkte aus der Analyse'], ['unterlagen', 'Unterlagen'], ['objekt', 'Objekt und Zustand'], ['gemeinschaft', 'Gemeinschaft und Verwaltung'],
+    ['miete', 'Miete und Mieter'], ['recht', 'Grundbuch und Recht'], ['geld', 'Kaufpreis, Finanzierung, Steuer'],
+  ];
+  const ETW = ['etw_vermietet', 'etw_frei'], VERM = ['etw_vermietet', 'mfh'];
+  // [ID, Gruppe, Text, nur für diese Vorlagen (ohne Angabe: alle)]
+  const PUNKTE = [
+    ['u_expose', 'unterlagen', 'Exposé mit Grundriss und Wohnflächenberechnung'],
+    ['u_grundbuch', 'unterlagen', 'Aktueller Grundbuchauszug'],
+    ['u_teilung', 'unterlagen', 'Teilungserklärung mit Gemeinschaftsordnung und Aufteilungsplan', ETW],
+    ['u_protokolle', 'unterlagen', 'Protokolle der letzten drei Eigentümerversammlungen', ETW],
+    ['u_beschluesse', 'unterlagen', 'Beschlusssammlung', ETW],
+    ['u_wirtschaftsplan', 'unterlagen', 'Aktueller Wirtschaftsplan', ETW],
+    ['u_abrechnung', 'unterlagen', 'Hausgeldabrechnungen der letzten drei Jahre', ETW],
+    ['u_ruecklage', 'unterlagen', 'Stand der Erhaltungsrücklage', ETW],
+    ['u_energie', 'unterlagen', 'Energieausweis'],
+    ['u_mietvertrag', 'unterlagen', 'Mietvertrag mit allen Nachträgen', ['etw_vermietet']],
+    ['u_mietvertraege', 'unterlagen', 'Mietverträge aller Einheiten mit Nachträgen', ['mfh']],
+    ['u_mieterliste', 'unterlagen', 'Mieterliste mit Flächen, Mieten, Mietbeginn und Kautionen', ['mfh']],
+    ['u_nebenkosten', 'unterlagen', 'Letzte Nebenkostenabrechnung gegenüber den Mietern', VERM],
+    ['u_versicherung', 'unterlagen', 'Gebäudeversicherung: Police und Schäden der letzten Jahre'],
+    ['u_modernisierung', 'unterlagen', 'Nachweise über Modernisierungen (Rechnungen, Jahre)'],
+    ['u_grundsteuer', 'unterlagen', 'Grundsteuerbescheid'],
+    ['u_flurkarte', 'unterlagen', 'Flurkarte und Lageplan', ['mfh']],
+    ['u_bauakte', 'unterlagen', 'Baugenehmigung und Baubeschreibung (Bauakte)', ['mfh']],
+
+    ['o_lage', 'objekt', 'Lage und Umfeld: Lärm, Parken, Nachbarschaft – möglichst zu zwei Tageszeiten'],
+    ['o_fassade', 'objekt', 'Fassade, Dach und Dachrinnen von außen'],
+    ['o_keller', 'objekt', 'Keller: Feuchtigkeit, Geruch, Ausblühungen an den Wänden'],
+    ['o_treppenhaus', 'objekt', 'Treppenhaus, Hauseingang, Klingeln und Briefkästen (Pflegezustand)'],
+    ['o_heizung', 'objekt', 'Heizung: Art, Baujahr, letzter Austausch, Austauschpflicht'],
+    ['o_fenster', 'objekt', 'Fenster: Material, Verglasung, Baujahr, Dichtungen'],
+    ['o_elektrik', 'objekt', 'Elektrik: Sicherungskasten, FI-Schalter, Zählerplatz'],
+    ['o_leitungen', 'objekt', 'Wasser- und Abwasserleitungen: Material, Alter, Wasserdruck'],
+    ['o_feuchte', 'objekt', 'Feuchtigkeit und Schimmel an Außenwänden, Ecken und Fensterlaibungen'],
+    ['o_flaeche', 'objekt', 'Wohnfläche und Grundriss mit den Unterlagen abgleichen'],
+    ['o_bad', 'objekt', 'Bad und Küche: Zustand, Fugen, Lüftung', ETW],
+    ['o_boden', 'objekt', 'Böden, Wände und Decken: Risse, Zustand', ETW],
+    ['o_zubehoer', 'objekt', 'Kellerabteil, Stellplatz und Sondernutzungsflächen vor Ort zeigen lassen', ETW],
+    ['o_einheiten', 'objekt', 'Jede Einheit besichtigt oder eine repräsentative Auswahl', ['mfh']],
+    ['o_brandschutz', 'objekt', 'Brandschutz, Rettungswege, Rauchmelder', ['mfh']],
+    ['o_aussen', 'objekt', 'Außenanlagen, Müllplatz, Stellplätze', ['mfh']],
+
+    ['g_ruecklage', 'gemeinschaft', 'Rücklage je m² passt zu Alter und Zustand des Hauses', ETW],
+    ['g_massnahmen', 'gemeinschaft', 'Beschlossene oder diskutierte Maßnahmen und Sonderumlagen laut Protokollen', ETW],
+    ['g_hausgeld', 'gemeinschaft', 'Hausgeld: Höhe, umlagefähiger Anteil, Rückstände anderer Eigentümer', ETW],
+    ['g_streit', 'gemeinschaft', 'Rechtsstreitigkeiten in der Gemeinschaft', ETW],
+    ['g_verwalter', 'gemeinschaft', 'Verwaltung: bestellt bis wann, Erreichbarkeit, Eindruck', ETW],
+    ['g_struktur', 'gemeinschaft', 'Eigentümerstruktur: Selbstnutzer, Kapitalanleger, Mehrheitseigentümer', ETW],
+    ['g_teilung', 'gemeinschaft', 'Teilungserklärung: Sondereigentum, Sondernutzungsrechte, Kostenverteilung, Beschränkungen der Vermietung', ETW],
+    ['g_anteil', 'gemeinschaft', 'Miteigentumsanteil passt zur Wohnfläche', ETW],
+
+    ['m_vertrag', 'miete', 'Mietvertrag: Beginn, Miethöhe, Staffel oder Index, Sondervereinbarungen', VERM],
+    ['m_zahlung', 'miete', 'Zahlungseingänge der letzten zwölf Monate, Rückstände', VERM],
+    ['m_kaution', 'miete', 'Kaution: Höhe, Anlage, Übergang auf den Käufer', VERM],
+    ['m_erhoehung', 'miete', 'Letzte Mieterhöhung, Abstand zum Mietspiegel, Kappungsgrenze', VERM],
+    ['m_nebenkosten', 'miete', 'Nebenkosten: Vorauszahlung deckt die umlagefähigen Kosten', VERM],
+    ['m_streit', 'miete', 'Kündigungen, Mietminderungen, laufende Streitigkeiten', VERM],
+    ['m_eigenbedarf', 'miete', 'Eigenbedarf geplant? Sperrfristen nach Umwandlung in Eigentum', ['etw_vermietet']],
+    ['m_leerstand', 'miete', 'Leerstand und Mieterwechsel der letzten Jahre', ['mfh']],
+    ['m_neu', 'miete', 'Erzielbare Miete: Mietspiegel, Mietpreisbremse, Vergleichsangebote', ['etw_frei']],
+    ['m_vormiete', 'miete', 'Vormiete und Grund des Auszugs', ['etw_frei']],
+
+    ['r_abt2', 'recht', 'Grundbuch Abteilung II: Wegerechte, Wohnrechte, Vorkaufsrechte, Nießbrauch'],
+    ['r_abt3', 'recht', 'Grundbuch Abteilung III: eingetragene Grundschulden werden gelöscht'],
+    ['r_baulasten', 'recht', 'Baulastenverzeichnis'],
+    ['r_altlasten', 'recht', 'Altlastenkataster', ['mfh']],
+    ['r_satzung', 'recht', 'Denkmalschutz, Erhaltungssatzung, Sanierungsgebiet, Milieuschutz'],
+    ['r_erbbau', 'recht', 'Erbbaurecht (falls vorhanden): Laufzeit, Erbbauzins, Anpassung, Heimfall'],
+    ['r_beitraege', 'recht', 'Erschließungs- und Anliegerbeiträge: offen oder angekündigt?'],
+    ['r_vorkauf', 'recht', 'Vorkaufsrecht der Gemeinde oder des Mieters'],
+    ['r_nutzung', 'recht', 'Nutzung genehmigt: ausgebautes Dach, Souterrain, Umbauten'],
+
+    ['k_nebenkosten', 'geld', 'Kaufnebenkosten vollständig: Grunderwerbsteuer, Notar, Grundbuch, Makler'],
+    ['k_vergleich', 'geld', 'Kaufpreis mit Vergleichsangeboten und Bodenrichtwert abgeglichen'],
+    ['k_instandhaltung', 'geld', 'Anstehende Instandhaltung im Kaufpreis berücksichtigt'],
+    ['k_angebote', 'geld', 'Finanzierungsangebote verglichen: Zins, Bindung, Tilgung, Sondertilgung'],
+    ['k_bereitstellung', 'geld', 'Bereitstellungszinsen und Auszahlungsvoraussetzungen der Bank'],
+    ['k_afa', 'geld', 'Bei Vermietung: Aufteilung Gebäude und Boden, Abschreibung geklärt'],
+    ['k_15prozent', 'geld', 'Bei Vermietung: geplante Renovierung bleibt in drei Jahren unter 15 % des Gebäudewerts'],
+    ['k_versicherung', 'geld', 'Versicherungen ab Übergang: Gebäude, Haftpflicht, Mietausfall'],
+    ['k_vertrag', 'geld', 'Kaufvertragsentwurf: Kaufgegenstand, Fälligkeit, Übergang von Nutzen und Lasten, Gewährleistung, Inventar'],
+  ].map(([id, gruppe, text, nur]) => ({ id, gruppe, text, nur: nur || null }));
+
+  // Übliche Räume für die Besichtigung (nur als Vorschlag auf Knopfdruck)
+  const RAEUME = {
+    etw: ['Flur', 'Wohnzimmer', 'Küche', 'Bad', 'Schlafzimmer', 'Balkon', 'Keller', 'Treppenhaus', 'Fassade und Dach', 'Heizung und Technik'],
+    mfh: ['Fassade', 'Dach', 'Keller', 'Heizung und Technik', 'Treppenhaus', 'Wohnungen', 'Außenanlagen'],
+  };
+  const ROLLEN = [['makler', 'Makler'], ['eigentuemer', 'Eigentümer'], ['verwaltung', 'Hausverwaltung'], ['mieter', 'Mieter'], ['bank', 'Bank'], ['notar', 'Notar'], ['gutachter', 'Gutachter'], ['sonstige', 'Sonstige']];
+  const KANAELE = [['email', 'E-Mail'], ['telefon', 'Telefon'], ['portal', 'Portal-Nachricht'], ['vor_ort', 'Vor Ort'], ['brief', 'Brief'], ['sonstiges', 'Sonstiges']];
+  const STAENDE = ['ok', 'problem', 'entfaellt'];
+  const ZUSTAENDE = ['gut', 'mittel', 'schlecht'];
+  const SCHWEREN = [['leicht', 'leicht'], ['mittel', 'mittel'], ['schwer', 'schwer']];
+
+  const GRENZEN = { text: 4000, kurz: 200, liste: 400 };
+  const DATUM = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
+  const ZEIT = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:\d{2})$/;
+  const ID = /^[A-Za-z0-9_:.-]{1,60}$/;
+
+  const punkteFuer = vorlage => PUNKTE.filter(p => !p.nur || p.nur.includes(vorlage));
+  const vorlageGueltig = id => VORLAGEN.some(v => v[0] === id);
+
+  /** Vorschlag für die Checklisten-Vorlage aus der Analyse (Objektart, Vermietungsstatus). */
+  function vorlageVorschlag(daten) {
+    const d = daten && typeof daten === 'object' ? daten : {};
+    const art = String((d.angebot || {}).objektart || '').toLowerCase();
+    if (/mehrfamilien|zinshaus|wohn- und gesch|wohnhaus|renditeobjekt/.test(art)) return 'mfh';
+    return String((d.objekt || {}).vermietungsstatus || '').toLowerCase().startsWith('vermietet') ? 'etw_vermietet' : 'etw_frei';
+  }
+
+  /* ---------- Prüfen und Vereinheitlichen ---------- */
+  const txt = (v, max = GRENZEN.text) => (typeof v === 'string' ? v.replace(/\r\n?/g, '\n').trim().slice(0, max) : '');
+  const datum = v => (typeof v === 'string' && DATUM.test(v) ? v : null);
+  const zeit = v => (typeof v === 'string' && ZEIT.test(v) ? v : null);
+  const kennung = v => (typeof v === 'string' && ID.test(v) ? v : null);
+  const aus = (v, erlaubt) => (erlaubt.includes(v) ? v : null);
+  const ja = v => v === true;
+
+  function liste(roh, pruefe) {
+    const gesehen = new Set(), out = [];
+    for (const e of Array.isArray(roh) ? roh.slice(0, GRENZEN.liste) : []) {
+      if (!e || typeof e !== 'object') continue;
+      const id = kennung(e.id);
+      if (!id || gesehen.has(id)) continue;
+      gesehen.add(id);
+      const t = zeit(e.t);
+      if (ja(e.weg)) { out.push({ id, weg: true, t }); continue; }
+      const w = pruefe(e);
+      if (w) out.push({ id, ...w, t });
+    }
+    return out;
+  }
+  function karte(roh, pruefe) {
+    const out = {};
+    if (!roh || typeof roh !== 'object' || Array.isArray(roh)) return out;
+    for (const [k, e] of Object.entries(roh).slice(0, GRENZEN.liste)) {
+      if (!kennung(k) || !e || typeof e !== 'object') continue;
+      const [w, inhalt] = pruefe(e), t = zeit(e.t);
+      // Ein geleerter Eintrag bleibt mit Zeitstempel erhalten, damit das Zurücknehmen auf anderen Geräten ankommt
+      if (inhalt || t) out[k] = { ...w, t };
+    }
+    return out;
+  }
+
+  /** Akte vereinheitlichen. Liefert immer eine vollständige Struktur; leer(akte) sagt, ob etwas darin steht. */
+  function pruefe(roh) {
+    const r = roh && typeof roh === 'object' ? roh : {};
+    const vorlage = r.vorlage && vorlageGueltig(r.vorlage.id) ? { id: r.vorlage.id, t: zeit(r.vorlage.t) } : null;
+    const b = r.besichtigung && typeof r.besichtigung === 'object' ? r.besichtigung : {};
+    const besichtigung = datum(b.datum) || txt(b.notiz) || zeit(b.t) ? { datum: datum(b.datum), notiz: txt(b.notiz), t: zeit(b.t) } : null;
+    return {
+      vorlage,
+      schritte: karte(r.schritte, e => { const w = { erledigt: ja(e.erledigt), datum: datum(e.datum), notiz: txt(e.notiz, GRENZEN.kurz) }; return [w, w.erledigt || !!w.datum || !!w.notiz]; }),
+      punkte: karte(r.punkte, e => { const w = { stand: aus(e.stand, STAENDE), notiz: txt(e.notiz) }; return [w, !!w.stand || !!w.notiz]; }),
+      eigene: liste(r.eigene, e => (txt(e.text, GRENZEN.kurz) && GRUPPEN.some(g => g[0] === e.gruppe) ? { gruppe: e.gruppe, text: txt(e.text, GRENZEN.kurz), quelle: kennung(e.quelle) } : null)),
+      besichtigung,
+      raeume: liste(r.raeume, e => (txt(e.name, GRENZEN.kurz) ? { name: txt(e.name, GRENZEN.kurz), zustand: aus(e.zustand, ZUSTAENDE), notiz: txt(e.notiz) } : null)),
+      maengel: liste(r.maengel, e => (txt(e.text, GRENZEN.kurz * 2) ? { text: txt(e.text, GRENZEN.kurz * 2), raum: kennung(e.raum), schwere: aus(e.schwere, SCHWEREN.map(s => s[0])) || 'mittel' } : null)),
+      kontakte: liste(r.kontakte, e => {
+        const k = { rolle: aus(e.rolle, ROLLEN.map(x => x[0])) || 'sonstige', name: txt(e.name, GRENZEN.kurz), firma: txt(e.firma, GRENZEN.kurz), telefon: txt(e.telefon, 60), email: txt(e.email, GRENZEN.kurz) };
+        return k;
+      }),
+      verlauf: liste(r.verlauf, e => (datum(e.datum) && (txt(e.text) || datum(e.wiedervorlage)) ? { datum: datum(e.datum), kanal: aus(e.kanal, KANAELE.map(x => x[0])) || 'sonstiges', richtung: e.richtung === 'ein' ? 'ein' : 'aus', kontakt: kennung(e.kontakt), text: txt(e.text), wiedervorlage: datum(e.wiedervorlage), erledigt: ja(e.erledigt) } : null)),
+      fotos: liste(r.fotos, e => ({ zu: kennung(e.zu) || 'allgemein', name: txt(e.name, GRENZEN.kurz) })),
+    };
+  }
+
+  const lebend = l => l.filter(e => !e.weg);
+  /** true, wenn in der Akte nichts steht (auch keine Löschmarkierungen). */
+  function leer(a) {
+    return !a || (!a.vorlage && !a.besichtigung && !Object.keys(a.schritte).length && !Object.keys(a.punkte).length
+      && !a.eigene.length && !a.raeume.length && !a.maengel.length && !a.kontakte.length && !a.verlauf.length && !a.fotos.length);
+  }
+
+  /* ---------- Zusammenführen ---------- */
+  // Jüngere Fassung gewinnt; ohne Zeitstempel gilt ein Eintrag als älter. Bei Gleichstand bleibt der eigene.
+  const juenger = (neu, alt) => !!neu && (!alt || (neu.t || '') > (alt.t || ''));
+  const mischeEintrag = (a, b) => (juenger(b, a) ? b : a) || null;
+  function mischeKarte(a, b) {
+    const out = { ...a };
+    for (const [k, v] of Object.entries(b)) if (juenger(v, a[k])) out[k] = v;
+    return out;
+  }
+  function mischeListe(a, b) {
+    const nach = new Map(a.map(e => [e.id, e]));
+    for (const e of b) if (juenger(e, nach.get(e.id))) nach.set(e.id, e);
+    return [...nach.values()];
+  }
+  /** Zwei Fassungen einer Akte zusammenführen (eigene, fremde). Beide werden vorher vereinheitlicht. */
+  function mische(eigene, fremde) {
+    const a = pruefe(eigene), b = pruefe(fremde);
+    return {
+      vorlage: mischeEintrag(a.vorlage, b.vorlage),
+      schritte: mischeKarte(a.schritte, b.schritte),
+      punkte: mischeKarte(a.punkte, b.punkte),
+      eigene: mischeListe(a.eigene, b.eigene),
+      besichtigung: mischeEintrag(a.besichtigung, b.besichtigung),
+      raeume: mischeListe(a.raeume, b.raeume),
+      maengel: mischeListe(a.maengel, b.maengel),
+      kontakte: mischeListe(a.kontakte, b.kontakte),
+      verlauf: mischeListe(a.verlauf, b.verlauf),
+      fotos: mischeListe(a.fotos, b.fotos),
+    };
+  }
+
+  const gueltigerSchluessel = k => typeof k === 'string' && k.length > 0 && k.length <= 300;
+  /** Sammlung { Objektschlüssel: Akte } vereinheitlichen; leere Akten entfallen. */
+  function pruefeSammlung(roh) {
+    const out = {};
+    if (!roh || typeof roh !== 'object' || Array.isArray(roh)) return out;
+    for (const [k, v] of Object.entries(roh)) {
+      if (!gueltigerSchluessel(k)) continue;
+      const a = pruefe(v);
+      if (!leer(a)) out[k] = a;
+    }
+    return out;
+  }
+  /** Sammlungen zusammenführen. Liefert { werte, zahl: { neu, geaendert, gleich } } aus Sicht des Bestands. */
+  function mischeSammlung(bestand, neu) {
+    const werte = { ...pruefeSammlung(bestand) }, zahl = { neu: 0, geaendert: 0, gleich: 0 };
+    for (const [k, v] of Object.entries(pruefeSammlung(neu))) {
+      if (!werte[k]) { werte[k] = v; zahl.neu++; continue; }
+      const m = mische(werte[k], v);
+      if (JSON.stringify(m) === JSON.stringify(werte[k])) zahl.gleich++; else { werte[k] = m; zahl.geaendert++; }
+    }
+    return { werte, zahl };
+  }
+
+  /* ---------- Auswertung für Überblick und Tabelle ---------- */
+  /** Prüfpunkte der Akte: Vorlage plus eigene, jeweils mit Stand und Notiz. */
+  function pruefliste(akte, vorlage) {
+    const a = akte || pruefe(null);
+    const mit = p => ({ ...p, stand: (a.punkte[p.id] || {}).stand || null, notiz: (a.punkte[p.id] || {}).notiz || '' });
+    return [...punkteFuer(vorlage).map(p => mit({ ...p, eigen: false })), ...lebend(a.eigene).map(e => mit({ id: e.id, gruppe: e.gruppe, text: e.text, quelle: e.quelle || null, eigen: true }))];
+  }
+  /** Kennzahlen der Akte. heute = 'JJJJ-MM-TT' für die Fälligkeit von Wiedervorlagen. */
+  function stand(akte, vorlage, heute) {
+    const a = akte || pruefe(null);
+    const liste = pruefliste(a, vorlage);
+    const zaehl = s => liste.filter(p => p.stand === s).length;
+    const verlauf = lebend(a.verlauf);
+    const offeneWv = verlauf.filter(e => e.wiedervorlage && !e.erledigt).map(e => e.wiedervorlage).sort();
+    const letzter = verlauf.slice().sort((x, y) => (y.datum + (y.t || '')).localeCompare(x.datum + (x.t || '')))[0] || null;
+    return {
+      schritte: { erledigt: SCHRITTE.filter(s => (a.schritte[s[0]] || {}).erledigt).length, gesamt: SCHRITTE.length },
+      pruefung: { ok: zaehl('ok'), problem: zaehl('problem'), entfaellt: zaehl('entfaellt'), gesamt: liste.length, offen: liste.filter(p => !p.stand).length },
+      wiedervorlage: offeneWv[0] || null,
+      faellig: !!(offeneWv[0] && heute && offeneWv[0] <= heute),
+      letzterKontakt: letzter,
+      besichtigung: (a.besichtigung || {}).datum || null,
+      maengel: lebend(a.maengel).length,
+      fotos: lebend(a.fotos).length,
+    };
+  }
+
+  const api = { SCHRITTE, VORLAGEN, GRUPPEN, PUNKTE, RAEUME, ROLLEN, KANAELE, STAENDE, ZUSTAENDE, SCHWEREN, punkteFuer, vorlageGueltig, vorlageVorschlag, pruefe, leer, lebend, mische, pruefeSammlung, mischeSammlung, pruefliste, stand };
+  if (nodeModul) module.exports = api;
+  else (root.ImmoRechenkern = root.ImmoRechenkern || {}).akte = api;
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+</script>
 <script>/* src/rechenkern/eingaben.js */
 /*
  * ImmoInvest Rechenkern – eigene Eingaben je Objekt: Status, Termin, Notiz und die Sicherungsdatei
@@ -3906,8 +4344,10 @@ label.einst-text { cursor: pointer; }
 
   const nodeModul = typeof module === 'object' && module.exports;
   const St = nodeModul ? require('./standort.js') : root.ImmoRechenkern.standort;
+  const Akte = nodeModul ? require('./akte.js') : root.ImmoRechenkern.akte;
 
-  const FORMAT = { typ: 'viewer_eingaben', version: '1.0', major: 1 };
+  // 1.1: zusätzlich „akten“ (Objektakten, siehe akte.js); Dateien der Version 1.0 bleiben lesbar
+  const FORMAT = { typ: 'viewer_eingaben', version: '1.1', major: 1 };
   // Reihenfolge = Arbeitsablauf; danach wird sortiert. „Ohne Status“ ist kein Eintrag, sondern das Fehlen.
   const STATUS = [
     ['interessant', 'Interessant'], ['angefragt', 'Angefragt'], ['besichtigung', 'Besichtigung'],
@@ -3956,12 +4396,13 @@ label.einst-text { cursor: pointer; }
   }
 
   /** Sicherungsdatei mit allen eigenen Eingaben. */
-  function exportiere({ notizen = {}, adressen = {} } = {}, jetzt = new Date().toISOString()) {
+  function exportiere({ notizen = {}, adressen = {}, akten = {} } = {}, jetzt = new Date().toISOString()) {
     return {
       dokumenttyp: FORMAT.typ, formatversion: FORMAT.version, erstellt_am: jetzt,
-      hinweis: 'Eigene Eingaben aus dem ImmoInvest-Viewer (Status, Termine, Notizen, Adressnachträge, Kartenpunkte). Enthält keine Profil- oder Finanzdaten.',
+      hinweis: 'Eigene Eingaben aus dem ImmoInvest-Viewer (Status, Termine, Notizen, Adressnachträge, Kartenpunkte, Objektakten mit Checklisten, Besichtigung, Kontakten und Verlauf). Enthält keine Profil- oder Finanzdaten und keine Fotos.',
       notizen: bereinigeSammlung(notizen, pruefeNotiz).werte,
       adressen: bereinigeSammlung(adressen, pruefeAdresseintrag).werte,
+      akten: Akte.pruefeSammlung(akten),
     };
   }
 
@@ -3971,7 +4412,7 @@ label.einst-text { cursor: pointer; }
     const major = Number(String(dok.formatversion || '').split('.')[0]);
     if (major !== FORMAT.major) return { ok: false, fehler: [`Formatversion ${dok.formatversion ?? '–'} wird nicht unterstützt (erwartet ${FORMAT.version}).`] };
     const n = bereinigeSammlung(dok.notizen, pruefeNotiz), a = bereinigeSammlung(dok.adressen, pruefeAdresseintrag);
-    return { ok: true, fehler: [], notizen: n.werte, adressen: a.werte, verworfen: n.verworfen + a.verworfen };
+    return { ok: true, fehler: [], notizen: n.werte, adressen: a.werte, akten: Akte.pruefeSammlung(dok.akten), verworfen: n.verworfen + a.verworfen };
   }
 
   const gleich = (x, y) => JSON.stringify(x) === JSON.stringify(y);
@@ -4015,6 +4456,13 @@ label.einst-text { cursor: pointer; }
   'use strict';
 
   const VERLAUF = [
+    { version: '4.0.0', datum: '2026-11-15', titel: 'Objektakte: vom Inserat bis zum Kauf', punkte: [
+      'Objektansicht in sechs Bereichen: Überblick, Prüfung, Besichtigung, Kontakt, Analyse, Rechnung',
+      'Schritte bis zum Kauf zum Abhaken und Prüf-Checklisten für vermietete und bezugsfreie Eigentumswohnungen und Mehrfamilienhäuser',
+      'Besichtigung für das Tablet: Räume, Zustand, Notizen, Mängel und Fotos',
+      'Kontakte und Verlauf der Kommunikation mit Wiedervorlage, die auch in der Tabelle erinnert',
+      'Abgleich der eigenen Eingaben und Fotos über den Ablageordner; die Sicherungsdatei nimmt die Akten mit',
+    ] },
     { version: '3.4.0', datum: '2026-11-15', titel: 'Ein Menüpunkt „Profil“ mit Vorlagen, Zahnrad neben dem Menü', punkte: [
       'Seite „Profil“: Vorlagen mit einem Klick, eigenes Profil, Ergebnisse je Objekt und Bearbeiten an einem Ort',
       'Seitenleiste ohne Unterteilung: „Profil“ ersetzt „Mit meinem Profil“ und „Profile verwalten“',
@@ -5030,11 +5478,6 @@ function pProfilSeitenleiste(p) {
 /* =====================================================================
    Ansicht: Berechnung mit deinem Profil (Einzelobjekt)
    ===================================================================== */
-function pModusSchalter() {
-  const m = state.detailModus === 'persoenlich' ? 'persoenlich' : 'analyse';
-  return `<div class="modus-schalter no-print" role="tablist" aria-label="Ansicht"><button role="tab" aria-selected="${m === 'analyse'}" class="${m === 'analyse' ? 'aktiv' : ''}" data-action="detail-modus" data-modus="analyse">Importierte Analyse</button><button role="tab" aria-selected="${m === 'persoenlich'}" class="${m === 'persoenlich' ? 'aktiv' : ''}" data-action="detail-modus" data-modus="persoenlich">Berechnung mit deinem Profil</button></div>`;
-}
-
 function pKeinProfil() {
   return `<div class="card p-kein-profil"><h3>Für die persönliche Berechnung fehlt ein Profil${info('Ein Profil enthält Haushalt, Einkommen, Steuermodus, Eigenkapital und Konditionen. Alles bleibt in diesem Browser.', 'Profil')}</h3>
     <div class="btn-row" style="justify-content:flex-start"><button class="btn primary" data-action="profile">Profil wählen oder anlegen</button></div></div>`;
@@ -5551,7 +5994,7 @@ async function ordnerStart() {
   state.ordner.name = h.name;
   let recht = 'prompt';
   try { recht = await h.queryPermission({ mode: 'read' }); } catch { /* bleibt prompt */ }
-  if (recht === 'granted') { state.ordner.status = 'verbunden'; await ordnerEinlesen({ erst: true }); }
+  if (recht === 'granted') { state.ordner.status = 'verbunden'; await ordnerEinlesen({ erst: true }); if (state.einst.abgleich) { await abgleichRecht(false); abgleichPlanen(); renderSidebar(); } }
   else { state.ordner.status = 'freigabe'; renderSidebar(); }
 }
 
@@ -5569,10 +6012,13 @@ async function ordnerFreigeben() {
   const h = state.ordner.handle;
   if (!h) return;
   let recht = 'denied';
-  try { recht = await h.requestPermission({ mode: 'read' }); } catch { /* bleibt denied */ }
+  // Mit eingeschaltetem Abgleich gleich Lesen und Schreiben erbitten – dann genügt ein Klick
+  try { recht = await h.requestPermission({ mode: state.einst.abgleich ? 'readwrite' : 'read' }); } catch { /* bleibt denied */ }
+  if (recht !== 'granted' && state.einst.abgleich) { try { recht = await h.requestPermission({ mode: 'read' }); } catch { /* bleibt denied */ } }
   if (recht !== 'granted') return toast('Kein Zugriff auf den Ordner erteilt.');
   state.ordner.status = 'verbunden';
   await ordnerEinlesen({ erst: true });
+  if (state.einst.abgleich) { await abgleichRecht(false); abgleichPlanen(); renderSidebar(); }
 }
 
 async function ordnerTrennen() {
@@ -5631,10 +6077,13 @@ async function ordnerEinlesen({ erst = false, manuell = false } = {}) {
   try {
     const liste = await ordnerDateien(o.handle, '', 1, []);
     const gesehen = new Set(), neu = [], geaendert = [];
+    let abgleichNeu = false;
     // Beim ersten Einlesen: Dateien, deren Inhalt schon aus dem Browser-Speicher geladen ist, nur noch auf Änderungen prüfen
     if (erst) ordnerBekanntUebernehmen(o);
     for (const [nr, { pfad, eintrag }] of liste.entries()) {
       if (sichtbar) ladeSchritt(nr, liste.length, `Ordner „${o.name}“: Datei ${nr + 1} von ${liste.length} wird gelesen`);
+      // Die Abgleich-Datei mit den eigenen Eingaben ist keine Bewertung: getrennt lesen und zusammenführen
+      if (pfad === ABGLEICH_DATEI) { abgleichNeu = (await abgleichLesen(eintrag)) || abgleichNeu; continue; }
       gesehen.add(pfad);
       let datei;
       try { datei = await eintrag.getFile(); } catch { continue; }
@@ -5695,7 +6144,7 @@ async function ordnerEinlesen({ erst = false, manuell = false } = {}) {
       toast(erst ? `${o.dateien} Bewertung${o.dateien === 1 ? '' : 'en'} aus „${o.name}“ eingelesen.` : `Aus „${o.name}“: ${teile.join(', ')}.`);
     } else {
       ordnerStandAktualisieren();
-      if (erst) renderSidebar();
+      if (abgleichNeu) renderMitFokus(); else if (erst) renderSidebar();
       if (manuell) toast(`„${o.name}“ ist aktuell – keine Änderungen.`);
     }
   } catch (e) {
@@ -5753,6 +6202,10 @@ function sidebarOrdner() {
   }
   if (o.status === 'fehlt') {
     return `<div class="side-ordner fehler">${ikon('ordner', 17)}<div class="side-ordner-text">${name}<span class="notice">${esc(o.fehler)}</span></div><button class="btn sm" data-action="ordner-verbinden">Neu verbinden</button></div>`;
+  }
+  // Abgleich eingeschaltet, aber der Browser darf (noch) nicht in den Ordner schreiben
+  if (state.einst.abgleich && ['prompt', 'denied'].includes(abgleich.recht)) {
+    return `<div class="side-ordner">${ikon('ordner', 17)}<div class="side-ordner-text">${name}<span>Abgleich braucht Schreibrecht</span></div><button class="btn sm primary" data-action="abgleich-erlauben">Erlauben</button></div>`;
   }
   // Verbunden und lesbar: Name und Stand stehen am Knopf unten links (sidebarKonto in menues.js)
   return '';
@@ -5855,7 +6308,7 @@ function karteLaden() {
 }
 
 /** Eigene Eingaben werden immer gemerkt (unabhängig von „Dateien merken“) und lassen sich als Sicherung exportieren. */
-function karteSpeichern() {
+function karteSpeichern({ abgleich = true } = {}) {
   const geo = state.karte.geo;
   if (Object.keys(geo).length > KARTE_MAX_GEMERKT) {
     // Nur Suchergebnisse der geladenen Objekte behalten
@@ -5865,6 +6318,7 @@ function karteSpeichern() {
   }
   lsSet(LS_ADRESSEN, JSON.stringify(state.karte.adressen));
   lsSet(LS_GEO, JSON.stringify(geo));
+  if (abgleich && typeof abgleichPlanen === 'function') abgleichPlanen();
 }
 
 /* ---------- Standort eines Objekts ---------- */
@@ -6530,6 +6984,7 @@ addEventListener('resize', spaltenmenueNachziehen);
 /*
  * ImmoInvest Viewer – eigene Eingaben je Objekt: Status, Termin, Notiz; Sicherung aller eigenen Eingaben
  *
+ * Die Objektakte (Schritte, Checkliste, Besichtigung, Kontakte, Verlauf) steht in src/oberflaeche/akte.js.
  * Status, Termin und Notiz gelten je Objektschlüssel, also auch für neue Revisionen desselben Inserats. Sie
  * werden immer in diesem Browser gemerkt (localStorage), unabhängig von „Dateien merken“, und ändern die
  * Analyse-Dateien nicht. Die Sicherungsdatei enthält zusätzlich Adressnachträge und Kartenpunkte und lässt sich
@@ -6551,6 +7006,7 @@ function notizenLaden() {
 }
 const notizenSpeichern = () => {
   if (!lsSet(LS_NOTIZEN, JSON.stringify(state.notizen))) toast('Notizen konnten im Browser nicht gespeichert werden.');
+  abgleichPlanen();
 };
 const notizVon = d => (d && d.key ? state.notizen[d.key] || null : null);
 
@@ -6571,7 +7027,7 @@ const kurzDatum = iso => `${iso.slice(8, 10)}.${iso.slice(5, 7)}.`;
 function statusZelle(d) {
   const n = notizVon(d), st = n?.status || '';
   return `<td class="cell-status"><div class="status-zelle"><select class="status-wahl ${STATUS_FARBE[st] || ''}" data-status="${d.uid}" aria-label="Mein Status für #${d.num}">${statusOptionen(st)}</select>
-    ${n?.termin ? `<span class="status-termin" title="Termin am ${esc(fmtDate(n.termin))}">${esc(kurzDatum(n.termin))}</span>` : ''}${n?.notiz ? `<span class="status-notiz" data-tip="${esc(n.notiz.slice(0, 400))}" aria-label="Notiz vorhanden">✎</span>` : ''}</div></td>`;
+    ${n?.termin ? `<span class="status-termin" title="Termin am ${esc(fmtDate(n.termin))}">${esc(kurzDatum(n.termin))}</span>` : ''}${n?.notiz ? `<span class="status-notiz" data-tip="${esc(n.notiz.slice(0, 400))}" aria-label="Notiz vorhanden">✎</span>` : ''}${akteHinweis(d)}</div></td>`;
 }
 
 /** Kurzform für Karten (Handy) und Listen. */
@@ -6625,10 +7081,11 @@ document.addEventListener('visibilitychange', () => { if (document.visibilitySta
 
 /* ---------- Sicherung ---------- */
 function eingabenZahl() {
-  return Object.keys(state.notizen).length + Object.keys(state.karte.adressen).length;
+  return Object.keys(state.notizen).length + Object.keys(state.karte.adressen).length + Object.keys(state.akten).length;
 }
 function eingabenSichern() {
-  const dok = RK.eingaben.exportiere({ notizen: state.notizen, adressen: state.karte.adressen });
+  akteJetzt();
+  const dok = RK.eingaben.exportiere({ notizen: state.notizen, adressen: state.karte.adressen, akten: state.akten });
   download(`immoviewer_eingaben_${today()}.json`, JSON.stringify(dok, null, 2), 'application/json');
 }
 
@@ -6639,16 +7096,694 @@ function eingabenImportDokument(parsed, name) {
   if (!imp.ok) { openDialog(dlgHead('Sicherung nicht übernommen') + `<p style="margin-top:0"><code>${esc(name)}</code>: ${esc(imp.fehler.join(' '))}</p>`); return true; }
   const n = RK.eingaben.zusammenfuehren(state.notizen, imp.notizen, 'notizen');
   const a = RK.eingaben.zusammenfuehren(state.karte.adressen, imp.adressen, 'adressen');
+  const ak = RK.akte.mischeSammlung(state.akten, imp.akten);
   state.notizen = n.werte;
   state.karte.adressen = a.werte;
+  state.akten = ak.werte;
   notizenSpeichern();
   karteSpeichern();
+  aktenSpeichern();
   const zeile = (t, z) => `<li>${t}: ${z.neu} neu, ${z.ersetzt} aktualisiert, ${z.gleich} unverändert${z.behalten ? `, ${z.behalten} hier jünger und behalten` : ''}</li>`;
   openDialog(dlgHead('Sicherung übernommen') + `<p style="margin-top:0"><code>${esc(name)}</code> wurde mit den Eingaben in diesem Browser zusammengeführt. Nichts wurde gelöscht.</p>
-    <ul>${zeile('Status und Notizen', n.zahl)}${zeile('Adressen und Kartenpunkte', a.zahl)}</ul>${imp.verworfen ? `<p class="fine">${imp.verworfen} ungültige Einträge wurden übersprungen.</p>` : ''}
+    <ul>${zeile('Status und Notizen', n.zahl)}${zeile('Adressen und Kartenpunkte', a.zahl)}<li>Objektakten (Checklisten, Besichtigung, Kontakte, Verlauf): ${ak.zahl.neu} neu, ${ak.zahl.geaendert} zusammengeführt, ${ak.zahl.gleich} unverändert. Fotos sind nicht Teil der Sicherung.</li></ul>${imp.verworfen ? `<p class="fine">${imp.verworfen} ungültige Einträge wurden übersprungen.</p>` : ''}
     <div class="btn-row" style="justify-content:flex-end;margin-bottom:0"><button class="btn primary" data-action="close-dlg">OK</button></div>`);
   render();
   return true;
+}
+</script>
+<script>/* src/oberflaeche/akte.js */
+/*
+ * ImmoInvest Viewer – Objektakte: die eigene Arbeit an einem Objekt bis zum Kauf
+ *
+ * Die Objektansicht ist in Bereiche gegliedert (objektReiter): Überblick, Prüfung, Besichtigung, Kontakt, Analyse
+ * (die importierte Bewertung, unverändert) und Rechnung (mit dem eigenen Profil). Welcher Bereich offen ist, steht
+ * in state.detailModus.
+ *
+ *   Überblick     Mein Stand, Schritte bis zum Kauf, Kurzstand von Prüfung, Kontakt und Besichtigung, Urteil der Analyse
+ *   Prüfung       Checkliste je Objektart (Vorlage aus dem Rechenkern) mit Stand und Notiz je Punkt, eigene Punkte,
+ *                 offene Punkte aus der Analyse zum Übernehmen
+ *   Besichtigung  Datum, Räume mit Zustand und Notiz, Mängel, Fotos (verkleinert, in IndexedDB)
+ *   Kontakt       Ansprechpartner, Verlauf der Kommunikation mit Wiedervorlage, Textvorlagen zum Kopieren
+ *
+ * Gespeichert wird je Objektschlüssel in state.akten (localStorage), also auch für neue Revisionen desselben
+ * Inserats. Die Sicherungsdatei und der Abgleich über den Ablageordner (abgleich.js) nehmen die Akten mit; Fotos
+ * liegen getrennt in IndexedDB bzw. als Bilddateien im Ablageordner. Prüfen und Zusammenführen: Rechenkern akte.js.
+ *
+ * Klassisches Skript; nutzt state, esc, info, ikon, render … des Hauptskripts erst zur Laufzeit.
+ */
+'use strict';
+
+const LS_AKTEN = 'immoviewer.v1.akten';
+const AKTE_REITER = [['ueberblick', 'Überblick'], ['pruefung', 'Prüfung'], ['besichtigung', 'Besichtigung'], ['kontakt', 'Kontakt'], ['analyse', 'Analyse'], ['persoenlich', 'Rechnung']];
+// Nur Anzeige, nicht gespeichert: zugeklappte Gruppen, aufgeklappte Notizfelder, „nur offene“
+const akteUi = { zu: new Set(), notiz: new Set(), nurOffen: false };
+
+function aktenLaden() {
+  try { state.akten = RK.akte.pruefeSammlung(JSON.parse(lsGet(LS_AKTEN) || '{}')); } catch { state.akten = {}; }
+}
+function aktenSpeichern({ abgleich = true } = {}) {
+  if (!lsSet(LS_AKTEN, JSON.stringify(state.akten))) toast('Die Objektakte konnte im Browser nicht gespeichert werden.');
+  if (abgleich) abgleichPlanen();
+}
+const akteVon = d => (d && d.key && state.akten[d.key]) || RK.akte.pruefe(null);
+/** Vorlage der Checkliste: die gewählte, sonst der Vorschlag aus Objektart und Vermietungsstatus der Analyse. */
+const akteVorlage = d => (akteVon(d).vorlage || {}).id || RK.akte.vorlageVorschlag(d.data);
+const akteStand = d => RK.akte.stand(akteVon(d), akteVorlage(d), today());
+const akteId = () => `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+const objektTab = () => (AKTE_REITER.some(([id]) => id === state.detailModus) ? state.detailModus : 'ueberblick');
+
+/** Akte eines Objekts ändern: fn(akte, zeitstempel) bearbeitet eine Kopie; danach prüfen, speichern, abgleichen. */
+function akteAendern(d, fn) {
+  if (!d || !d.key) return;
+  const a = RK.akte.pruefe(state.akten[d.key]);
+  fn(a, new Date().toISOString());
+  const neu = RK.akte.pruefe(a);
+  if (RK.akte.leer(neu)) delete state.akten[d.key]; else state.akten[d.key] = neu;
+  aktenSpeichern();
+}
+const akteEintrag = (liste, id) => liste.find(e => e.id === id && !e.weg);
+
+/* ---------- Texteingaben gebündelt speichern, ohne neu zu zeichnen ---------- */
+const akteWartend = new Map();
+let akteTimer = null;
+function akteSpaeter(schluessel, fn) {
+  akteWartend.set(schluessel, fn);
+  clearTimeout(akteTimer);
+  akteTimer = setTimeout(akteJetzt, 400);
+}
+function akteJetzt() {
+  clearTimeout(akteTimer);
+  const offen = [...akteWartend.values()];
+  akteWartend.clear();
+  for (const fn of offen) fn();
+}
+addEventListener('pagehide', akteJetzt);
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') akteJetzt(); });
+
+/* =====================================================================
+   Reiter und Rahmen
+   ===================================================================== */
+function objektReiter(doc, tab) {
+  const s = akteStand(doc);
+  const marke = {
+    pruefung: s.pruefung.problem ? `<span class="reiter-marke krit" title="${s.pruefung.problem} Problem${s.pruefung.problem === 1 ? '' : 'e'} vermerkt">${s.pruefung.problem}</span>` : '',
+    kontakt: s.faellig ? '<span class="reiter-marke warn" title="Wiedervorlage fällig">!</span>' : '',
+    besichtigung: s.maengel ? `<span class="reiter-marke" title="${s.maengel} Mängel notiert">${s.maengel}</span>` : '',
+  };
+  return `<div class="modus-schalter objekt-reiter no-print" role="tablist" aria-label="Bereiche des Objekts">${AKTE_REITER.map(([id, t]) => `<button role="tab" aria-selected="${tab === id}" class="${tab === id ? 'aktiv' : ''}" data-action="objekt-tab" data-tab="${id}"${id === 'persoenlich' ? ' title="Berechnung mit deinem Profil"' : ''}>${t}${marke[id] || ''}</button>`).join('')}</div>`;
+}
+
+/** Inhalt der vier Akten-Bereiche; „Analyse“ und „Rechnung“ zeichnet viewDetail() im Hauptskript. */
+function akteBereich(doc, tab) {
+  const inhalt = tab === 'pruefung' ? aktePruefung(doc) : tab === 'besichtigung' ? akteBesichtigung(doc) : tab === 'kontakt' ? akteKontakt(doc) : akteUeberblick(doc);
+  return `<div id="akteInhalt" class="akte akte-${tab}" data-uid="${doc.uid}">${inhalt}</div>`;
+}
+
+/** Nur den Akten-Bereich und die Reiter neu zeichnen – Scrollposition und Tabelle bleiben, wie sie sind. */
+function akteZeichnen() {
+  const box = document.getElementById('akteInhalt'), doc = getDoc(state.current), tab = objektTab();
+  if (!box || !doc || box.dataset.uid !== doc.uid || !['ueberblick', 'pruefung', 'besichtigung', 'kontakt'].includes(tab)) return render();
+  const fokus = document.activeElement && box.contains(document.activeElement) ? document.activeElement.dataset.fk : null;
+  // Noch nicht abgeschickte Eingaben (neuer Eintrag, neuer Mangel, eigener Punkt) überstehen das Neuzeichnen
+  const offen = [...box.querySelectorAll('[data-eintrag], [data-mangel], [data-akte-neu]')].map(f => [f.dataset.eintrag ? `[data-eintrag="${f.dataset.eintrag}"]` : f.dataset.mangel ? `[data-mangel="${f.dataset.mangel}"]` : `[data-akte-neu="${f.dataset.akteNeu}"]`, f.value]);
+  box.outerHTML = akteBereich(doc, tab);
+  for (const [sel, wert] of offen) { const f = document.querySelector(`#akteInhalt ${sel}`); if (f && [...(f.options || [])].every(o => o.value !== wert) && f.tagName === 'SELECT') continue; if (f) f.value = wert; }
+  const reiter = document.querySelector('.objekt-reiter');
+  if (reiter) reiter.outerHTML = objektReiter(doc, tab);
+  fotosEinhaengen();
+  if (fokus) document.querySelector(`#akteInhalt [data-fk="${CSS.escape(fokus)}"]`)?.focus({ preventScroll: true });
+}
+
+const akteKopf = (titel, hinweis, rechts = '') => `<div class="akte-kopf"><h3>${titel}${hinweis ? info(hinweis, titel) : ''}</h3>${rechts}</div>`;
+const akteBalken = (teil, gesamt) => `<span class="akte-balken" role="img" aria-label="${teil} von ${gesamt}"><i style="width:${gesamt ? Math.round(100 * teil / gesamt) : 0}%"></i></span>`;
+
+/* =====================================================================
+   Überblick
+   ===================================================================== */
+function akteUeberblick(doc) {
+  const a = akteVon(doc), s = akteStand(doc), u = doc.uid;
+  const schritt = ([id, titel, hinweis]) => {
+    const e = a.schritte[id] || {};
+    return `<li class="schritt${e.erledigt ? ' erledigt' : ''}"><label class="schritt-wahl"><input type="checkbox" data-akte="schritt" data-id="${id}" data-uid="${u}" data-fk="s:${id}"${e.erledigt ? ' checked' : ''}><span>${titel}</span></label>${info(hinweis, titel)}
+      ${e.erledigt ? `<input type="date" class="schritt-datum" data-akte="schritt-datum" data-id="${id}" data-uid="${u}" data-fk="sd:${id}" value="${esc(e.datum || '')}" aria-label="Datum: ${titel}">` : ''}</li>`;
+  };
+  const kachel = (tab, titel, haupt, neben, klasse = '') => `<button type="button" class="akte-kachel${klasse ? ' ' + klasse : ''}" data-action="objekt-tab" data-tab="${tab}"><span class="akte-kachel-titel">${titel}</span><b>${haupt}</b><span>${neben}</span></button>`;
+  const p = s.pruefung, k = s.letzterKontakt;
+  const kanal = k ? (RK.akte.KANAELE.find(x => x[0] === k.kanal) || ['', ''])[1] : '';
+  return `<div class="akte-kacheln">
+      ${kachel('pruefung', 'Prüfung', `${p.gesamt - p.offen} von ${p.gesamt} geprüft`, p.problem ? `${p.problem} Problem${p.problem === 1 ? '' : 'e'} vermerkt` : p.gesamt === p.offen ? 'noch nicht begonnen' : 'keine Probleme vermerkt', p.problem ? 'krit' : '')}
+      ${kachel('kontakt', 'Kontakt', k ? `Zuletzt ${esc(fmtDate(k.datum))}${kanal ? ` · ${esc(kanal)}` : ''}` : 'Noch kein Kontakt', s.wiedervorlage ? `Wiedervorlage ${esc(fmtDate(s.wiedervorlage))}${s.faellig ? ' – fällig' : ''}` : 'keine Wiedervorlage', s.faellig ? 'warn' : '')}
+      ${kachel('besichtigung', 'Besichtigung', s.besichtigung ? `Am ${esc(fmtDate(s.besichtigung))}` : 'Noch nicht besichtigt', `${s.maengel} ${s.maengel === 1 ? 'Mangel' : 'Mängel'} · ${s.fotos} Foto${s.fotos === 1 ? '' : 's'}`)}
+    </div>
+    <section class="card akte-karte">
+      ${akteKopf('Schritte bis zum Kauf', 'Hake ab, was erledigt ist. Das Datum wird beim Abhaken auf heute gesetzt und lässt sich ändern. „Mein Status“ in der Tabelle bleibt davon unabhängig.', `<span class="akte-zahl">${s.schritte.erledigt} von ${s.schritte.gesamt}</span>`)}
+      ${akteBalken(s.schritte.erledigt, s.schritte.gesamt)}
+      <ol class="schritte">${RK.akte.SCHRITTE.map(schritt).join('')}</ol>
+    </section>`;
+}
+
+/* =====================================================================
+   Prüfung
+   ===================================================================== */
+/** Offene Punkte aus der Analyse (nächste Schritte, fehlende Unterlagen), die noch nicht übernommen sind. */
+function akteAusAnalyse(doc) {
+  const schon = new Set(RK.akte.lebend(akteVon(doc).eigene).map(e => e.quelle).filter(Boolean));
+  const kurz = t => String(t ?? '').trim().slice(0, 200);
+  const ns = doc.ctx.list('naechste_schritte').slice().sort((x, y) => (x.prioritaet ?? 99) - (y.prioritaet ?? 99)).map(n => ({ quelle: String(n.id ?? ''), text: kurz(n.aufgabe), zusatz: n.benoetigter_nachweis ? `Nachweis: ${n.benoetigter_nachweis}` : '' }));
+  const du = doc.ctx.list('fehlende_unterlagen').map(x => ({ quelle: String(x.id ?? ''), text: kurz(x.bezeichnung), zusatz: x.anzufordern_bei ? `Anfordern bei: ${x.anzufordern_bei}` : '' }));
+  return [...ns, ...du].filter(x => /^[A-Za-z0-9_:.-]{1,60}$/.test(x.quelle) && x.text && !schon.has(x.quelle));
+}
+
+function aktePruefung(doc) {
+  const a = akteVon(doc), vorlage = akteVorlage(doc), s = akteStand(doc).pruefung, u = doc.uid;
+  const liste = RK.akte.pruefliste(a, vorlage), offen = akteAusAnalyse(doc);
+  const wahl = (p, stand, zeichen, name) => `<button type="button" class="pp-knopf pp-${stand}${p.stand === stand ? ' an' : ''}" data-action="akte-punkt" data-id="${esc(p.id)}" data-stand="${stand}" data-uid="${u}" data-fk="p:${esc(p.id)}:${stand}" aria-pressed="${p.stand === stand}" aria-label="${name}" title="${name}">${zeichen}</button>`;
+  const punkt = p => {
+    const notizAuf = !!p.notiz || akteUi.notiz.has(p.id);
+    return `<li class="pp${p.stand ? ' stand-' + p.stand : ''}">
+      <div class="pp-zeile"><span class="pp-text">${esc(p.text)}${p.eigen ? `<span class="tag">${p.quelle ? `Analyse ${esc(p.quelle)}` : 'eigener Punkt'}</span>` : ''}</span>
+        <div class="pp-wahl" role="group" aria-label="Stand: ${esc(p.text)}">${wahl(p, 'ok', '✓', 'In Ordnung')}${wahl(p, 'problem', '!', 'Problem')}${wahl(p, 'entfaellt', '–', 'Entfällt')}</div>
+        <button type="button" class="icon-knopf pp-notiz-knopf${p.notiz ? ' hat' : ''}" data-action="akte-notiz-auf" data-id="${esc(p.id)}" data-fk="pn:${esc(p.id)}" aria-expanded="${notizAuf}" aria-label="Notiz" title="Notiz">✎</button>
+        ${p.eigen ? `<button type="button" class="icon-knopf" data-action="akte-eigen-weg" data-id="${esc(p.id)}" data-uid="${u}" aria-label="Eigenen Punkt entfernen" title="Entfernen">×</button>` : ''}</div>
+      ${notizAuf ? `<textarea class="pp-notiz" rows="1" data-akte="punkt-notiz" data-id="${esc(p.id)}" data-uid="${u}" data-fk="pt:${esc(p.id)}" maxlength="4000" placeholder="Notiz zu diesem Punkt" aria-label="Notiz: ${esc(p.text)}">${esc(p.notiz)}</textarea>` : ''}
+    </li>`;
+  };
+  const gruppe = ([id, titel]) => {
+    const alle = liste.filter(p => p.gruppe === id);
+    if (!alle.length && id === 'analyse') return '';
+    const zeigen = akteUi.nurOffen ? alle.filter(p => !p.stand) : alle;
+    return `<details class="card akte-gruppe" data-gruppe="${id}"${akteUi.zu.has(id) ? '' : ' open'}><summary><span>${titel}</span><span class="akte-zahl">${alle.filter(p => p.stand).length} von ${alle.length}</span></summary>
+      <ul class="pp-liste">${zeigen.map(punkt).join('') || '<li class="pp-leer">Alle Punkte dieser Gruppe sind bearbeitet.</li>'}
+        <li class="pp-neu"><input type="text" maxlength="200" placeholder="Eigenen Punkt ergänzen" aria-label="Eigener Punkt für ${titel}" data-akte-neu="${id}" data-fk="neu:${id}"><button type="button" class="btn sm" data-action="akte-eigen-neu" data-gruppe="${id}" data-uid="${u}">Hinzufügen</button></li></ul>
+    </details>`;
+  };
+  return `<div class="akte-leiste">
+      <label class="akte-feld"><span>Checkliste für</span><select data-akte="vorlage" data-uid="${u}" data-fk="vorlage">${RK.akte.VORLAGEN.map(([id, t]) => `<option value="${id}"${id === vorlage ? ' selected' : ''}>${t}</option>`).join('')}</select></label>
+      ${a.vorlage ? '' : info('Die Vorlage ist ein Vorschlag aus Objektart und Vermietungsstatus der Analyse. Wähle eine andere, wenn sie nicht passt.', 'Vorlage der Checkliste')}
+      <div class="akte-fortschritt">${akteBalken(s.gesamt - s.offen, s.gesamt)}<span>${s.gesamt - s.offen} von ${s.gesamt} geprüft${s.problem ? ` · <b class="krit">${s.problem} Problem${s.problem === 1 ? '' : 'e'}</b>` : ''}</span></div>
+      <label class="check"><input type="checkbox" data-akte="nur-offen" data-fk="nur-offen"${akteUi.nurOffen ? ' checked' : ''}> Nur offene</label>
+    </div>
+    ${offen.length ? `<section class="card akte-karte akte-analyse">${akteKopf('Aus der Analyse offen', 'Nächste Schritte und fehlende Unterlagen, die die Analyse nennt. „Übernehmen“ macht daraus einen Punkt deiner Checkliste; die Analyse selbst bleibt unverändert.', `<button type="button" class="btn sm" data-action="akte-uebernehmen-alle" data-uid="${u}">Alle übernehmen</button>`)}
+      <ul class="akte-vorschlaege">${offen.map(x => `<li><div><b>${esc(x.text)}</b>${x.zusatz ? `<span>${esc(x.zusatz)}</span>` : ''}</div><button type="button" class="btn sm" data-action="akte-uebernehmen" data-quelle="${esc(x.quelle)}" data-uid="${u}">Übernehmen</button></li>`).join('')}</ul></section>` : ''}
+    ${RK.akte.GRUPPEN.map(gruppe).join('')}`;
+}
+
+/* =====================================================================
+   Besichtigung
+   ===================================================================== */
+const fotoKachel = f => `<button type="button" class="foto" data-action="akte-foto-zeigen" data-id="${esc(f.id)}" aria-label="Foto ansehen${f.name ? `: ${esc(f.name)}` : ''}"><img data-foto="${esc(f.id)}" alt="" loading="lazy"></button>`;
+const fotoKnopf = (u, zu, text = 'Foto') => `<label class="btn sm foto-knopf">${ikon('kamera', 16)}<span>${text}</span><input type="file" accept="image/*" capture="environment" multiple hidden data-akte="foto" data-zu="${esc(zu)}" data-uid="${u}"></label>`;
+
+function akteBesichtigung(doc) {
+  const a = akteVon(doc), u = doc.uid, b = a.besichtigung || {};
+  const raeume = RK.akte.lebend(a.raeume), maengel = RK.akte.lebend(a.maengel), fotos = RK.akte.lebend(a.fotos);
+  const zustand = (r, z, text) => `<button type="button" class="${r.zustand === z ? 'aktiv' : ''}" data-action="akte-zustand" data-id="${esc(r.id)}" data-zustand="${z}" data-uid="${u}" data-fk="z:${esc(r.id)}:${z}" aria-pressed="${r.zustand === z}">${text}</button>`;
+  const raum = r => {
+    const bilder = fotos.filter(f => f.zu === `raum:${r.id}`);
+    return `<section class="card raum${r.zustand ? ' zustand-' + r.zustand : ''}">
+      <div class="raum-kopf"><input type="text" class="raum-name" maxlength="200" data-akte="raum-name" data-id="${esc(r.id)}" data-uid="${u}" data-fk="rn:${esc(r.id)}" value="${esc(r.name)}" aria-label="Name des Raums">
+        <div class="segment" role="group" aria-label="Zustand: ${esc(r.name)}">${zustand(r, 'gut', 'gut')}${zustand(r, 'mittel', 'mittel')}${zustand(r, 'schlecht', 'schlecht')}</div>
+        <button type="button" class="icon-knopf" data-action="akte-raum-weg" data-id="${esc(r.id)}" data-uid="${u}" aria-label="${esc(r.name)} entfernen" title="Raum entfernen">×</button></div>
+      <textarea rows="2" maxlength="4000" data-akte="raum-notiz" data-id="${esc(r.id)}" data-uid="${u}" data-fk="rt:${esc(r.id)}" placeholder="Was fällt auf? Zustand, Ausstattung, Fragen" aria-label="Notiz: ${esc(r.name)}">${esc(r.notiz)}</textarea>
+      <div class="foto-reihe">${bilder.map(fotoKachel).join('')}${fotoKnopf(u, `raum:${r.id}`)}</div>
+    </section>`;
+  };
+  const allgemein = fotos.filter(f => f.zu === 'allgemein');
+  return `<section class="card akte-karte">
+      ${akteKopf('Besichtigung', 'Für den Termin vor Ort, auch auf dem Tablet: Räume durchgehen, Zustand antippen, Notizen und Fotos festhalten. Fotos werden verkleinert und bleiben auf diesem Gerät; mit dem Abgleich über den Ablageordner stehen sie auch auf anderen Geräten bereit.')}
+      <div class="akte-raster">
+        <label class="akte-feld"><span>Datum</span><input type="date" data-akte="besichtigung-datum" data-uid="${u}" data-fk="bd" value="${esc(b.datum || '')}"></label>
+        <label class="akte-feld breit"><span>Gesamteindruck</span><textarea rows="2" maxlength="4000" data-akte="besichtigung-notiz" data-uid="${u}" data-fk="bn" placeholder="Wer war dabei, erster Eindruck, was ist zu klären">${esc(b.notiz || '')}</textarea></label>
+      </div>
+      <div class="foto-reihe">${allgemein.map(fotoKachel).join('')}${fotoKnopf(u, 'allgemein', 'Foto allgemein')}</div>
+    </section>
+    <div class="akte-zwischen"><h3>Räume und Bauteile</h3><div class="btn-row">${raeume.length ? '' : `<button type="button" class="btn sm primary" data-action="akte-raeume-vorschlag" data-uid="${u}">Übliche Räume anlegen</button>`}<button type="button" class="btn sm" data-action="akte-raum-neu" data-uid="${u}">${ikon('plus', 16)}Raum</button></div></div>
+    ${raeume.length ? `<div class="raum-liste">${raeume.map(raum).join('')}</div>` : '<p class="akte-leer">Noch keine Räume. „Übliche Räume anlegen“ schlägt eine Liste vor, die du anpassen kannst.</p>'}
+    <section class="card akte-karte">
+      ${akteKopf('Mängel', 'Was repariert oder im Preis berücksichtigt werden muss. Die Schwere hilft beim späteren Sortieren und Verhandeln.', `<span class="akte-zahl">${maengel.length}</span>`)}
+      ${maengel.length ? `<ul class="mangel-liste">${maengel.map(m => { const r = akteEintrag(a.raeume, m.raum); return `<li class="mangel schwere-${esc(m.schwere)}"><span class="mangel-schwere">${esc(m.schwere)}</span><span class="mangel-text">${esc(m.text)}${r ? `<small>${esc(r.name)}</small>` : ''}</span><button type="button" class="icon-knopf" data-action="akte-mangel-weg" data-id="${esc(m.id)}" data-uid="${u}" aria-label="Mangel entfernen" title="Entfernen">×</button></li>`; }).join('')}</ul>` : ''}
+      <div class="mangel-neu"><input type="text" maxlength="400" placeholder="Mangel beschreiben" aria-label="Neuer Mangel" data-mangel="text" data-fk="mt">
+        <select aria-label="Raum" data-mangel="raum"><option value="">ohne Raum</option>${raeume.map(r => `<option value="${esc(r.id)}">${esc(r.name)}</option>`).join('')}</select>
+        <select aria-label="Schwere" data-mangel="schwere">${RK.akte.SCHWEREN.map(([id, t]) => `<option value="${id}"${id === 'mittel' ? ' selected' : ''}>${t}</option>`).join('')}</select>
+        <button type="button" class="btn sm" data-action="akte-mangel-neu" data-uid="${u}">Hinzufügen</button></div>
+    </section>`;
+}
+
+/* ---------- Fotos: verkleinert in IndexedDB (Schlüssel „foto:<id>“), Anzeige über Objekt-URLs ---------- */
+const FOTO_MAX_PX = 1600;
+const fotoUrls = new Map();
+const fotoLesen = id => idbKv('readonly', st => st.get(`foto:${id}`));
+const fotoSchreiben = (id, blob) => idbKv('readwrite', st => st.put(blob, `foto:${id}`));
+const fotoEntfernen = id => idbKv('readwrite', st => st.delete(`foto:${id}`));
+
+async function fotoUrl(id) {
+  if (fotoUrls.has(id)) return fotoUrls.get(id);
+  let blob = await fotoLesen(id);
+  // Auf diesem Gerät nicht vorhanden: aus dem Ablageordner holen und hier merken
+  if (!(blob instanceof Blob)) { blob = await abgleichFotoLesen(id); if (blob) fotoSchreiben(id, blob); }
+  if (!(blob instanceof Blob)) return null;
+  const url = URL.createObjectURL(blob);
+  fotoUrls.set(id, url);
+  return url;
+}
+/** Nach dem Zeichnen: Bilder einsetzen; fehlt ein Foto auf diesem Gerät, zeigt die Kachel das an. */
+function fotosEinhaengen() {
+  document.querySelectorAll('img[data-foto]:not([src])').forEach(async img => {
+    const url = await fotoUrl(img.dataset.foto);
+    if (url) img.src = url; else { const k = img.closest('.foto'); if (k) { k.classList.add('fehlt'); k.title = 'Dieses Foto liegt auf einem anderen Gerät.'; } }
+  });
+}
+async function fotoVerkleinern(datei) {
+  try {
+    const bild = await createImageBitmap(datei);
+    const f = Math.min(1, FOTO_MAX_PX / Math.max(bild.width, bild.height));
+    const c = document.createElement('canvas');
+    c.width = Math.max(1, Math.round(bild.width * f)); c.height = Math.max(1, Math.round(bild.height * f));
+    c.getContext('2d').drawImage(bild, 0, 0, c.width, c.height);
+    return await new Promise(fertig => c.toBlob(fertig, 'image/jpeg', 0.82));
+  } catch { return null; }
+}
+async function fotosAufnehmen(doc, zu, dateien) {
+  let n = 0;
+  for (const datei of [...dateien].slice(0, 20)) {
+    const blob = await fotoVerkleinern(datei);
+    if (!blob) { toast(`„${datei.name}“ ist kein lesbares Bild.`); continue; }
+    const id = akteId();
+    await fotoSchreiben(id, blob);
+    abgleichFotoSchreiben(id, blob);
+    akteAendern(doc, (a, t) => a.fotos.push({ id, zu, name: datei.name || '', t }));
+    n++;
+  }
+  if (n) akteZeichnen();
+}
+async function fotoZeigen(id) {
+  const url = await fotoUrl(id);
+  if (!url) return toast('Dieses Foto liegt auf einem anderen Gerät.');
+  openDialog(dlgHead('Foto') + `<img class="foto-gross" src="${url}" alt="Foto der Besichtigung">
+    <div class="btn-row" style="justify-content:space-between;margin-bottom:0"><button type="button" class="btn" data-action="akte-foto-weg" data-id="${esc(id)}">Foto löschen</button><button type="button" class="btn primary" data-action="close-dlg">Schließen</button></div>`);
+  document.getElementById('dlg').classList.add('breit');
+}
+
+/* =====================================================================
+   Kontakt
+   ===================================================================== */
+function akteKontakt(doc) {
+  const a = akteVon(doc), u = doc.uid, heute = today();
+  const kontakte = RK.akte.lebend(a.kontakte);
+  const verlauf = RK.akte.lebend(a.verlauf).sort((x, y) => (y.datum + (y.t || '')).localeCompare(x.datum + (x.t || '')));
+  const feld = (k, name, text, typ = 'text', extra = '') => `<label class="akte-feld"><span>${text}</span><input type="${typ}" maxlength="200" data-akte="kontakt-feld" data-feld="${name}" data-id="${esc(k.id)}" data-uid="${u}" data-fk="k:${esc(k.id)}:${name}" value="${esc(k[name] || '')}"${extra}></label>`;
+  const karte = k => `<section class="card kontakt">
+      <div class="kontakt-kopf"><select data-akte="kontakt-feld" data-feld="rolle" data-id="${esc(k.id)}" data-uid="${u}" data-fk="k:${esc(k.id)}:rolle" aria-label="Rolle">${RK.akte.ROLLEN.map(([id, t]) => `<option value="${id}"${k.rolle === id ? ' selected' : ''}>${t}</option>`).join('')}</select>
+        <span class="kontakt-wege">${k.telefon ? `<a class="btn sm" href="tel:${esc(k.telefon.replace(/[^+\d]/g, ''))}">Anrufen</a>` : ''}${/^[^@\s]+@[^@\s]+$/.test(k.email) ? `<a class="btn sm" href="mailto:${esc(k.email)}">E-Mail</a>` : ''}</span>
+        <button type="button" class="icon-knopf" data-action="akte-kontakt-weg" data-id="${esc(k.id)}" data-uid="${u}" aria-label="Kontakt entfernen" title="Kontakt entfernen">×</button></div>
+      <div class="akte-raster">${feld(k, 'name', 'Name')}${feld(k, 'firma', 'Firma')}${feld(k, 'telefon', 'Telefon', 'tel', ' inputmode="tel"')}${feld(k, 'email', 'E-Mail', 'email')}</div>
+    </section>`;
+  const name = id => { const k = akteEintrag(a.kontakte, id); return k ? k.name || k.firma || (RK.akte.ROLLEN.find(r => r[0] === k.rolle) || ['', ''])[1] : ''; };
+  const eintrag = e => {
+    const kanal = (RK.akte.KANAELE.find(x => x[0] === e.kanal) || ['', ''])[1], wer = name(e.kontakt);
+    const faellig = e.wiedervorlage && !e.erledigt && e.wiedervorlage <= heute;
+    return `<li class="eintrag"><div class="eintrag-kopf"><b>${esc(fmtDate(e.datum))}</b><span class="tag">${esc(kanal)}</span><span>${e.richtung === 'ein' ? 'von' : 'an'} ${esc(wer || 'ohne Kontakt')}</span>
+        <button type="button" class="icon-knopf" data-action="akte-eintrag-weg" data-id="${esc(e.id)}" data-uid="${u}" aria-label="Eintrag entfernen" title="Eintrag entfernen">×</button></div>
+      ${e.text ? `<p>${esc(e.text)}</p>` : ''}
+      ${e.wiedervorlage ? `<label class="check eintrag-wv${faellig ? ' faellig' : ''}${e.erledigt ? ' erledigt' : ''}"><input type="checkbox" data-akte="wv-erledigt" data-id="${esc(e.id)}" data-uid="${u}" data-fk="wv:${esc(e.id)}"${e.erledigt ? ' checked' : ''}> Wiedervorlage ${esc(fmtDate(e.wiedervorlage))}${faellig ? ' – fällig' : ''}${e.erledigt ? ' – erledigt' : ''}</label>` : ''}</li>`;
+  };
+  return `<section class="card akte-karte">
+      ${akteKopf('Neuer Eintrag', 'Halte fest, wann du wen wie erreicht hast und was vereinbart wurde. Mit einer Wiedervorlage erinnert dich die Tabelle (Spalte „Mein Status“) und der Überblick an den nächsten Schritt.')}
+      <div class="akte-raster eintrag-neu">
+        <label class="akte-feld"><span>Datum</span><input type="date" data-eintrag="datum" data-fk="ed" value="${heute}"></label>
+        <label class="akte-feld"><span>Weg</span><select data-eintrag="kanal">${RK.akte.KANAELE.map(([id, t]) => `<option value="${id}">${t}</option>`).join('')}</select></label>
+        <label class="akte-feld"><span>Richtung</span><select data-eintrag="richtung"><option value="aus">von mir</option><option value="ein">an mich</option></select></label>
+        <label class="akte-feld"><span>Kontakt</span><select data-eintrag="kontakt"><option value="">ohne</option>${kontakte.map(k => `<option value="${esc(k.id)}">${esc(name(k.id))}</option>`).join('')}</select></label>
+        <label class="akte-feld breit"><span>Was wurde besprochen oder geschickt?</span><textarea rows="2" maxlength="4000" data-eintrag="text" data-fk="et" placeholder="z. B. Unterlagen angefordert, Besichtigung für Freitag vereinbart"></textarea></label>
+        <label class="akte-feld"><span>Wiedervorlage</span><input type="date" data-eintrag="wiedervorlage" data-fk="ew"></label>
+        <div class="akte-feld unten"><button type="button" class="btn primary" data-action="akte-eintrag-neu" data-uid="${u}">Eintragen</button></div>
+      </div>
+    </section>
+    <div class="akte-zwischen"><h3>Verlauf</h3><span class="akte-zahl">${verlauf.length} Eintr${verlauf.length === 1 ? 'ag' : 'äge'}</span></div>
+    ${verlauf.length ? `<ul class="card verlauf">${verlauf.map(eintrag).join('')}</ul>` : '<p class="akte-leer">Noch kein Eintrag.</p>'}
+    <div class="akte-zwischen"><h3>Ansprechpartner</h3><button type="button" class="btn sm" data-action="akte-kontakt-neu" data-uid="${u}">${ikon('plus', 16)}Kontakt</button></div>
+    ${kontakte.length ? `<div class="kontakt-liste">${kontakte.map(karte).join('')}</div>` : '<p class="akte-leer">Noch kein Ansprechpartner. Makler, Eigentümer, Verwaltung, Bank und Notar lassen sich hier festhalten.</p>'}
+    <details class="card akte-gruppe akte-texte"><summary><span>Textvorlagen zum Kopieren</span></summary>
+      ${akteTexte(doc).map(([id, titel, text]) => `<div class="akte-text"><div class="akte-kopf"><h4>${titel}</h4><button type="button" class="btn sm" data-action="akte-kopieren" data-vorlage="${id}" data-uid="${u}">Kopieren</button></div><pre>${esc(text)}</pre></div>`).join('')}
+    </details>`;
+}
+
+/** Textvorlagen für die Anfrage beim Anbieter; die Unterlagenliste kommt aus den offenen Punkten der Checkliste. */
+function akteTexte(doc) {
+  const d = doc.data, a = obj(d.angebot);
+  const kennung = [platLabel(a.plattform), a.plattform_id != null ? `ID ${a.plattform_id}` : null, a.anbieter_objektnummer ? `Objektnummer ${a.anbieter_objektnummer}` : null].filter(Boolean).join(', ');
+  const objekt = `„${docTitle(doc)}“${kennung ? ` (${kennung})` : ''}`;
+  const unterlagen = RK.akte.pruefliste(akteVon(doc), akteVorlage(doc)).filter(p => p.gruppe === 'unterlagen' && !p.stand).map(p => `- ${p.text}`);
+  return [
+    ['anfrage', 'Erste Anfrage', `Guten Tag,\n\nich interessiere mich für das Objekt ${objekt}. Ist es noch verfügbar?\n\nBitte senden Sie mir das Exposé mit Grundriss und nennen Sie mir mögliche Termine für eine Besichtigung.\n\nVielen Dank und freundliche Grüße`],
+    ['unterlagen', 'Unterlagen anfordern', `Guten Tag,\n\nvielen Dank für die bisherigen Informationen zum Objekt ${objekt}. Für meine Prüfung bitte ich um folgende Unterlagen:\n\n${unterlagen.join('\n') || '- (alle Unterlagen der Checkliste sind bereits abgehakt)'}\n\nVielen Dank und freundliche Grüße`],
+  ];
+}
+
+/* =====================================================================
+   Tabelle: Hinweis auf die nächste Wiedervorlage in der Spalte „Mein Status“
+   ===================================================================== */
+function akteHinweis(d) {
+  if (!d.key || !state.akten[d.key]) return '';
+  const s = akteStand(d);
+  return s.wiedervorlage ? `<span class="status-wv${s.faellig ? ' faellig' : ''}" title="Wiedervorlage am ${esc(fmtDate(s.wiedervorlage))}${s.faellig ? ' – fällig' : ''}">↻ ${esc(kurzDatum(s.wiedervorlage))}</span>` : '';
+}
+
+/* =====================================================================
+   Ereignisse
+   ===================================================================== */
+/** Klicks; true = behandelt. */
+function akteAktion(action, el) {
+  const doc = getDoc(el.dataset.uid || state.current), id = el.dataset.id;
+  switch (action) {
+    case 'objekt-tab': {
+      akteJetzt();
+      state.detailModus = el.dataset.tab;
+      const fk = `[data-action="objekt-tab"][data-tab="${el.dataset.tab}"]`;
+      render();
+      // Auf ganzer Seite weit unten: zurück zu den Reitern, damit der neue Bereich von oben beginnt
+      const r = document.querySelector('.objekt-reiter');
+      if (r && !objektNeben() && r.getBoundingClientRect().top < 0) r.scrollIntoView({ block: 'start' });
+      document.querySelector(fk)?.focus({ preventScroll: true });
+      return true;
+    }
+    case 'objekt-sprung': {
+      state.detailModus = el.dataset.tab;
+      render();
+      // Kurz warten: Ein schließendes Menü gibt den Fokus an seinen Knopf zurück und würde sonst zurückscrollen
+      setTimeout(() => document.getElementById(el.dataset.target)?.scrollIntoView({ block: 'start' }), 60);
+      return true;
+    }
+    case 'akte-punkt':
+      akteAendern(doc, (a, t) => { const alt = a.punkte[id] || {}; a.punkte[id] = { stand: alt.stand === el.dataset.stand ? null : el.dataset.stand, notiz: alt.notiz || '', t }; });
+      akteZeichnen(); return true;
+    case 'akte-notiz-auf':
+      akteJetzt();
+      akteUi.notiz.has(id) ? akteUi.notiz.delete(id) : akteUi.notiz.add(id);
+      akteZeichnen();
+      document.querySelector(`#akteInhalt [data-fk="pt:${CSS.escape(id)}"]`)?.focus();
+      return true;
+    case 'akte-eigen-neu': {
+      const feld = document.querySelector(`#akteInhalt [data-akte-neu="${el.dataset.gruppe}"]`), text = (feld?.value || '').trim();
+      if (!text) { feld?.focus(); return true; }
+      akteAendern(doc, (a, t) => a.eigene.push({ id: akteId(), gruppe: el.dataset.gruppe, text, t }));
+      feld.value = '';
+      akteZeichnen();
+      document.querySelector(`#akteInhalt [data-akte-neu="${el.dataset.gruppe}"]`)?.focus();
+      return true;
+    }
+    case 'akte-eigen-weg': akteAendern(doc, (a, t) => { const e = akteEintrag(a.eigene, id); if (e) { e.weg = true; e.t = t; } delete a.punkte[id]; }); akteZeichnen(); return true;
+    case 'akte-uebernehmen':
+    case 'akte-uebernehmen-alle': {
+      const wahl = akteAusAnalyse(doc).filter(x => action === 'akte-uebernehmen-alle' || x.quelle === el.dataset.quelle);
+      akteAendern(doc, (a, t) => { for (const x of wahl) a.eigene.push({ id: akteId(), gruppe: 'analyse', text: x.text, quelle: x.quelle, t }); });
+      akteZeichnen();
+      return true;
+    }
+    case 'akte-raeume-vorschlag':
+      akteAendern(doc, (a, t) => { for (const name of RK.akte.RAEUME[akteVorlage(doc) === 'mfh' ? 'mfh' : 'etw']) a.raeume.push({ id: akteId(), name, zustand: null, notiz: '', t }); });
+      akteZeichnen(); return true;
+    case 'akte-raum-neu': {
+      const neu = akteId();
+      akteAendern(doc, (a, t) => a.raeume.push({ id: neu, name: 'Neuer Raum', zustand: null, notiz: '', t }));
+      akteZeichnen();
+      const feld = document.querySelector(`#akteInhalt [data-fk="rn:${neu}"]`);
+      if (feld) { feld.focus(); feld.select(); }
+      return true;
+    }
+    case 'akte-raum-weg': akteJetzt(); akteAendern(doc, (a, t) => { const e = akteEintrag(a.raeume, id); if (e) { e.weg = true; e.t = t; } }); akteZeichnen(); return true;
+    case 'akte-zustand': akteJetzt(); akteAendern(doc, (a, t) => { const e = akteEintrag(a.raeume, id); if (e) { e.zustand = e.zustand === el.dataset.zustand ? null : el.dataset.zustand; e.t = t; } }); akteZeichnen(); return true;
+    case 'akte-mangel-neu': {
+      const wert = n => document.querySelector(`#akteInhalt [data-mangel="${n}"]`)?.value || '';
+      if (!wert('text').trim()) { document.querySelector('#akteInhalt [data-mangel="text"]')?.focus(); return true; }
+      akteAendern(doc, (a, t) => a.maengel.push({ id: akteId(), text: wert('text'), raum: wert('raum') || null, schwere: wert('schwere'), t }));
+      { const f = document.querySelector('#akteInhalt [data-mangel="text"]'); if (f) f.value = ''; }
+      akteZeichnen();
+      document.querySelector('#akteInhalt [data-mangel="text"]')?.focus();
+      return true;
+    }
+    case 'akte-mangel-weg': akteAendern(doc, (a, t) => { const e = akteEintrag(a.maengel, id); if (e) { e.weg = true; e.t = t; } }); akteZeichnen(); return true;
+    case 'akte-foto-zeigen': fotoZeigen(id); return true;
+    case 'akte-foto-weg':
+      document.getElementById('dlg').close();
+      akteAendern(getDoc(state.current), (a, t) => { const e = akteEintrag(a.fotos, id); if (e) { e.weg = true; e.t = t; } });
+      fotoEntfernen(id); abgleichFotoLoeschen(id);
+      if (fotoUrls.has(id)) { URL.revokeObjectURL(fotoUrls.get(id)); fotoUrls.delete(id); }
+      akteZeichnen(); return true;
+    case 'akte-kontakt-neu': {
+      const neu = akteId();
+      akteAendern(doc, (a, t) => a.kontakte.push({ id: neu, rolle: 'makler', name: '', firma: '', telefon: '', email: '', t }));
+      akteZeichnen();
+      document.querySelector(`#akteInhalt [data-fk="k:${neu}:name"]`)?.focus();
+      return true;
+    }
+    case 'akte-kontakt-weg': akteJetzt(); akteAendern(doc, (a, t) => { const e = akteEintrag(a.kontakte, id); if (e) { e.weg = true; e.t = t; } }); akteZeichnen(); return true;
+    case 'akte-eintrag-neu': {
+      const wert = n => document.querySelector(`#akteInhalt [data-eintrag="${n}"]`)?.value || '';
+      if (!wert('text').trim() && !wert('wiedervorlage')) { document.querySelector('#akteInhalt [data-eintrag="text"]')?.focus(); toast('Bitte einen Text oder eine Wiedervorlage eintragen.'); return true; }
+      akteAendern(doc, (a, t) => a.verlauf.push({ id: akteId(), datum: wert('datum') || today(), kanal: wert('kanal'), richtung: wert('richtung'), kontakt: wert('kontakt') || null, text: wert('text'), wiedervorlage: wert('wiedervorlage') || null, erledigt: false, t }));
+      // Das Formular ist abgeschickt: Text und Wiedervorlage leeren, dann neu zeichnen
+      for (const n of ['text', 'wiedervorlage']) { const f = document.querySelector(`#akteInhalt [data-eintrag="${n}"]`); if (f) f.value = ''; }
+      akteZeichnen(); renderResults();
+      return true;
+    }
+    case 'akte-eintrag-weg': akteAendern(doc, (a, t) => { const e = akteEintrag(a.verlauf, id); if (e) { e.weg = true; e.t = t; } }); akteZeichnen(); renderResults(); return true;
+    case 'akte-kopieren': {
+      const text = (akteTexte(doc).find(x => x[0] === el.dataset.vorlage) || [])[2] || '';
+      navigator.clipboard?.writeText(text).then(() => toast('Text kopiert.'), () => toast('Kopieren nicht möglich.'));
+      return true;
+    }
+    default: return false;
+  }
+}
+
+/** Eingaben in Feldern der Akte; true = behandelt. */
+function akteEingabe(t, art) {
+  const was = t.dataset.akte;
+  if (!was) return false;
+  const doc = getDoc(t.dataset.uid || state.current), id = t.dataset.id;
+  // Auswahl, Häkchen, Datum, Dateien: sofort speichern und neu zeichnen
+  if (art === 'change') {
+    switch (was) {
+      case 'schritt': akteAendern(doc, (a, z) => { const alt = a.schritte[id] || {}; a.schritte[id] = { erledigt: t.checked, datum: t.checked ? alt.datum || today() : null, notiz: alt.notiz || '', t: z }; }); akteZeichnen(); return true;
+      case 'schritt-datum': akteAendern(doc, (a, z) => { const alt = a.schritte[id] || {}; a.schritte[id] = { ...alt, erledigt: true, datum: t.value || null, t: z }; }); return true;
+      case 'vorlage': akteAendern(doc, (a, z) => { a.vorlage = { id: t.value, t: z }; }); akteZeichnen(); return true;
+      case 'nur-offen': akteUi.nurOffen = t.checked; akteZeichnen(); return true;
+      case 'besichtigung-datum': akteAendern(doc, (a, z) => { a.besichtigung = { datum: t.value || null, notiz: (a.besichtigung || {}).notiz || '', t: z }; }); return true;
+      case 'wv-erledigt': akteAendern(doc, (a, z) => { const e = akteEintrag(a.verlauf, id); if (e) { e.erledigt = t.checked; e.t = z; } }); akteZeichnen(); renderResults(); return true;
+      case 'foto': { const dateien = [...t.files]; t.value = ''; fotosAufnehmen(doc, t.dataset.zu, dateien); return true; }
+      default: break;
+    }
+  }
+  // Texte: während des Tippens gebündelt, beim Verlassen des Felds sofort – ohne neu zu zeichnen
+  const wert = t.value;
+  const sichern = {
+    'punkt-notiz': () => akteAendern(doc, (a, z) => { a.punkte[id] = { stand: (a.punkte[id] || {}).stand || null, notiz: wert, t: z }; }),
+    'besichtigung-notiz': () => akteAendern(doc, (a, z) => { a.besichtigung = { datum: (a.besichtigung || {}).datum || null, notiz: wert, t: z }; }),
+    'raum-name': () => akteAendern(doc, (a, z) => { const e = akteEintrag(a.raeume, id); if (e && wert.trim()) { e.name = wert; e.t = z; } }),
+    'raum-notiz': () => akteAendern(doc, (a, z) => { const e = akteEintrag(a.raeume, id); if (e) { e.notiz = wert; e.t = z; } }),
+    'kontakt-feld': () => akteAendern(doc, (a, z) => { const e = akteEintrag(a.kontakte, id); if (e) { e[t.dataset.feld] = wert; e.t = z; } }),
+  }[was];
+  if (!sichern) return true;
+  const schluessel = `${was}:${id || ''}:${t.dataset.feld || ''}`;
+  if (art === 'input') { akteSpaeter(schluessel, sichern); return true; }
+  akteWartend.delete(schluessel);
+  sichern();
+  // Rolle gewählt: neu zeichnen. Bei Textfeldern nicht (der nächste Klick ginge sonst ins Leere) – dort nur den
+  // Namen in der Kontaktauswahl des Formulars nachziehen; „Anrufen“/„E-Mail“ erscheinen beim nächsten Zeichnen.
+  if (was === 'kontakt-feld') {
+    if (t.tagName === 'SELECT') akteZeichnen();
+    else { const k = akteEintrag(akteVon(doc).kontakte, id), o = document.querySelector(`#akteInhalt [data-eintrag="kontakt"] option[value="${CSS.escape(id)}"]`); if (k && o) o.textContent = k.name || k.firma || o.textContent; }
+  }
+  return true;
+}
+
+// Auf- und Zuklappen der Gruppen merken (nur für diese Sitzung)
+document.addEventListener('toggle', e => {
+  const g = e.target.closest?.('#akteInhalt .akte-gruppe[data-gruppe]');
+  if (g && e.target === g) g.open ? akteUi.zu.delete(g.dataset.gruppe) : akteUi.zu.add(g.dataset.gruppe);
+}, true);
+// Enter im Feld „Eigenen Punkt ergänzen“ bzw. „Mangel beschreiben“ fügt hinzu
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter' || e.isComposing) return;
+  const knopf = e.target.matches?.('[data-akte-neu]') ? e.target.closest('.pp-neu')?.querySelector('[data-action="akte-eigen-neu"]')
+    : e.target.matches?.('[data-mangel="text"]') ? e.target.closest('.mangel-neu')?.querySelector('[data-action="akte-mangel-neu"]') : null;
+  if (knopf) { e.preventDefault(); knopf.click(); }
+});
+</script>
+<script>/* src/oberflaeche/abgleich.js */
+/*
+ * ImmoInvest Viewer – Abgleich der eigenen Eingaben über den Ablageordner
+ *
+ * Ist der Abgleich eingeschaltet (Einstellungen → Daten & Speicher), schreibt der Viewer Status, Notizen,
+ * Adressnachträge und Objektakten als eine Datei (ABGLEICH_DATEI, Format „viewer_eingaben“) in den verbundenen
+ * Ablageordner und liest sie beim Einlesen des Ordners wieder ein. Fotos liegen als Bilddateien im Unterordner
+ * ABGLEICH_FOTOS. So steht alles auf jedem Gerät bereit, das denselben Ordner verbindet (z. B. über Google Drive
+ * für Desktop). Geschrieben wird ausschließlich lokal in diesen Ordner – keine Verbindung zu einem Server.
+ *
+ * Vor jedem Schreiben wird die vorhandene Datei gelesen und zusammengeführt (je Eintrag gewinnt die jüngere
+ * Fassung, siehe Rechenkern akte.js), damit Änderungen von einem anderen Gerät nicht überschrieben werden.
+ * Schreiben braucht das Recht „Lesen und Schreiben“ für den Ordner; der Browser fragt danach.
+ * Geräte ohne Ordnerzugriff (z. B. iPad) nutzen stattdessen die Sicherungsdatei von Hand.
+ *
+ * Klassisches Skript; nutzt state, RK, toast … des Hauptskripts erst zur Laufzeit.
+ */
+'use strict';
+
+const ABGLEICH_DATEI = 'immoviewer_abgleich.json';
+const ABGLEICH_FOTOS = 'immoviewer_fotos';
+const abgleich = { timer: 0, laeuft: false, nochmal: false, stempel: null, letzte: null, fehler: null, recht: 'unbekannt' };
+
+const abgleichAn = () => !!state.einst.abgleich && !!state.ordner.handle && state.ordner.status === 'verbunden';
+
+/** Schreibrecht prüfen; mit fragen = true bittet der Browser darum (nur nach einem Klick möglich). */
+async function abgleichRecht(fragen = false) {
+  const h = state.ordner.handle;
+  if (!h) return false;
+  if (typeof h.queryPermission !== 'function') { abgleich.recht = 'granted'; return true; }
+  try {
+    let r = await h.queryPermission({ mode: 'readwrite' });
+    if (r !== 'granted' && fragen) r = await h.requestPermission({ mode: 'readwrite' });
+    abgleich.recht = r;
+  } catch { abgleich.recht = 'denied'; }
+  return abgleich.recht === 'granted';
+}
+
+/** Nach jeder Änderung an eigenen Eingaben: bald schreiben (gebündelt). */
+function abgleichPlanen() {
+  if (!abgleichAn()) return;
+  clearTimeout(abgleich.timer);
+  abgleich.timer = setTimeout(abgleichSchreiben, 1500);
+}
+
+/** Fremden Stand (Dateitext) mit dem eigenen zusammenführen; true, wenn sich hier etwas geändert hat. */
+function abgleichUebernehmen(text) {
+  let imp;
+  try { imp = RK.eingaben.importiere(JSON.parse(text.replace(/^﻿/, ''))); } catch { return false; }
+  if (!imp.ok) return false;
+  const vorher = JSON.stringify([state.notizen, state.karte.adressen, state.akten]);
+  state.notizen = RK.eingaben.zusammenfuehren(state.notizen, imp.notizen, 'notizen').werte;
+  // Adressen und Kartenpunkte: nur ergänzen, was hier fehlt – ein stiller Abgleich überschreibt keine eigenen Nachträge
+  for (const [k, v] of Object.entries(imp.adressen)) if (!state.karte.adressen[k]) state.karte.adressen[k] = v;
+  state.akten = RK.akte.mischeSammlung(state.akten, imp.akten).werte;
+  if (JSON.stringify([state.notizen, state.karte.adressen, state.akten]) === vorher) return false;
+  lsSet(LS_NOTIZEN, JSON.stringify(state.notizen));
+  lsSet(LS_AKTEN, JSON.stringify(state.akten));
+  karteSpeichern({ abgleich: false });
+  return true;
+}
+
+const abgleichText = () => JSON.stringify(RK.eingaben.exportiere({ notizen: state.notizen, adressen: state.karte.adressen, akten: state.akten }), null, 1);
+const abgleichStempelVon = datei => `${datei.lastModified}|${datei.size}`;
+
+/** Datei im Ordner lesen, zusammenführen, schreiben; danach fehlende Fotos nachziehen. */
+async function abgleichSchreiben() {
+  if (!abgleichAn()) return;
+  if (abgleich.laeuft) { abgleich.nochmal = true; return; }
+  abgleich.laeuft = true;
+  let geaendert = false;
+  try {
+    if (!(await abgleichRecht(false))) { abgleich.fehler = 'Zum Abgleichen braucht der Browser das Recht, in den Ordner zu schreiben.'; return; }
+    const h = state.ordner.handle;
+    try {
+      const vorhanden = await (await h.getFileHandle(ABGLEICH_DATEI)).getFile();
+      if (abgleichStempelVon(vorhanden) !== abgleich.stempel) geaendert = abgleichUebernehmen(await vorhanden.text());
+    } catch { /* noch keine Datei im Ordner */ }
+    const fh = await h.getFileHandle(ABGLEICH_DATEI, { create: true });
+    const w = await fh.createWritable();
+    await w.write(abgleichText());
+    await w.close();
+    abgleich.stempel = abgleichStempelVon(await fh.getFile());
+    abgleich.letzte = new Date();
+    abgleich.fehler = null;
+    await abgleichFotosNachziehen();
+  } catch (e) {
+    abgleich.fehler = `Abgleich fehlgeschlagen${e && e.message ? `: ${e.message}` : '.'}`;
+  } finally {
+    abgleich.laeuft = false;
+    if (geaendert) renderMitFokus(); else abgleichAnzeige();
+    if (abgleich.nochmal) { abgleich.nochmal = false; abgleichPlanen(); }
+  }
+}
+
+/** Aus dem Einlesen des Ordners: Hat ein anderes Gerät die Datei geändert, hier übernehmen. true = etwas geändert. */
+async function abgleichLesen(eintrag) {
+  if (!state.einst.abgleich) return false;
+  let datei;
+  try { datei = await eintrag.getFile(); } catch { return false; }
+  const stempel = abgleichStempelVon(datei);
+  if (stempel === abgleich.stempel) return false;
+  let text;
+  try { text = await datei.text(); } catch { return false; }
+  abgleich.stempel = stempel;
+  abgleich.letzte = new Date();
+  const geaendert = abgleichUebernehmen(text);
+  // Hat dieses Gerät Einträge, die in der Datei fehlen, schreibt es sie gleich zurück
+  if (abgleichText() !== text) abgleichPlanen();
+  return geaendert;
+}
+
+/* ---------- Fotos als Bilddateien im Unterordner ---------- */
+async function abgleichFotoOrdner(anlegen) {
+  if (!abgleichAn() || abgleich.recht !== 'granted') return null;
+  try { return await state.ordner.handle.getDirectoryHandle(ABGLEICH_FOTOS, { create: anlegen }); } catch { return null; }
+}
+async function abgleichFotoSchreiben(id, blob) {
+  const dir = await abgleichFotoOrdner(true);
+  if (!dir) return false;
+  try { const w = await (await dir.getFileHandle(`${id}.jpg`, { create: true })).createWritable(); await w.write(blob); await w.close(); return true; } catch { return false; }
+}
+async function abgleichFotoLesen(id) {
+  if (!abgleichAn()) return null;
+  try { const dir = await state.ordner.handle.getDirectoryHandle(ABGLEICH_FOTOS); return await (await dir.getFileHandle(`${id}.jpg`)).getFile(); } catch { return null; }
+}
+async function abgleichFotoLoeschen(id) {
+  const dir = await abgleichFotoOrdner(false);
+  if (dir) { try { await dir.removeEntry(`${id}.jpg`); } catch { /* schon weg */ } }
+}
+/** Fotos, die nur auf diesem Gerät liegen, in den Ordner schreiben (z. B. nach dem Einschalten des Abgleichs). */
+async function abgleichFotosNachziehen() {
+  const dir = await abgleichFotoOrdner(true);
+  if (!dir) return;
+  const ids = Object.values(state.akten).flatMap(a => RK.akte.lebend(a.fotos).map(f => f.id));
+  for (const id of ids) {
+    try { await dir.getFileHandle(`${id}.jpg`); continue; } catch { /* fehlt im Ordner */ }
+    const blob = await fotoLesen(id);
+    if (blob instanceof Blob) await abgleichFotoSchreiben(id, blob);
+  }
+}
+
+/* ---------- Ein- und Ausschalten, Anzeige ---------- */
+async function abgleichEinschalten() {
+  if (!state.ordner.handle || state.ordner.status !== 'verbunden') { toast('Erst einen Ablageordner verbinden – dorthin wird abgeglichen.'); return false; }
+  if (!(await abgleichRecht(true))) { toast('Ohne Schreibrecht für den Ordner ist kein Abgleich möglich.'); return false; }
+  state.einst.abgleich = true;
+  einstSpeichern();
+  await abgleichSchreiben();
+  if (!abgleich.fehler) toast(`Abgleich eingeschaltet: Eigene Eingaben liegen jetzt in „${state.ordner.name}“.`);
+  return true;
+}
+function abgleichAusschalten() {
+  state.einst.abgleich = false;
+  einstSpeichern();
+  clearTimeout(abgleich.timer);
+  toast('Abgleich ausgeschaltet. Die Datei im Ordner bleibt liegen.');
+}
+/** Nach einem Klick: Schreibrecht einholen und sofort abgleichen. */
+async function abgleichErlauben() {
+  if (await abgleichRecht(true)) await abgleichSchreiben(); else toast('Kein Schreibrecht für den Ordner erteilt.');
+  render();
+}
+function abgleichStandText() {
+  if (!state.einst.abgleich) return '';
+  if (!abgleichAn()) return 'Wartet auf den Ablageordner.';
+  if (abgleich.fehler) return abgleich.fehler;
+  return abgleich.letzte ? `Zuletzt abgeglichen ${abgleich.letzte.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}` : 'Noch nicht abgeglichen.';
+}
+function abgleichAnzeige() {
+  document.querySelectorAll('[data-abgleich-stand]').forEach(el => { el.textContent = abgleichStandText(); });
+  // Fehlt das Schreibrecht, zeigt die Seitenleiste den Hinweis mit Knopf
+  if (state.einst.abgleich && abgleich.recht !== 'granted' && abgleich.recht !== 'unbekannt') renderSidebar();
 }
 </script>
 <script>/* src/oberflaeche/hilfe.js */
@@ -6929,6 +8064,7 @@ const IKON_PFAD = {
   auswahl: '<path d="m7 10 5 5 5-5"/>',
   haken: '<path d="m5.500 12.500 4.200 4.200L18.500 7.500"/>',
   plus: '<path d="M12 5.500v13M5.500 12h13"/>',
+  kamera: '<path d="M4.500 8.500h3l1.500-2.500h6l1.500 2.500h3a1.500 1.500 0 0 1 1.500 1.500v8a1.500 1.500 0 0 1-1.500 1.500h-15A1.500 1.500 0 0 1 3 18v-8a1.500 1.500 0 0 1 1.500-1.500z"/><circle cx="12" cy="13.500" r="3.300"/>',
   auf_ab: '<path d="m8 9.500 4-4 4 4M8 14.500l4 4 4-4"/>',
   neu: '<path d="M12 3.500l1.900 5.300 5.600.200-4.400 3.500 1.500 5.400L12 14.800l-4.600 3.100 1.500-5.400-4.400-3.500 5.600-.200z"/>',
   zahnrad: '<path d="M10.53 2.72L13.47 2.72L13.81 5.24A7.0 7.0 0 0 1 15.50 5.94L17.53 4.40L19.60 6.47L18.06 8.50A7.0 7.0 0 0 1 18.76 10.19L21.28 10.53L21.28 13.47L18.76 13.81A7.0 7.0 0 0 1 18.06 15.50L19.60 17.53L17.53 19.60L15.50 18.06A7.0 7.0 0 0 1 13.81 18.76L13.47 21.28L10.53 21.28L10.19 18.76A7.0 7.0 0 0 1 8.50 18.06L6.47 19.60L4.40 17.53L5.94 15.50A7.0 7.0 0 0 1 5.24 13.81L2.72 13.47L2.72 10.53L5.24 10.19A7.0 7.0 0 0 1 5.94 8.50L4.40 6.47L6.47 4.40L8.50 5.94A7.0 7.0 0 0 1 10.19 5.24Z"/><circle cx="12" cy="12" r="2.9"/>',
@@ -6993,7 +8129,7 @@ function objektMenue() {
   const stand = c ? (c.error ? `${c.error} Fehler` : c.warn ? `${c.warn} Warnung${c.warn === 1 ? '' : 'en'}` : 'in Ordnung') : '';
   return `<div class="pop-hinweis"><span class="pop-datei" title="${esc(doc.fileName)}">${esc(doc.fileName)}</span></div>`
     + (url ? `<a class="pop-punkt" role="menuitem" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${ikon('extern')}<span class="pop-text">Inserat öffnen</span></a>` : '')
-    + (doc.isImmo && state.detailModus !== 'persoenlich' ? popPunkt('jump', 'pruefung', 'Exportprüfung', { attrs: 'data-target="sec-pruefung"', zusatz: `<span class="count">${stand}</span>` }) : '')
+    + (doc.isImmo ? popPunkt('objekt-sprung', 'pruefung', 'Exportprüfung', { attrs: 'data-tab="analyse" data-target="sec-pruefung"', zusatz: `<span class="count">${stand}</span>` }) : '')
     + popPunkt('print', 'drucken', 'Drucken / PDF', { klasse: 'needs-print' })
     + POP_TRENNER
     + popPunkt('remove', 'entfernen', 'Aus der Ansicht entfernen', { attrs: `data-uid="${doc.uid}" title="Nur aus dieser Ansicht entfernen – die Datei bleibt unverändert"`, klasse: 'gefahr' });
@@ -7077,11 +8213,12 @@ const NEBEN_AB = 1180;        // ab dieser Fensterbreite (px) kann ein Objekt ne
 const NEBEN_STANDARD = 0.52;  // Anteil des Objektbereichs an der Breite
 const NEBEN_MIN = { liste: 340, objekt: 440 };
 
-function einstZustand() { return { objektNeben: true, breite: NEBEN_STANDARD }; }
+function einstZustand() { return { objektNeben: true, breite: NEBEN_STANDARD, abgleich: false }; }
 function einstLaden() {
   try {
     const e = JSON.parse(lsGet(LS_EINST) || '{}');
     if (typeof e.objektNeben === 'boolean') state.einst.objektNeben = e.objektNeben;
+    if (typeof e.abgleich === 'boolean') state.einst.abgleich = e.abgleich;
     if (typeof e.breite === 'number' && e.breite > 0.2 && e.breite < 0.8) state.einst.breite = e.breite;
   } catch { /* defekter Speicherinhalt wird ignoriert */ }
 }
@@ -7214,7 +8351,9 @@ function viewEinstellungen() {
         const lesbar = !['freigabe', 'fehlt'].includes(o.status);
         const knoepfe = o.status === 'freigabe' ? '<button class="btn sm primary" data-action="ordner-freigeben">Einlesen</button>' : o.status === 'fehlt' ? '<button class="btn sm" data-action="ordner-verbinden">Neu verbinden</button>' : '<button class="btn sm" data-action="ordner-einlesen">Jetzt einlesen</button>';
         ordner = zeile(esc(o.name), `<div class="einst-knoepfe">${knoepfe}<button class="btn sm" data-action="ordner-trennen">Trennen</button></div>`, lesbar ? `<span data-ordner-stand>${esc(ordnerStandText())}</span>${o.fehler ? ` · ${esc(o.fehler)}` : ''}` : o.status === 'freigabe' ? 'Der Browser braucht erneut die Erlaubnis, den Ordner zu lesen.' : esc(o.fehler || 'Ordner nicht erreichbar.'))
-          + (lesbar ? schalter('einst-ordner-auto', 'Automatisch einlesen', o.auto, 'Beim Öffnen und wenn sich im Ordner etwas ändert.') : '');
+          + (lesbar ? schalter('einst-ordner-auto', 'Automatisch einlesen', o.auto, 'Beim Öffnen und wenn sich im Ordner etwas ändert.')
+            + schalter('einst-abgleich', 'Eigene Eingaben im Ordner abgleichen', state.einst.abgleich, `Status, Notizen, Checklisten, Besichtigung, Kontakte, Verlauf und Fotos liegen dann als Dateien in diesem Ordner und stehen auf jedem Gerät bereit, das ihn verbindet.${state.einst.abgleich ? ` <span data-abgleich-stand>${esc(abgleichStandText())}</span>` : ''}`)
+            + (state.einst.abgleich && abgleich.recht !== 'granted' && abgleich.recht !== 'unbekannt' ? zeile('Schreibrecht für den Ordner', '<button class="btn sm primary" data-action="abgleich-erlauben">Erlauben</button>', 'Der Browser fragt nach einem Neustart erneut, ob er in den Ordner schreiben darf.') : '') : '');
       }
     }
     inhalt = gruppe('Bewertungen laden', aktion('pick-files', 'datei', 'Dateien hinzufügen') + aktion('pick-dir', 'ordner', 'Ordner einmalig laden') + aktion('paste', 'einfuegen', 'JSON einfügen'))
@@ -7260,6 +8399,7 @@ function einstAktion(action, el) {
     case 'neben-zu': state.neben = false; render(); document.querySelector(`.cmp-table tr[data-uid="${state.current}"]`)?.focus?.(); return true;
     case 'neben-voll': objektOeffnen(state.current, { ganz: true }); return true;
     case 'neben-umschalten': nebenUmschalten(); return true;
+    case 'abgleich-erlauben': abgleichErlauben(); return true;
     case 'tab-zu': tabSchliessen(el.dataset.uid); return true;
     case 'blaettern': objektOeffnen(el.dataset.uid, { ersetzen: true }); return true;
     default: return false;
@@ -7268,6 +8408,7 @@ function einstAktion(action, el) {
 /** Schalter im Dialog; true = behandelt. */
 function einstAenderung(t) {
   if (t.id === 'einst-dateien') { state.persist = t.checked; lsSet(LS.persist, t.checked ? '1' : '0'); save(); renderSidebar(); return true; }
+  if (t.id === 'einst-abgleich') { (t.checked ? abgleichEinschalten() : Promise.resolve(abgleichAusschalten())).then(() => render()); return true; }
   if (t.id === 'einst-ordner-auto') { state.ordner.auto = t.checked; lsSet(LS_ORDNER_AUTO, t.checked ? '1' : '0'); return true; }
   if (t.id === 'einst-profile') {
     state.profile.merken = t.checked;
@@ -8506,7 +9647,10 @@ const state = {
   // Persönliche Daten: getrennt von den Immobiliendateien, im Browser nur auf ausdrücklichen Wunsch gemerkt
   profile: { liste: [], aktivId: null, merken: false, meta: {} },
   objektszenarien: {},
-  detailModus: 'analyse',
+  // Offener Bereich der Objektansicht: ueberblick, pruefung, besichtigung, kontakt, analyse, persoenlich (src/oberflaeche/akte.js)
+  detailModus: 'ueberblick',
+  // Objektakten je Objektschlüssel: Schritte, Checkliste, Besichtigung, Kontakte, Verlauf
+  akten: {},
   profilTab: 'haushalt',
   feldFehler: {},
   feldRoh: {},
@@ -8700,6 +9844,7 @@ async function restore() {
   pLadenAusBrowser();
   karteLaden();
   notizenLaden();
+  aktenLaden();
   if (!state.persist) return;
   try {
     // IndexedDB; ältere Fassungen hatten die Dateien in localStorage – dann von dort übernehmen und umziehen
@@ -9315,6 +10460,7 @@ function render() {
   spaltenmenueAusrichten();
   ansichtSpeichern();
   abschnittBeobachten();
+  fotosEinhaengen();
 }
 
 /* ---------- Ansicht merken: Sortierung, Suche, Orts- und Spaltenfilter, ältere Revisionen ---------- */
@@ -9443,16 +10589,22 @@ function viewStart() {
 function viewDetail(doc) {
   if (!doc) return '';
   if (!doc.isImmo) return viewErrorDoc(doc);
-  if (state.detailModus === 'persoenlich') {
+  const tab = objektTab();
+  const kopf = detailHead(doc) + objektReiter(doc, tab);
+  const abschnitte = liste => `<nav class="subnav" aria-label="Abschnitte">${liste.map(([id, t]) => `<button data-action="jump" data-target="${id}">${t}</button>`).join('')}</nav>`;
+  // Rechnung mit dem eigenen Profil
+  if (tab === 'persoenlich') {
     const pnav = [['p-kennzahlen', 'Kennzahlen'], ['p-eingaben', 'Eingaben'], ['p-konditionen', 'Konditionen'], ['p-haushalt', 'Haushalt'], ['p-steuer', 'Steuer'], ['p-verlauf', 'Jahresverlauf'], ['p-szenarien', 'Szenarien'], ['p-export', 'Export']];
-    return detailHead(doc) + meinStand(doc) + pModusSchalter()
-      + (aktivesProfil() ? `<nav class="subnav" aria-label="Abschnitte">${pnav.map(([id, t]) => `<button data-action="jump" data-target="${id}">${t}</button>`).join('')}</nav>` : '')
-      + viewPersoenlich(doc);
+    return kopf + (aktivesProfil() ? abschnitte(pnav) : '') + viewPersoenlich(doc);
   }
-  const nav = [['sec-ueberblick', 'Überblick'], ['sec-steckbrief', 'A · Steckbrief'], ['sec-widersprueche', 'B · Widersprüche'], ['sec-lage', 'C · Lage & Energie'], ['sec-preis', 'D · Preis & Vergleich'], ['sec-kosten', 'E · Kosten & Szenarien'], ['sec-weg', 'F · WEG & Risiken'], ['sec-schritte', 'H · Nächste Schritte'], ['sec-quellen', 'Quellen & Belege'], ['sec-pruefung', 'Exportprüfung'], ['sec-roh', 'Rohdaten']];
-  return detailHead(doc) + meinStand(doc) + pModusSchalter()
-    + `<nav class="subnav" aria-label="Abschnitte">${nav.map(([id, t]) => `<button data-action="jump" data-target="${id}">${t}</button>`).join('')}</nav>`
-    + secOverview(doc) + secSteckbrief(doc) + secWidersprueche(doc) + secLage(doc) + secPreis(doc) + secKosten(doc) + secWeg(doc) + secSchritte(doc) + secQuellen(doc) + secPruefung(doc) + secRoh(doc);
+  // Die importierte Analyse in voller Länge, unverändert
+  if (tab === 'analyse') {
+    const nav = [['sec-steckbrief', 'A · Steckbrief'], ['sec-widersprueche', 'B · Widersprüche'], ['sec-lage', 'C · Lage & Energie'], ['sec-preis', 'D · Preis & Vergleich'], ['sec-kosten', 'E · Kosten & Szenarien'], ['sec-weg', 'F · WEG & Risiken'], ['sec-schritte', 'H · Nächste Schritte'], ['sec-quellen', 'Quellen & Belege'], ['sec-pruefung', 'Exportprüfung'], ['sec-roh', 'Rohdaten']];
+    return kopf + abschnitte(nav) + werteLegende() + secSteckbrief(doc) + secWidersprueche(doc) + secLage(doc) + secPreis(doc) + secKosten(doc) + secWeg(doc) + secSchritte(doc) + secQuellen(doc) + secPruefung(doc) + secRoh(doc);
+  }
+  // Überblick: eigener Stand und Schritte, darunter Urteil und Kennzahlen der Analyse; sonst ein Bereich der Akte
+  if (tab === 'ueberblick') return kopf + akteBereich(doc, tab) + meinStand(doc) + secOverview(doc);
+  return kopf + akteBereich(doc, tab);
 }
 
 function viewErrorDoc(doc) {
@@ -9474,6 +10626,13 @@ function detailHead(doc) {
   }
   // Der Prüfstatus steht nur dann als Knopf im Kopf, wenn es etwas zu tun gibt; sonst genügt der Punkt im Menü „⋯“
   const c = countIssues(doc), problem = c.error || c.warn, neben = objektNeben();
+  // Angaben zur Analyse-Datei (Status, Prüfdatum, Revisionen) stehen nur im Bereich „Analyse“ – der Kopf bleibt schlank.
+  // Eine ältere Revision wird immer gekennzeichnet.
+  const analyseOffen = objektTab() === 'analyse';
+  const metaChips = analyseOffen ? `<div class="meta-chips">
+      ${chip('Status', m.analysestatus)}${chip('Verfügbarkeit', a.verfuegbarkeit, a.verfuegbarkeit_stand)}${chip('Prüfdatum', m.pruefdatum)}
+      ${[a.zugriffsstatus, m.nutzungsfokus, m.exportdatum].some(v => v != null) ? (state.metaMehr ? `${chip('Zugriff', a.zugriffsstatus)}${chip('Fokus', m.nutzungsfokus)}${chip('Export', m.exportdatum)}<button class="meta-mehr" data-action="meta-mehr" aria-expanded="true">Weniger</button>` : '<button class="meta-mehr" data-action="meta-mehr" aria-expanded="false" title="Zugriff, Nutzungsfokus und Exportdatum zeigen">Mehr</button>') : ''}
+    </div>` : '';
   return `<div class="dh-kopfzeile no-print">
       ${!neben && !tabsGanzeSeite() && immoDocs().length > 1 ? `<button class="zurueck-knopf" data-action="compare" title="Zurück zum Vergleich">${ikon('zurueck', 18)}<span>Vergleich</span></button>` : '<span></span>'}
       <div class="dh-werkzeuge">${objektBlaettern(doc)}<button class="icon-knopf" popovertarget="menueObjekt" aria-haspopup="menu" aria-expanded="false" aria-label="Weitere Aktionen" title="Weitere Aktionen: Inserat, Exportprüfung, Drucken, Entfernen">${ikon('mehr', 22)}</button></div>
@@ -9485,14 +10644,11 @@ function detailHead(doc) {
         <p class="sub">${esc([place, a.objektart].filter(Boolean).join(' · '))}</p>
         <p class="sub small">${esc(ids)}${url ? ` · <a href="${esc(url)}" target="_blank" rel="noopener noreferrer">Inserat öffnen ↗</a>` : ''}</p>
       </div>
-      ${problem ? `<div class="dh-actions"><button class="btn sm" data-action="jump" data-target="sec-pruefung" title="Zur Exportprüfung springen">${issueSummary(doc)}</button></div>` : ''}
+      ${problem ? `<div class="dh-actions"><button class="btn sm" data-action="objekt-sprung" data-tab="analyse" data-target="sec-pruefung" title="Zur Exportprüfung springen">${issueSummary(doc)}</button></div>` : ''}
     </div>
-    <div class="meta-chips">
-      ${chip('Status', m.analysestatus)}${chip('Verfügbarkeit', a.verfuegbarkeit, a.verfuegbarkeit_stand)}${chip('Prüfdatum', m.pruefdatum)}
-      ${[a.zugriffsstatus, m.nutzungsfokus, m.exportdatum].some(v => v != null) ? (state.metaMehr ? `${chip('Zugriff', a.zugriffsstatus)}${chip('Fokus', m.nutzungsfokus)}${chip('Export', m.exportdatum)}<button class="meta-mehr" data-action="meta-mehr" aria-expanded="true">Weniger</button>` : '<button class="meta-mehr" data-action="meta-mehr" aria-expanded="false" title="Zugriff, Nutzungsfokus und Exportdatum zeigen">Mehr</button>') : ''}
-    </div>
+    ${metaChips}
     ${offerNotice(d)}
-    ${rev}
+    ${analyseOffen || !doc.rev?.latest ? rev : ''}
   </div>`;
 }
 
@@ -10265,7 +11421,8 @@ function openRef(uid, id) {
     el.scrollIntoView({ behavior: 'smooth', block: 'center' });
     el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
   };
-  if (!objektOffen() || state.current !== uid) { objektOeffnen(uid); requestAnimationFrame(show); }
+  // Verweise zeigen in die Analyse: den Bereich öffnen, falls ein anderer offen ist
+  if (!objektOffen() || state.current !== uid || !document.getElementById(`ref-${uid}-${id}`)) { state.detailModus = 'analyse'; objektOeffnen(uid); requestAnimationFrame(show); }
   else show();
 }
 
@@ -10437,7 +11594,7 @@ document.addEventListener('click', e => {
     case 'ordner-freigeben': ordnerFreigeben(); break;
     case 'ordner-einlesen': ordnerEinlesen({ manuell: true }); break;
     case 'ordner-trennen': ordnerTrennen(); break;
-    default: if (!karteAktion(action, el) && !spaltenAktion(action, el) && !hilfeAktion(action, el) && !einstAktion(action, el)) pAktion(action, el);
+    default: if (!karteAktion(action, el) && !spaltenAktion(action, el) && !hilfeAktion(action, el) && !einstAktion(action, el) && !akteAktion(action, el)) pAktion(action, el);
   }
 });
 // Tastaturkürzel: „/“ springt in die Suche, „?“ zeigt die Übersicht der Kürzel
@@ -10471,7 +11628,9 @@ function renderResults() {
   const box = $('#cmpResults');
   if (!box) return render();
   chartFns.clear();
+  const scroll = scrollMerken();
   box.innerHTML = compareResults();
+  scrollWiederherstellen(scroll);
   filterZeileAuffrischen();
   drawCharts();
   karteEinhaengen();
@@ -10486,6 +11645,7 @@ document.addEventListener('change', e => {
   if (t.dataset.spalteAn) { t.checked ? state.ausgeblendet.delete(t.dataset.spalteAn) : state.ausgeblendet.add(t.dataset.spalteAn); render(); return; }
   if (t.id === 'karten-sort') { const [col, dir] = t.value.split('|'); state.sort = { col, dir: Number(dir) === -1 ? -1 : 1 }; renderResults(); return; }
   if (t.id === 'karten-filter') { const c = spalteMit(t.value); t.value = ''; if (c) spaltenmenueOeffnen(c, 'karten'); return; }
+  if (akteEingabe(t, 'change')) return;
   if (pAenderung(t)) return;
   if (einstAenderung(t)) return;
   if (t.id === 'ordner-auto') { state.ordner.auto = t.checked; lsSet(LS_ORDNER_AUTO, t.checked ? '1' : '0'); return; }
@@ -10502,6 +11662,7 @@ document.addEventListener('change', e => {
 document.addEventListener('input', e => {
   if (spaltenEingabe(e.target, 'input')) return;
   if (notizEingabe(e.target, 'input')) return;
+  if (akteEingabe(e.target, 'input')) return;
   if (e.target.id === 'fq') { state.filter.q = e.target.value; renderResults(); return; }
   pEingabeLaeuft(e.target);
 });
