@@ -825,7 +825,7 @@ h1, h2, h3 { letter-spacing: -.02em; }
   background: var(--leiste); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px);
   border-bottom: 1px solid var(--line);
 }
-.brand { display: flex; align-items: center; gap: 8px; margin: 0 auto 0 6px; font-size: 15px; font-weight: 600; letter-spacing: -.01em; white-space: nowrap; min-width: 0; }
+.brand { display: flex; align-items: center; gap: 9px; margin: 0; font-size: 15px; font-weight: 600; letter-spacing: -.01em; white-space: nowrap; min-width: 0; }
 .brand .marke { width: 22px; height: 22px; flex: none; border-radius: 6px; box-shadow: 0 1px 2px rgba(0, 60, 140, .28); }
 .layout { display: grid; grid-template-columns: 248px minmax(0, 1fr); min-height: calc(100vh - 52px); }
 .sidebar {
@@ -1024,20 +1024,11 @@ button.tag { cursor: pointer; }
 /* ---------- Kennzahlen-Kacheln ---------- */
 .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 188px), 1fr)); gap: 10px; margin-top: 14px; }
 .tiles.stats { grid-template-columns: repeat(5, minmax(0, 1fr)); margin-top: 0; }
-/* Filterzeile: ein Stil für alles. Aus = graue Kapsel, an = Akzentfarbe mit weißer Schrift (ein Blau, keine Mischtöne). */
-.urteil-leiste { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
-.urteil-chip { display: inline-flex; align-items: center; gap: 7px; height: 30px; padding: 0 12px 0 5px; border-radius: 999px; border: 0; background: var(--fill); color: var(--ink); font-size: 13.5px; cursor: pointer; transition: background .12s, color .12s; }
-.urteil-chip:hover { background: var(--fill-2); }
-.urteil-chip .vi { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--vc); color: #fff; font-size: 11.5px; font-weight: 700; }
-.urteil-chip.v-warn .vi { color: #3a2a00; }
-.urteil-chip b { font-weight: 500; color: var(--ink-2); font-variant-numeric: tabular-nums; }
-.urteil-chip:disabled { opacity: .42; cursor: default; background: var(--fill); }
-.urteil-chip.an { background: var(--accent); color: #fff; }
-/* Auch beim Darüberfahren bleibt es bei dem einen Blau */
-.urteil-chip.an:hover { background: var(--accent); }
-.urteil-chip.an b { color: inherit; opacity: .8; }
-.urteil-chip.an .vi { box-shadow: 0 0 0 1.5px #fff; }
-.filter-wahl { display: inline-flex; align-items: center; max-width: 100%; height: 30px; border-radius: 999px; background: var(--fill); color: var(--ink); font-size: 13.5px; transition: background .12s; }
+/* Filter: ein Stil für alles. Aus = graue Kapsel, an = Akzentfarbe mit weißer Schrift (ein Blau, keine Mischtöne). */
+.urteil-punkt { display: inline-grid; flex: none; }
+.urteil-punkt .vi { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--vc); color: #fff; font-size: 10.5px; font-weight: 700; }
+.urteil-punkt.v-warn .vi { color: #3a2a00; }
+.filter-wahl { display: inline-flex; align-items: center; max-width: 100%; height: 32px; border-radius: 999px; background: var(--fill); color: var(--ink); font-size: 13.5px; transition: background .12s; }
 .filter-wahl:hover { background: var(--fill-2); }
 .filter-knopf { display: inline-flex; align-items: center; gap: 6px; min-width: 0; height: 100%; padding: 0 12px; border: 0; border-radius: inherit; background: none; color: inherit; font: inherit; cursor: pointer; }
 .filter-knopf .ikon { color: var(--ink-2); }
@@ -1050,9 +1041,9 @@ button.tag { cursor: pointer; }
 .filter-x { display: inline-grid; place-items: center; flex: none; width: 20px; height: 20px; margin: 0 5px 0 2px; padding: 0 0 1px; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .22); color: inherit; font-size: 14px; line-height: 1; cursor: pointer; transition: background .12s; }
 .filter-x:hover { background: rgba(255, 255, 255, .42); }
 .sf-name { opacity: .8; }
-.filter-reset { height: 30px; padding: 0 10px; border: 0; border-radius: 999px; background: none; color: var(--ink-2); font-size: 13.5px; cursor: pointer; }
+.filter-reset { height: 32px; padding: 0 10px; border: 0; border-radius: 999px; background: none; color: var(--ink-2); font-size: 13.5px; cursor: pointer; }
 .filter-reset:hover { background: var(--fill); color: var(--ink); }
-:is(.urteil-chip, .filter-knopf, .filter-x, .filter-reset):focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+:is(.filter-knopf, .filter-x, .filter-reset):focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .pop-wahl .pop-haken { display: inline-grid; place-items: center; flex: none; width: 18px; height: 18px; color: var(--accent); }
 .pop-wahl .pop-haken .ikon { color: inherit; }
 /* Blättern in der Einzelansicht */
@@ -1672,7 +1663,10 @@ a.btn { color: inherit; text-decoration: none; }
 .such-feld:focus-within { background: var(--surface); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 45%, transparent); }
 .such-feld input { flex: 1; min-width: 0; height: 100%; padding: 0; border: 0; background: transparent; color: var(--ink); font-size: 14px; outline: none; }
 .such-feld input::placeholder { color: var(--muted); }
-.filter-zeile { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-height: 30px; margin: 0 0 14px; }
+.werkzeug-zeile { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 14px; }
+.werkzeug-zeile .such-feld { flex: 0 1 230px; width: auto; min-width: 140px; height: 32px; }
+.filter-zeile { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; flex: 1 1 auto; min-width: 0; min-height: 32px; }
+.werkzeug-ende { display: flex; align-items: center; gap: 4px; flex: none; margin-left: auto; }
 .pop-menue { display: none; position: fixed; inset: auto; left: 0; top: 0; margin: 0; box-sizing: border-box; min-width: 250px; max-width: min(340px, calc(100vw - 16px)); max-height: calc(100vh - 16px); overflow: auto; padding: 6px; border: 1px solid var(--line); border-radius: 14px; background: var(--leiste); -webkit-backdrop-filter: saturate(180%) blur(24px); backdrop-filter: saturate(180%) blur(24px); color: var(--ink); box-shadow: 0 14px 44px rgba(0, 0, 0, .18), 0 2px 6px rgba(0, 0, 0, .06); font-size: 14px; }
 .pop-menue:popover-open { display: flex; flex-direction: column; }
 .pop-punkt { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 34px; padding: 6px 10px; border: 0; border-radius: 8px; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; }
@@ -1778,6 +1772,36 @@ body.mit-tabs .sec { scroll-margin-top: 152px; }
 @media (max-width: 1179px) { .bereich-knopf { display: none; } }
 @media print { .tab-leiste { display: none !important; } }
 
+/* ---------- Kopfzeile: Marke ganz links über der Seitenleiste, Umschalter an deren Rand ---------- */
+.topbar { justify-content: flex-start; padding-left: 0; }
+.brand-bereich { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex: none; align-self: stretch; width: 248px; padding: 0 9px 0 17px; background: var(--page); border-right: 1px solid var(--line); box-shadow: 0 1px 0 var(--page); }
+.topbar-luft { flex: 1; }
+.menue-zu .brand-bereich { width: auto; padding-right: 4px; background: none; border-right: 0; box-shadow: none; }
+@media (max-width: 900px) { .brand-bereich { width: auto; padding: 0 4px 0 12px; background: none; border-right: 0; box-shadow: none; } }
+/* ---------- Unten links: ein Knopf für Daten, Ablageordner, Einstellungen und Hilfe ---------- */
+.side-konto { display: flex; align-items: center; gap: 10px; width: 100%; padding: 7px 8px; border: 0; border-radius: 10px; background: transparent; color: var(--ink-2); text-align: left; font: inherit; cursor: pointer; }
+.side-konto:hover, .side-konto[aria-expanded="true"] { background: var(--fill); }
+.side-konto-bild { display: inline-grid; place-items: center; flex: none; width: 30px; height: 30px; border-radius: 8px; background: var(--fill); color: var(--accent); }
+.side-konto-text { display: flex; flex-direction: column; flex: 1; min-width: 0; font-size: 12px; line-height: 1.35; }
+.side-konto-text b { color: var(--ink); font-size: 13.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.side-konto-text span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.side-konto > .ikon { color: var(--muted); }
+.pop-fuss .pop-text { color: var(--ink-2); font-size: 12.5px; }
+/* ---------- Einstellungsmodus ---------- */
+.view-einstellungen { max-width: 720px; }
+.menue-titel { padding: 12px 10px 4px; font-size: 12px; font-weight: 600; color: var(--muted); }
+.ohne-leiste { display: none; }
+.menue-zu .ohne-leiste { display: block; }
+@media (max-width: 900px) { .ohne-leiste { display: block; } }
+.ohne-leiste .cmp-tabs { display: flex; }
+.einst-zeile .btn { flex: none; }
+.einst-knoepfe { display: flex; flex-wrap: wrap; gap: 6px; }
+.einst-verweis:disabled { opacity: .45; cursor: default; background: none; }
+.einst-verweis.gefahr { color: var(--crit-ink); }
+.einst-verweis > .ikon:first-child { color: var(--ink-2); }
+.einst-verweis.gefahr > .ikon:first-child { color: inherit; }
+.einst h4 .info { margin-left: 4px; }
+
 /* ---------- Einstellungen ---------- */
 dialog.schmal { width: min(520px, calc(100vw - 32px)); }
 .segment { display: inline-flex; flex: none; max-width: 100%; padding: 2px; gap: 2px; border-radius: 9px; background: var(--fill); }
@@ -1834,13 +1858,11 @@ label.einst-text { cursor: pointer; }
 </head>
 <body>
 <header class="topbar">
-  <button class="icon-knopf" data-action="menue" id="menueBtn" aria-controls="sidebar" aria-expanded="true" title="Seitenleiste ein- oder ausblenden" aria-label="Seitenleiste ein- oder ausblenden"><svg class="ikon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="15" rx="3"/><path d="M9 4.5v15"/></svg></button>
-  <div class="brand">
-    <svg class="marke" viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="markeVerlauf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3d9cff"/><stop offset="1" stop-color="#005fd8"/></linearGradient></defs><rect width="24" height="24" rx="6.5" fill="url(#markeVerlauf)"/><rect x="5.5" y="12.4" width="3.4" height="6.1" rx="1.2" fill="#fff" opacity=".62"/><rect x="10.3" y="9" width="3.4" height="9.5" rx="1.2" fill="#fff" opacity=".82"/><rect x="15.1" y="5.5" width="3.4" height="13" rx="1.2" fill="#fff"/></svg>
-    <span>ImmoInvest</span>
-    <button class="versions-knopf" data-action="hilfe" data-bereich="versionen" id="versionsKnopf" title="Versionsverlauf: was neu ist">Version</button>
+  <div class="brand-bereich">
+    <div class="brand"><svg class="marke" viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="markeVerlauf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3d9cff"/><stop offset="1" stop-color="#005fd8"/></linearGradient></defs><rect width="24" height="24" rx="6.5" fill="url(#markeVerlauf)"/><rect x="5.5" y="12.4" width="3.4" height="6.1" rx="1.2" fill="#fff" opacity=".62"/><rect x="10.3" y="9" width="3.4" height="9.5" rx="1.2" fill="#fff" opacity=".82"/><rect x="15.1" y="5.5" width="3.4" height="13" rx="1.2" fill="#fff"/></svg><span>ImmoInvest</span></div>
+    <button class="icon-knopf" data-action="menue" id="menueBtn" aria-controls="sidebar" aria-expanded="true" title="Seitenleiste ein- oder ausblenden" aria-label="Seitenleiste ein- oder ausblenden"><svg class="ikon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="15" rx="3"/><path d="M9 4.5v15"/></svg></button>
   </div>
-  <button class="btn sm daten-knopf" id="datenKnopf" popovertarget="menueDaten" aria-haspopup="menu" aria-expanded="false" title="Dateien laden, Ablageordner, Sicherung"><svg class="ikon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14.5V18a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3.5"/><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5"/></svg><span>Daten</span></button>
+  <span class="topbar-luft"></span>
   <button class="icon-knopf hilfe-knopf" data-action="hilfe" data-bereich="anleitung" aria-label="Hilfe" title="Hilfe: Anleitung, Master-Prompt, Tastaturkürzel, Versionen (Taste ?)"><svg class="ikon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.6 2.6 0 1 1 3.7 2.4c-.7.3-1.200 1-1.200 1.800v.600"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></button>
   <button class="icon-knopf bereich-knopf" data-action="neben-umschalten" id="bereichKnopf" aria-pressed="false" aria-label="Objektbereich ein- oder ausblenden" title="Objektbereich ein- oder ausblenden" hidden><svg class="ikon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="15" rx="3"/><path d="M15 4.5v15"/></svg></button>
 </header>
@@ -1854,7 +1876,8 @@ label.einst-text { cursor: pointer; }
 <div class="drop-overlay" aria-hidden="true"><div>JSON-Dateien hier ablegen</div></div>
 <div class="tooltip" id="tooltip" role="tooltip"></div>
 <div class="spaltenmenue" id="spaltenmenue" role="dialog" hidden></div>
-<div class="pop-menue" id="menueDaten" popover role="menu" aria-label="Daten"></div>
+<div class="pop-menue" id="menueDaten" popover role="menu" aria-label="Daten, Einstellungen und Hilfe"></div>
+<div class="pop-menue" id="menueUrteil" popover role="menu" aria-label="Nach Gesamturteil filtern"></div>
 <div class="pop-menue" id="menueTabelle" popover role="menu" aria-label="Weitere Aktionen"></div>
 <div class="pop-menue" id="menueOrt" popover role="menu" aria-label="Nach Ort filtern"></div>
 <div class="pop-menue" id="menueObjekt" popover role="menu" aria-label="Weitere Aktionen zum Objekt"></div>
@@ -3979,6 +4002,12 @@ label.einst-text { cursor: pointer; }
   'use strict';
 
   const VERLAUF = [
+    { version: '3.3.0', datum: '2026-11-15', titel: 'Ein Menü unten links, Einstellungsmodus, Urteil als Auswahl', punkte: [
+      'Daten laden, Ablageordner, Einstellungen und Hilfe liegen in einem einzigen Menü unten links',
+      'Einstellungen als eigene Ansicht: Bereiche links, Inhalt rechts',
+      'Über der Tabelle eine Werkzeugzeile: Suche, „Urteil“ und „Ort“ als Auswahlmenüs',
+      'Kopfzeile aufgeräumt: Marke ganz links, Umschalter am Rand der Seitenleiste',
+    ] },
     { version: '3.2.0', datum: '2026-11-14', titel: 'Tabs für geöffnete Objekte, Einstellungen unten links', punkte: [
       'Jedes geöffnete Objekt bekommt einen Tab: wechseln per Klick, schließen mit „×“, Blättern bleibt im Tab',
       'Die geöffneten Objekte stehen auch links unter „Geöffnet“',
@@ -5659,7 +5688,7 @@ function ordnerStandAktualisieren() {
 
 const ORDNER_INFO = 'Z. B. der Google-Drive-Ordner mit den Exporten: Er wird bei jedem Öffnen und alle 30 Sekunden automatisch eingelesen. Geht in Chrome und Edge.';
 
-/** Abschnitt „Ablageordner“ im Menü „Daten“ (src/oberflaeche/menues.js). */
+/** Abschnitt „Ablageordner“ im Menü unten links (src/oberflaeche/menues.js). */
 function ordnerMenue() {
   const o = state.ordner;
   if (o.status === 'nicht_unterstuetzt') return '';
@@ -5682,7 +5711,8 @@ function sidebarOrdner() {
   if (o.status === 'fehlt') {
     return `<div class="side-ordner fehler">${ikon('ordner', 17)}<div class="side-ordner-text">${name}<span class="notice">${esc(o.fehler)}</span></div><button class="btn sm" data-action="ordner-verbinden">Neu verbinden</button></div>`;
   }
-  return `<button type="button" class="side-ordner" popovertarget="menueDaten" title="Ablageordner – Menü „Daten“ öffnen">${ikon('ordner', 17)}<span class="side-ordner-text">${name}<span id="ordner-stand" data-ordner-stand aria-live="polite">${esc(ordnerStandText())}</span>${o.fehler ? `<span class="notice">${esc(o.fehler)}</span>` : ''}</span></button>`;
+  // Verbunden und lesbar: Name und Stand stehen am Knopf unten links (sidebarKonto in menues.js)
+  return '';
 }
 </script>
 <script>/* src/fremd/leaflet/leaflet.js */
@@ -6261,9 +6291,8 @@ function spaltenBeschreibung(c, b) {
 }
 
 function spaltenfilterLeiste() {
-  // Ein einzelnes Gesamturteil zeigt schon der Urteils-Chip an – keine zweite Marke dafür
-  const ub = state.filter.spalten.urteil;
-  const aktiv = spalten().filter(c => state.filter.spalten[c.id] && !(c.id === 'urteil' && ub.werte.length === 1));
+  // Den Filter nach Gesamturteil zeigt der Knopf „Urteil“ an – keine zweite Marke dafür
+  const aktiv = spalten().filter(c => state.filter.spalten[c.id] && c.id !== 'urteil');
   if (!aktiv.length) return '';
   return `<div class="sf-leiste" role="group" aria-label="Aktive Spaltenfilter">${aktiv.map(c => `<span class="sf-chip filter-wahl an"><button class="sf-chip-text filter-knopf" data-action="spaltenmenue" data-col="${c.id}" aria-haspopup="dialog" title="Filter ändern"><span><span class="sf-name">${esc(colTitel(c))}:</span> ${esc(spaltenBeschreibung(c, state.filter.spalten[c.id]))}</span></button><button class="sf-chip-x filter-x" data-action="spaltenfilter-weg" data-col="${c.id}" aria-label="Filter „${esc(colTitel(c))}“ entfernen" title="Filter entfernen">×</button></span>`).join('')}</div>`;
 }
@@ -6461,7 +6490,7 @@ addEventListener('resize', spaltenmenueNachziehen);
  * Status, Termin und Notiz gelten je Objektschlüssel, also auch für neue Revisionen desselben Inserats. Sie
  * werden immer in diesem Browser gemerkt (localStorage), unabhängig von „Dateien merken“, und ändern die
  * Analyse-Dateien nicht. Die Sicherungsdatei enthält zusätzlich Adressnachträge und Kartenpunkte und lässt sich
- * über „Daten“ → „Dateien hinzufügen“ wieder einlesen; vorhandene Eingaben werden dabei zusammengeführt, nie gelöscht.
+ * über das Menü unten links → „Dateien hinzufügen“ wieder einlesen; vorhandene Eingaben werden dabei zusammengeführt, nie gelöscht.
  * Prüfung und Zusammenführen: Rechenkern-Modul eingaben.js.
  *
  * Klassisches Skript; nutzt state, render, download … des Hauptskripts erst zur Laufzeit.
@@ -6514,7 +6543,7 @@ function meinStand(doc) {
   if (!doc.isImmo) return '';
   const n = notizVon(doc) || {};
   return `<section class="card mein-stand no-print" aria-labelledby="ms-titel">
-    <div class="ms-kopf"><h3 id="ms-titel">Mein Stand${info('Bleibt nur in diesem Browser und gilt für alle Revisionen dieses Objekts. Sichern über „Daten“ → „Eigene Eingaben sichern“.', 'Mein Stand')}</h3>
+    <div class="ms-kopf"><h3 id="ms-titel">Mein Stand${info('Bleibt nur in diesem Browser und gilt für alle Revisionen dieses Objekts. Sichern über das Menü unten links → „Eigene Eingaben sichern“.', 'Mein Stand')}</h3>
       <div class="fine" id="ms-stand">${n.geaendert ? `Geändert: ${esc(new Date(n.geaendert).toLocaleString('de-DE', { dateStyle: 'medium', timeStyle: 'short' }))}` : 'Noch nichts eingetragen.'}</div></div>
     <div class="feld"><label for="ms-status">Status</label><select id="ms-status" data-notiz-feld="status" data-uid="${doc.uid}">${statusOptionen(n.status || '')}</select></div>
     <div class="feld"><label for="ms-termin">Termin</label><input type="date" id="ms-termin" data-notiz-feld="termin" data-uid="${doc.uid}" value="${esc(n.termin || '')}"></div>
@@ -6615,7 +6644,7 @@ function hilfeAnleitung() {
       ${schritt(3, 'Bei einer KI einfügen', 'Einen neuen Chat bei einer KI öffnen, die Webseiten lesen und Dateien erstellen kann (z. B. Claude oder ChatGPT). Prompt einfügen, darunter den Inserat-Link, absenden. Je Objekt ein eigener Chat; Rückfragen der KI beantworten.')}
       ${schritt(4, 'JSON-Datei herunterladen', 'Am Ende liefert die KI einen Bericht und eine Datei <code>immobilienbewertung_&lt;plattform&gt;_&lt;id&gt;_&lt;datum&gt;.json</code>. Zeigt sie nur einen Codeblock, den Inhalt kopieren und hier über „Daten“ → „JSON einfügen“ laden oder als .json-Datei speichern.')}
       ${schritt(5, 'In den Ablageordner legen', 'Alle Exporte in einen festen Ordner legen, z. B. in Google Drive „ImmoInvest/immos“ (mit „Google Drive für Desktop“ ist er auf dem Rechner verfügbar). Unterordner bis drei Ebenen werden mitgelesen.')}
-      ${schritt(6, 'Ordner einmal verbinden', `Oben rechts auf „Daten“ und dann auf <b>Ablageordner verbinden</b> klicken und den Ordner wählen (Chrome oder Edge). Danach liest der Viewer neue und geänderte Dateien beim Öffnen und alle 30 Sekunden automatisch ein.${typeof ORDNER_UNTERSTUETZT !== 'undefined' && !ORDNER_UNTERSTUETZT ? ' <i>Dieser Browser kann Ordner nicht dauerhaft verbinden – Dateien hier über „Daten“ → „Dateien hinzufügen“ oder Ziehen laden.</i>' : ''}`)}
+      ${schritt(6, 'Ordner einmal verbinden', `Unten links das Menü öffnen (Knopf „Daten“), dort auf <b>Ablageordner verbinden</b> klicken und den Ordner wählen (Chrome oder Edge). Danach liest der Viewer neue und geänderte Dateien beim Öffnen und alle 30 Sekunden automatisch ein.${typeof ORDNER_UNTERSTUETZT !== 'undefined' && !ORDNER_UNTERSTUETZT ? ' <i>Dieser Browser kann Ordner nicht dauerhaft verbinden – Dateien hier über „Daten“ → „Dateien hinzufügen“ oder Ziehen laden.</i>' : ''}`)}
       ${schritt(7, 'Exportprüfung ansehen', 'Jede Datei wird geprüft (✓ oder Fehler in der Tabelle und unter „Exportprüfung“). Bei Fehlern die Meldungen an die KI geben und eine korrigierte Datei anfordern – mit gleicher Plattform-ID erkennt der Viewer sie als neue Revision.')}
     </ol>
     <p class="fine">Deine Dateien werden nur in diesem Browser gelesen, nichts wird hochgeladen. Persönliche Profile legst du getrennt unter „Persönliche Profile“ an.</p>`;
@@ -6807,9 +6836,9 @@ document.addEventListener('close', e => { if (e.target.contains?.(document.getEl
  * ImmoInvest Viewer – Symbole und aufklappende Menüs
  *
  * Selten gebrauchte Aktionen stehen nicht als Knöpfe auf der Seite, sondern in Menüs:
- *   #menueDaten    Knopf „Daten“ oben rechts: Dateien laden, Ablageordner, Sicherung, Browser-Speicher
+ *   #menueDaten    Knopf unten links in der Seitenleiste: Dateien laden, Ablageordner, Sicherung, Einstellungen, Hilfe
  *   #menueTabelle  Knopf „⋯“ über dem Vergleich: Spalten, ältere Revisionen, CSV-Export
- *   #menueOrt      Knopf „Ort“ in der Filterzeile: Orte ankreuzen (bleibt beim Ankreuzen offen)
+ *   #menueOrt, #menueUrteil  Knöpfe „Ort“ und „Urteil“ in der Werkzeugzeile: ankreuzen (bleibt dabei offen)
  *   #menueObjekt   Knopf „⋯“ in der Objektansicht: Inserat, Exportprüfung, Drucken, Entfernen
  *   #menueProfil, #menueProfilKarte  Knöpfe „⋯“ auf der Profilseite: Importieren, Merken im Browser, Duplizieren, Löschen
  *
@@ -6856,6 +6885,8 @@ const IKON_PFAD = {
   ort: '<path d="M12 21s-6.500-5.800-6.500-11a6.500 6.500 0 0 1 13 0c0 5.200-6.500 11-6.500 11z"/><circle cx="12" cy="10" r="2.300"/>',
   auswahl: '<path d="m7 10 5 5 5-5"/>',
   haken: '<path d="m5.500 12.500 4.200 4.200L18.500 7.500"/>',
+  auf_ab: '<path d="m8 9.500 4-4 4 4M8 14.500l4 4 4-4"/>',
+  neu: '<path d="M12 3.500l1.900 5.300 5.600.200-4.400 3.500 1.500 5.400L12 14.800l-4.600 3.100 1.500-5.400-4.400-3.500 5.600-.200z"/>',
   zahnrad: '<path d="M10.53 2.72L13.47 2.72L13.81 5.24A7.0 7.0 0 0 1 15.50 5.94L17.53 4.40L19.60 6.47L18.06 8.50A7.0 7.0 0 0 1 18.76 10.19L21.28 10.53L21.28 13.47L18.76 13.81A7.0 7.0 0 0 1 18.06 15.50L19.60 17.53L17.53 19.60L15.50 18.06A7.0 7.0 0 0 1 13.81 18.76L13.47 21.28L10.53 21.28L10.19 18.76A7.0 7.0 0 0 1 8.50 18.06L6.47 19.60L4.40 17.53L5.94 15.50A7.0 7.0 0 0 1 5.24 13.81L2.72 13.47L2.72 10.53L5.24 10.19A7.0 7.0 0 0 1 5.94 8.50L4.40 6.47L6.47 4.40L8.50 5.94A7.0 7.0 0 0 1 10.19 5.24Z"/><circle cx="12" cy="12" r="2.9"/>',
   schliessen: '<path d="M6.500 6.500l11 11M17.500 6.500l-11 11"/>',
   vollbild: '<path d="M14 4.500h5.500V10M19.500 4.500l-6 6M10 19.500H4.500V14M4.500 19.500l6-6"/>',
@@ -6871,7 +6902,16 @@ const popSchalter = (id, text, an, hinweis = '') =>
 const popKopf = (text, hinweis = '') => `<div class="pop-kopf">${text}${hinweis}</div>`;
 const POP_TRENNER = '<hr class="pop-trenner">';
 
-/** Menü „Daten“: alles rund um Dateien, Ablageordner, Sicherung und Browser-Speicher. */
+/** Knopf unten links in der Seitenleiste: Name und Stand des Ablageordners (sonst „Daten“); öffnet das Menü. */
+function sidebarKonto() {
+  const o = state.ordner, verbunden = !!o.handle && !['nicht_unterstuetzt', 'freigabe', 'fehlt'].includes(o.status), n = state.docs.length;
+  const name = verbunden ? esc(o.name) : 'Daten';
+  const stand = verbunden ? `<span data-ordner-stand aria-live="polite">${esc(ordnerStandText())}</span>${o.fehler ? `<span class="notice">${esc(o.fehler)}</span>` : ''}`
+    : `<span>${n ? `${n} Datei${n === 1 ? '' : 'en'} geladen` : 'Noch nichts geladen'}</span>`;
+  return `<button type="button" class="side-konto" id="datenKnopf" popovertarget="menueDaten" aria-haspopup="menu" aria-expanded="false" aria-label="${name}: Daten, Einstellungen und Hilfe" title="Daten laden, Ablageordner, Einstellungen, Hilfe"><span class="side-konto-bild">${ikon(verbunden ? 'ordner' : 'ablage', 17)}</span><span class="side-konto-text"><b>${name}</b>${stand}</span>${ikon('auf_ab', 15)}</button>`;
+}
+
+/** Menü am Knopf unten links: Dateien laden, Ablageordner, Sicherung, Einstellungen, Hilfe. */
 function datenMenue() {
   const kaputt = state.docs.filter(d => !d.isImmo), n = eingabenZahl();
   return popKopf('Bewertungen laden')
@@ -6880,16 +6920,13 @@ function datenMenue() {
     + popPunkt('paste', 'einfuegen', 'JSON einfügen …')
     + ordnerMenue()
     + POP_TRENNER
-    + popKopf('Eigene Eingaben', info('Status, Notizen, Adressen und Kartenpunkte als Datei sichern. Zurückholen: die Datei über „Dateien hinzufügen“ laden.', 'Eigene Eingaben sichern'))
-    + popPunkt('eingaben-sichern', 'sichern', 'Eigene Eingaben sichern', { attrs: n ? '' : 'disabled', zusatz: n ? `<span class="count">${n}</span>` : '' })
-    + POP_TRENNER
-    + popSchalter('persist', 'Dateien in diesem Browser merken', state.persist)
+    + popPunkt('eingaben-sichern', 'sichern', 'Eigene Eingaben sichern', { attrs: `title="Status, Notizen, Adressen und Kartenpunkte als Datei sichern. Zurückholen: die Datei über „Dateien hinzufügen“ laden."${n ? '' : ' disabled'}`, zusatz: n ? `<span class="count">${n}</span>` : '' })
     + (state.saveError ? `<div class="pop-hinweis notice">${esc(state.saveError)}</div>` : '')
-    + (state.docs.length ? popPunkt('clear-all', 'entfernen', `Alle ${state.docs.length} Dateien entfernen …`, { klasse: 'gefahr' }) : '')
     + (kaputt.length ? POP_TRENNER + popKopf('Nicht lesbar') + kaputt.map(d => popPunkt('open', 'datei', esc(d.fileName), { attrs: `data-uid="${d.uid}"`, klasse: 'gefahr' })).join('') : '')
     + POP_TRENNER
-    + popPunkt('hilfe', 'hilfe', 'Anleitung und Master-Prompt', { attrs: 'data-bereich="anleitung"' })
-    + popPunkt('einstellungen', 'zahnrad', 'Einstellungen …');
+    + popPunkt('einstellungen', 'zahnrad', 'Einstellungen')
+    + popPunkt('hilfe', 'hilfe', 'Hilfe und Anleitung', { attrs: 'data-bereich="anleitung"' })
+    + popPunkt('hilfe', 'neu', 'Was ist neu', { attrs: 'data-bereich="versionen" id="versionsKnopf"', klasse: 'pop-fuss', zusatz: `<span class="count">Version ${esc(window.ImmoVersionen?.VERSION || '')}</span>` });
 }
 
 /** Menü „⋯“ über dem Vergleich: Aktionen, die man selten braucht. */
@@ -6921,7 +6958,7 @@ function objektMenue() {
 
 /* ---------- Öffnen, Ausrichten, Auffrischen ---------- */
 // profilMenue und profilKartenMenue stehen in src/oberflaeche/persoenlich.js; die Funktion bekommt den öffnenden Knopf
-const POP_MENUES = { menueDaten: () => datenMenue(), menueTabelle: () => tabellenMenue(), menueOrt: () => ortMenue(), menueObjekt: () => objektMenue(), menueProfil: () => profilMenue(), menueProfilKarte: anker => profilKartenMenue(anker) };
+const POP_MENUES = { menueDaten: () => datenMenue(), menueTabelle: () => tabellenMenue(), menueOrt: () => ortMenue(), menueUrteil: () => urteilMenue(), menueObjekt: () => objektMenue(), menueProfil: () => profilMenue(), menueProfilKarte: anker => profilKartenMenue(anker) };
 const popAnker = {};
 
 function popMenueFuellen(el) { el.innerHTML = POP_MENUES[el.id](popAnker[el.id]); }
@@ -6975,9 +7012,10 @@ addEventListener('resize', () => { for (const id of Object.keys(POP_MENUES)) { c
 </script>
 <script>/* src/oberflaeche/einstellungen.js */
 /*
- * ImmoInvest Viewer – Einstellungen (Zahnrad unten links in der Seitenleiste), Tabs und Objektbereich neben der Liste
+ * ImmoInvest Viewer – Einstellungsmodus, Tabs und Objektbereich neben der Liste
  *
- * Einstellungen: Farbschema, wie Objekte geöffnet werden, was sich der Browser merkt. Alles bleibt in diesem Browser.
+ * Einstellungen: eigene Ansicht (state.view = 'einstellungen'), erreichbar über das Menü unten links. Die Seitenleiste
+ * zeigt dann die Bereiche (Allgemein, Daten & Speicher, Hilfe & Info), rechts steht der Inhalt. Alles bleibt im Browser.
  *
  * Objektbereich: Auf breiten Fenstern öffnet ein Klick auf ein Objekt es rechts neben der Liste (Tabelle, Karte …),
  * statt die Seite zu wechseln. Die Liste bleibt bedienbar, die Trennlinie lässt sich ziehen, der Bereich lässt sich
@@ -7089,42 +7127,80 @@ document.addEventListener('auxclick', e => {
   if (uid) { e.preventDefault(); tabSchliessen(uid); }
 });
 
-/* ---------- Dialog „Einstellungen“ ---------- */
-function einstellungenInhalt() {
+/* ---------- Einstellungsmodus: Bereiche links in der Seitenleiste, Inhalt rechts ---------- */
+const EINST_BEREICHE = [['allgemein', 'Allgemein', 'zahnrad', 'Darstellung und Bedienung'], ['daten', 'Daten & Speicher', 'ordner', 'Bewertungen laden, Ablageordner, was sich der Browser merkt'], ['hilfe', 'Hilfe & Info', 'hilfe', 'Anleitung, Tastaturkürzel, Versionen']];
+
+function einstellungenOeffnen(bereich) {
+  if (document.getElementById('dlg').open) document.getElementById('dlg').close();
+  if (state.view !== 'einstellungen') state.vorEinst = { view: state.view, neben: state.neben };
+  if (EINST_BEREICHE.some(([id]) => id === bereich)) state.einstBereich = bereich;
+  state.view = 'einstellungen'; state.menue.mobilAuf = false;
+  render();
+  window.scrollTo(0, 0);
+}
+function einstellungenVerlassen() {
+  const v = state.vorEinst || {};
+  state.view = v.view && v.view !== 'einstellungen' ? v.view : immoDocs().length ? 'compare' : 'start';
+  state.neben = !!v.neben; state.vorEinst = null;
+  render();
+  window.scrollTo(0, 0);
+}
+
+/** Seitenleiste im Einstellungsmodus: Zurück und die Bereiche. */
+function einstSeitenleiste() {
+  return `<button class="navitem einst-zurueck" data-action="einst-zurueck" title="Einstellungen verlassen (Esc)">${ikon('zurueck')}<span class="menue-text">Zurück</span></button>
+    <div class="menue-titel">Einstellungen</div>
+    <nav class="menue-nav" aria-label="Bereiche der Einstellungen">${EINST_BEREICHE.map(([id, t, symbol]) => { const an = state.einstBereich === id; return `<button class="navitem${an ? ' active' : ''}" data-action="einst-bereich" data-bereich="${id}"${an ? ' aria-current="page"' : ''}>${ikon(symbol)}<span class="menue-text">${t}</span></button>`; }).join('')}</nav>`;
+}
+
+function viewEinstellungen() {
+  const bereich = EINST_BEREICHE.find(([id]) => id === state.einstBereich) || EINST_BEREICHE[0];
   const thema = lsGet(LS.theme) || 'auto';
   const segment = (name, id, wahl, aktiv) => `<div class="segment" role="radiogroup" aria-label="${name}">${wahl.map(([wert, text]) => `<button type="button" role="radio" aria-checked="${wert === aktiv}"${wert === aktiv ? ' class="aktiv"' : ''} data-action="einst-setzen" data-einst="${id}" data-wert="${wert}">${text}</button>`).join('')}</div>`;
   const zeile = (titel, steuer, hinweis = '') => `<div class="einst-zeile"><div class="einst-text"><span>${titel}</span>${hinweis ? `<small>${hinweis}</small>` : ''}</div>${steuer}</div>`;
-  const schalter = (id, titel, an, hinweis) => `<div class="einst-zeile"><label class="einst-text" for="${id}"><span>${titel}</span><small>${hinweis}</small></label><input type="checkbox" class="schalter" role="switch" id="${id}"${an ? ' checked' : ''}></div>`;
-  const verweis = (bereich, text, zusatz = '') => `<button type="button" class="einst-zeile einst-verweis" data-action="hilfe" data-bereich="${bereich}"><span class="einst-text"><span>${text}</span></span>${zusatz ? `<span class="einst-wert">${zusatz}</span>` : ''}${ikon('pfeil', 16)}</button>`;
-  const version = esc(window.ImmoVersionen?.VERSION || '');
-  return dlgHead('Einstellungen')
-    + `<div class="einst">
-      <h4>Darstellung</h4>
-      <div class="einst-gruppe">
-        ${HOSTED ? '' : zeile('Farbschema', segment('Farbschema', 'thema', [['auto', 'Automatisch'], ['light', 'Hell'], ['dark', 'Dunkel']], thema))}
-        ${zeile('Objekt öffnen', segment('Objekt öffnen', 'objekt', [['neben', 'Neben der Liste'], ['ganz', 'Ganze Seite']], state.einst.objektNeben ? 'neben' : 'ganz'), 'Neben der Liste bleibt die Tabelle sichtbar; die Trennlinie lässt sich ziehen. Gilt auf breiten Fenstern.')}
-      </div>
-      <h4>In diesem Browser merken</h4>
-      <div class="einst-gruppe">
-        ${schalter('einst-dateien', 'Geladene Bewertungen', state.persist, 'Die Dateien sind beim nächsten Öffnen wieder da.')}
-        ${schalter('einst-profile', 'Persönliche Profile', state.profile.merken, 'Zunächst aus. Profile bleiben sonst nur bis zum Schließen der Seite – dann als Datei exportieren.')}
-      </div>
-      <h4>Hilfe</h4>
-      <div class="einst-gruppe">
-        ${verweis('anleitung', 'Anleitung und Master-Prompt')}
-        ${verweis('kuerzel', 'Tastaturkürzel')}
-        ${verweis('versionen', 'Was ist neu', version ? `Version ${version}` : '')}
-      </div>
-      <p class="einst-fuss">Alle Einstellungen und Daten bleiben auf diesem Gerät. Nichts wird hochgeladen.</p>
-    </div>`;
+  const schalter = (id, titel, an, hinweis) => `<div class="einst-zeile"><label class="einst-text" for="${id}"><span>${titel}</span>${hinweis ? `<small>${hinweis}</small>` : ''}</label><input type="checkbox" class="schalter" role="switch" id="${id}"${an ? ' checked' : ''}></div>`;
+  const aktion = (action, symbol, text, { attrs = '', zusatz = '', klasse = '', aus = false } = {}) => `<button type="button" class="einst-zeile einst-verweis${klasse ? ' ' + klasse : ''}" data-action="${action}" ${attrs}${aus ? ' disabled' : ''}>${ikon(symbol)}<span class="einst-text"><span>${text}</span></span>${zusatz ? `<span class="einst-wert">${zusatz}</span>` : ''}${ikon('pfeil', 16)}</button>`;
+  const gruppe = (titel, inhalt, hinweis = '') => (inhalt ? `<h4>${titel}${hinweis}</h4><div class="einst-gruppe">${inhalt}</div>` : '');
+  let inhalt;
+  if (bereich[0] === 'daten') {
+    const o = state.ordner, n = eingabenZahl();
+    let ordner = '';
+    if (o.status !== 'nicht_unterstuetzt') {
+      if (!o.handle) ordner = aktion('ordner-verbinden', 'ordner', 'Ablageordner verbinden …');
+      else {
+        const lesbar = !['freigabe', 'fehlt'].includes(o.status);
+        const knoepfe = o.status === 'freigabe' ? '<button class="btn sm primary" data-action="ordner-freigeben">Einlesen</button>' : o.status === 'fehlt' ? '<button class="btn sm" data-action="ordner-verbinden">Neu verbinden …</button>' : '<button class="btn sm" data-action="ordner-einlesen">Jetzt einlesen</button>';
+        ordner = zeile(esc(o.name), `<div class="einst-knoepfe">${knoepfe}<button class="btn sm" data-action="ordner-trennen">Trennen</button></div>`, lesbar ? `<span data-ordner-stand>${esc(ordnerStandText())}</span>${o.fehler ? ` · ${esc(o.fehler)}` : ''}` : o.status === 'freigabe' ? 'Der Browser braucht erneut die Erlaubnis, den Ordner zu lesen.' : esc(o.fehler || 'Ordner nicht erreichbar.'))
+          + (lesbar ? schalter('einst-ordner-auto', 'Automatisch einlesen', o.auto, 'Beim Öffnen und wenn sich im Ordner etwas ändert.') : '');
+      }
+    }
+    inhalt = gruppe('Bewertungen laden', aktion('pick-files', 'datei', 'Dateien hinzufügen …') + aktion('pick-dir', 'ordner', 'Ordner einmalig laden …') + aktion('paste', 'einfuegen', 'JSON einfügen …'))
+      + gruppe('Ablageordner', ordner, info(ORDNER_INFO, 'Ablageordner'))
+      + gruppe('In diesem Browser merken', schalter('einst-dateien', 'Geladene Bewertungen', state.persist, 'Die Dateien sind beim nächsten Öffnen wieder da.') + schalter('einst-profile', 'Persönliche Profile', state.profile.merken, 'Zunächst aus. Profile bleiben sonst nur bis zum Schließen der Seite – dann als Datei exportieren.')
+        + (state.saveError ? `<div class="einst-zeile"><span class="notice">${esc(state.saveError)}</span></div>` : ''))
+      + gruppe('Sichern und aufräumen', aktion('eingaben-sichern', 'sichern', 'Eigene Eingaben sichern', { zusatz: n ? `${n}` : 'keine', aus: !n, attrs: 'title="Status, Notizen, Adressen und Kartenpunkte als Datei sichern"' })
+        + aktion('clear-all', 'entfernen', state.docs.length ? `Alle ${state.docs.length} Dateien entfernen …` : 'Alle Dateien entfernen …', { klasse: 'gefahr', aus: !state.docs.length }));
+  } else if (bereich[0] === 'hilfe') {
+    inhalt = gruppe('Hilfe', aktion('hilfe', 'hilfe', 'Anleitung und Master-Prompt', { attrs: 'data-bereich="anleitung"' }) + aktion('hilfe', 'suche', 'Tastaturkürzel', { attrs: 'data-bereich="kuerzel"' }))
+      + gruppe('Über ImmoInvest', aktion('hilfe', 'neu', 'Was ist neu', { attrs: 'data-bereich="versionen"', zusatz: `Version ${esc(window.ImmoVersionen?.VERSION || '')}` }))
+      + '<p class="einst-fuss">Alle Einstellungen und Daten bleiben auf diesem Gerät. Nichts wird hochgeladen.</p>';
+  } else {
+    inhalt = gruppe('Darstellung', HOSTED ? '' : zeile('Farbschema', segment('Farbschema', 'thema', [['auto', 'Automatisch'], ['light', 'Hell'], ['dark', 'Dunkel']], thema)))
+      + gruppe('Objekte', zeile('Objekt öffnen', segment('Objekt öffnen', 'objekt', [['neben', 'Neben der Liste'], ['ganz', 'Ganze Seite']], state.einst.objektNeben ? 'neben' : 'ganz'), 'Neben der Liste bleibt die Tabelle sichtbar; die Trennlinie lässt sich ziehen. Gilt auf breiten Fenstern.'))
+      + gruppe('Tabelle', immoDocs().length ? aktion('spalten-dialog', 'spalten', 'Spalten wählen …') + aktion('ansicht-zuruecksetzen', 'zuruecksetzen', 'Sortierung und Filter zurücksetzen', { aus: !ansichtVeraendert() }) : '');
+  }
+  return `<div class="ohne-leiste no-print"><div class="dh-kopfzeile"><button class="zurueck-knopf" data-action="einst-zurueck">${ikon('zurueck', 18)}<span>Zurück</span></button></div>
+      <div class="cmp-tabs" role="tablist" aria-label="Bereiche der Einstellungen">${EINST_BEREICHE.map(([id, t]) => `<button class="cmp-tab${bereich[0] === id ? ' active' : ''}" role="tab" aria-selected="${bereich[0] === id}" data-action="einst-bereich" data-bereich="${id}">${t}</button>`).join('')}</div></div>
+    <div class="page-head"><div><h1>${bereich[1]}</h1><p class="sub">Einstellungen · ${bereich[3]}</p></div></div>
+    <div class="einst">${inhalt}</div>`;
 }
-function einstellungenOeffnen() { openDialog(einstellungenInhalt()); document.getElementById('dlg').classList.add('schmal'); }
-const einstellungenOffen = () => document.getElementById('dlg').open && !!document.querySelector('#dlgBody .einst');
 
 /** Klicks auf Einstellungen und auf die Knöpfe des Objektbereichs; true = behandelt. */
 function einstAktion(action, el) {
   switch (action) {
-    case 'einstellungen': einstellungenOeffnen(); return true;
+    case 'einstellungen': einstellungenOeffnen(el.dataset.bereich); return true;
+    case 'einst-zurueck': einstellungenVerlassen(); return true;
+    case 'einst-bereich': state.einstBereich = el.dataset.bereich; render(); window.scrollTo(0, 0); return true;
     case 'einst-setzen': {
       const { einst, wert } = el.dataset;
       if (einst === 'thema') { lsSet(LS.theme, wert); applyTheme(wert); drawCharts(); }
@@ -7133,8 +7209,8 @@ function einstAktion(action, el) {
         if (!state.einst.objektNeben && objektNeben()) { state.neben = false; state.view = 'detail'; }
         render();
       }
-      document.getElementById('dlgBody').innerHTML = einstellungenInhalt();
-      document.querySelector(`#dlgBody [data-einst="${einst}"][data-wert="${wert}"]`)?.focus();
+      if (einst !== 'objekt') render();
+      document.querySelector(`#main [data-einst="${einst}"][data-wert="${wert}"]`)?.focus();
       return true;
     }
     case 'neben-zu': state.neben = false; render(); document.querySelector(`.cmp-table tr[data-uid="${state.current}"]`)?.focus?.(); return true;
@@ -7148,6 +7224,7 @@ function einstAktion(action, el) {
 /** Schalter im Dialog; true = behandelt. */
 function einstAenderung(t) {
   if (t.id === 'einst-dateien') { state.persist = t.checked; lsSet(LS.persist, t.checked ? '1' : '0'); save(); renderSidebar(); return true; }
+  if (t.id === 'einst-ordner-auto') { state.ordner.auto = t.checked; lsSet(LS_ORDNER_AUTO, t.checked ? '1' : '0'); return true; }
   if (t.id === 'einst-profile') {
     state.profile.merken = t.checked;
     if (t.checked) { lsSet(LS_PROFILE_MERKEN, '1'); pSpeichern(); toast('Profile werden in diesem Browser gemerkt.'); }
@@ -7193,10 +7270,11 @@ document.addEventListener('dblclick', e => { if (e.target.closest?.('.teiler')) 
 document.addEventListener('keydown', e => {
   if (e.target.closest?.('.teiler') && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) { e.preventDefault(); e.stopPropagation(); nebenBreiteSetzen(state.einst.breite + (e.key === 'ArrowLeft' ? 0.03 : -0.03)); return; }
   // Esc schließt den Objektbereich, wenn sonst nichts offen ist
-  if (e.key !== 'Escape' || e.defaultPrevented || !objektNeben() || document.getElementById('dlg').open) return;
+  if (e.key !== 'Escape' || e.defaultPrevented || document.getElementById('dlg').open) return;
+  if (!objektNeben() && state.view !== 'einstellungen') return;
   if (e.target.closest?.('input, select, textarea, [contenteditable]') || document.querySelector(':popover-open')) return;
   e.preventDefault();
-  einstAktion('neben-zu');
+  if (state.view === 'einstellungen') einstellungenVerlassen(); else einstAktion('neben-zu');
 }, true);
 // Wird das Fenster zu schmal (oder wieder breit genug), passt sich die Ansicht an
 let nebenBreit = nebenBreitGenug();
@@ -8401,11 +8479,14 @@ const state = {
   ausgeblendet: new Set(), // Startwert SPALTEN_STANDARD_AUS, gesetzt in ansichtLaden()
   // Menü links: ganz zugeklappt (nur breite Bildschirme, gemerkt) und offene Gruppen
   menue: { zu: false, mobilAuf: false, gruppen: { ansicht: true, offen: true, profil: true } },
-  // Einstellungen (Zahnrad) und Objektbereich neben der Liste (src/oberflaeche/einstellungen.js)
+  // Gemerkte Einstellungen und Objektbereich neben der Liste (src/oberflaeche/einstellungen.js)
   einst: einstZustand(),
   neben: false,
   // Geöffnete Objekte als Tabs (uids in der Reihenfolge des Öffnens); state.current ist der aktive Tab
   tabs: [],
+  // Einstellungsmodus: gewählter Bereich und die Ansicht, zu der „Zurück“ führt
+  einstBereich: 'allgemein',
+  vorEinst: null,
 };
 let uidCounter = 0;
 let numCounter = 0;
@@ -9156,7 +9237,7 @@ function render() {
   chartFns.clear();
   renderSidebar();
   const main = $('#main');
-  if (!state.docs.length && state.view !== 'profile') state.view = 'start';
+  if (!state.docs.length && state.view !== 'profile' && state.view !== 'einstellungen') state.view = 'start';
   if (state.view === 'detail' && !getDoc(state.current)) state.view = state.docs.length ? 'compare' : 'start';
   if (state.view === 'compare' && !immoDocs().length) { state.view = state.docs.length ? 'detail' : 'start'; state.current = state.docs[0]?.uid; }
   // Tabs: nur vorhandene Objekte; ein sichtbares Objekt hat immer einen Tab
@@ -9178,7 +9259,7 @@ function render() {
   const kontext = `${state.view}|${state.current}|${state.profile.aktivId}|${state.detailModus}`;
   if (kontext !== state.feldKontext) { state.feldFehler = {}; state.feldRoh = {}; state.feldKontext = kontext; }
   const scroll = scrollMerken();
-  const seite = () => (state.view === 'start' ? viewStart() : state.view === 'compare' ? viewCompare() : state.view === 'profile' ? viewProfile() : viewDetail(getDoc(state.current)));
+  const seite = () => (state.view === 'start' ? viewStart() : state.view === 'compare' ? viewCompare() : state.view === 'profile' ? viewProfile() : state.view === 'einstellungen' ? viewEinstellungen() : viewDetail(getDoc(state.current)));
   main.innerHTML = neben
     ? `<div class="geteilt-rahmen" style="--bereich:${(state.einst.breite * 100).toFixed(2)}%"><div class="view view-compare pane-liste">${viewCompare()}</div><div class="teiler no-print" role="separator" aria-orientation="vertical" tabindex="0" aria-label="Breite des Objektbereichs ändern" title="Ziehen ändert die Breite, Doppelklick setzt sie zurück"></div><section class="view view-detail pane-objekt" id="bereich" aria-label="Geöffnetes Objekt">${tabLeiste()}${viewDetail(getDoc(state.current))}</section></div>`
     : `${tabsOben ? tabLeiste() : ''}<div class="view view-${state.view}">${seite()}</div>`;
@@ -9259,9 +9340,11 @@ function menueGruppe(id, titel, inhalt) {
   return `<details class="menue-gruppe" data-gruppe="${id}"${state.menue.gruppen[id] !== false ? ' open' : ''}><summary><span>${titel}</span></summary><div class="menue-inhalt">${inhalt}</div></details>`;
 }
 
-/** Seitenleiste: nur Navigation (Ansichten, geöffnetes Objekt, Profil). Dateien, Ordner und Sicherung stehen im Menü „Daten“. */
+/** Seitenleiste: nur Navigation (Ansichten, geöffnetes Objekt, Profil). Dateien, Ordner, Sicherung, Einstellungen und Hilfe stehen im Menü am Knopf unten links (sidebarKonto). */
 function renderSidebar() {
   const sb = $('#sidebar');
+  // Einstellungsmodus: die Seitenleiste zeigt die Bereiche der Einstellungen
+  if (state.view === 'einstellungen') { sb.innerHTML = einstSeitenleiste(); bereichKnopfAuffrischen(); popMenuesAuffrischen(); return; }
   const immo = immoDocs();
   const aktuell = state.view === 'detail' ? getDoc(state.current) : null;
   const punkt = ([id, t]) => { const an = state.view === 'compare' && state.cmpTab === id; return `<button class="navitem${an ? ' active' : ''}" data-action="menue-tab" data-tab="${id}"${an ? ' aria-current="page"' : ''}>${ikon(id)}<span class="menue-text">${t.replace(/&shy;/g, '')}</span>${id === 'gegenueberstellung' && state.selectionTouched && state.selected.size ? `<span class="count">${state.selected.size}</span>` : ''}</button>`; };
@@ -9275,8 +9358,7 @@ function renderSidebar() {
   sb.innerHTML = menueGruppe('ansicht', 'Vergleich', ansicht)
     + (offen ? menueGruppe('offen', 'Geöffnet', offen) : '')
     + menueGruppe('profil', 'Profil', sidebarProfil())
-    + `<div class="side-fuss">${sidebarOrdner()}<button class="navitem einst-knopf" data-action="einstellungen" id="einstKnopf" aria-haspopup="dialog" title="Einstellungen: Farbschema, Objektansicht, Speichern im Browser">${ikon('zahnrad')}<span class="menue-text">Einstellungen</span></button></div>`;
-  $('#datenKnopf')?.classList.toggle('primary', !state.docs.length && state.view !== 'start');
+    + `<div class="side-fuss">${sidebarOrdner()}${sidebarKonto()}</div>`;
   bereichKnopfAuffrischen();
   popMenuesAuffrischen();
 }
@@ -9790,15 +9872,16 @@ function viewCompare() {
   if (!CMP_TABS.some(([id]) => id === state.cmpTab)) state.cmpTab = 'tabelle';
   const filtered = state.cmpTab !== 'gegenueberstellung';
   const titel = (CMP_TABS.find(([id]) => id === state.cmpTab) || CMP_TABS[0])[1].replace(/&shy;/g, '');
-  // Werkzeuge rechts: Suche und das Menü „⋯“ (Spalten, ältere Revisionen, CSV). Die Reiter erscheinen nur, wenn die Seitenleiste zu ist.
-  const werkzeuge = filtered ? `<div class="werkzeuge">
+  // Eine Werkzeugzeile: Suche, Filter (Urteil, Ort, Spaltenfilter) und rechts ⓘ und das Menü „⋯“.
+  // Die Suche steht außerhalb von #filterZeile, damit sie beim Auffrischen der Filter den Fokus behält.
+  const werkzeuge = filtered ? `<div class="werkzeug-zeile">
         <label class="such-feld" title="Titel, Ort, Plattform-ID oder Dateiname (Taste /)">${ikon('suche', 16)}<input type="search" id="fq" placeholder="Suchen" value="${esc(state.filter.q)}" aria-label="Suchen"></label>
-        ${state.cmpTab === 'tabelle' ? tabellenInfo() : ''}
-        <button class="icon-knopf" popovertarget="menueTabelle" aria-haspopup="menu" aria-expanded="false" aria-label="Weitere Aktionen" title="Weitere Aktionen: Spalten, Revisionen, CSV-Export">${ikon('mehr', 22)}</button>
+        <div class="filter-zeile" id="filterZeile">${filterZeile()}</div>
+        <div class="werkzeug-ende">${state.cmpTab === 'tabelle' ? tabellenInfo() : ''}<button class="icon-knopf" popovertarget="menueTabelle" aria-haspopup="menu" aria-expanded="false" aria-label="Weitere Aktionen" title="Weitere Aktionen: Spalten, Revisionen, CSV-Export">${ikon('mehr', 22)}</button></div>
       </div>` : '';
-  return `<div class="page-head"><div><h1>${titel}</h1><p class="sub" id="cmpStand">${vergleichStand()}</p></div>${werkzeuge}</div>
+  return `<div class="page-head"><div><h1>${titel}</h1><p class="sub" id="cmpStand">${vergleichStand()}</p></div></div>
     <div class="cmp-tabs" role="tablist" aria-label="Bereiche des Vergleichs">${CMP_TABS.map(([id, label]) => `<button class="cmp-tab${state.cmpTab === id ? ' active' : ''}" role="tab" aria-selected="${state.cmpTab === id}" data-action="cmp-tab" data-tab="${id}">${label}${id === 'gegenueberstellung' && state.selectionTouched && state.selected.size ? ` <span class="count">${state.selected.size}</span>` : ''}</button>`).join('')}</div>
-    ${filtered ? `<div class="filter-zeile" id="filterZeile">${filterZeile()}</div>` : ''}
+    ${werkzeuge}
     <div id="cmpResults">${compareResults()}</div>
     ${auswahlLeiste()}`;
 }
@@ -9822,9 +9905,9 @@ function vergleichStand() {
   return `${zahl}${bad ? ` · ${bad} Datei${bad === 1 ? '' : 'en'} nicht lesbar` : ''}`;
 }
 
-/** Filterzeile über den Ergebnissen: Gesamturteil, Ort, aktive Spaltenfilter – alles in einer Zeile und in einem Stil. */
+/** Filter in der Werkzeugzeile: Gesamturteil und Ort als Knöpfe mit Auswahlmenü, dahinter die Marken der Spaltenfilter. */
 function filterZeile() {
-  return `<div class="urteil-leiste" role="group" aria-label="Nach Gesamturteil filtern">${urteilChips()}</div>${ortFilter()}${spaltenfilterLeiste()}${ansichtVeraendert() ? '<button class="filter-reset" data-action="ansicht-zuruecksetzen" title="Sortierung, Suche und alle Filter zurücksetzen">Zurücksetzen</button>' : ''}`;
+  return `${urteilFilter()}${ortFilter()}${spaltenfilterLeiste()}${ansichtVeraendert() ? '<button class="filter-reset" data-action="ansicht-zuruecksetzen" title="Sortierung, Suche und alle Filter zurücksetzen">Zurücksetzen</button>' : ''}`;
 }
 function filterZeileAuffrischen() {
   const z = $('#filterZeile'), st = $('#cmpStand');
@@ -9833,16 +9916,24 @@ function filterZeileAuffrischen() {
   popMenuesAuffrischen();
 }
 
-/** Urteils-Chips: Anzahl je Gesamturteil; ein Klick filtert (derselbe Filter wie die Spalte „Gesamturteil“).
-    Die Chips bleiben an ihrem Platz: ein Urteil ohne Treffer im aktuellen Ort wird blass, verschwindet aber nicht. */
-function urteilChips() {
-  const alle = immoDocs().filter(d => d.rev?.latest), scope = alle.filter(inOrtFilter);
-  const ub = state.filter.spalten.urteil, nurEins = ub && ub.werte.length === 1 ? ub.werte[0] : null;
-  return VERDICT_ORDER.map(v => {
-    const n = scope.filter(d => urteilOf(d) === v).length, an = nurEins === v;
-    if (!an && !alle.some(d => urteilOf(d) === v)) return '';
-    return `<button class="urteil-chip ${vcls(v)}${an ? ' an' : ''}" data-action="urteil-kachel" data-v="${v}" aria-pressed="${an}"${!n && !an ? ' disabled' : ''} title="${an ? 'Filter aufheben' : `Nur „${esc(L(v))}“ zeigen`}"><span class="vi" aria-hidden="true">${(VERDICT[v] || ['?'])[0]}</span><span class="urteil-chip-text">${esc(URTEIL_KURZ[v] || L(v))}</span><b>${n}</b></button>`;
-  }).join('');
+/** Gesamturteile, die in den geladenen Objekten vorkommen (in fester Reihenfolge). */
+const urteileVorhanden = () => { const alle = immoDocs().filter(d => d.rev?.latest); return VERDICT_ORDER.filter(v => alle.some(d => urteilOf(d) === v)); };
+
+/** Urteilsfilter als ein Knopf mit Auswahlmenü – derselbe Filter wie an der Spalte „Gesamturteil“. */
+function urteilFilter() {
+  const b = state.filter.spalten.urteil;
+  if (!b && urteileVorhanden().length < 2) return '';
+  const text = !b ? 'Urteil' : b.werte.length === 1 ? (b.werte[0] ? URTEIL_KURZ[b.werte[0]] || L(b.werte[0]) : 'Kein Urteil') : `${b.werte.length} Urteile`;
+  return `<span class="filter-wahl urteil-filter${b ? ' an' : ''}"><button class="filter-knopf" popovertarget="menueUrteil" aria-haspopup="menu" aria-expanded="false" title="Nach Gesamturteil filtern">${ikon('pruefung', 15)}<span class="filter-text">${esc(text)}</span>${b ? '' : ikon('auswahl', 13)}</button>${b ? '<button class="filter-x" data-action="filter-urteil-alle" aria-label="Urteilsfilter entfernen" title="Urteilsfilter entfernen">×</button>' : ''}</span>`;
+}
+
+/** Menü am Knopf „Urteil“: mehrere Urteile lassen sich ankreuzen, das Menü bleibt dabei offen. Anzahl im gewählten Ort. */
+function urteilMenue() {
+  const scope = immoDocs().filter(d => d.rev?.latest).filter(inOrtFilter), b = state.filter.spalten.urteil;
+  const zeigen = VERDICT_ORDER.filter(v => urteileVorhanden().includes(v) || (b && b.werte.includes(v)));
+  const haken = an => `<span class="pop-haken" aria-hidden="true">${an ? ikon('haken', 16) : ''}</span>`;
+  return `<button type="button" class="pop-punkt pop-wahl" role="menuitemcheckbox" aria-checked="${!b}" data-action="filter-urteil-alle">${haken(!b)}<span class="pop-text">Alle Urteile</span><span class="count">${scope.length}</span></button>` + POP_TRENNER
+    + zeigen.map(v => { const an = !!b && b.werte.includes(v); return `<button type="button" class="pop-punkt pop-wahl" role="menuitemcheckbox" aria-checked="${an}" data-action="filter-urteil" data-v="${v}">${haken(an)}<span class="urteil-punkt ${vcls(v)}"><span class="vi" aria-hidden="true">${(VERDICT[v] || ['?'])[0]}</span></span><span class="pop-text" title="${esc(L(v))}">${esc(URTEIL_KURZ[v] || L(v))}</span><span class="count">${scope.filter(d => urteilOf(d) === v).length}</span></button>`; }).join('');
 }
 
 /** Orte der geladenen Objekte mit Anzahl, alphabetisch; „ohne Ortsangabe“ zuletzt. */
@@ -10251,13 +10342,16 @@ document.addEventListener('click', e => {
     }
     case 'cmp-tab': state.cmpTab = el.dataset.tab; lsSet(LS.cmpTab, state.cmpTab); render(); break;
     case 'menue': menueUmschalten(); break;
-    case 'urteil-kachel': {
-      const v = el.dataset.v, b = state.filter.spalten.urteil;
-      if (b && b.werte.length === 1 && b.werte[0] === v) delete state.filter.spalten.urteil;
-      else state.filter.spalten.urteil = { werte: [v] };
+    case 'filter-urteil': {
+      // Ankreuzen im Menü „Urteil“; sind alle vorkommenden Urteile angekreuzt oder keines, entfällt der Filter
+      const w = new Set(state.filter.spalten.urteil?.werte || []);
+      w.has(el.dataset.v) ? w.delete(el.dataset.v) : w.add(el.dataset.v);
+      if (!w.size || urteileVorhanden().every(v => w.has(v))) delete state.filter.spalten.urteil;
+      else state.filter.spalten.urteil = { werte: [...VERDICT_ORDER.filter(v => w.has(v)), ...(w.has('') ? [''] : [])] };
       render();
       break;
     }
+    case 'filter-urteil-alle': delete state.filter.spalten.urteil; render(); break;
     case 'ansicht-zuruecksetzen': ansichtZuruecksetzen(); break;
     case 'spalten-dialog': spaltenDialog(); break;
     case 'eingaben-sichern': eingabenSichern(); break;
@@ -10410,7 +10504,6 @@ addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setT
 if (!HOSTED) applyTheme(lsGet(LS.theme) || 'auto');
 einstLaden();
 updateHostClasses();
-$('#versionsKnopf').textContent = `Version ${window.ImmoVersionen.VERSION}`;
 (async () => {
   await restore();
   render();
