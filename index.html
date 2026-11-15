@@ -1861,11 +1861,14 @@ button.p-karte { text-align: left; font: inherit; color: inherit; }
 .akte-kachel.krit span:last-child { color: var(--crit-ink); font-weight: 600; }
 .akte-kachel.warn span:last-child { color: var(--warn-ink); font-weight: 600; }
 /* Prüfung */
-.akte-leiste { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+.akte-leiste { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; }
+.akte-leiste-rechts { display: flex; align-items: center; gap: 12px; margin-left: auto; }
 .akte-leiste .akte-feld { flex-direction: row; align-items: center; gap: 8px; }
 .akte-fortschritt { display: flex; align-items: center; gap: 10px; flex: 1 1 200px; min-width: 0; font-size: 12.5px; color: var(--ink-2); }
 .akte-fortschritt .akte-balken { flex: 1; min-width: 60px; max-width: 220px; }
-.akte-vorschlaege { list-style: none; margin: 0; padding: 0; }
+.akte-vorschlaege { list-style: none; margin: 0; padding: 0 16px 8px; }
+.akte-vorschlag-kopf { display: flex; justify-content: flex-end; padding: 0 16px 8px; }
+.akte-gruppe > summary .info { margin-left: 4px; }
 .akte-vorschlaege li { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid var(--line); }
 .akte-vorschlaege div { display: flex; flex-direction: column; min-width: 0; font-size: 13.5px; }
 .akte-vorschlaege b { font-weight: 500; }
@@ -1883,18 +1886,57 @@ details.akte-gruppe { padding: 0; }
 .pp.stand-ok .pp-text, .pp.stand-entfaellt .pp-text { color: var(--ink-2); }
 .pp.stand-entfaellt .pp-text { text-decoration: line-through; }
 .pp-wahl { display: flex; flex: none; gap: 4px; }
-.pp-knopf { display: inline-grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 1px solid var(--line-2); border-radius: 8px; background: var(--surface); color: var(--muted); font-size: 15px; font-weight: 700; cursor: pointer; transition: background .12s, color .12s, border-color .12s; }
+.pp-knopf { display: inline-grid; place-items: center; height: 30px; padding: 0 10px; border: 1px solid var(--line-2); border-radius: 8px; background: var(--surface); color: var(--ink-2); font-size: 12.5px; font-weight: 500; white-space: nowrap; cursor: pointer; transition: background .12s, color .12s, border-color .12s; }
 .pp-knopf:hover { color: var(--ink); background: var(--fill); }
 .pp-knopf.pp-ok.an { background: var(--s-good); border-color: var(--s-good); color: #fff; }
 .pp-knopf.pp-problem.an { background: var(--s-crit); border-color: var(--s-crit); color: #fff; }
 .pp-knopf.pp-entfaellt.an { background: var(--ink-2); border-color: var(--ink-2); color: var(--surface); }
+.pp-knopf.pp-angefordert.an { background: var(--s-warn); border-color: var(--s-warn); color: #3a2a00; }
 .pp-knopf:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
-.pp-notiz-knopf { font-size: 15px; }
 .pp-notiz-knopf.hat { color: var(--accent); }
 .pp-notiz { margin-top: 6px; }
 .pp-leer { padding: 8px 0; border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-2); }
 .pp-neu { display: flex; gap: 8px; padding-top: 10px; border-top: 1px solid var(--line); }
 .pp-neu input { flex: 1; }
+
+/* Prüfung: Kennzahlen oben, Gruppen mit Zusammenfassung, Regler der Bewertung, angehängte Unterlagen */
+.akte-werte { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 10px; }
+.akte-wert { display: flex; flex-direction: column; gap: 3px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); font-size: 12.5px; color: var(--ink-2); }
+.akte-wert > span { display: flex; align-items: center; gap: 4px; font-weight: 600; }
+.akte-wert b { color: var(--ink); font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.akte-wert .akte-balken { margin-top: 4px; }
+.akte-wert.krit b { color: var(--crit-ink); }
+.akte-gruppe > summary .akte-zahl { font-weight: 400; white-space: normal; text-align: right; }
+.pp-gewicht { margin-left: 8px; font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+.pp-gewicht.null { color: var(--warn-ink); }
+.pp-regler { display: flex; align-items: center; gap: 8px; flex: 0 1 230px; min-width: 150px; }
+.pp-regler input[type="range"], .gw input[type="range"] { flex: 1; min-width: 0; height: 30px; margin: 0; padding: 0; border: 0; background: none; accent-color: var(--accent); cursor: pointer; }
+.pp-regler input.unbewertet { accent-color: var(--muted); opacity: .55; }
+.pp-regler input:disabled { opacity: .3; cursor: default; }
+.pp-note { display: inline-grid; place-items: center; flex: none; width: 32px; height: 30px; padding: 0; border: 0; border-radius: 8px; background: var(--accent); color: #fff; font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; cursor: pointer; }
+.pp-note:disabled { background: var(--fill); color: var(--muted); cursor: default; }
+.pp.stand-entfaellt .pp-note { background: var(--fill); color: var(--muted); }
+.pp-anhang { cursor: pointer; }
+.pp-dateien { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.datei { display: inline-flex; align-items: center; max-width: 100%; height: 30px; border-radius: 8px; background: var(--fill); font-size: 12.5px; }
+.datei-name { display: inline-flex; align-items: center; gap: 6px; min-width: 0; height: 100%; padding: 0 4px 0 9px; border: 0; border-radius: inherit; background: none; color: var(--ink); font: inherit; cursor: pointer; }
+.datei-name span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.datei-name:hover span { text-decoration: underline; }
+.datei-name small { flex: none; color: var(--ink-2); }
+.datei-name .ikon { color: var(--accent); }
+.datei-weg { flex: none; width: 24px; height: 24px; margin-right: 3px; border: 0; border-radius: 6px; background: none; color: var(--ink-2); font-size: 15px; cursor: pointer; }
+.datei-weg:hover { background: var(--fill-2); color: var(--ink); }
+.note-wert { display: inline-grid; place-items: center; min-width: 34px; height: 24px; padding: 0 7px; border-radius: 7px; background: var(--accent-wash); color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+/* Gewichtung auf der Seite „Profil“ */
+.gewichtung { display: flex; flex-direction: column; gap: 6px; }
+.gewichtung h4 { margin: 14px 0 0; font-size: 13px; color: var(--ink-2); }
+.gw-vorlagen { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 13px; color: var(--ink-2); }
+.gw-liste { list-style: none; margin: 0; padding: 0; }
+.gw { display: grid; grid-template-columns: minmax(0, 1fr) minmax(120px, 220px) 118px; align-items: center; gap: 4px 14px; padding: 5px 0; border-top: 1px solid var(--line); font-size: 14px; }
+.gw-text .tag { margin-left: 8px; }
+.gw-wort { font-size: 12.5px; color: var(--ink-2); }
+.gw-wort.null { color: var(--warn-ink); }
+@media (max-width: 640px) { .gw { grid-template-columns: minmax(0, 1fr) 118px; } .gw-text { grid-column: 1 / -1; } }
 /* Besichtigung */
 .raum-liste, .kontakt-liste { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr)); gap: 10px; }
 .raum { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border-left: 4px solid var(--line-2); }
@@ -1947,7 +1989,10 @@ ul.verlauf { padding: 2px 16px; }
 .status-wv.faellig { color: var(--warn-ink); font-weight: 600; }
 /* Tablet und Handy: größere Flächen zum Antippen */
 @media (pointer: coarse) {
-  .pp-knopf { width: 42px; height: 42px; font-size: 18px; }
+  .pp-knopf { height: 40px; padding: 0 12px; font-size: 14px; }
+  .pp-regler input[type="range"] { height: 40px; }
+  .pp-note { width: 40px; height: 40px; }
+  .gw input[type="range"] { height: 40px; }
   .pp { padding: 9px 0; }
   .akte :is(input[type="text"], input[type="date"], input[type="tel"], input[type="email"], select) { height: 44px; font-size: 16px; }
   .akte textarea { font-size: 16px; min-height: 44px; }
@@ -1957,8 +2002,8 @@ ul.verlauf { padding: 2px 16px; }
   .akte .btn.sm { height: 40px; padding: 0 14px; }
   .objekt-reiter button { padding: 9px 14px; }
 }
-@container objekt (max-width: 520px) { .pp-zeile { flex-wrap: wrap; } .pp-text { flex-basis: 100%; } }
-@media (max-width: 520px) { .pp-zeile { flex-wrap: wrap; } .pp-text { flex-basis: 100%; } }
+@container objekt (max-width: 640px) { .pp-zeile { flex-wrap: wrap; } .pp-text { flex-basis: 100%; } .pp-regler { flex: 1 1 160px; } }
+@media (max-width: 640px) { .pp-zeile { flex-wrap: wrap; } .pp-text { flex-basis: 100%; } .pp-regler { flex: 1 1 160px; } }
 @media print { .akte .foto-knopf, .akte .pp-neu, .akte .mangel-neu, .akte .eintrag-neu, .akte .icon-knopf { display: none !important; } }
 
 /* ---------- Einstellungen ---------- */
@@ -4041,7 +4086,8 @@ label.einst-text { cursor: pointer; }
  * ImmoInvest Rechenkern – Objektakte: eigene Arbeit an einem Objekt bis zum Kauf
  *
  * Je Objektschlüssel hält die Akte fest, was der Nutzer selbst beiträgt: Schritte bis zum Kauf, Prüf-Checkliste
- * (Vorlage je Objektart plus eigene Punkte), Besichtigung (Räume, Mängel, Fotoverweise), Kontakte und den Verlauf
+ * (Vorlage je Objektart plus eigene Punkte; Unterlagen mit angehängten Dateien, Bewertungskriterien mit Note und
+ * Gewichtung als Nutzwertanalyse, Klärungen), Besichtigung (Räume, Mängel, Fotoverweise), Kontakte und den Verlauf
  * der Kommunikation mit Wiedervorlagen. Die importierte Analyse bleibt unverändert.
  *
  * Dieses Modul liefert die Vorlagen, prüft und vereinheitlicht Akten (Dateien sind nicht vertrauenswürdig) und
@@ -4070,12 +4116,20 @@ label.einst-text { cursor: pointer; }
   ];
 
   const VORLAGEN = [['etw_vermietet', 'Eigentumswohnung, vermietet'], ['etw_frei', 'Eigentumswohnung, bezugsfrei'], ['mfh', 'Mehrfamilienhaus']];
+  // Gruppen der Prüfung. Jeder Punkt hat eine Art:
+  //   unterlage  Dokument: angefordert, liegt vor oder entfällt; Dateien lassen sich anhängen
+  //   bewertung  Kriterium der Nutzwertanalyse: Note 1–10 per Regler, gewichtet nach den eigenen Vorlieben
+  //   klaerung   Sachverhalt: geklärt, Problem oder entfällt
   const GRUPPEN = [
-    ['analyse', 'Offene Punkte aus der Analyse'], ['unterlagen', 'Unterlagen'], ['objekt', 'Objekt und Zustand'], ['gemeinschaft', 'Gemeinschaft und Verwaltung'],
-    ['miete', 'Miete und Mieter'], ['recht', 'Grundbuch und Recht'], ['geld', 'Kaufpreis, Finanzierung, Steuer'],
+    ['analyse', 'Offene Punkte aus der Analyse'], ['unterlagen', 'Unterlagen'], ['lage', 'Lage'], ['objekt', 'Objekt und Zustand'],
+    ['gemeinschaft', 'Gemeinschaft und Verwaltung'], ['miete', 'Miete und Mieter'], ['ort', 'Vor Ort klären'],
+    ['recht', 'Grundbuch und Recht'], ['geld', 'Kaufpreis, Finanzierung, Steuer'],
   ];
+  const ART_JE_GRUPPE = { unterlagen: 'unterlage', lage: 'bewertung', objekt: 'bewertung', gemeinschaft: 'bewertung' };
   const ETW = ['etw_vermietet', 'etw_frei'], VERM = ['etw_vermietet', 'mfh'];
-  // [ID, Gruppe, Text, nur für diese Vorlagen (ohne Angabe: alle)]
+  const B = 'bewertung', K = 'klaerung';
+  // [ID, Gruppe, Text, nur für diese Vorlagen (ohne Angabe: alle), Art (ohne Angabe: nach Gruppe, sonst Klärung)]
+  // IDs nie ändern – sie stehen in gespeicherten Akten und in den Gewichtungen.
   const PUNKTE = [
     ['u_expose', 'unterlagen', 'Exposé mit Grundriss und Wohnflächenberechnung'],
     ['u_grundbuch', 'unterlagen', 'Aktueller Grundbuchauszug'],
@@ -4096,45 +4150,58 @@ label.einst-text { cursor: pointer; }
     ['u_flurkarte', 'unterlagen', 'Flurkarte und Lageplan', ['mfh']],
     ['u_bauakte', 'unterlagen', 'Baugenehmigung und Baubeschreibung (Bauakte)', ['mfh']],
 
-    ['o_lage', 'objekt', 'Lage und Umfeld: Lärm, Parken, Nachbarschaft – möglichst zu zwei Tageszeiten'],
-    ['o_fassade', 'objekt', 'Fassade, Dach und Dachrinnen von außen'],
-    ['o_keller', 'objekt', 'Keller: Feuchtigkeit, Geruch, Ausblühungen an den Wänden'],
-    ['o_treppenhaus', 'objekt', 'Treppenhaus, Hauseingang, Klingeln und Briefkästen (Pflegezustand)'],
-    ['o_heizung', 'objekt', 'Heizung: Art, Baujahr, letzter Austausch, Austauschpflicht'],
-    ['o_fenster', 'objekt', 'Fenster: Material, Verglasung, Baujahr, Dichtungen'],
-    ['o_elektrik', 'objekt', 'Elektrik: Sicherungskasten, FI-Schalter, Zählerplatz'],
-    ['o_leitungen', 'objekt', 'Wasser- und Abwasserleitungen: Material, Alter, Wasserdruck'],
-    ['o_feuchte', 'objekt', 'Feuchtigkeit und Schimmel an Außenwänden, Ecken und Fensterlaibungen'],
-    ['o_flaeche', 'objekt', 'Wohnfläche und Grundriss mit den Unterlagen abgleichen'],
-    ['o_bad', 'objekt', 'Bad und Küche: Zustand, Fugen, Lüftung', ETW],
-    ['o_boden', 'objekt', 'Böden, Wände und Decken: Risse, Zustand', ETW],
-    ['o_zubehoer', 'objekt', 'Kellerabteil, Stellplatz und Sondernutzungsflächen vor Ort zeigen lassen', ETW],
-    ['o_einheiten', 'objekt', 'Jede Einheit besichtigt oder eine repräsentative Auswahl', ['mfh']],
-    ['o_brandschutz', 'objekt', 'Brandschutz, Rettungswege, Rauchmelder', ['mfh']],
+    ['l_ruhe', 'lage', 'Ruhe: Verkehr, Gewerbe, Nachbarschaft'],
+    ['l_gruen', 'lage', 'Grün und Umfeld: Parks, Wasser, Straßenbild'],
+    ['l_urban', 'lage', 'Urbanes Leben: Einkaufen, Gastronomie, Kultur zu Fuß'],
+    ['l_anbindung', 'lage', 'Anbindung: Bus und Bahn, Straße, Fahrrad'],
+    ['l_alltag', 'lage', 'Alltag: Schulen, Kitas, Ärzte, Nahversorgung'],
+    ['l_parken', 'lage', 'Parken'],
+    ['l_entwicklung', 'lage', 'Entwicklung des Viertels: Nachfrage, Sanierungen, Leerstand'],
+
+    ['o_fassade', 'objekt', 'Fassade und Dach'],
+    ['o_keller', 'objekt', 'Keller: trocken, sauber, kein Geruch'],
+    ['o_treppenhaus', 'objekt', 'Treppenhaus, Eingang, Gemeinschaftsflächen'],
+    ['o_heizung', 'objekt', 'Heizung und Energie: Alter, Art, Verbrauch'],
+    ['o_fenster', 'objekt', 'Fenster: Verglasung, Dichtungen, Alter'],
+    ['o_elektrik', 'objekt', 'Elektrik: Sicherungen, FI-Schalter, Leitungen'],
+    ['o_leitungen', 'objekt', 'Wasser- und Abwasserleitungen'],
+    ['o_feuchte', 'objekt', 'Frei von Feuchtigkeit und Schimmel'],
+    ['o_bad', 'objekt', 'Bad und Küche', ETW],
+    ['o_boden', 'objekt', 'Böden, Wände, Decken', ETW],
+    ['o_grundriss', 'objekt', 'Grundriss und Helligkeit', ETW],
+    ['o_balkon', 'objekt', 'Balkon, Terrasse, Außenflächen', ETW],
+    ['o_einheiten', 'objekt', 'Zustand der Wohnungen', ['mfh']],
+    ['o_brandschutz', 'objekt', 'Brandschutz und Rettungswege', ['mfh']],
     ['o_aussen', 'objekt', 'Außenanlagen, Müllplatz, Stellplätze', ['mfh']],
 
-    ['g_ruecklage', 'gemeinschaft', 'Rücklage je m² passt zu Alter und Zustand des Hauses', ETW],
-    ['g_massnahmen', 'gemeinschaft', 'Beschlossene oder diskutierte Maßnahmen und Sonderumlagen laut Protokollen', ETW],
-    ['g_hausgeld', 'gemeinschaft', 'Hausgeld: Höhe, umlagefähiger Anteil, Rückstände anderer Eigentümer', ETW],
-    ['g_streit', 'gemeinschaft', 'Rechtsstreitigkeiten in der Gemeinschaft', ETW],
-    ['g_verwalter', 'gemeinschaft', 'Verwaltung: bestellt bis wann, Erreichbarkeit, Eindruck', ETW],
-    ['g_struktur', 'gemeinschaft', 'Eigentümerstruktur: Selbstnutzer, Kapitalanleger, Mehrheitseigentümer', ETW],
-    ['g_teilung', 'gemeinschaft', 'Teilungserklärung: Sondereigentum, Sondernutzungsrechte, Kostenverteilung, Beschränkungen der Vermietung', ETW],
-    ['g_anteil', 'gemeinschaft', 'Miteigentumsanteil passt zur Wohnfläche', ETW],
+    ['g_ruecklage', 'gemeinschaft', 'Rücklage: Höhe passt zu Alter und Zustand', ETW],
+    ['g_massnahmen', 'gemeinschaft', 'Anstehende Maßnahmen und Sonderumlagen (10 = nichts Belastendes)', ETW],
+    ['g_hausgeld', 'gemeinschaft', 'Hausgeld: Höhe und Rückstände anderer Eigentümer', ETW],
+    ['g_streit', 'gemeinschaft', 'Frieden in der Gemeinschaft, keine Rechtsstreitigkeiten', ETW],
+    ['g_verwalter', 'gemeinschaft', 'Verwaltung: Erreichbarkeit, Sorgfalt, Eindruck', ETW],
+    ['g_struktur', 'gemeinschaft', 'Eigentümerstruktur: Selbstnutzer, Kapitalanleger, Mehrheiten', ETW],
 
-    ['m_vertrag', 'miete', 'Mietvertrag: Beginn, Miethöhe, Staffel oder Index, Sondervereinbarungen', VERM],
-    ['m_zahlung', 'miete', 'Zahlungseingänge der letzten zwölf Monate, Rückstände', VERM],
+    ['m_hoehe', 'miete', 'Miete im Verhältnis zum Markt und Spielraum nach oben', VERM, B],
+    ['m_zahlung', 'miete', 'Zahlungsverhalten: pünktlich, keine Rückstände', VERM, B],
+    ['m_vertrag', 'miete', 'Mietvertrag: klar, keine nachteiligen Sondervereinbarungen', VERM, B],
+    ['m_bestand', 'miete', 'Beständigkeit: Mietdauer, Wechsel, Leerstand', VERM, B],
+    ['m_neu', 'miete', 'Vermietbarkeit und erzielbare Miete', ['etw_frei'], B],
     ['m_kaution', 'miete', 'Kaution: Höhe, Anlage, Übergang auf den Käufer', VERM],
     ['m_erhoehung', 'miete', 'Letzte Mieterhöhung, Abstand zum Mietspiegel, Kappungsgrenze', VERM],
     ['m_nebenkosten', 'miete', 'Nebenkosten: Vorauszahlung deckt die umlagefähigen Kosten', VERM],
     ['m_streit', 'miete', 'Kündigungen, Mietminderungen, laufende Streitigkeiten', VERM],
     ['m_eigenbedarf', 'miete', 'Eigenbedarf geplant? Sperrfristen nach Umwandlung in Eigentum', ['etw_vermietet']],
-    ['m_leerstand', 'miete', 'Leerstand und Mieterwechsel der letzten Jahre', ['mfh']],
-    ['m_neu', 'miete', 'Erzielbare Miete: Mietspiegel, Mietpreisbremse, Vergleichsangebote', ['etw_frei']],
     ['m_vormiete', 'miete', 'Vormiete und Grund des Auszugs', ['etw_frei']],
+    ['m_bremse', 'miete', 'Mietspiegel und Mietpreisbremse für die Neuvermietung', ['etw_frei']],
+
+    ['o_flaeche', 'ort', 'Wohnfläche und Grundriss mit den Unterlagen abgleichen'],
+    ['o_zubehoer', 'ort', 'Kellerabteil, Stellplatz und Sondernutzungsflächen zeigen lassen', ETW],
+    ['o_zaehler', 'ort', 'Zähler, Absperrhähne und Hausanschlüsse zeigen lassen'],
 
     ['r_abt2', 'recht', 'Grundbuch Abteilung II: Wegerechte, Wohnrechte, Vorkaufsrechte, Nießbrauch'],
     ['r_abt3', 'recht', 'Grundbuch Abteilung III: eingetragene Grundschulden werden gelöscht'],
+    ['g_teilung', 'recht', 'Teilungserklärung: Sondereigentum, Sondernutzungsrechte, Kostenverteilung, Beschränkungen der Vermietung', ETW],
+    ['g_anteil', 'recht', 'Miteigentumsanteil passt zur Wohnfläche', ETW],
     ['r_baulasten', 'recht', 'Baulastenverzeichnis'],
     ['r_altlasten', 'recht', 'Altlastenkataster', ['mfh']],
     ['r_satzung', 'recht', 'Denkmalschutz, Erhaltungssatzung, Sanierungsgebiet, Milieuschutz'],
@@ -4152,7 +4219,17 @@ label.einst-text { cursor: pointer; }
     ['k_15prozent', 'geld', 'Bei Vermietung: geplante Renovierung bleibt in drei Jahren unter 15 % des Gebäudewerts'],
     ['k_versicherung', 'geld', 'Versicherungen ab Übergang: Gebäude, Haftpflicht, Mietausfall'],
     ['k_vertrag', 'geld', 'Kaufvertragsentwurf: Kaufgegenstand, Fälligkeit, Übergang von Nutzen und Lasten, Gewährleistung, Inventar'],
-  ].map(([id, gruppe, text, nur]) => ({ id, gruppe, text, nur: nur || null }));
+  ].map(([id, gruppe, text, nur, art]) => ({ id, gruppe, text, nur: nur || null, art: art || ART_JE_GRUPPE[gruppe] || K }));
+
+  // Gewichtung der Bewertungskriterien: 0 (egal) bis 5 (sehr wichtig); ohne eigene Angabe gilt für alle 3
+  const GEWICHT_MAX = 5, GEWICHT_STANDARD = 3, NOTE_MAX = 10;
+  const KRITERIEN = PUNKTE.filter(p => p.art === B);
+  // Voreinstellungen für die Lage – setzen nur diese Gewichte, der Rest bleibt
+  const GEWICHT_VORLAGEN = [
+    ['ausgewogen', 'Ausgewogen', {}],
+    ['gruen', 'Ruhig und grün', { l_ruhe: 5, l_gruen: 5, l_urban: 1, l_anbindung: 2, l_alltag: 3, l_parken: 4, l_entwicklung: 3 }],
+    ['urban', 'Urban', { l_ruhe: 2, l_gruen: 2, l_urban: 5, l_anbindung: 5, l_alltag: 4, l_parken: 1, l_entwicklung: 4 }],
+  ];
 
   // Übliche Räume für die Besichtigung (nur als Vorschlag auf Knopfdruck)
   const RAEUME = {
@@ -4161,7 +4238,9 @@ label.einst-text { cursor: pointer; }
   };
   const ROLLEN = [['makler', 'Makler'], ['eigentuemer', 'Eigentümer'], ['verwaltung', 'Hausverwaltung'], ['mieter', 'Mieter'], ['bank', 'Bank'], ['notar', 'Notar'], ['gutachter', 'Gutachter'], ['sonstige', 'Sonstige']];
   const KANAELE = [['email', 'E-Mail'], ['telefon', 'Telefon'], ['portal', 'Portal-Nachricht'], ['vor_ort', 'Vor Ort'], ['brief', 'Brief'], ['sonstiges', 'Sonstiges']];
-  const STAENDE = ['ok', 'problem', 'entfaellt'];
+  const STAENDE = ['ok', 'problem', 'entfaellt', 'angefordert'];
+  // Höchstgröße einer angehängten Unterlage (Bytes) – größere Dateien lehnt die Oberfläche ab
+  const DATEI_MAX = 40 * 1024 * 1024;
   const ZUSTAENDE = ['gut', 'mittel', 'schlecht'];
   const SCHWEREN = [['leicht', 'leicht'], ['mittel', 'mittel'], ['schwer', 'schwer']];
 
@@ -4188,6 +4267,7 @@ label.einst-text { cursor: pointer; }
   const kennung = v => (typeof v === 'string' && ID.test(v) ? v : null);
   const aus = (v, erlaubt) => (erlaubt.includes(v) ? v : null);
   const ja = v => v === true;
+  const ganz = (v, min, max) => (Number.isInteger(v) && v >= min && v <= max ? v : null);
 
   function liste(roh, pruefe) {
     const gesehen = new Set(), out = [];
@@ -4224,7 +4304,7 @@ label.einst-text { cursor: pointer; }
     return {
       vorlage,
       schritte: karte(r.schritte, e => { const w = { erledigt: ja(e.erledigt), datum: datum(e.datum), notiz: txt(e.notiz, GRENZEN.kurz) }; return [w, w.erledigt || !!w.datum || !!w.notiz]; }),
-      punkte: karte(r.punkte, e => { const w = { stand: aus(e.stand, STAENDE), notiz: txt(e.notiz) }; return [w, !!w.stand || !!w.notiz]; }),
+      punkte: karte(r.punkte, e => { const w = { stand: aus(e.stand, STAENDE), notiz: txt(e.notiz), note: ganz(e.note, 1, NOTE_MAX) }; return [w, !!w.stand || !!w.notiz || w.note !== null]; }),
       eigene: liste(r.eigene, e => (txt(e.text, GRENZEN.kurz) && GRUPPEN.some(g => g[0] === e.gruppe) ? { gruppe: e.gruppe, text: txt(e.text, GRENZEN.kurz), quelle: kennung(e.quelle) } : null)),
       besichtigung,
       raeume: liste(r.raeume, e => (txt(e.name, GRENZEN.kurz) ? { name: txt(e.name, GRENZEN.kurz), zustand: aus(e.zustand, ZUSTAENDE), notiz: txt(e.notiz) } : null)),
@@ -4235,6 +4315,8 @@ label.einst-text { cursor: pointer; }
       }),
       verlauf: liste(r.verlauf, e => (datum(e.datum) && (txt(e.text) || datum(e.wiedervorlage)) ? { datum: datum(e.datum), kanal: aus(e.kanal, KANAELE.map(x => x[0])) || 'sonstiges', richtung: e.richtung === 'ein' ? 'ein' : 'aus', kontakt: kennung(e.kontakt), text: txt(e.text), wiedervorlage: datum(e.wiedervorlage), erledigt: ja(e.erledigt) } : null)),
       fotos: liste(r.fotos, e => ({ zu: kennung(e.zu) || 'allgemein', name: txt(e.name, GRENZEN.kurz) })),
+      // Angehängte Unterlagen: nur Verweise; die Dateien liegen im Browser bzw. im Ablageordner
+      dateien: liste(r.dateien, e => (kennung(e.zu) && txt(e.name, GRENZEN.kurz) ? { zu: kennung(e.zu), name: txt(e.name, GRENZEN.kurz), typ: txt(e.typ, 100), groesse: Number.isFinite(e.groesse) && e.groesse >= 0 ? Math.round(e.groesse) : 0 } : null)),
     };
   }
 
@@ -4242,7 +4324,7 @@ label.einst-text { cursor: pointer; }
   /** true, wenn in der Akte nichts steht (auch keine Löschmarkierungen). */
   function leer(a) {
     return !a || (!a.vorlage && !a.besichtigung && !Object.keys(a.schritte).length && !Object.keys(a.punkte).length
-      && !a.eigene.length && !a.raeume.length && !a.maengel.length && !a.kontakte.length && !a.verlauf.length && !a.fotos.length);
+      && !a.eigene.length && !a.raeume.length && !a.maengel.length && !a.kontakte.length && !a.verlauf.length && !a.fotos.length && !a.dateien.length);
   }
 
   /* ---------- Zusammenführen ---------- */
@@ -4273,6 +4355,7 @@ label.einst-text { cursor: pointer; }
       kontakte: mischeListe(a.kontakte, b.kontakte),
       verlauf: mischeListe(a.verlauf, b.verlauf),
       fotos: mischeListe(a.fotos, b.fotos),
+      dateien: mischeListe(a.dateien, b.dateien),
     };
   }
 
@@ -4299,24 +4382,67 @@ label.einst-text { cursor: pointer; }
     return { werte, zahl };
   }
 
+  /* ---------- Gewichtung ---------- */
+  /** Gewichte vereinheitlichen: { Kriterium: { w: 0–5, t } }, nur bekannte Kriterien. */
+  function pruefeGewichte(roh) {
+    const out = {};
+    if (!roh || typeof roh !== 'object' || Array.isArray(roh)) return out;
+    for (const k of KRITERIEN) {
+      const e = roh[k.id];
+      const w = e && typeof e === 'object' ? ganz(e.w, 0, GEWICHT_MAX) : null;
+      if (w !== null) out[k.id] = { w, t: zeit(e.t) };
+    }
+    return out;
+  }
+  const mischeGewichte = (a, b) => mischeKarte(pruefeGewichte(a), pruefeGewichte(b));
+  const gewichtVon = (gewichte, id) => { const e = gewichte && gewichte[id]; return e && Number.isInteger(e.w) ? e.w : GEWICHT_STANDARD; };
+
   /* ---------- Auswertung für Überblick und Tabelle ---------- */
-  /** Prüfpunkte der Akte: Vorlage plus eigene, jeweils mit Stand und Notiz. */
+  /** Prüfpunkte der Akte: Vorlage plus eigene, jeweils mit Art, Stand, Note und Notiz. Eigene Punkte sind Klärungen (in „Unterlagen“: Unterlagen). */
   function pruefliste(akte, vorlage) {
     const a = akte || pruefe(null);
-    const mit = p => ({ ...p, stand: (a.punkte[p.id] || {}).stand || null, notiz: (a.punkte[p.id] || {}).notiz || '' });
-    return [...punkteFuer(vorlage).map(p => mit({ ...p, eigen: false })), ...lebend(a.eigene).map(e => mit({ id: e.id, gruppe: e.gruppe, text: e.text, quelle: e.quelle || null, eigen: true }))];
+    const mit = p => { const e = a.punkte[p.id] || {}; return { ...p, stand: e.stand || null, note: e.note ?? null, notiz: e.notiz || '' }; };
+    return [...punkteFuer(vorlage).map(p => mit({ ...p, eigen: false })), ...lebend(a.eigene).map(e => mit({ id: e.id, gruppe: e.gruppe, text: e.text, quelle: e.quelle || null, art: e.gruppe === 'unterlagen' ? 'unterlage' : K, eigen: true }))];
   }
+  /** Ist ein Punkt erledigt? Unterlage: liegt vor oder entfällt. Bewertung: benotet oder entfällt. Klärung: irgendein Stand. */
+  const erledigt = p => (p.art === 'unterlage' ? p.stand === 'ok' || p.stand === 'entfaellt' : p.art === B ? p.note !== null || p.stand === 'entfaellt' : !!p.stand && p.stand !== 'angefordert');
+
+  /**
+   * Nutzwert: gewichteter Durchschnitt der benoteten Kriterien (Note 1–10, Gewicht 0–5).
+   * Kriterien mit Gewicht 0 oder „entfällt“ zählen nicht. Liefert je Gruppe und gesamt { wert, bewertet, gesamt };
+   * wert ist null, solange nichts benotet ist.
+   */
+  function nutzwert(akte, vorlage, gewichte) {
+    const kriterien = pruefliste(akte, vorlage).filter(p => p.art === B && p.stand !== 'entfaellt');
+    const rechne = liste => {
+      let summe = 0, gewicht = 0, bewertet = 0;
+      for (const p of liste) {
+        if (p.note === null) continue;
+        bewertet++;
+        const w = gewichtVon(gewichte, p.id);
+        summe += w * p.note; gewicht += w;
+      }
+      return { wert: gewicht > 0 ? Math.round(10 * summe / gewicht) / 10 : null, bewertet, gesamt: liste.length };
+    };
+    const gruppen = {};
+    for (const [id] of GRUPPEN) { const l = kriterien.filter(p => p.gruppe === id); if (l.length) gruppen[id] = rechne(l); }
+    return { ...rechne(kriterien), gruppen };
+  }
+
   /** Kennzahlen der Akte. heute = 'JJJJ-MM-TT' für die Fälligkeit von Wiedervorlagen. */
-  function stand(akte, vorlage, heute) {
+  function stand(akte, vorlage, heute, gewichte) {
     const a = akte || pruefe(null);
     const liste = pruefliste(a, vorlage);
-    const zaehl = s => liste.filter(p => p.stand === s).length;
     const verlauf = lebend(a.verlauf);
     const offeneWv = verlauf.filter(e => e.wiedervorlage && !e.erledigt).map(e => e.wiedervorlage).sort();
     const letzter = verlauf.slice().sort((x, y) => (y.datum + (y.t || '')).localeCompare(x.datum + (x.t || '')))[0] || null;
+    const fertig = liste.filter(erledigt).length;
+    const unterlagen = liste.filter(p => p.art === 'unterlage');
     return {
       schritte: { erledigt: SCHRITTE.filter(s => (a.schritte[s[0]] || {}).erledigt).length, gesamt: SCHRITTE.length },
-      pruefung: { ok: zaehl('ok'), problem: zaehl('problem'), entfaellt: zaehl('entfaellt'), gesamt: liste.length, offen: liste.filter(p => !p.stand).length },
+      pruefung: { erledigt: fertig, gesamt: liste.length, offen: liste.length - fertig, problem: liste.filter(p => p.stand === 'problem').length },
+      unterlagen: { vorhanden: unterlagen.filter(p => p.stand === 'ok').length, angefordert: unterlagen.filter(p => p.stand === 'angefordert').length, gesamt: unterlagen.filter(p => p.stand !== 'entfaellt').length, dateien: lebend(a.dateien).length },
+      nutzwert: nutzwert(a, vorlage, gewichte),
       wiedervorlage: offeneWv[0] || null,
       faellig: !!(offeneWv[0] && heute && offeneWv[0] <= heute),
       letzterKontakt: letzter,
@@ -4326,7 +4452,7 @@ label.einst-text { cursor: pointer; }
     };
   }
 
-  const api = { SCHRITTE, VORLAGEN, GRUPPEN, PUNKTE, RAEUME, ROLLEN, KANAELE, STAENDE, ZUSTAENDE, SCHWEREN, punkteFuer, vorlageGueltig, vorlageVorschlag, pruefe, leer, lebend, mische, pruefeSammlung, mischeSammlung, pruefliste, stand };
+  const api = { SCHRITTE, VORLAGEN, GRUPPEN, PUNKTE, KRITERIEN, RAEUME, ROLLEN, KANAELE, STAENDE, ZUSTAENDE, SCHWEREN, GEWICHT_MAX, GEWICHT_STANDARD, GEWICHT_VORLAGEN, NOTE_MAX, DATEI_MAX, pruefeGewichte, mischeGewichte, gewichtVon, erledigt, nutzwert, punkteFuer, vorlageGueltig, vorlageVorschlag, pruefe, leer, lebend, mische, pruefeSammlung, mischeSammlung, pruefliste, stand };
   if (nodeModul) module.exports = api;
   else (root.ImmoRechenkern = root.ImmoRechenkern || {}).akte = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);
@@ -4346,8 +4472,9 @@ label.einst-text { cursor: pointer; }
   const St = nodeModul ? require('./standort.js') : root.ImmoRechenkern.standort;
   const Akte = nodeModul ? require('./akte.js') : root.ImmoRechenkern.akte;
 
-  // 1.1: zusätzlich „akten“ (Objektakten, siehe akte.js); Dateien der Version 1.0 bleiben lesbar
-  const FORMAT = { typ: 'viewer_eingaben', version: '1.1', major: 1 };
+  // 1.1: zusätzlich „akten“ (Objektakten, siehe akte.js); 1.2: „gewichte“ (Gewichtung der Bewertungskriterien) und
+  // angehängte Unterlagen in den Akten. Ältere Dateien der Hauptversion 1 bleiben lesbar.
+  const FORMAT = { typ: 'viewer_eingaben', version: '1.2', major: 1 };
   // Reihenfolge = Arbeitsablauf; danach wird sortiert. „Ohne Status“ ist kein Eintrag, sondern das Fehlen.
   const STATUS = [
     ['interessant', 'Interessant'], ['angefragt', 'Angefragt'], ['besichtigung', 'Besichtigung'],
@@ -4396,13 +4523,14 @@ label.einst-text { cursor: pointer; }
   }
 
   /** Sicherungsdatei mit allen eigenen Eingaben. */
-  function exportiere({ notizen = {}, adressen = {}, akten = {} } = {}, jetzt = new Date().toISOString()) {
+  function exportiere({ notizen = {}, adressen = {}, akten = {}, gewichte = {} } = {}, jetzt = new Date().toISOString()) {
     return {
       dokumenttyp: FORMAT.typ, formatversion: FORMAT.version, erstellt_am: jetzt,
-      hinweis: 'Eigene Eingaben aus dem ImmoInvest-Viewer (Status, Termine, Notizen, Adressnachträge, Kartenpunkte, Objektakten mit Checklisten, Besichtigung, Kontakten und Verlauf). Enthält keine Profil- oder Finanzdaten und keine Fotos.',
+      hinweis: 'Eigene Eingaben aus dem ImmoInvest-Viewer (Status, Termine, Notizen, Adressnachträge, Kartenpunkte, Objektakten mit Checklisten, Besichtigung, Kontakten und Verlauf, Gewichtung der Bewertung). Enthält keine Profil- oder Finanzdaten, keine Fotos und keine angehängten Unterlagen.',
       notizen: bereinigeSammlung(notizen, pruefeNotiz).werte,
       adressen: bereinigeSammlung(adressen, pruefeAdresseintrag).werte,
       akten: Akte.pruefeSammlung(akten),
+      gewichte: Akte.pruefeGewichte(gewichte),
     };
   }
 
@@ -4412,7 +4540,7 @@ label.einst-text { cursor: pointer; }
     const major = Number(String(dok.formatversion || '').split('.')[0]);
     if (major !== FORMAT.major) return { ok: false, fehler: [`Formatversion ${dok.formatversion ?? '–'} wird nicht unterstützt (erwartet ${FORMAT.version}).`] };
     const n = bereinigeSammlung(dok.notizen, pruefeNotiz), a = bereinigeSammlung(dok.adressen, pruefeAdresseintrag);
-    return { ok: true, fehler: [], notizen: n.werte, adressen: a.werte, akten: Akte.pruefeSammlung(dok.akten), verworfen: n.verworfen + a.verworfen };
+    return { ok: true, fehler: [], notizen: n.werte, adressen: a.werte, akten: Akte.pruefeSammlung(dok.akten), gewichte: Akte.pruefeGewichte(dok.gewichte), verworfen: n.verworfen + a.verworfen };
   }
 
   const gleich = (x, y) => JSON.stringify(x) === JSON.stringify(y);
@@ -4456,6 +4584,13 @@ label.einst-text { cursor: pointer; }
   'use strict';
 
   const VERLAUF = [
+    { version: '4.1.0', datum: '2026-11-15', titel: 'Meine Bewertung mit Gewichtung, Unterlagen mit Dateien', punkte: [
+      'Lage, Zustand, Gemeinschaft und Miete bewertest du per Regler von 1 bis 10; daraus entsteht eine gewichtete Gesamtnote',
+      'Auf der Seite „Profil“ stellst du unter „Was mir wichtig ist“ die Gewichtung ein, mit Voreinstellungen wie „Ruhig und grün“ oder „Urban“',
+      'Unterlagen: angefordert oder liegt vor, und die Datei lässt sich direkt am Punkt anhängen',
+      'Die Prüfung ist eine Übersicht: Gruppen sind zunächst zu und zeigen ihren Stand, ein Knopf öffnet oder schließt alle',
+      'Neue Spalte „Meine Bewertung“ in der Tabelle zum Sortieren und Filtern',
+    ] },
     { version: '4.0.0', datum: '2026-11-15', titel: 'Objektakte: vom Inserat bis zum Kauf', punkte: [
       'Objektansicht in sechs Bereichen: Überblick, Prüfung, Besichtigung, Kontakt, Analyse, Rechnung',
       'Schritte bis zum Kauf zum Abhaken und Prüf-Checklisten für vermietete und bezugsfreie Eigentumswohnungen und Mehrfamilienhäuser',
@@ -5278,15 +5413,16 @@ function pEingabeLaeuft(t) {
    ===================================================================== */
 function viewProfile() {
   const p = aktivesProfil(), zurueck = pZurueckZiel(), objekte = immoDocs().filter(d => d.rev?.latest);
-  const bereich = !objekte.length || state.profilBereich === 'bearbeiten' ? 'bearbeiten' : 'objekte';
+  // Bereiche: Ergebnisse je Objekt und Editor brauchen ein aktives Profil; die Gewichtung gibt es immer
+  const bereich = !p || state.profilBereich === 'gewichtung' ? 'gewichtung' : !objekte.length || state.profilBereich === 'bearbeiten' ? 'bearbeiten' : 'objekte';
   const wahl = (id, text) => `<button type="button" role="tab" aria-selected="${bereich === id}"${bereich === id ? ' class="aktiv"' : ''} data-action="p-bereich" data-bereich="${id}">${text}</button>`;
   return `${ansichtReiter()}
     ${zurueck ? `<div class="dh-kopfzeile no-print"><button class="zurueck-knopf" data-action="p-zurueck" title="Zurück zum Objekt">${ikon('zurueck', 18)}<span>${esc(zurueck.text)}</span></button></div>` : ''}
     <div class="page-head"><div><h1>Profil${info('Haushalt, Einkommen, Steuern, Kapital und Finanzierung – nur in diesem Browser. Sicherung und Austausch über die Profil-Datei (JSON). Ob sich der Browser Profile merkt, stellst du in den Einstellungen unter „Daten & Speicher“ ein.', 'Persönliche Profile')}</h1><p class="sub">Womit soll je Objekt gerechnet werden? Alles bleibt auf diesem Gerät.</p></div></div>
     ${pProfilWahl()}
-    ${p ? `${objekte.length ? `<div class="segment gross p-bereiche no-print" role="tablist" aria-label="Bereiche des Profils">${wahl('objekte', 'Objekte mit diesem Profil')}${wahl('bearbeiten', 'Profil bearbeiten')}</div>` : '<div class="p-bereiche"></div>'}
-      ${bereich === 'objekte' ? vergleichPersoenlich(objekte) : pProfilEditor(p)}`
-    : '<p class="p-leer">Wähle oben eine Vorlage zum Ausprobieren oder lege ein eigenes Profil an. Es sind keine persönlichen Daten voreingestellt.</p>'}`;
+    ${p ? '' : '<p class="p-leer">Wähle oben eine Vorlage zum Ausprobieren oder lege ein eigenes Profil an. Es sind keine persönlichen Daten voreingestellt.</p>'}
+    <div class="segment gross p-bereiche no-print" role="tablist" aria-label="Bereiche des Profils">${p && objekte.length ? wahl('objekte', 'Objekte mit diesem Profil') : ''}${p ? wahl('bearbeiten', 'Profil bearbeiten') : ''}${wahl('gewichtung', 'Was mir wichtig ist')}</div>
+    ${bereich === 'gewichtung' ? gewichtungAnsicht() : bereich === 'objekte' ? vergleichPersoenlich(objekte) : pProfilEditor(p)}`;
 }
 
 /** Menü „⋯“ an einer Profilkarte: selten gebrauchte Aktionen für dieses Profil. */
@@ -7085,7 +7221,7 @@ function eingabenZahl() {
 }
 function eingabenSichern() {
   akteJetzt();
-  const dok = RK.eingaben.exportiere({ notizen: state.notizen, adressen: state.karte.adressen, akten: state.akten });
+  const dok = RK.eingaben.exportiere({ notizen: state.notizen, adressen: state.karte.adressen, akten: state.akten, gewichte: state.gewichte });
   download(`immoviewer_eingaben_${today()}.json`, JSON.stringify(dok, null, 2), 'application/json');
 }
 
@@ -7100,12 +7236,14 @@ function eingabenImportDokument(parsed, name) {
   state.notizen = n.werte;
   state.karte.adressen = a.werte;
   state.akten = ak.werte;
+  state.gewichte = RK.akte.mischeGewichte(state.gewichte, imp.gewichte);
+  gewichteSpeichern();
   notizenSpeichern();
   karteSpeichern();
   aktenSpeichern();
   const zeile = (t, z) => `<li>${t}: ${z.neu} neu, ${z.ersetzt} aktualisiert, ${z.gleich} unverändert${z.behalten ? `, ${z.behalten} hier jünger und behalten` : ''}</li>`;
   openDialog(dlgHead('Sicherung übernommen') + `<p style="margin-top:0"><code>${esc(name)}</code> wurde mit den Eingaben in diesem Browser zusammengeführt. Nichts wurde gelöscht.</p>
-    <ul>${zeile('Status und Notizen', n.zahl)}${zeile('Adressen und Kartenpunkte', a.zahl)}<li>Objektakten (Checklisten, Besichtigung, Kontakte, Verlauf): ${ak.zahl.neu} neu, ${ak.zahl.geaendert} zusammengeführt, ${ak.zahl.gleich} unverändert. Fotos sind nicht Teil der Sicherung.</li></ul>${imp.verworfen ? `<p class="fine">${imp.verworfen} ungültige Einträge wurden übersprungen.</p>` : ''}
+    <ul>${zeile('Status und Notizen', n.zahl)}${zeile('Adressen und Kartenpunkte', a.zahl)}<li>Objektakten (Checklisten, Besichtigung, Kontakte, Verlauf): ${ak.zahl.neu} neu, ${ak.zahl.geaendert} zusammengeführt, ${ak.zahl.gleich} unverändert. Fotos und angehängte Unterlagen sind nicht Teil der Sicherung.</li></ul>${imp.verworfen ? `<p class="fine">${imp.verworfen} ungültige Einträge wurden übersprungen.</p>` : ''}
     <div class="btn-row" style="justify-content:flex-end;margin-bottom:0"><button class="btn primary" data-action="close-dlg">OK</button></div>`);
   render();
   return true;
@@ -7120,8 +7258,10 @@ function eingabenImportDokument(parsed, name) {
  * in state.detailModus.
  *
  *   Überblick     Mein Stand, Schritte bis zum Kauf, Kurzstand von Prüfung, Kontakt und Besichtigung, Urteil der Analyse
- *   Prüfung       Checkliste je Objektart (Vorlage aus dem Rechenkern) mit Stand und Notiz je Punkt, eigene Punkte,
- *                 offene Punkte aus der Analyse zum Übernehmen
+ *   Prüfung       Gruppen je Objektart (Vorlage aus dem Rechenkern), zunächst zugeklappt mit Zusammenfassung. Drei Arten
+ *                 von Punkten: Unterlagen (angefordert/liegt vor, Dateien anhängen), Bewertungen (Regler 1–10, gewichtet
+ *                 zur Gesamtnote „Meine Bewertung“ – Gewichte auf der Seite „Profil“), Klärungen (geklärt/Problem).
+ *                 Dazu eigene Punkte und offene Punkte aus der Analyse zum Übernehmen
  *   Besichtigung  Datum, Räume mit Zustand und Notiz, Mängel, Fotos (verkleinert, in IndexedDB)
  *   Kontakt       Ansprechpartner, Verlauf der Kommunikation mit Wiedervorlage, Textvorlagen zum Kopieren
  *
@@ -7134,9 +7274,10 @@ function eingabenImportDokument(parsed, name) {
 'use strict';
 
 const LS_AKTEN = 'immoviewer.v1.akten';
+const LS_GEWICHTE = 'immoviewer.v1.gewichte';
 const AKTE_REITER = [['ueberblick', 'Überblick'], ['pruefung', 'Prüfung'], ['besichtigung', 'Besichtigung'], ['kontakt', 'Kontakt'], ['analyse', 'Analyse'], ['persoenlich', 'Rechnung']];
-// Nur Anzeige, nicht gespeichert: zugeklappte Gruppen, aufgeklappte Notizfelder, „nur offene“
-const akteUi = { zu: new Set(), notiz: new Set(), nurOffen: false };
+// Nur Anzeige, nicht gespeichert: aufgeklappte Gruppen (zunächst alle zu), aufgeklappte Notizfelder, „nur offene“
+const akteUi = { auf: new Set(), notiz: new Set(), nurOffen: false };
 
 function aktenLaden() {
   try { state.akten = RK.akte.pruefeSammlung(JSON.parse(lsGet(LS_AKTEN) || '{}')); } catch { state.akten = {}; }
@@ -7148,7 +7289,19 @@ function aktenSpeichern({ abgleich = true } = {}) {
 const akteVon = d => (d && d.key && state.akten[d.key]) || RK.akte.pruefe(null);
 /** Vorlage der Checkliste: die gewählte, sonst der Vorschlag aus Objektart und Vermietungsstatus der Analyse. */
 const akteVorlage = d => (akteVon(d).vorlage || {}).id || RK.akte.vorlageVorschlag(d.data);
-const akteStand = d => RK.akte.stand(akteVon(d), akteVorlage(d), today());
+const akteStand = d => RK.akte.stand(akteVon(d), akteVorlage(d), today(), state.gewichte);
+/** Eigene Gesamtnote eines Objekts (1–10, gewichtet) oder null – auch für die Spalte „Meine Bewertung“ der Tabelle. */
+const akteNote = d => (d && d.key && state.akten[d.key] ? RK.akte.nutzwert(state.akten[d.key], akteVorlage(d), state.gewichte).wert : null);
+const fmtNote = v => (v === null || v === undefined ? '–' : String(v).replace('.', ','));
+
+/* Gewichtung der Bewertungskriterien (Seite „Profil“ → „Was mir wichtig ist“), für alle Objekte gleich */
+function gewichteLaden() {
+  try { state.gewichte = RK.akte.pruefeGewichte(JSON.parse(lsGet(LS_GEWICHTE) || '{}')); } catch { state.gewichte = {}; }
+}
+function gewichteSpeichern({ abgleich = true } = {}) {
+  lsSet(LS_GEWICHTE, JSON.stringify(state.gewichte));
+  if (abgleich) abgleichPlanen();
+}
 const akteId = () => `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
 const objektTab = () => (AKTE_REITER.some(([id]) => id === state.detailModus) ? state.detailModus : 'ueberblick');
 
@@ -7228,10 +7381,11 @@ function akteUeberblick(doc) {
       ${e.erledigt ? `<input type="date" class="schritt-datum" data-akte="schritt-datum" data-id="${id}" data-uid="${u}" data-fk="sd:${id}" value="${esc(e.datum || '')}" aria-label="Datum: ${titel}">` : ''}</li>`;
   };
   const kachel = (tab, titel, haupt, neben, klasse = '') => `<button type="button" class="akte-kachel${klasse ? ' ' + klasse : ''}" data-action="objekt-tab" data-tab="${tab}"><span class="akte-kachel-titel">${titel}</span><b>${haupt}</b><span>${neben}</span></button>`;
-  const p = s.pruefung, k = s.letzterKontakt;
+  const p = s.pruefung, k = s.letzterKontakt, n = s.nutzwert, un = s.unterlagen;
   const kanal = k ? (RK.akte.KANAELE.find(x => x[0] === k.kanal) || ['', ''])[1] : '';
   return `<div class="akte-kacheln">
-      ${kachel('pruefung', 'Prüfung', `${p.gesamt - p.offen} von ${p.gesamt} geprüft`, p.problem ? `${p.problem} Problem${p.problem === 1 ? '' : 'e'} vermerkt` : p.gesamt === p.offen ? 'noch nicht begonnen' : 'keine Probleme vermerkt', p.problem ? 'krit' : '')}
+      ${kachel('pruefung', 'Prüfung', `${p.erledigt} von ${p.gesamt} erledigt`, p.problem ? `${p.problem} Problem${p.problem === 1 ? '' : 'e'} vermerkt` : `${un.vorhanden} von ${un.gesamt} Unterlagen liegen vor`, p.problem ? 'krit' : '')}
+      ${kachel('pruefung', 'Meine Bewertung', n.wert === null ? 'Noch nicht bewertet' : `${fmtNote(n.wert)} von ${RK.akte.NOTE_MAX}`, `${n.bewertet} von ${n.gesamt} Kriterien bewertet`)}
       ${kachel('kontakt', 'Kontakt', k ? `Zuletzt ${esc(fmtDate(k.datum))}${kanal ? ` · ${esc(kanal)}` : ''}` : 'Noch kein Kontakt', s.wiedervorlage ? `Wiedervorlage ${esc(fmtDate(s.wiedervorlage))}${s.faellig ? ' – fällig' : ''}` : 'keine Wiedervorlage', s.faellig ? 'warn' : '')}
       ${kachel('besichtigung', 'Besichtigung', s.besichtigung ? `Am ${esc(fmtDate(s.besichtigung))}` : 'Noch nicht besichtigt', `${s.maengel} ${s.maengel === 1 ? 'Mangel' : 'Mängel'} · ${s.fotos} Foto${s.fotos === 1 ? '' : 's'}`)}
     </div>
@@ -7254,38 +7408,127 @@ function akteAusAnalyse(doc) {
   return [...ns, ...du].filter(x => /^[A-Za-z0-9_:.-]{1,60}$/.test(x.quelle) && x.text && !schon.has(x.quelle));
 }
 
+const STAND_WAHL = {
+  unterlage: [['angefordert', 'angefordert', 'Beim Anbieter angefordert, noch nicht da'], ['ok', 'liegt vor', 'Die Unterlage liegt vor'], ['entfaellt', 'entfällt', 'Für dieses Objekt nicht nötig']],
+  klaerung: [['ok', 'geklärt', 'Geklärt, in Ordnung'], ['problem', 'Problem', 'Geklärt, aber ein Problem'], ['entfaellt', 'entfällt', 'Für dieses Objekt nicht nötig']],
+};
+const NOTE_WORT = ['', 'sehr schlecht', 'schlecht', 'schwach', 'mäßig', 'mittel', 'ordentlich', 'gut', 'gut', 'sehr gut', 'hervorragend'];
+const dateiGroesse = b => (b >= 1048576 ? `${(b / 1048576).toFixed(1).replace('.', ',')} MB` : `${Math.max(1, Math.round(b / 1024))} KB`);
+
 function aktePruefung(doc) {
-  const a = akteVon(doc), vorlage = akteVorlage(doc), s = akteStand(doc).pruefung, u = doc.uid;
-  const liste = RK.akte.pruefliste(a, vorlage), offen = akteAusAnalyse(doc);
-  const wahl = (p, stand, zeichen, name) => `<button type="button" class="pp-knopf pp-${stand}${p.stand === stand ? ' an' : ''}" data-action="akte-punkt" data-id="${esc(p.id)}" data-stand="${stand}" data-uid="${u}" data-fk="p:${esc(p.id)}:${stand}" aria-pressed="${p.stand === stand}" aria-label="${name}" title="${name}">${zeichen}</button>`;
+  const a = akteVon(doc), vorlage = akteVorlage(doc), s = akteStand(doc), u = doc.uid;
+  const liste = RK.akte.pruefliste(a, vorlage), offen = akteAusAnalyse(doc), dateien = RK.akte.lebend(a.dateien);
+  const notizKnopf = p => `<button type="button" class="icon-knopf pp-notiz-knopf${p.notiz ? ' hat' : ''}" data-action="akte-notiz-auf" data-id="${esc(p.id)}" data-fk="pn:${esc(p.id)}" aria-expanded="${!!p.notiz || akteUi.notiz.has(p.id)}" aria-label="Notiz" title="Notiz">${ikon('stift', 17)}</button>`;
+  const wegKnopf = p => (p.eigen ? `<button type="button" class="icon-knopf" data-action="akte-eigen-weg" data-id="${esc(p.id)}" data-uid="${u}" aria-label="Eigenen Punkt entfernen" title="Entfernen">×</button>` : '');
+  const notizFeld = p => (p.notiz || akteUi.notiz.has(p.id) ? `<textarea class="pp-notiz" rows="1" data-akte="punkt-notiz" data-id="${esc(p.id)}" data-uid="${u}" data-fk="pt:${esc(p.id)}" maxlength="4000" placeholder="Notiz zu diesem Punkt" aria-label="Notiz: ${esc(p.text)}">${esc(p.notiz)}</textarea>` : '');
+  const marke = p => (p.eigen ? `<span class="tag">${p.quelle ? `Analyse ${esc(p.quelle)}` : 'eigener Punkt'}</span>` : '');
+  const wahl = p => `<div class="pp-wahl" role="group" aria-label="Stand: ${esc(p.text)}">${STAND_WAHL[p.art === 'unterlage' ? 'unterlage' : 'klaerung'].map(([stand, text, hinweis]) => `<button type="button" class="pp-knopf pp-${stand}${p.stand === stand ? ' an' : ''}" data-action="akte-punkt" data-id="${esc(p.id)}" data-stand="${stand}" data-uid="${u}" data-fk="p:${esc(p.id)}:${stand}" aria-pressed="${p.stand === stand}" title="${hinweis}">${text}</button>`).join('')}</div>`;
   const punkt = p => {
-    const notizAuf = !!p.notiz || akteUi.notiz.has(p.id);
-    return `<li class="pp${p.stand ? ' stand-' + p.stand : ''}">
-      <div class="pp-zeile"><span class="pp-text">${esc(p.text)}${p.eigen ? `<span class="tag">${p.quelle ? `Analyse ${esc(p.quelle)}` : 'eigener Punkt'}</span>` : ''}</span>
-        <div class="pp-wahl" role="group" aria-label="Stand: ${esc(p.text)}">${wahl(p, 'ok', '✓', 'In Ordnung')}${wahl(p, 'problem', '!', 'Problem')}${wahl(p, 'entfaellt', '–', 'Entfällt')}</div>
-        <button type="button" class="icon-knopf pp-notiz-knopf${p.notiz ? ' hat' : ''}" data-action="akte-notiz-auf" data-id="${esc(p.id)}" data-fk="pn:${esc(p.id)}" aria-expanded="${notizAuf}" aria-label="Notiz" title="Notiz">✎</button>
-        ${p.eigen ? `<button type="button" class="icon-knopf" data-action="akte-eigen-weg" data-id="${esc(p.id)}" data-uid="${u}" aria-label="Eigenen Punkt entfernen" title="Entfernen">×</button>` : ''}</div>
-      ${notizAuf ? `<textarea class="pp-notiz" rows="1" data-akte="punkt-notiz" data-id="${esc(p.id)}" data-uid="${u}" data-fk="pt:${esc(p.id)}" maxlength="4000" placeholder="Notiz zu diesem Punkt" aria-label="Notiz: ${esc(p.text)}">${esc(p.notiz)}</textarea>` : ''}
-    </li>`;
+    if (p.art === 'bewertung') {
+      const w = RK.akte.gewichtVon(state.gewichte, p.id), aus = p.stand === 'entfaellt';
+      return `<li class="pp art-bewertung${p.note !== null ? ' bewertet' : ''}${aus ? ' stand-entfaellt' : ''}">
+        <div class="pp-zeile"><span class="pp-text">${esc(p.text)}<span class="pp-gewicht${w === 0 ? ' null' : ''}" title="Gewichtung ${w} von ${RK.akte.GEWICHT_MAX} – einstellbar unter Profil → „Was mir wichtig ist“">${w === 0 ? 'zählt nicht' : `Gewicht ${w}`}</span></span>
+          <div class="pp-regler"><input type="range" min="1" max="${RK.akte.NOTE_MAX}" step="1" value="${p.note ?? 5}" class="${p.note === null ? 'unbewertet' : ''}" data-akte="note" data-id="${esc(p.id)}" data-uid="${u}" data-fk="n:${esc(p.id)}" aria-label="Bewertung: ${esc(p.text)}"${aus ? ' disabled' : ''}>
+            <button type="button" class="pp-note" data-action="akte-note-weg" data-id="${esc(p.id)}" data-uid="${u}" title="${p.note === null ? 'Noch nicht bewertet – Regler ziehen oder antippen' : `${NOTE_WORT[p.note]} – anklicken nimmt die Bewertung zurück`}"${p.note === null ? ' disabled' : ''}>${p.note ?? '–'}</button></div>
+          <button type="button" class="pp-knopf pp-entfaellt${aus ? ' an' : ''}" data-action="akte-punkt" data-id="${esc(p.id)}" data-stand="entfaellt" data-uid="${u}" data-fk="p:${esc(p.id)}:entfaellt" aria-pressed="${aus}" title="Für dieses Objekt nicht bewerten">entfällt</button>
+          ${notizKnopf(p)}</div>${notizFeld(p)}</li>`;
+    }
+    const anhang = p.art === 'unterlage' ? dateien.filter(d => d.zu === p.id) : [];
+    return `<li class="pp art-${p.art}${p.stand ? ' stand-' + p.stand : ''}">
+      <div class="pp-zeile"><span class="pp-text">${esc(p.text)}${marke(p)}</span>${wahl(p)}
+        ${p.art === 'unterlage' ? `<label class="icon-knopf pp-anhang" title="Datei anhängen (PDF, Bild, Dokument)" aria-label="Datei anhängen: ${esc(p.text)}">${ikon('klammer', 17)}<input type="file" multiple hidden data-akte="datei" data-id="${esc(p.id)}" data-uid="${u}"></label>` : ''}
+        ${notizKnopf(p)}${wegKnopf(p)}</div>
+      ${anhang.length ? `<div class="pp-dateien">${anhang.map(d => `<span class="datei"><button type="button" class="datei-name" data-action="akte-datei-auf" data-id="${esc(d.id)}" data-uid="${u}" title="Öffnen">${ikon('datei', 15)}<span>${esc(d.name)}</span><small>${dateiGroesse(d.groesse)}</small></button><button type="button" class="datei-weg" data-action="akte-datei-weg" data-id="${esc(d.id)}" data-uid="${u}" aria-label="${esc(d.name)} entfernen" title="Datei entfernen">×</button></span>`).join('')}</div>` : ''}
+      ${notizFeld(p)}</li>`;
+  };
+  // Zusammenfassung einer Gruppe – steht in der zugeklappten Zeile, damit die Liste als Übersicht taugt
+  const kurz = alle => {
+    const teile = [], un = alle.filter(p => p.art === 'unterlage'), be = alle.filter(p => p.art === 'bewertung' && p.stand !== 'entfaellt'), kl = alle.filter(p => p.art === 'klaerung');
+    if (un.length) { const an = un.filter(p => p.stand === 'angefordert').length; teile.push(`${un.filter(p => p.stand === 'ok').length} von ${un.filter(p => p.stand !== 'entfaellt').length} liegen vor${an ? `, ${an} angefordert` : ''}`); }
+    if (be.length) { const g = s.nutzwert.gruppen[alle[0].gruppe] || { wert: null, bewertet: 0 }; teile.push(g.wert === null ? `0 von ${be.length} bewertet` : `Note ${fmtNote(g.wert)} · ${g.bewertet} von ${be.length} bewertet`); }
+    if (kl.length) teile.push(`${kl.filter(RK.akte.erledigt).length} von ${kl.length} geklärt`);
+    const prob = alle.filter(p => p.stand === 'problem').length;
+    return `${teile.join(' · ')}${prob ? ` · <b class="krit">${prob} Problem${prob === 1 ? '' : 'e'}</b>` : ''}`;
   };
   const gruppe = ([id, titel]) => {
     const alle = liste.filter(p => p.gruppe === id);
-    if (!alle.length && id === 'analyse') return '';
-    const zeigen = akteUi.nurOffen ? alle.filter(p => !p.stand) : alle;
-    return `<details class="card akte-gruppe" data-gruppe="${id}"${akteUi.zu.has(id) ? '' : ' open'}><summary><span>${titel}</span><span class="akte-zahl">${alle.filter(p => p.stand).length} von ${alle.length}</span></summary>
-      <ul class="pp-liste">${zeigen.map(punkt).join('') || '<li class="pp-leer">Alle Punkte dieser Gruppe sind bearbeitet.</li>'}
+    if (!alle.length) return '';
+    const zeigen = akteUi.nurOffen ? alle.filter(p => !RK.akte.erledigt(p)) : alle;
+    return `<details class="card akte-gruppe" data-gruppe="${id}"${akteUi.auf.has(id) ? ' open' : ''}><summary><span>${titel}</span><span class="akte-zahl">${kurz(alle)}</span></summary>
+      <ul class="pp-liste">${zeigen.map(punkt).join('') || '<li class="pp-leer">Alle Punkte dieser Gruppe sind erledigt.</li>'}
         <li class="pp-neu"><input type="text" maxlength="200" placeholder="Eigenen Punkt ergänzen" aria-label="Eigener Punkt für ${titel}" data-akte-neu="${id}" data-fk="neu:${id}"><button type="button" class="btn sm" data-action="akte-eigen-neu" data-gruppe="${id}" data-uid="${u}">Hinzufügen</button></li></ul>
     </details>`;
   };
+  const gruppen = RK.akte.GRUPPEN.filter(([id]) => liste.some(p => p.gruppe === id));
+  const alleAuf = gruppen.every(([id]) => akteUi.auf.has(id)) && (!offen.length || akteUi.auf.has('vorschlaege')), n = s.nutzwert, p = s.pruefung;
   return `<div class="akte-leiste">
       <label class="akte-feld"><span>Checkliste für</span><select data-akte="vorlage" data-uid="${u}" data-fk="vorlage">${RK.akte.VORLAGEN.map(([id, t]) => `<option value="${id}"${id === vorlage ? ' selected' : ''}>${t}</option>`).join('')}</select></label>
       ${a.vorlage ? '' : info('Die Vorlage ist ein Vorschlag aus Objektart und Vermietungsstatus der Analyse. Wähle eine andere, wenn sie nicht passt.', 'Vorlage der Checkliste')}
-      <div class="akte-fortschritt">${akteBalken(s.gesamt - s.offen, s.gesamt)}<span>${s.gesamt - s.offen} von ${s.gesamt} geprüft${s.problem ? ` · <b class="krit">${s.problem} Problem${s.problem === 1 ? '' : 'e'}</b>` : ''}</span></div>
-      <label class="check"><input type="checkbox" data-akte="nur-offen" data-fk="nur-offen"${akteUi.nurOffen ? ' checked' : ''}> Nur offene</label>
+      <div class="akte-leiste-rechts"><label class="check"><input type="checkbox" data-akte="nur-offen" data-fk="nur-offen"${akteUi.nurOffen ? ' checked' : ''}> Nur offene</label>
+        <button type="button" class="btn sm" data-action="${alleAuf ? 'akte-alle-zu' : 'akte-alle-auf'}" data-fk="alle">${alleAuf ? 'Alle schließen' : 'Alle öffnen'}</button></div>
     </div>
-    ${offen.length ? `<section class="card akte-karte akte-analyse">${akteKopf('Aus der Analyse offen', 'Nächste Schritte und fehlende Unterlagen, die die Analyse nennt. „Übernehmen“ macht daraus einen Punkt deiner Checkliste; die Analyse selbst bleibt unverändert.', `<button type="button" class="btn sm" data-action="akte-uebernehmen-alle" data-uid="${u}">Alle übernehmen</button>`)}
-      <ul class="akte-vorschlaege">${offen.map(x => `<li><div><b>${esc(x.text)}</b>${x.zusatz ? `<span>${esc(x.zusatz)}</span>` : ''}</div><button type="button" class="btn sm" data-action="akte-uebernehmen" data-quelle="${esc(x.quelle)}" data-uid="${u}">Übernehmen</button></li>`).join('')}</ul></section>` : ''}
-    ${RK.akte.GRUPPEN.map(gruppe).join('')}`;
+    <div class="akte-werte">
+      <div class="akte-wert"><span>Erledigt</span><b>${p.erledigt} von ${p.gesamt}</b>${akteBalken(p.erledigt, p.gesamt)}</div>
+      <div class="akte-wert"><span>Unterlagen</span><b>${s.unterlagen.vorhanden} von ${s.unterlagen.gesamt}</b><small>${s.unterlagen.angefordert ? `${s.unterlagen.angefordert} angefordert · ` : ''}${s.unterlagen.dateien} Datei${s.unterlagen.dateien === 1 ? '' : 'en'}</small></div>
+      <div class="akte-wert"><span>Meine Bewertung${info(`Nutzwertanalyse: Jedes Kriterium bekommt per Regler eine Note von 1 (sehr schlecht) bis ${RK.akte.NOTE_MAX} (hervorragend). Die Gesamtnote ist der Durchschnitt, gewichtet danach, was dir wichtig ist (Seite „Profil“ → „Was mir wichtig ist“). Nicht bewertete und entfallene Kriterien zählen nicht.`, 'Meine Bewertung')}</span><b>${n.wert === null ? '–' : `${fmtNote(n.wert)} von ${RK.akte.NOTE_MAX}`}</b><small>${n.bewertet} von ${n.gesamt} bewertet · <button type="button" class="linkbtn" data-action="profile" data-bereich="gewichtung">Gewichtung</button></small></div>
+      ${p.problem ? `<div class="akte-wert krit"><span>Probleme</span><b>${p.problem}</b><small>mit „Problem“ markiert</small></div>` : ''}
+    </div>
+    ${offen.length ? `<details class="card akte-gruppe akte-analyse" data-gruppe="vorschlaege"${akteUi.auf.has('vorschlaege') ? ' open' : ''}><summary><span>Aus der Analyse offen${info('Nächste Schritte und fehlende Unterlagen, die die Analyse nennt. „Übernehmen“ macht daraus einen Punkt deiner Checkliste; die Analyse selbst bleibt unverändert.', 'Aus der Analyse offen')}</span><span class="akte-zahl">${offen.length} zum Übernehmen</span></summary>
+      <div class="akte-vorschlag-kopf"><button type="button" class="btn sm" data-action="akte-uebernehmen-alle" data-uid="${u}">Alle übernehmen</button></div>
+      <ul class="akte-vorschlaege">${offen.map(x => `<li><div><b>${esc(x.text)}</b>${x.zusatz ? `<span>${esc(x.zusatz)}</span>` : ''}</div><button type="button" class="btn sm" data-action="akte-uebernehmen" data-quelle="${esc(x.quelle)}" data-uid="${u}">Übernehmen</button></li>`).join('')}</ul></details>` : ''}
+    ${gruppen.map(gruppe).join('')}`;
+}
+
+/* ---------- Angehängte Unterlagen: Dateien in IndexedDB (Schlüssel „datei:<id>“), in der Akte nur der Verweis ---------- */
+// Nur diese Typen öffnet der Browser in einem neuen Tab; alles andere wird heruntergeladen (nichts wird als HTML ausgeführt)
+const DATEI_ANZEIGE = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+const dateiLesen = id => idbKv('readonly', st => st.get(`datei:${id}`));
+const dateiSchreiben = (id, blob) => idbKv('readwrite', st => st.put(blob, `datei:${id}`));
+const dateiEntfernen = id => idbKv('readwrite', st => st.delete(`datei:${id}`));
+
+async function dateienAnhaengen(doc, punktId, dateien) {
+  let n = 0;
+  for (const datei of [...dateien].slice(0, 20)) {
+    if (datei.size > RK.akte.DATEI_MAX) { toast(`„${datei.name}“ ist größer als ${dateiGroesse(RK.akte.DATEI_MAX)} und wurde nicht angehängt.`); continue; }
+    const id = akteId(), meta = { id, zu: punktId, name: datei.name || 'Datei', typ: datei.type || '', groesse: datei.size };
+    await dateiSchreiben(id, datei);
+    abgleichDateiSchreiben(meta, datei);
+    akteAendern(doc, (a, t) => {
+      a.dateien.push({ ...meta, t });
+      // Eine angehängte Datei heißt: Die Unterlage liegt vor (lässt sich danach ändern)
+      const alt = a.punkte[punktId] || {};
+      if (!alt.stand || alt.stand === 'angefordert') a.punkte[punktId] = { ...alt, stand: 'ok', notiz: alt.notiz || '', t };
+    });
+    n++;
+  }
+  if (n) akteZeichnen();
+}
+async function dateiOeffnen(doc, id) {
+  const meta = akteEintrag(akteVon(doc).dateien, id);
+  if (!meta) return;
+  let blob = await dateiLesen(id);
+  if (!(blob instanceof Blob)) { blob = await abgleichDateiLesen(meta); if (blob) dateiSchreiben(id, blob); }
+  if (!(blob instanceof Blob)) return toast('Diese Datei liegt auf einem anderen Gerät.');
+  const anzeigen = DATEI_ANZEIGE.includes(meta.typ);
+  const url = URL.createObjectURL(new Blob([blob], { type: anzeigen ? meta.typ : 'application/octet-stream' }));
+  const a = document.createElement('a');
+  a.href = url;
+  if (anzeigen) { a.target = '_blank'; a.rel = 'noopener'; } else a.download = meta.name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 120000);
+}
+
+/* ---------- Gewichtung (Seite „Profil“ → „Was mir wichtig ist“) ---------- */
+const GEWICHT_WORT = ['zählt nicht', 'kaum wichtig', 'weniger wichtig', 'normal', 'wichtig', 'sehr wichtig'];
+function gewichtungAnsicht() {
+  const nur = p => (!p.nur ? '' : `<span class="tag">${p.nur.length === 1 && p.nur[0] === 'mfh' ? 'Mehrfamilienhaus' : p.nur.includes('mfh') ? 'vermietet' : p.nur.length === 2 ? 'Wohnung' : p.nur[0] === 'etw_frei' ? 'Wohnung, bezugsfrei' : 'Wohnung, vermietet'}</span>`);
+  const zeile = p => { const w = RK.akte.gewichtVon(state.gewichte, p.id); return `<li class="gw"><span class="gw-text">${esc(p.text)}${nur(p)}</span><input type="range" min="0" max="${RK.akte.GEWICHT_MAX}" step="1" value="${w}" data-gewicht="${p.id}" aria-label="Gewichtung: ${esc(p.text)}"><output class="gw-wort${w === 0 ? ' null' : ''}">${GEWICHT_WORT[w]}</output></li>`; };
+  const gruppen = RK.akte.GRUPPEN.map(([id, titel]) => [titel, RK.akte.KRITERIEN.filter(p => p.gruppe === id)]).filter(([, l]) => l.length);
+  return `<section class="card gewichtung">
+      ${akteKopf('Was mir wichtig ist', `Hier stellst du ein, wie stark jedes Kriterium in „Meine Bewertung“ eines Objekts eingeht – von „zählt nicht“ bis „sehr wichtig“. Die Noten selbst vergibst du am Objekt unter „Prüfung“. Ohne eigene Einstellung zählen alle Kriterien gleich („normal“). Gilt für alle Objekte.`)}
+      <div class="gw-vorlagen"><span>Voreinstellung für die Lage:</span>${RK.akte.GEWICHT_VORLAGEN.map(([id, titel]) => `<button type="button" class="btn sm" data-action="gewicht-vorlage" data-vorlage="${id}">${titel}</button>`).join('')}<button type="button" class="btn sm ghost" data-action="gewicht-vorlage" data-vorlage="alles">Alles auf „normal“</button></div>
+      ${gruppen.map(([titel, l]) => `<h4>${titel}</h4><ul class="gw-liste">${l.map(zeile).join('')}</ul>`).join('')}
+    </section>`;
 }
 
 /* =====================================================================
@@ -7317,6 +7560,7 @@ function akteBesichtigung(doc) {
       </div>
       <div class="foto-reihe">${allgemein.map(fotoKachel).join('')}${fotoKnopf(u, 'allgemein', 'Foto allgemein')}</div>
     </section>
+    <div class="akte-zwischen"><h3>Lage und Zustand bewerten</h3><button type="button" class="btn sm" data-action="akte-zur-bewertung" data-uid="${u}">Zu den Reglern</button></div>
     <div class="akte-zwischen"><h3>Räume und Bauteile</h3><div class="btn-row">${raeume.length ? '' : `<button type="button" class="btn sm primary" data-action="akte-raeume-vorschlag" data-uid="${u}">Übliche Räume anlegen</button>`}<button type="button" class="btn sm" data-action="akte-raum-neu" data-uid="${u}">${ikon('plus', 16)}Raum</button></div></div>
     ${raeume.length ? `<div class="raum-liste">${raeume.map(raum).join('')}</div>` : '<p class="akte-leer">Noch keine Räume. „Übliche Räume anlegen“ schlägt eine Liste vor, die du anpassen kannst.</p>'}
     <section class="card akte-karte">
@@ -7475,8 +7719,22 @@ function akteAktion(action, el) {
       return true;
     }
     case 'akte-punkt':
-      akteAendern(doc, (a, t) => { const alt = a.punkte[id] || {}; a.punkte[id] = { stand: alt.stand === el.dataset.stand ? null : el.dataset.stand, notiz: alt.notiz || '', t }; });
-      akteZeichnen(); return true;
+      akteAendern(doc, (a, t) => { const alt = a.punkte[id] || {}; a.punkte[id] = { ...alt, stand: alt.stand === el.dataset.stand ? null : el.dataset.stand, notiz: alt.notiz || '', t }; });
+      akteZeichnen(); renderResults(); return true;
+    case 'akte-note-weg': akteAendern(doc, (a, t) => { const alt = a.punkte[id] || {}; a.punkte[id] = { ...alt, note: null, notiz: alt.notiz || '', t }; }); akteZeichnen(); renderResults(); return true;
+    case 'akte-alle-auf': for (const [g] of RK.akte.GRUPPEN) akteUi.auf.add(g); akteUi.auf.add('vorschlaege'); akteZeichnen(); return true;
+    case 'akte-alle-zu': akteUi.auf.clear(); akteZeichnen(); return true;
+    case 'akte-zur-bewertung': akteJetzt(); akteUi.auf.add('lage'); akteUi.auf.add('objekt'); state.detailModus = 'pruefung'; render(); document.querySelector('#akteInhalt .akte-gruppe[data-gruppe="lage"]')?.scrollIntoView({ block: 'start' }); return true;
+    case 'akte-datei-auf': dateiOeffnen(doc, id); return true;
+    case 'akte-datei-weg':
+      akteAendern(doc, (a, t) => { const e = akteEintrag(a.dateien, id); if (e) { abgleichDateiLoeschen(e); e.weg = true; e.t = t; } });
+      dateiEntfernen(id); akteZeichnen(); return true;
+    case 'gewicht-vorlage': {
+      const t = new Date().toISOString(), wahl = (RK.akte.GEWICHT_VORLAGEN.find(v => v[0] === el.dataset.vorlage) || [])[2];
+      // „Ausgewogen“ und „Alles auf normal“ setzen zurück (Lage bzw. alle), die anderen setzen die Gewichte der Lage
+      for (const k of RK.akte.KRITERIEN) { if (el.dataset.vorlage === 'alles' || k.gruppe === 'lage') state.gewichte[k.id] = { w: (wahl && wahl[k.id]) ?? RK.akte.GEWICHT_STANDARD, t }; }
+      gewichteSpeichern(); render(); return true;
+    }
     case 'akte-notiz-auf':
       akteJetzt();
       akteUi.notiz.has(id) ? akteUi.notiz.delete(id) : akteUi.notiz.add(id);
@@ -7492,7 +7750,7 @@ function akteAktion(action, el) {
       document.querySelector(`#akteInhalt [data-akte-neu="${el.dataset.gruppe}"]`)?.focus();
       return true;
     }
-    case 'akte-eigen-weg': akteAendern(doc, (a, t) => { const e = akteEintrag(a.eigene, id); if (e) { e.weg = true; e.t = t; } delete a.punkte[id]; }); akteZeichnen(); return true;
+    case 'akte-eigen-weg': akteAendern(doc, (a, t) => { const e = akteEintrag(a.eigene, id); if (e) { e.weg = true; e.t = t; } delete a.punkte[id]; for (const d of a.dateien) if (d.zu === id && !d.weg) { abgleichDateiLoeschen(d); dateiEntfernen(d.id); d.weg = true; d.t = t; } }); akteZeichnen(); return true;
     case 'akte-uebernehmen':
     case 'akte-uebernehmen-alle': {
       const wahl = akteAusAnalyse(doc).filter(x => action === 'akte-uebernehmen-alle' || x.quelle === el.dataset.quelle);
@@ -7572,13 +7830,23 @@ function akteEingabe(t, art) {
       case 'besichtigung-datum': akteAendern(doc, (a, z) => { a.besichtigung = { datum: t.value || null, notiz: (a.besichtigung || {}).notiz || '', t: z }; }); return true;
       case 'wv-erledigt': akteAendern(doc, (a, z) => { const e = akteEintrag(a.verlauf, id); if (e) { e.erledigt = t.checked; e.t = z; } }); akteZeichnen(); renderResults(); return true;
       case 'foto': { const dateien = [...t.files]; t.value = ''; fotosAufnehmen(doc, t.dataset.zu, dateien); return true; }
+      case 'datei': { const dateien = [...t.files]; t.value = ''; dateienAnhaengen(doc, id, dateien); return true; }
+      case 'note': akteNoteSetzen(doc, id, Number(t.value)); akteZeichnen(); renderResults(); return true;
       default: break;
     }
+  }
+  // Regler während des Ziehens: Zahl mitlaufen lassen und gebündelt speichern
+  if (was === 'note') {
+    const note = Number(t.value), feld = t.closest('.pp-regler')?.querySelector('.pp-note');
+    t.classList.remove('unbewertet');
+    if (feld) { feld.textContent = note; feld.disabled = false; }
+    akteSpaeter(`note:${id}`, () => akteNoteSetzen(doc, id, note));
+    return true;
   }
   // Texte: während des Tippens gebündelt, beim Verlassen des Felds sofort – ohne neu zu zeichnen
   const wert = t.value;
   const sichern = {
-    'punkt-notiz': () => akteAendern(doc, (a, z) => { a.punkte[id] = { stand: (a.punkte[id] || {}).stand || null, notiz: wert, t: z }; }),
+    'punkt-notiz': () => akteAendern(doc, (a, z) => { a.punkte[id] = { ...(a.punkte[id] || {}), notiz: wert, t: z }; }),
     'besichtigung-notiz': () => akteAendern(doc, (a, z) => { a.besichtigung = { datum: (a.besichtigung || {}).datum || null, notiz: wert, t: z }; }),
     'raum-name': () => akteAendern(doc, (a, z) => { const e = akteEintrag(a.raeume, id); if (e && wert.trim()) { e.name = wert; e.t = z; } }),
     'raum-notiz': () => akteAendern(doc, (a, z) => { const e = akteEintrag(a.raeume, id); if (e) { e.notiz = wert; e.t = z; } }),
@@ -7598,11 +7866,39 @@ function akteEingabe(t, art) {
   return true;
 }
 
-// Auf- und Zuklappen der Gruppen merken (nur für diese Sitzung)
+function akteNoteSetzen(doc, id, note) {
+  akteWartend.delete(`note:${id}`);
+  akteAendern(doc, (a, t) => { const alt = a.punkte[id] || {}; a.punkte[id] = { ...alt, stand: alt.stand === 'entfaellt' ? null : alt.stand || null, note, notiz: alt.notiz || '', t }; });
+}
+
+// Auf- und Zuklappen der Gruppen merken (nur für diese Sitzung) und den Knopf „Alle öffnen/schließen“ nachziehen
 document.addEventListener('toggle', e => {
   const g = e.target.closest?.('#akteInhalt .akte-gruppe[data-gruppe]');
-  if (g && e.target === g) g.open ? akteUi.zu.delete(g.dataset.gruppe) : akteUi.zu.add(g.dataset.gruppe);
+  if (!g || e.target !== g) return;
+  g.open ? akteUi.auf.add(g.dataset.gruppe) : akteUi.auf.delete(g.dataset.gruppe);
+  const knopf = document.querySelector('#akteInhalt [data-fk="alle"]'), alle = [...document.querySelectorAll('#akteInhalt .akte-gruppe[data-gruppe]')];
+  if (knopf) { const auf = alle.every(x => x.open); knopf.dataset.action = auf ? 'akte-alle-zu' : 'akte-alle-auf'; knopf.textContent = auf ? 'Alle schließen' : 'Alle öffnen'; }
 }, true);
+// Der Klick auf die Gruppenzeile merkt den neuen Zustand sofort (das toggle-Ereignis kommt erst später)
+document.addEventListener('click', e => {
+  const z = e.target.closest?.('#akteInhalt .akte-gruppe[data-gruppe] > summary');
+  if (!z || e.target.closest('.info, button')) return;
+  const g = z.parentElement;
+  g.open ? akteUi.auf.delete(g.dataset.gruppe) : akteUi.auf.add(g.dataset.gruppe);
+}, true);
+// Unbewertetes Kriterium: Ein Antippen des Reglers ohne Ziehen übernimmt den gezeigten Wert
+document.addEventListener('click', e => {
+  const r = e.target.closest?.('#akteInhalt input[data-akte="note"]');
+  if (r && !r.disabled && akteWartend.size === 0 && (akteVon(getDoc(r.dataset.uid)).punkte[r.dataset.id] || {}).note == null) { akteNoteSetzen(getDoc(r.dataset.uid), r.dataset.id, Number(r.value)); akteZeichnen(); renderResults(); }
+});
+// Gewichtung: Regler auf der Seite „Profil“
+for (const art of ['input', 'change']) document.addEventListener(art, e => {
+  const r = e.target.closest?.('input[data-gewicht]');
+  if (!r) return;
+  const w = Number(r.value), wort = r.parentElement.querySelector('.gw-wort');
+  if (wort) { wort.textContent = GEWICHT_WORT[w]; wort.classList.toggle('null', w === 0); }
+  if (art === 'change') { state.gewichte[r.dataset.gewicht] = { w, t: new Date().toISOString() }; gewichteSpeichern(); }
+});
 // Enter im Feld „Eigenen Punkt ergänzen“ bzw. „Mangel beschreiben“ fügt hinzu
 document.addEventListener('keydown', e => {
   if (e.key !== 'Enter' || e.isComposing) return;
@@ -7618,7 +7914,7 @@ document.addEventListener('keydown', e => {
  * Ist der Abgleich eingeschaltet (Einstellungen → Daten & Speicher), schreibt der Viewer Status, Notizen,
  * Adressnachträge und Objektakten als eine Datei (ABGLEICH_DATEI, Format „viewer_eingaben“) in den verbundenen
  * Ablageordner und liest sie beim Einlesen des Ordners wieder ein. Fotos liegen als Bilddateien im Unterordner
- * ABGLEICH_FOTOS. So steht alles auf jedem Gerät bereit, das denselben Ordner verbindet (z. B. über Google Drive
+ * ABGLEICH_FOTOS, angehängte Unterlagen unter ihrem Namen in ABGLEICH_UNTERLAGEN. So steht alles auf jedem Gerät bereit, das denselben Ordner verbindet (z. B. über Google Drive
  * für Desktop). Geschrieben wird ausschließlich lokal in diesen Ordner – keine Verbindung zu einem Server.
  *
  * Vor jedem Schreiben wird die vorhandene Datei gelesen und zusammengeführt (je Eintrag gewinnt die jüngere
@@ -7632,6 +7928,7 @@ document.addEventListener('keydown', e => {
 
 const ABGLEICH_DATEI = 'immoviewer_abgleich.json';
 const ABGLEICH_FOTOS = 'immoviewer_fotos';
+const ABGLEICH_UNTERLAGEN = 'immoviewer_unterlagen';
 const abgleich = { timer: 0, laeuft: false, nochmal: false, stempel: null, letzte: null, fehler: null, recht: 'unbekannt' };
 
 const abgleichAn = () => !!state.einst.abgleich && !!state.ordner.handle && state.ordner.status === 'verbunden';
@@ -7661,19 +7958,21 @@ function abgleichUebernehmen(text) {
   let imp;
   try { imp = RK.eingaben.importiere(JSON.parse(text.replace(/^﻿/, ''))); } catch { return false; }
   if (!imp.ok) return false;
-  const vorher = JSON.stringify([state.notizen, state.karte.adressen, state.akten]);
+  const vorher = JSON.stringify([state.notizen, state.karte.adressen, state.akten, state.gewichte]);
   state.notizen = RK.eingaben.zusammenfuehren(state.notizen, imp.notizen, 'notizen').werte;
   // Adressen und Kartenpunkte: nur ergänzen, was hier fehlt – ein stiller Abgleich überschreibt keine eigenen Nachträge
   for (const [k, v] of Object.entries(imp.adressen)) if (!state.karte.adressen[k]) state.karte.adressen[k] = v;
   state.akten = RK.akte.mischeSammlung(state.akten, imp.akten).werte;
-  if (JSON.stringify([state.notizen, state.karte.adressen, state.akten]) === vorher) return false;
+  state.gewichte = RK.akte.mischeGewichte(state.gewichte, imp.gewichte);
+  if (JSON.stringify([state.notizen, state.karte.adressen, state.akten, state.gewichte]) === vorher) return false;
+  lsSet(LS_GEWICHTE, JSON.stringify(state.gewichte));
   lsSet(LS_NOTIZEN, JSON.stringify(state.notizen));
   lsSet(LS_AKTEN, JSON.stringify(state.akten));
   karteSpeichern({ abgleich: false });
   return true;
 }
 
-const abgleichText = () => JSON.stringify(RK.eingaben.exportiere({ notizen: state.notizen, adressen: state.karte.adressen, akten: state.akten }), null, 1);
+const abgleichText = () => JSON.stringify(RK.eingaben.exportiere({ notizen: state.notizen, adressen: state.karte.adressen, akten: state.akten, gewichte: state.gewichte }), null, 1);
 const abgleichStempelVon = datei => `${datei.lastModified}|${datei.size}`;
 
 /** Datei im Ordner lesen, zusammenführen, schreiben; danach fehlende Fotos nachziehen. */
@@ -7723,33 +8022,48 @@ async function abgleichLesen(eintrag) {
   return geaendert;
 }
 
-/* ---------- Fotos als Bilddateien im Unterordner ---------- */
-async function abgleichFotoOrdner(anlegen) {
+/* ---------- Fotos und angehängte Unterlagen als Dateien in Unterordnern ---------- */
+async function abgleichUnterordner(name, anlegen) {
   if (!abgleichAn() || abgleich.recht !== 'granted') return null;
-  try { return await state.ordner.handle.getDirectoryHandle(ABGLEICH_FOTOS, { create: anlegen }); } catch { return null; }
+  try { return await state.ordner.handle.getDirectoryHandle(name, { create: anlegen }); } catch { return null; }
 }
-async function abgleichFotoSchreiben(id, blob) {
-  const dir = await abgleichFotoOrdner(true);
+async function abgleichBlobSchreiben(ordner, datei, blob) {
+  const dir = await abgleichUnterordner(ordner, true);
   if (!dir) return false;
-  try { const w = await (await dir.getFileHandle(`${id}.jpg`, { create: true })).createWritable(); await w.write(blob); await w.close(); return true; } catch { return false; }
+  try { const w = await (await dir.getFileHandle(datei, { create: true })).createWritable(); await w.write(blob); await w.close(); return true; } catch { return false; }
 }
-async function abgleichFotoLesen(id) {
+async function abgleichBlobLesen(ordner, datei) {
   if (!abgleichAn()) return null;
-  try { const dir = await state.ordner.handle.getDirectoryHandle(ABGLEICH_FOTOS); return await (await dir.getFileHandle(`${id}.jpg`)).getFile(); } catch { return null; }
+  try { const dir = await state.ordner.handle.getDirectoryHandle(ordner); return await (await dir.getFileHandle(datei)).getFile(); } catch { return null; }
 }
-async function abgleichFotoLoeschen(id) {
-  const dir = await abgleichFotoOrdner(false);
-  if (dir) { try { await dir.removeEntry(`${id}.jpg`); } catch { /* schon weg */ } }
+async function abgleichBlobLoeschen(ordner, datei) {
+  const dir = await abgleichUnterordner(ordner, false);
+  if (dir) { try { await dir.removeEntry(datei); } catch { /* schon weg */ } }
 }
-/** Fotos, die nur auf diesem Gerät liegen, in den Ordner schreiben (z. B. nach dem Einschalten des Abgleichs). */
+const abgleichFotoSchreiben = (id, blob) => abgleichBlobSchreiben(ABGLEICH_FOTOS, `${id}.jpg`, blob);
+const abgleichFotoLesen = id => abgleichBlobLesen(ABGLEICH_FOTOS, `${id}.jpg`);
+const abgleichFotoLoeschen = id => abgleichBlobLoeschen(ABGLEICH_FOTOS, `${id}.jpg`);
+// Unterlagen behalten im Ordner ihren Namen (hinter der Kennung), damit man sie dort auch von Hand findet
+const abgleichDateiName = meta => `${meta.id}_${String(meta.name || 'Datei').replace(/[^\wäöüÄÖÜß.\- ]+/g, '_').slice(-90)}`;
+const abgleichDateiSchreiben = (meta, blob) => abgleichBlobSchreiben(ABGLEICH_UNTERLAGEN, abgleichDateiName(meta), blob);
+const abgleichDateiLesen = meta => abgleichBlobLesen(ABGLEICH_UNTERLAGEN, abgleichDateiName(meta));
+const abgleichDateiLoeschen = meta => abgleichBlobLoeschen(ABGLEICH_UNTERLAGEN, abgleichDateiName(meta));
+
+/** Fotos und Unterlagen, die nur auf diesem Gerät liegen, in den Ordner schreiben (z. B. nach dem Einschalten des Abgleichs). */
 async function abgleichFotosNachziehen() {
-  const dir = await abgleichFotoOrdner(true);
-  if (!dir) return;
-  const ids = Object.values(state.akten).flatMap(a => RK.akte.lebend(a.fotos).map(f => f.id));
-  for (const id of ids) {
-    try { await dir.getFileHandle(`${id}.jpg`); continue; } catch { /* fehlt im Ordner */ }
+  const fotos = await abgleichUnterordner(ABGLEICH_FOTOS, true);
+  if (!fotos) return;
+  for (const id of Object.values(state.akten).flatMap(a => RK.akte.lebend(a.fotos).map(f => f.id))) {
+    try { await fotos.getFileHandle(`${id}.jpg`); continue; } catch { /* fehlt im Ordner */ }
     const blob = await fotoLesen(id);
     if (blob instanceof Blob) await abgleichFotoSchreiben(id, blob);
+  }
+  const unterlagen = await abgleichUnterordner(ABGLEICH_UNTERLAGEN, true);
+  if (!unterlagen) return;
+  for (const meta of Object.values(state.akten).flatMap(a => RK.akte.lebend(a.dateien))) {
+    try { await unterlagen.getFileHandle(abgleichDateiName(meta)); continue; } catch { /* fehlt im Ordner */ }
+    const blob = await dateiLesen(meta.id);
+    if (blob instanceof Blob) await abgleichDateiSchreiben(meta, blob);
   }
 }
 
@@ -8064,6 +8378,8 @@ const IKON_PFAD = {
   auswahl: '<path d="m7 10 5 5 5-5"/>',
   haken: '<path d="m5.500 12.500 4.200 4.200L18.500 7.500"/>',
   plus: '<path d="M12 5.500v13M5.500 12h13"/>',
+  stift: '<path d="M4.500 19.500l1-4.200L16.300 4.500a1.800 1.800 0 0 1 2.500 0l.700.700a1.800 1.800 0 0 1 0 2.500L8.700 18.500z"/><path d="M14.500 6.300l3.200 3.200"/>',
+  klammer: '<path d="M19 11.500l-7.200 7.200a4.200 4.200 0 0 1-6-6l7.600-7.600a2.800 2.800 0 0 1 4 4l-7.500 7.500a1.400 1.400 0 0 1-2-2l6.600-6.600"/>',
   kamera: '<path d="M4.500 8.500h3l1.500-2.500h6l1.500 2.500h3a1.500 1.500 0 0 1 1.500 1.500v8a1.500 1.500 0 0 1-1.500 1.500h-15A1.500 1.500 0 0 1 3 18v-8a1.500 1.500 0 0 1 1.500-1.500z"/><circle cx="12" cy="13.500" r="3.300"/>',
   auf_ab: '<path d="m8 9.500 4-4 4 4M8 14.500l4 4 4-4"/>',
   neu: '<path d="M12 3.500l1.900 5.300 5.600.200-4.400 3.500 1.500 5.400L12 14.800l-4.600 3.100 1.500-5.400-4.400-3.500 5.600-.200z"/>',
@@ -9651,6 +9967,8 @@ const state = {
   detailModus: 'ueberblick',
   // Objektakten je Objektschlüssel: Schritte, Checkliste, Besichtigung, Kontakte, Verlauf
   akten: {},
+  // Gewichtung der Bewertungskriterien (0–5 je Kriterium), für alle Objekte gleich
+  gewichte: {},
   profilTab: 'haushalt',
   feldFehler: {},
   feldRoh: {},
@@ -9845,6 +10163,7 @@ async function restore() {
   karteLaden();
   notizenLaden();
   aktenLaden();
+  gewichteLaden();
   if (!state.persist) return;
   try {
     // IndexedDB; ältere Fassungen hatten die Dateien in localStorage – dann von dort übernehmen und umziehen
@@ -10984,6 +11303,7 @@ const COLS = [
   { id: 'objekt', label: 'Objekt', sv: d => docTitle(d).toLowerCase(), filter: 'text', fv: d => { const a = obj(d.data.angebot); return [docTitle(d), docPlace(d), platLabel(a.plattform), a.plattform_id, a.objektart].filter(v => v != null).join(' '); } },
   { id: 'status', label: 'Mein Status', titel: 'Mein Status', sv: d => RK.eingaben.statusRang(notizVon(d)?.status), filter: 'auswahl', fv: d => notizVon(d)?.status || '', optionen: () => [...RK.eingaben.STATUS, ['', 'Ohne Status']] },
   { id: 'urteil', label: 'Gesamturteil', sv: d => { const i = VERDICT_ORDER.indexOf(urteilOf(d)); return i < 0 ? null : i; }, filter: 'auswahl', fv: d => nurKey(urteilOf(d), VERDICT_ORDER), optionen: () => [...VERDICT_ORDER.map(v => [v, L(v)]), ['', 'Kein Urteil']] },
+  { id: 'note', label: 'Meine Bewertung', titel: 'Meine Bewertung (gewichtete Note aus der Prüfung)', num: true, sv: d => akteNote(d), filter: 'zahl' },
   { id: 'sicherheit', label: 'Beleg­sicherheit', sv: d => { const i = SICHERHEIT.indexOf(obj(d.data.bewertung).belegsicherheit); return i < 0 ? null : i; }, filter: 'auswahl', fv: d => nurKey(obj(d.data.bewertung).belegsicherheit, SICHERHEIT), optionen: () => [...SICHERHEIT.map(v => [v, L(v)]), ['', 'Keine Angabe']] },
   { id: 'kaufpreis', label: 'Kaufpreis', path: '/objekt/kaufpreis_eur', num: true, filter: 'zahl', einheit: '€' },
   { id: 'flaeche', label: 'Wohnfläche', path: '/objekt/wohnflaeche_m2', num: true, filter: 'zahl', einheit: 'm²' },
@@ -11021,9 +11341,11 @@ const PROFIL_COLS = [
 /** Sichtbare Spalten: mit aktivem Profil zusätzlich die Profilspalten hinter „Gesamturteil“, ohne ausgeblendete. */
 const SPALTEN_FEST = ['num', 'objekt'];
 function spaltenVerfuegbar() {
-  if (!aktivesProfil()) return COLS;
-  const i = COLS.findIndex(c => c.id === 'urteil') + 1;
-  return [...COLS.slice(0, i), ...PROFIL_COLS, ...COLS.slice(i)];
+  // „Meine Bewertung“ erscheint, sobald mindestens ein Objekt in der Prüfung benotet ist
+  const cols = immoDocs().some(d => akteNote(d) !== null) ? COLS : COLS.filter(c => c.id !== 'note');
+  if (!aktivesProfil()) return cols;
+  const i = Math.max(cols.findIndex(c => c.id === 'urteil'), cols.findIndex(c => c.id === 'note')) + 1;
+  return [...cols.slice(0, i), ...PROFIL_COLS, ...cols.slice(i)];
 }
 const spalten = () => spaltenVerfuegbar().filter(c => SPALTEN_FEST.includes(c.id) || !state.ausgeblendet.has(c.id));
 
@@ -11184,6 +11506,7 @@ function compareTable(rows) {
       if (c.id === 'objekt') { const unter = [docPlace(d), platLabel(a.plattform), a.plattform_id].filter(Boolean).join(' · ') + (d.rev && d.rev.total > 1 ? ` · Rev. ${d.rev.index}/${d.rev.total}` : ''); return `<td class="cell-obj"><div class="obj-title" title="${esc(docTitle(d))}">${esc(docTitle(d))}</div><div class="obj-sub" title="${esc(unter)}">${offerTag(d.data)}${state.ausgeblendet.has('export') && countIssues(d).error ? '<span class="tag tag-crit" title="Die Exportprüfung meldet Fehler – Einzelheiten in der Objektansicht unter „Exportprüfung“">Exportfehler</span>' : ''}<span class="obj-sub-text">${esc(unter)}</span></div></td>`; }
       if (c.id === 'urteil') return `<td class="cell-urteil">${urteilKurz(b.gesamturteil)}</td>`;
       if (c.id === 'status') return statusZelle(d);
+      if (c.id === 'note') { const v = akteNote(d); return `<td class="num cell-note">${v === null ? '<span class="null" title="In der Prüfung noch nichts bewertet">—</span>' : `<span class="note-wert" title="Meine Bewertung: ${fmtNote(v)} von ${RK.akte.NOTE_MAX}">${fmtNote(v)}</span>`}</td>`; }
       if (c.profil) {
         const r = profilErgebnis(d), ok = r && r.anwendbar && r.status.cashflow === 'vollstaendig';
         const leer = `<span class="null" title="${esc(!r || !r.anwendbar ? 'Mit dem Profil nicht anwendbar' : 'Mit dem Profil noch nicht berechenbar – was fehlt, zeigt die Ansicht „Profil“')}">—</span>`;
@@ -11344,7 +11667,7 @@ function exportCSV() {
   const cols = [
     ['Nr', d => d.num], ['Datei', d => d.fileName], ['Titel', docTitle], ['Ort', d => obj(d.data.standort).ort], ['Stadtteil', d => obj(d.data.standort).stadtteil],
     ['Plattform', d => platLabel(obj(d.data.angebot).plattform)], ['Plattform-ID', d => obj(d.data.angebot).plattform_id], ['URL', d => obj(d.data.angebot).url],
-    ['Gesamturteil', d => L(urteilOf(d) || 'nicht_bewertbar')], ['Belegsicherheit', d => obj(d.data.bewertung).belegsicherheit],
+    ['Meine Bewertung', d => akteNote(d)], ['Gesamturteil', d => L(urteilOf(d) || 'nicht_bewertbar')], ['Belegsicherheit', d => obj(d.data.bewertung).belegsicherheit],
     ['Kaufpreis EUR', d => g(d, '/objekt/kaufpreis_eur')], ['Wohnfläche m2', d => g(d, '/objekt/wohnflaeche_m2')], ['Zimmer', d => g(d, '/objekt/zimmer')], ['Baujahr', d => g(d, '/objekt/baujahr')],
     ['Kaufpreis pro m2 EUR', d => g(d, '/kennzahlen/kaufpreis_pro_m2_eur')], ['Nettokaltmiete Monat EUR', d => g(d, '/ist_kosten_und_ertraege/nettokaltmiete_monat_eur')],
     ['Hausgeld Monat EUR', d => g(d, '/ist_kosten_und_ertraege/hausgeld_monat_eur')], ['Bruttomietrendite %', d => g(d, '/kennzahlen/bruttomietrendite_prozent')],
